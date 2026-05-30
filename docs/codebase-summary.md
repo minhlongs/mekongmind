@@ -8,10 +8,10 @@
 
 ## Executive Overview
 
-MekongMind is a monorepo combining a Python CLI agent framework, Go core engine, and 57 shared TypeScript packages across 33 apps. The platform enables autonomous agent orchestration with Plan-Execute-Verify (PEV) across 6 business layers (Studio, Founder, Business, Product, Engineering, Ops).
+MekongMind is a monorepo combining a Python CLI agent framework, Go core engine, and 57 shared TypeScript packages across 32 apps. The platform enables autonomous agent orchestration with Plan-Execute-Verify (PEV) across 6 business layers (Studio, Founder, Business, Product, Engineering, Ops).
 
 **Key Stats:**
-- **33 apps** | 57 packages | Python CLI | Go engine | TypeScript frontends
+- **32 apps** | 57 packages | Python CLI | Go engine | TypeScript frontends
 - **Monorepo:** pnpm workspaces + Turbo repo
 - **Deployment:** Cloudflare Pages for all apps
 - **License:** MIT (packages) / BSL 1.1 (CLI) / Apache 2.0 (engine)
@@ -22,7 +22,7 @@ MekongMind is a monorepo combining a Python CLI agent framework, Go core engine,
 
 ```
 mekongmind/
-├── apps/                  # 33 applications
+├── apps/                  # 32 applications
 │   ├── api/               # API gateway
 │   ├── dashboard/         # Main dashboard
 │   ├── ide/               # Mekong IDE
@@ -64,12 +64,11 @@ mekongmind/
 └── scripts/               # Utility scripts
 ```
 
-### Applications (33)
+### Applications (32)
 
 | App | Description |
 |-----|-------------|
 | `admin` | Admin panel |
-| `agencyos-landing` | AgencyOS landing page |
 | `agencyos-web` | AgencyOS web app |
 | `agi-sops` | AGI SOPs management |
 | `algo-trader` | Algorithmic trading bot |
