@@ -1,0 +1,53 @@
+HIGH_mission_algo_trader_deploy_production.txt
+
+================================================================================
+MISSION: Algo-Trader Production Deploy — Cloudflare + Supabase Stack
+PRIORITY: HIGH
+DEADLINE: 7 days
+OWNER: CTO Agent + DevOps
+================================================================================
+
+OBJECTIVE:
+Deploy Algo-Trader to production on Cloudflare + Supabase stack.
+Target: 99.9% uptime, auto-scaling, monitoring + alerting.
+
+KEY RESULTS:
+[ ] Frontend deployed (Cloudflare Pages, global CDN)
+[ ] API deployed (Cloudflare Workers, edge functions)
+[ ] Database provisioned (Supabase PostgreSQL, RLS enabled)
+[ ] Monitoring setup (Sentry, Vercel Analytics, UptimeRobot)
+[ ] CI/CD pipeline (GitHub Actions, auto-deploy on main)
+
+DELIVERABLES:
+1. Infrastructure as Code (Terraform/Cloudflare config)
+2. CI/CD Pipeline (build, test, deploy on push)
+3. Monitoring Dashboard (latency, errors, uptime)
+4. Runbook (deploy steps, rollback, incident response)
+5. Security Config (CSP, HSTS, rate limiting, WAF rules)
+
+TIMELINE:
+Day 1-2: Infra setup (Cloudflare, Supabase, Redis)
+Day 3-4: CI/CD pipeline (GitHub Actions, staging → prod)
+Day 5: Monitoring + alerting (Sentry, PagerDuty)
+Day 6: Security hardening (headers, WAF, secrets)
+Day 7: Smoke test, go-live
+
+RESOURCES:
+- Cloud: Cloudflare (Pages + Workers + D1 + KV), Supabase (Auth + DB)
+- Monitoring: Sentry (errors), Vercel Analytics (performance), UptimeRobot (uptime)
+- Team: CTO Agent (infra), DevOps (pipeline), Security (audit)
+
+RISKS:
+- Cloudflare cold start → Use Workers with keep-alive, provision concurrency
+- Database connection limits → Use Supabase pooling, connection limits
+- Secrets exposure → Use Cloudflare Secrets, never commit .env
+
+SUCCESS CRITERIA:
+- 99.9% uptime (first 7 days)
+- P95 latency <200ms (global)
+- Zero critical security issues
+- CI/CD passes 100% (auto-deploy on every push to main)
+
+================================================================================
+CTO DAEMON: Execute /cook this mission with /cto-architect, /release-ship, /ops-health-sweep
+================================================================================

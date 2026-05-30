@@ -1,0 +1,413 @@
+{
+  "sessions": [
+    {
+      "id": 1774014851680,
+      "startedAt": "2026-03-20T13:54:11.680Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774014976755,
+      "startedAt": "2026-03-20T13:56:16.755Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774015163109,
+      "startedAt": "2026-03-20T13:59:23.109Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774015288151,
+      "startedAt": "2026-03-20T14:01:28.151Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774015444986,
+      "startedAt": "2026-03-20T14:04:04.986Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774015599521,
+      "startedAt": "2026-03-20T14:06:39.521Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774015755287,
+      "startedAt": "2026-03-20T14:09:15.287Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774015910920,
+      "startedAt": "2026-03-20T14:11:50.920Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774016036522,
+      "startedAt": "2026-03-20T14:13:56.522Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774016192243,
+      "startedAt": "2026-03-20T14:16:32.243Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774016348518,
+      "startedAt": "2026-03-20T14:19:08.518Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774016504265,
+      "startedAt": "2026-03-20T14:21:44.265Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774016659300,
+      "startedAt": "2026-03-20T14:24:19.300Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774016784958,
+      "startedAt": "2026-03-20T14:26:24.958Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774016970781,
+      "startedAt": "2026-03-20T14:29:30.781Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774017096346,
+      "startedAt": "2026-03-20T14:31:36.346Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774017252606,
+      "startedAt": "2026-03-20T14:34:12.606Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774017377637,
+      "startedAt": "2026-03-20T14:36:17.637Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774017564049,
+      "startedAt": "2026-03-20T14:39:24.049Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774017689097,
+      "startedAt": "2026-03-20T14:41:29.097Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774017845950,
+      "startedAt": "2026-03-20T14:44:05.950Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774018001727,
+      "startedAt": "2026-03-20T14:46:41.727Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774018157463,
+      "startedAt": "2026-03-20T14:49:17.463Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774018342733,
+      "startedAt": "2026-03-20T14:52:22.733Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774018468936,
+      "startedAt": "2026-03-20T14:54:28.936Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774018593949,
+      "startedAt": "2026-03-20T14:56:33.950Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774018750750,
+      "startedAt": "2026-03-20T14:59:10.750Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774018905302,
+      "startedAt": "2026-03-20T15:01:45.302Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774019061161,
+      "startedAt": "2026-03-20T15:04:21.161Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774019216722,
+      "startedAt": "2026-03-20T15:06:56.722Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774019342330,
+      "startedAt": "2026-03-20T15:09:02.330Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774019498002,
+      "startedAt": "2026-03-20T15:11:38.002Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774019654275,
+      "startedAt": "2026-03-20T15:14:14.275Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774019810038,
+      "startedAt": "2026-03-20T15:16:50.038Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774019965072,
+      "startedAt": "2026-03-20T15:19:25.072Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774020090710,
+      "startedAt": "2026-03-20T15:21:30.710Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774020276513,
+      "startedAt": "2026-03-20T15:24:36.513Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774020402083,
+      "startedAt": "2026-03-20T15:26:42.083Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774020558374,
+      "startedAt": "2026-03-20T15:29:18.374Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774020683379,
+      "startedAt": "2026-03-20T15:31:23.379Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774020869800,
+      "startedAt": "2026-03-20T15:34:29.800Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774020994848,
+      "startedAt": "2026-03-20T15:36:34.848Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774021151066,
+      "startedAt": "2026-03-20T15:39:11.066Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774021306127,
+      "startedAt": "2026-03-20T15:41:46.127Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774021461966,
+      "startedAt": "2026-03-20T15:44:21.966Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774021617561,
+      "startedAt": "2026-03-20T15:46:57.561Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774021743183,
+      "startedAt": "2026-03-20T15:49:03.183Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774021898933,
+      "startedAt": "2026-03-20T15:51:38.933Z",
+      "missionsDispatched": 7,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "all_workers_busy"
+      ]
+    },
+    {
+      "id": 1774059201285,
+      "startedAt": "2026-03-21T02:13:21.285Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1774066819103,
+      "startedAt": "2026-03-21T04:20:19.103Z",
+      "missionsDispatched": 30,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "all_workers_busy"
+      ]
+    }
+  ],
+  "knowledgeGraph": {},
+  "bugPatterns": [],
+  "architectureInsights": [],
+  "createdAt": "2026-03-19T23:36:16.912Z",
+  "updatedAt": "2026-03-22T08:33:24.210Z"
+}

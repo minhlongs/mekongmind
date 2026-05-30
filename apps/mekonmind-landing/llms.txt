@@ -1,0 +1,70 @@
+# MekongMind — Intelligent Model Router as a Service
+> Route developer missions to the optimal LLM automatically — Qwen, DeepSeek, Llama, or Claude — based on task complexity and cost. Multi-model orchestration via a single REST API.
+
+## Quick Start
+- **Sign up**: https://www.mekongmind.com
+- **API endpoint**: `POST https://api.mekongmind.com/raas/missions`
+- **Auth**: Bearer token with `mk_` prefixed API key
+- **Pricing**: MCU (Mission Credit Unit) — 50 free credits/month, $49/mo for 200 credits
+
+## Key Documentation
+- [Architecture Overview](docs/mekong-cli/ARCHITECTURE.md): 6-layer agent architecture, Water Protocol context flow, 8-stage execution pipeline
+- [CLI Reference](docs/mekong-cli/CLI_REFERENCE.md): Full 319-command CLI reference
+- [API Reference](docs/mekong-cli/api-reference.md): REST API documentation for all endpoints
+- [RaaS API Spec](docs/api/raas-api-reference.yaml): OpenAPI specification for the RaaS mission endpoint
+- [Getting Started](docs/api/getting-started.md): Setup guide and first mission walkthrough
+- [System Architecture](docs/mekong-cli/system-architecture.md): Deployment topology, service boundaries, data flow
+- [Code Standards](docs/mekong-cli/code-standards.md): TypeScript, Python, Go conventions
+- [Deployment Guide](docs/mekong-cli/deployment-guide.md): Cloudflare Pages, Docker, CI/CD pipeline
+- [Authentication](docs/mekong-cli/authentication.md): JWT, API key management, workspace isolation
+- [Development Setup](docs/mekong-cli/development-setup.md): Monorepo setup, local dev environment
+- [Design Guidelines](docs/mekong-cli/design-guidelines.md): UI/UX patterns, design system tokens
+- [Security](docs/mekong-cli/security-monitoring-plan.md): OWASP compliance, key rotation, audit logging
+
+## Core Architecture
+```
+Studio → Founder → Business → Product → Engineering → Ops
+```
+6 layers, 300+ commands. Universal LLM via 3 env vars: `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`.
+
+### Pipeline Stages
+1. **Classify** — Determine mission domain and complexity
+2. **Validate** — Check input against schema rules
+3. **Plan** — Generate execution plan with route selection
+4. **Route** — Dispatch to optimal model (Qwen, DeepSeek, Llama, Claude)
+5. **Execute** — Run the mission on the selected model
+6. **Review** — Validate output quality and format
+7. **Format** — Structure response as JSON
+8. **Deliver** — Return result with trace metadata
+
+### Supported Models
+- **Qwen** (DashScope) — Primary coding & reasoning
+- **DeepSeek** — Cost-effective general tasks
+- **Llama** (Ollama) — Local inference for sensitive data
+- **Claude** (Anthropic) — Fallback for complex reasoning
+
+## Core Commands
+- `mekong ai-os start` — Start MCP server for agent orchestration
+- `mekong cook <feature>` — AI-powered feature implementation
+- `mekong doctor check` — System health check
+- `mekong deploy` — Deploy to Cloudflare Pages
+- `mekong raas mission` — Submit a mission via CLI
+- `mekong workspace create` — Create new isolated workspace
+
+## Monorepo Structure
+| Directory | Contents |
+|-----------|----------|
+| `apps/` | Web apps, API, dashboard, landing pages |
+| `cli/` | Python CLI (Typer, v6.0.0, 319 commands) |
+| `engine/` | Go core + Rust FFI + Python quantization |
+| `packages/` | 57 shared TypeScript packages |
+| `docs/` | Full documentation (API, CLI, architecture) |
+| `platform/` | Platform service definitions |
+
+## Links
+- Website: https://www.mekongmind.com
+- GitHub: https://github.com/mekongmind
+- Docs directory: ./docs/
+- API Spec: ./docs/api/raas-api-reference.yaml
+- CLI Reference: ./docs/mekong-cli/CLI_REFERENCE.md
+- License: MIT (packages) / BSL 1.1 (CLI) / Apache 2.0 (engine)

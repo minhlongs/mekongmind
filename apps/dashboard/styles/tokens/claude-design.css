@@ -1,0 +1,374 @@
+/* ===================================================================
+   Claude Design — Anthropic-flavored token system for Mekong Dashboard
+   ===================================================================
+   Cream/ink palette, warm clay accent, editorial serif headlines.
+   Defines the variables that page.tsx files already reference
+   (--surface-card, --text-primary, --spacing-*, --font-*, --radius-*,
+    --border-default, …) so existing pages reskin instantly.
+
+   Light theme is the default. To use dark mode, add `.dark` to <html>
+   (the root layout already does this) — dark overrides come after.
+   =================================================================== */
+
+:root {
+  /* ------- Brand --------------------------------------------------- */
+  --claude-clay:        #d97757;   /* Claude signature orange/clay */
+  --claude-clay-deep:   #c96342;   /* hover/pressed */
+  --claude-clay-soft:   #efbb9e;   /* tint, accent borders */
+  --claude-cream:       #faf9f5;   /* page background (light) */
+  --claude-cream-2:     #f5f1e8;   /* surface raised */
+  --claude-ink:         #1f1f1c;   /* primary text */
+  --claude-ink-2:       #2c2b27;   /* alt body */
+  --claude-ash:         #6b6a64;   /* secondary text */
+  --claude-ash-2:       #8a8983;   /* muted */
+  --claude-line:        #e8e1d4;   /* hairline borders */
+  --claude-line-strong: #d8cfbe;
+  --claude-paper:       #ffffff;   /* card surface */
+  --claude-success:     #2c8a5b;
+  --claude-warn:        #c97a1a;
+  --claude-danger:      #b1483a;
+
+  /* ------- Surfaces ------------------------------------------------ */
+  --surface-page:       var(--claude-cream);
+  --surface-raised:     var(--claude-cream-2);
+  --surface-card:       var(--claude-paper);
+  --surface-overlay:    rgba(31, 31, 28, 0.55);
+  --surface-inverse:    var(--claude-ink);
+
+  /* ------- Text ---------------------------------------------------- */
+  --text-primary:       var(--claude-ink);
+  --text-secondary:     var(--claude-ash);
+  --text-muted:         var(--claude-ash-2);
+  --text-faint:         #aeac9f;
+  --text-inverse:       var(--claude-cream);
+  --text-accent:        var(--claude-clay-deep);
+
+  /* ------- Borders ------------------------------------------------- */
+  --border-default:     var(--claude-line);
+  --border-strong:      var(--claude-line-strong);
+  --border-accent:      var(--claude-clay);
+  --border-focus:       var(--claude-clay-deep);
+
+  /* ------- Accents ------------------------------------------------- */
+  --accent:             var(--claude-clay);
+  --accent-hover:       var(--claude-clay-deep);
+  --accent-soft:        var(--claude-clay-soft);
+  --accent-on:          #ffffff;
+
+  --status-success:     var(--claude-success);
+  --status-warn:        var(--claude-warn);
+  --status-danger:      var(--claude-danger);
+
+  /* ------- Radius -------------------------------------------------- */
+  --radius-xs:  3px;
+  --radius-sm:  5px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  18px;
+  --radius-2xl: 24px;
+  --radius-pill: 999px;
+
+  /* ------- Spacing (8pt-ish, slightly generous) -------------------- */
+  --spacing-2xs: 2px;
+  --spacing-xs:  6px;
+  --spacing-sm:  10px;
+  --spacing-md:  16px;
+  --spacing-lg:  24px;
+  --spacing-xl:  36px;
+  --spacing-2xl: 56px;
+  --spacing-3xl: 88px;
+
+  /* ------- Typography --------------------------------------------- */
+  /* Tiempos / Söhne are Anthropic's licensed faces — we ship system fallbacks
+     that hit the same warm-editorial register on macOS/iOS/Windows.       */
+  --font-serif:
+    'Tiempos Headline', 'Tiempos Text',
+    'Iowan Old Style', 'Apple Garamond', 'Baskerville',
+    'Source Serif Pro', Georgia, 'Times New Roman', serif;
+  --font-sans:
+    'Söhne', 'Söhne Buch',
+    'Inter', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:
+    'Söhne Mono', 'JetBrains Mono', 'IBM Plex Mono',
+    'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* size scale */
+  --font-3xs: 10px;
+  --font-2xs: 11px;
+  --font-xs:  12px;
+  --font-sm:  13.5px;
+  --font-md:  15px;
+  --font-lg:  17px;
+  --font-xl:  21px;
+  --font-2xl: 28px;
+  --font-3xl: 38px;
+  --font-4xl: 52px;
+
+  /* line heights */
+  --leading-tight:  1.15;
+  --leading-snug:   1.3;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+
+  /* tracking */
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+  --tracking-loose:  0.12em;
+
+  /* ------- Shadows (very restrained, Anthropic-style) -------------- */
+  --shadow-xs: 0 1px 0 rgba(31, 31, 28, 0.04);
+  --shadow-sm: 0 1px 2px rgba(31, 31, 28, 0.05),
+               0 0 0 1px rgba(31, 31, 28, 0.04);
+  --shadow-md: 0 4px 12px rgba(31, 31, 28, 0.06),
+               0 0 0 1px rgba(31, 31, 28, 0.05);
+  --shadow-lg: 0 12px 40px rgba(31, 31, 28, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(217, 119, 87, 0.32);
+
+  /* ------- Motion -------------------------------------------------- */
+  --motion-fast:  120ms;
+  --motion-base:  180ms;
+  --motion-slow:  280ms;
+  --easing-standard: cubic-bezier(0.2, 0.0, 0, 1);
+}
+
+/* ===== DARK MODE — kept warm, never blue-cold ====================== */
+.dark {
+  --claude-cream:       #1a1916;
+  --claude-cream-2:     #211f1b;
+  --claude-paper:       #25231e;
+  --claude-ink:         #f3eee0;
+  --claude-ink-2:       #e6e0cf;
+  --claude-ash:         #b6b1a3;
+  --claude-ash-2:       #8e8a7e;
+  --claude-line:        #34322c;
+  --claude-line-strong: #45433b;
+
+  --surface-page:       var(--claude-cream);
+  --surface-raised:     var(--claude-cream-2);
+  --surface-card:       var(--claude-paper);
+  --surface-overlay:    rgba(0, 0, 0, 0.6);
+  --surface-inverse:    var(--claude-cream);
+
+  --text-primary:       var(--claude-ink);
+  --text-secondary:     var(--claude-ash);
+  --text-muted:         var(--claude-ash-2);
+  --text-faint:         #6b6a60;
+  --text-inverse:       var(--claude-ink);
+  --text-accent:        var(--claude-clay-soft);
+
+  --border-default:     var(--claude-line);
+  --border-strong:      var(--claude-line-strong);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4),
+               0 0 0 1px rgba(255, 247, 230, 0.04);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45),
+               0 0 0 1px rgba(255, 247, 230, 0.05);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+}
+
+/* ===== Base resets ================================================= */
+html, body {
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-md);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+
+/* ===== Claude utility classes ====================================== */
+/* Use these in JSX when you don't want to compose 6 Tailwind tokens.   */
+
+.claude-display {
+  font-family: var(--font-serif);
+  font-size: var(--font-4xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.claude-h1 {
+  font-family: var(--font-serif);
+  font-size: var(--font-3xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.claude-h2 {
+  font-family: var(--font-serif);
+  font-size: var(--font-2xl);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.claude-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--font-xl);
+  line-height: var(--leading-snug);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.claude-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--font-2xs);
+  letter-spacing: var(--tracking-loose);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-accent);
+}
+
+.claude-body {
+  font-family: var(--font-sans);
+  font-size: var(--font-md);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+}
+
+.claude-body-lg {
+  font-family: var(--font-sans);
+  font-size: var(--font-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+}
+
+.claude-mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-sm);
+}
+
+.claude-prose {
+  font-family: var(--font-serif);
+  font-size: var(--font-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+}
+.claude-prose p + p { margin-top: var(--spacing-md); }
+.claude-prose a { color: var(--text-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* Cards */
+.claude-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.claude-card-tight {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+/* Buttons */
+.claude-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-family: var(--font-sans);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-default);
+  background: var(--surface-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--easing-standard),
+              border-color var(--motion-fast) var(--easing-standard),
+              transform var(--motion-fast) var(--easing-standard);
+}
+.claude-btn:hover { border-color: var(--border-strong); }
+.claude-btn:active { transform: translateY(1px); }
+.claude-btn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+
+.claude-btn--primary {
+  background: var(--accent);
+  color: var(--accent-on);
+  border-color: var(--accent);
+}
+.claude-btn--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.claude-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+}
+.claude-btn--ghost:hover {
+  background: var(--surface-raised);
+}
+
+/* Pill / chip */
+.claude-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  font-size: var(--font-2xs);
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-wide);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-default);
+}
+
+/* Divider */
+.claude-divider {
+  height: 1px;
+  background: var(--border-default);
+  border: 0;
+  margin: var(--spacing-lg) 0;
+}
+
+/* Focus ring helper */
+:where(button, a, input, textarea, select):focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-soft);
+  color: var(--claude-ink);
+}
+
+/* Code blocks */
+pre, code {
+  font-family: var(--font-mono);
+  font-size: var(--font-sm);
+}
+pre {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  overflow: auto;
+  line-height: var(--leading-snug);
+}
+
+/* Subtle grid background — Claude home pages use a soft warm wash */
+.claude-paper-grain {
+  background-image:
+    radial-gradient(rgba(31,31,28,0.025) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.dark .claude-paper-grain {
+  background-image:
+    radial-gradient(rgba(255,247,230,0.025) 1px, transparent 1px);
+}

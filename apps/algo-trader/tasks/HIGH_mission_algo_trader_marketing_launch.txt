@@ -1,0 +1,51 @@
+HIGH_mission_algo_trader_marketing_launch.txt
+
+================================================================================
+MISSION: Algo-Trader Marketing Launch — Content + Ads Engine
+PRIORITY: HIGH
+DEADLINE: 21 days
+OWNER: CMO Agent + Content Team
+================================================================================
+
+OBJECTIVE:
+Launch marketing engine for Algo-Trader: content pillars, paid ads, social proof.
+Target: 500 signups in Month 1, 50 activations (paper trading).
+
+KEY RESULTS:
+[ ] 2 SEO pillar posts published (2,000+ words each)
+[ ] 8 social posts/week (Twitter, LinkedIn)
+[ ] Ad campaigns live (LinkedIn $5K, Twitter $2K)
+[ ] 500 signups in Month 1
+[ ] 50 activations (first paper trade within 24hr)
+
+DELIVERABLES:
+1. Content Calendar (8 posts/week x 4 weeks = 32 posts)
+2. SEO Pillar #1: "Crypto Arbitrage Strategies: Complete Guide"
+3. SEO Pillar #2: "Institutional Crypto Trading: Tools + Infrastructure"
+4. Ad Creatives (6 variants: ROI, FOMO, security, social proof)
+5. Landing Page Optimization (A/B test hero, CTA, pricing)
+
+TIMELINE:
+Week 1: Content production (2 pillar posts, 8 social posts)
+Week 2: Ad setup (LinkedIn Campaign Manager, Twitter Ads)
+Week 3: Launch + optimize (CTR, CPC, conversion tracking)
+
+RESOURCES:
+- Budget: $7K/mo (LinkedIn $5K, Twitter $2K)
+- Team: CMO Agent (strategy), Content Writer (posts), Designer (creatives)
+- Tools: Webflow (landing), Fathom (analytics), Buffer (social)
+
+RISKS:
+- Ad CTR <1% → Iterate headlines, test new angles weekly
+- Low conversion (<2%) → A/B test landing page, add social proof
+- Content no traffic → SEO optimization, paid boost, influencer shares
+
+SUCCESS CRITERIA:
+- CTR >1.5% (LinkedIn), >1% (Twitter)
+- Landing conversion >3% (visitor → signup)
+- Activation rate >10% (signup → first paper trade)
+- CAC < $50 (blended)
+
+================================================================================
+CTO DAEMON: Execute /cook this mission with /marketing-campaign-run, /writer-blog, /frontend-ui-build
+================================================================================

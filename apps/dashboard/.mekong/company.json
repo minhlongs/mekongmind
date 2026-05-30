@@ -1,0 +1,15 @@
+{
+  "name": "dashboard",
+  "goal": "$1M ARR via customer dashboard",
+  "stack": "nextjs",
+  "next_commands": [
+    "/idea",
+    "/plan",
+    "/review"
+  ],
+  "kpis": {
+    "mrr": 0,
+    "users": 0,
+    "arr_target": 1000000
+  }
+}

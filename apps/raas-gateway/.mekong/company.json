@@ -1,0 +1,15 @@
+{
+  "name": "raas-gateway",
+  "goal": "$1M ARR via RaaS API gateway",
+  "stack": "nodejs",
+  "next_commands": [
+    "/idea",
+    "/plan",
+    "/deploy"
+  ],
+  "kpis": {
+    "mrr": 0,
+    "users": 0,
+    "arr_target": 1000000
+  }
+}

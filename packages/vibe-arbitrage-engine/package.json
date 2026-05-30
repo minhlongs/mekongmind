@@ -1,0 +1,8 @@
+{
+  "name": "@mekong/vibe-arbitrage-engine",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Placeholder workspace package — real implementation lives elsewhere",
+  "main": "index.js",
+  "types": "index.d.ts"
+}

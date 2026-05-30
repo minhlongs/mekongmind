@@ -1,0 +1,56 @@
+[
+  {
+    "marketId": "m",
+    "side": "YES",
+    "price": 0.5,
+    "size": 10,
+    "notional": 5,
+    "reasoning": "",
+    "strategy": "s",
+    "riskCheck": {
+      "allowed": true
+    },
+    "confidence": 0.5,
+    "mode": "DRY_RUN",
+    "action": "BUY",
+    "tokenId": "tok-A",
+    "id": "audit_1_1773835111723",
+    "timestamp": 1773835111723
+  },
+  {
+    "marketId": "m",
+    "side": "YES",
+    "price": 0.5,
+    "size": 10,
+    "notional": 5,
+    "reasoning": "",
+    "strategy": "s",
+    "riskCheck": {
+      "allowed": true
+    },
+    "confidence": 0.5,
+    "mode": "DRY_RUN",
+    "action": "BUY",
+    "tokenId": "tok-B",
+    "id": "audit_2_1773835111723",
+    "timestamp": 1773835111723
+  },
+  {
+    "marketId": "m",
+    "side": "YES",
+    "price": 0.5,
+    "size": 10,
+    "notional": 5,
+    "reasoning": "",
+    "strategy": "s",
+    "riskCheck": {
+      "allowed": true
+    },
+    "confidence": 0.5,
+    "mode": "DRY_RUN",
+    "action": "BUY",
+    "tokenId": "tok-A",
+    "id": "audit_3_1773835111728",
+    "timestamp": 1773835111728
+  }
+]

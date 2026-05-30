@@ -1,0 +1,15 @@
+{
+  "name": "agencyos-web",
+  "goal": "AgencyOS main web platform",
+  "stack": "nextjs",
+  "next_commands": [
+    "/idea",
+    "/plan",
+    "/cook"
+  ],
+  "kpis": {
+    "mrr": 0,
+    "users": 0,
+    "arr_target": 1000000
+  }
+}

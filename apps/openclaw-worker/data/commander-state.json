@@ -1,0 +1,11 @@
+{
+  "lastRebalance": "2026-03-22T04:42:52.641Z",
+  "projectScores": {
+    "mekong-cli": 30,
+    "algo-trader": 30,
+    "well": 10
+  },
+  "crossProjectFixes": [],
+  "portfolioSnapshot": null,
+  "rebalanceCount": 4
+}

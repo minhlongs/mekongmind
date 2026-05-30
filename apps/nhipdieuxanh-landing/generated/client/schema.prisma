@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id          String       @id @default(uuid())
+  workspaceId String       @map("workspace_id")
+  name        String
+  phone       String?
+  email       String?
+  location    String
+  budget      Decimal      @db.Decimal(18, 2)
+  intent      String
+  leadHash    String       @unique @map("lead_hash")
+  consentAt   DateTime?    @map("consent_at")
+  utmSource   String?      @map("utm_source")
+  utmMedium   String?      @map("utm_medium")
+  utmCampaign String?      @map("utm_campaign")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  profile     LeadProfile?
+
+  @@map("leads")
+}
+
+model LeadProfile {
+  leadId  String @id @map("lead_id")
+  lead    Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  score   Int
+  level   String // COLD, WARM, HOT
+  persona String // Phụ huynh học sinh, Nhà đầu tư, etc.
+
+  @@map("lead_profiles")
+}

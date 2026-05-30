@@ -1,0 +1,23 @@
+{
+  "name": "@mekongmind/ai-os",
+  "version": "1.0.0",
+  "description": "Mekong IDE AI OS — CheetahClaws integration bridge",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.27.1"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  },
+  "license": "MIT",
+  "private": true
+}

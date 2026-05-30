@@ -1,0 +1,48 @@
+---
+title: "Contributing"
+description: "How to contribute to MekongMind"
+---
+
+We welcome contributions! Here's how to get started.
+
+## Development Setup
+
+```bash
+git clone https://github.com/mekong-cli/mekong-cli
+cd mekong-cli
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+## Code Style
+
+- Python: Black + Ruff
+- TypeScript: ESLint + Prettier
+- Always include tests
+
+## Testing
+
+```bash
+pytest tests/
+```
+
+All tests must pass before submitting a PR.
+
+## Commit Convention
+
+We use conventional commits:
+
+- `feat: new feature`
+- `fix: bug fix`
+- `docs: documentation`
+- `refactor: code restructure`
+- `test: test updates`
+- `chore: maintenance`
+
+## PR Process
+
+1. Fork the repo
+2. Create a feature branch
+3. Write tests
+4. Submit a PR with clear description

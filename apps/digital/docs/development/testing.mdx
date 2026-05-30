@@ -1,0 +1,34 @@
+---
+title: "Integration Tests"
+description: "Complete guide for running integration tests"
+---
+
+## Running Tests
+
+```bash
+# All tests
+pytest tests/
+
+# Specific test file
+pytest tests/test_mcp_server.py
+
+# With coverage
+pytest tests/ --cov=mekong
+```
+
+## Integration Tests
+
+The mekong-ide client has 7 integration tests:
+
+```bash
+cd mekong-ide
+npm test
+```
+
+## Test Categories
+
+- **Unit tests** - individual tool functions
+- **Integration tests** - MCP client/server communication
+- **End-to-end** - full pipeline (CLI to tool to response)
+
+All tests must pass before release.

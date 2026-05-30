@@ -1,0 +1,87 @@
+---
+// FAQ — 5 product questions using native <details> accordion
+---
+
+<section
+  class="py-16 md:py-24 bg-white"
+  aria-labelledby="faq-heading"
+>
+  <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <h2
+          id="faq-heading"
+          class="text-3xl md:text-4xl font-semibold text-slate-900 leading-snug"
+        >
+          Frequently Asked Questions
+        </h2>
+        <p class="mt-4 text-lg text-slate-600 leading-relaxed">
+          Have more questions?
+          <a href="mailto:hello@mekongmind.com" class="text-sky-700 hover:text-sky-800 font-medium cursor-pointer">Email us →</a>
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <details class="group rounded-xl border border-slate-200 bg-white shadow-sm">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 text-base font-semibold text-slate-900 hover:text-sky-700 transition-colors duration-150 list-none [&::-webkit-details-marker]:hidden">
+            What exactly is MekongMind?
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 flex-shrink-0 text-slate-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </summary>
+          <div class="px-6 pb-5 text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+            MekongMind is an AI Agent Orchestration Platform. It consists of two engines: <strong>mekong-cli</strong> (Python MCP server with 25+ tools) and <strong>mekong-ide</strong> (TypeScript IDE client built on OpenCode). Together they provide memory, tasks, plans, agents, billing, and monitoring — all via one CLI.
+          </div>
+        </details>
+
+        <details class="group rounded-xl border border-slate-200 bg-white shadow-sm">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 text-base font-semibold text-slate-900 hover:text-sky-700 transition-colors duration-150 list-none [&::-webkit-details-marker]:hidden">
+            Do I need to host my own LLM?
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 flex-shrink-0 text-slate-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </summary>
+          <div class="px-6 pb-5 text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+            No. MekongMind is BYOK (Bring Your Own Key) — just set your API keys for OpenAI, Anthropic, Google, or any OpenAI-compatible endpoint. You can also run local models via MLX on Apple Silicon. No vendor lock-in.
+          </div>
+        </details>
+
+        <details class="group rounded-xl border border-slate-200 bg-white shadow-sm">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 text-base font-semibold text-slate-900 hover:text-sky-700 transition-colors duration-150 list-none [&::-webkit-details-marker]:hidden">
+            How does Polar billing work?
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 flex-shrink-0 text-slate-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </summary>
+          <div class="px-6 pb-5 text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+            Usage is metered in credits. 1 credit ≈ 1 MCP tool call. The Free tier gives you 1K credits/month. Pro ($29/mo) gives 50K credits. Enterprise ($199/mo) is unlimited. All subscriptions are managed through Polar.sh — checkout, webhooks, and subscription lifecycle are fully automated.
+          </div>
+        </details>
+
+        <details class="group rounded-xl border border-slate-200 bg-white shadow-sm">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 text-base font-semibold text-slate-900 hover:text-sky-700 transition-colors duration-150 list-none [&::-webkit-details-marker]:hidden">
+            Can I use MekongMind with existing tools?
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 flex-shrink-0 text-slate-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </summary>
+          <div class="px-6 pb-5 text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+            Yes. The MCP server speaks stdio and SSE — plug it into any MCP-compatible client (Claude Desktop, Cursor, VS Code with Continue.dev, or our own mekong-ide). The 25 tools are self-contained and don't require any external dependencies.
+          </div>
+        </details>
+
+        <details class="group rounded-xl border border-slate-200 bg-white shadow-sm">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-4 text-base font-semibold text-slate-900 hover:text-sky-700 transition-colors duration-150 list-none [&::-webkit-details-marker]:hidden">
+            What's included in the $0 Free tier?
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 flex-shrink-0 text-slate-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </summary>
+          <div class="px-6 pb-5 text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+            All 25 MCP tools, full multi-provider LLM support, and community support on GitHub — completely free for 1,000 credits/month. No credit card required. Just bring your own API keys and start building.
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>

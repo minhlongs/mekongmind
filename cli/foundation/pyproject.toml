@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mekongmind-foundation"
+version = "0.1.0"
+description = "Python CLI scaffold with ClaudeKit metadata, GitLab-first CI, and PyPI-ready release flow."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Long Tho", email = "longtho638@gmail.com" }]
+keywords = ["cli", "scaffold", "python", "automation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "click>=8.1.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/agency.os/mekong-foundation"
+Documentation = "https://gitlab.com/agency.os/mekong-foundation#readme"
+Issues = "https://gitlab.com/agency.os/mekong-foundation/-/issues"
+Changelog = "https://gitlab.com/agency.os/mekong-foundation/-/blob/main/CHANGELOG.md"
+Mirror = "https://github.com/longtho638-jpg/mekong-foundation"
+
+[project.scripts]
+mekong-foundation = "mekong_foundation.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mekong_foundation"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"

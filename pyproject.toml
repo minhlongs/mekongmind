@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "mekongmind"
+version = "1.0.0"
+description = "MekongMind — Python CLI & Engine"
+authors = ["MekongMind"]
+license = "MIT"
+
+[tool.poetry.scripts]
+mekong = "mekongmind.cli.main:app"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.13"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+black = "^23.12.0"
+ruff = "^0.1.11"
+mypy = "^1.8.0"
+httpx = ">=0.26.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["cli/tests", "engine/quantization"]
+norecursedirs = ["node_modules", "apps", "packages", ".git", "__pycache__", "dist", "build"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["apps/**", "packages/**"]
+
+[tool.coverage.run]
+source = ["cli", "engine/quantization"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true

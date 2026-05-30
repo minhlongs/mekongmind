@@ -1,0 +1,52 @@
+---
+title: "Troubleshooting"
+description: "Common issues and solutions"
+---
+
+## MCP Server Won't Start
+
+Check Python version:
+
+```bash
+python --version  # Must be 3.11+
+```
+
+Check dependencies:
+
+```bash
+mekong doctor
+```
+
+## Connection Refused
+
+Ensure the MCP server is running:
+
+```bash
+mekong mcp --transport sse --port 8080
+```
+
+## No Tools Available
+
+Check provider configuration:
+
+```bash
+mekong config list
+```
+
+Ensure at least one API key is set.
+
+## Memory Errors
+
+Clear the memory store:
+
+```bash
+rm -rf ~/.mekong/memory
+```
+
+## Credential Issues
+
+Verify your API keys are set:
+
+```bash
+echo $OPENAI_API_KEY  # Should not be empty
+```

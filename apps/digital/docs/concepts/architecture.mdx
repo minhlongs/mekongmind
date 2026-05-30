@@ -1,0 +1,43 @@
+---
+title: "Architecture"
+description: "System architecture overview"
+---
+
+MekongMind consists of two main components that work together to provide AI agent orchestration.
+
+## High-Level Architecture
+
+```mermaid
+graph TB
+    Client[Client<br/>Claude Desktop / Cursor / IDE] -->|MCP stdio/SSE| CLI[mekong-cli<br/>AI OS Engine]
+    CLI -->|MCP protocol| IDE[mekong-ide<br/>IDE Client]
+    CLI --> LLM[LLM Provider<br/>OpenAI / Anthropic / Google / MLX]
+    CLI --> Polar[Polar.sh<br/>Billing & Subscriptions]
+    CLI --> Store[Plan Store<br/>Goal Decomposition]
+    CLI --> Mem[Memory System<br/>Vector Search]
+```
+
+## mekong-cli (AI OS Engine)
+
+The core engine is a Python MCP server that exposes 25+ tools. It handles:
+
+- **Tool Execution** — all MCP tools run in-process
+- **LLM Routing** — provider selection, fallback, streaming
+- **Persistence** — plan store, memory, task state as JSON
+- **Billing** — usage metering, Polar webhook handling
+
+## mekong-ide (IDE Client)
+
+A TypeScript IDE client (OpenCode fork) with:
+
+- **Typed MCP Client** — invoke all 25 tools with full type safety
+- **StdioClientTransport** — clean process lifecycle, no zombie processes
+- **Integration Tests** — 7 tests, all passing
+- **Zero TypeScript Errors** — strict mode
+
+## MCP Protocol
+
+Both engines communicate via the [Model Context Protocol](https://modelcontextprotocol.io):
+
+- **stdio** — direct subprocess communication
+- **SSE** — Server-Sent Events for remote connections

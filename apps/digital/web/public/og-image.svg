@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0369A1"/>
+  <!-- Subtle wave decoration (Mekong motif) -->
+  <path d="M0 400 Q300 350 600 400 Q900 450 1200 400 L1200 630 L0 630 Z" fill="#0284C7" opacity="0.4"/>
+  <path d="M0 480 Q300 440 600 480 Q900 520 1200 480 L1200 630 L0 630 Z" fill="#075985" opacity="0.5"/>
+  <!-- Wordmark -->
+  <text x="600" y="280" font-family="'Be Vietnam Pro', system-ui, sans-serif" font-size="80" font-weight="700" fill="white" text-anchor="middle">Mekong</text>
+  <text x="600" y="380" font-family="'Be Vietnam Pro', system-ui, sans-serif" font-size="80" font-weight="700" fill="#7DD3FC" text-anchor="middle">.Digital</text>
+  <!-- Tagline -->
+  <text x="600" y="460" font-family="'Be Vietnam Pro', system-ui, sans-serif" font-size="28" font-weight="400" fill="rgba(255,255,255,0.8)" text-anchor="middle">Số hoá doanh nghiệp miền Tây</text>
+</svg>

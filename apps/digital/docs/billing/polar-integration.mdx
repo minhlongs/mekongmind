@@ -1,0 +1,31 @@
+---
+title: "Polar.sh Integration"
+description: "How Polar.sh billing works"
+---
+
+MekongMind uses Polar.sh for subscription management, checkout, and webhook handling.
+
+## How It Works
+
+1. User subscribes via Polar.sh checkout
+2. Polar sends a webhook to MekongMind
+3. Credits are allocated to the user's account
+4. Usage is metered and tracked
+5. Webhook notifications on subscription updates/cancellations
+
+## Webhook Endpoint
+
+```
+POST /api/billing/webhook
+```
+
+Handles:
+
+- `subscription.created` — allocate initial credits
+- `subscription.updated` — adjust tier/credits
+- `subscription.cancelled` — revoke access
+- `payment.succeeded` — top-up credits
+
+## Security
+
+All webhooks are verified using Polar.sh's HMAC signature. Invalid signatures are rejected.

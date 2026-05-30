@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import PainPoints from '../components/PainPoints.astro';
+import Services from '../components/Services.astro';
+import Pricing from '../components/Pricing.astro';
+import Testimonials from '../components/Testimonials.astro';
+import About from '../components/About.astro';
+import LeadForm from '../components/LeadForm.astro';
+import FAQ from '../components/FAQ.astro';
+import Footer from '../components/Footer.astro';
+import { pageMeta, heroContent } from '../lib/content';
+import { parseVariant } from '../lib/variant';
+const variant = parseVariant(Astro.url.searchParams);
+const meta = pageMeta[variant];
+---
+
+<Layout title={meta.title} description={meta.description}>
+  <Header />
+  <main id="main-content">
+    <Hero variant={variant} />
+    <PainPoints />
+    <Services />
+    <Pricing />
+    <Testimonials />
+    <About />
+    <LeadForm variant={variant} />
+    <FAQ />
+  </main>
+  <Footer />
+</Layout>

@@ -1,0 +1,53 @@
+HIGH_mission_algo_trader_build_mvp.txt
+
+================================================================================
+MISSION: Algo-Trader MVP Build — Multi-Exchange Arbitrage Engine
+PRIORITY: HIGH
+DEADLINE: 14 days
+OWNER: CTO Agent + Engineering Team
+================================================================================
+
+OBJECTIVE:
+Build MVP with 3-exchange arbitrage execution, real-time P&L tracking, and risk controls.
+Target: <100ms latency, 99.9% uptime, paper trading mode.
+
+KEY RESULTS:
+[ ] Binance + OKX + Bybit live execution (CCXT integration)
+[ ] Spread detection engine (<100ms end-to-end)
+[ ] P&L Dashboard (real-time, per-position, total portfolio)
+[ ] Risk Controls v1 (position limits, stop-loss, circuit breaker)
+[ ] Paper Trading Mode (virtual balances, dry-run)
+
+DELIVERABLES:
+1. ExchangeClient module (CCXT wrapper, rate limiting, retry logic)
+2. ArbitrageEngine (spread detection, execution logic)
+3. PnLTracker (unrealized/realized P&L, ROI calculations)
+4. RiskManager (position sizing, max drawdown, daily limits)
+5. PaperTradingMode (simulate fills, virtual portfolio)
+6. CLI Dashboard (monitor positions, P&L, controls)
+
+TIMELINE:
+Day 1-3: ExchangeClient + CCXT integration
+Day 4-6: ArbitrageEngine (spread detection, execution)
+Day 7-9: P&L Dashboard + CLI
+Day 10-12: RiskManager + Paper Trading
+Day 13-14: Testing, bug fixes, documentation
+
+RESOURCES:
+- Stack: Node.js, TypeScript, CCXT, Redis (caching), PostgreSQL (P&L history)
+- Infra: Cloudflare Workers (edge), Supabase (auth + DB)
+- Team: CTO Agent (architecture), Backend Dev (exchange integration)
+
+RISKS:
+- Exchange API rate limits → Implement smart rate limiting, backoff
+- Latency >100ms → Optimize hot path, use WebSocket streams
+- Slippage on execution → Simulate fills, add slippage tolerance
+
+SUCCESS CRITERIA:
+- Paper trading catches 90%+ of simulated arb opportunities
+- End-to-end latency <100ms (detect → execute)
+- Zero critical bugs in 48hr paper trading test
+
+================================================================================
+CTO DAEMON: Execute /cook this mission with /cto-architect, /dev-feature, /release-ship
+================================================================================

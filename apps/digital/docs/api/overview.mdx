@@ -1,0 +1,24 @@
+---
+title: "API Overview"
+description: "REST API reference"
+---
+
+The MekongMind API is available when running the MCP server in SSE mode.
+
+## Base URL
+
+```
+http://localhost:8080
+```
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Health check |
+| POST | `/tools` | List available tools |
+| POST | `/tools/:name` | Execute a tool |
+| GET | `/plans` | List plans |
+| POST | `/plans` | Create plan |
+| GET | `/tasks` | List tasks |
+| POST | `/tasks` | Create task |

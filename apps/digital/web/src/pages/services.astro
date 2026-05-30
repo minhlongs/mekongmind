@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Services from '../components/Services.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Services — MekongMind" description="25+ MCP tools, multi-provider LLM gateway, Polar billing — AI agent orchestration for SEA businesses.">
+  <Header />
+  <main id="main-content">
+    <section class="py-16 md:py-24 bg-white">
+      <div class="container mx-auto px-4 md:px-6 max-w-6xl text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900">Services</h1>
+        <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">AI Agent Orchestration Platform for SEA businesses. 25+ MCP tools, multi-provider LLM, usage-based billing.</p>
+      </div>
+    </section>
+    <Services />
+    <LeadForm />
+  </main>
+  <Footer />
+</Layout>

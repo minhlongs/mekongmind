@@ -1,0 +1,591 @@
+
+> @mekongmind/storybook@ build /Users/macbook/mekongmind/packages/ide/storybook
+> storybook build
+
+
+┌  Building storybook v10.4.1
+│
+◇  Cleaning outputDir: storybook-static
+(node:55548) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+▲  One or more extensionless imports detected: "./playground-css-plugin"
+│  in file
+│  "/Users/macbook/mekongmind/packages/ide/storybook/.storybook/main.ts".
+│  For more information on how to resolve the issue:
+│  https://storybook.js.org/docs/faq#extensionless-imports-in-storybookmaints-and-required-ts-extensions
+│
+◇  Loading presets
+│
+◇  Building manager..
+│
+●  Building preview..
+│  Vite vite v7.3.3 building client environment for production...
+│  Vite transforming...
+│
+▲  Vite [plugin vite:react-docgen-typescript] .storybook/preview.tsx:
+│  Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/storybook/.storybook/preview.tsx"
+│  because it is not included in the active TypeScript project.
+│  Vite ✓ 70 modules transformed.
+│
+■  Vite ✗ Build failed in 1.55s
+│
+■  Failed to build the preview
+│
+■  [@tailwindcss/vite:generate:build] Can't resolve
+│  'tailwindcss/theme.css' in
+│  '/Users/macbook/mekongmind/packages/ide/ui/src/styles/tailwind'
+│  file:
+│  /Users/macbook/mekongmind/packages/ide/ui/src/styles/tailwind/index.css
+│  at finishWithoutResolve
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:942:18)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1034:14
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:27:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:94:43
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:42:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/ConditionalPlugin.js:53:42
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:16:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:16:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:27:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:94:43
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:16:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:27:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:94:43
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:16:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/DirectoryExistsPlugin.js:52:15
+│  at SyncAsyncFileSystemDecorator.stat
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/SyncAsyncFileSystemDecorator.js:66:34)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/DirectoryExistsPlugin.js:35:9
+│  at Hook.eval [as callAsync] (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:7:1)
+│  at Resolver.doResolve
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1108:16)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/ConditionalPlugin.js:42:14
+│  at _next0 (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:8:1)
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:30:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:16:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/Resolver.js:1111:5
+│  at eval (eval at create
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/tapable@2.3.3/node_modules/tapable/lib/HookCodeFactory.js:31:10),
+│  <anonymous>:15:1)
+│  at
+│  /Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/FileExistsPlugin.js:50:14
+│  at SyncAsyncFileSystemDecorator.stat
+│  (/Users/macbook/mekongmind/node_modules/.pnpm/enhanced-resolve@5.22.1/node_modules/enhanced-resolve/lib/SyncAsyncFileSystemDecorator.js:66:34)
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/font.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/font.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/icon.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/icon.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/checkbox.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/checkbox.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/button.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/button.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/collapsible.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/collapsible.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/card.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/card.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/dock-prompt.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/dock-prompt.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/avatar.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/avatar.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/dialog.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/dialog.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/line-comment.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/line-comment.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/basic-tool.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/basic-tool.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/hover-card.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/hover-card.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/inline-input.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/inline-input.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/accordion.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/accordion.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/context-menu.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/context-menu.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/icon-button.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/icon-button.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/app-icon.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/app-icon.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/file-icon.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/file-icon.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/message-nav.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/message-nav.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/keybind.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/keybind.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/logo.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/logo.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/popover.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/popover.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/markdown.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/markdown.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/radio-group.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/radio-group.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/favicon.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/favicon.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/diff-changes.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/diff-changes.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/session-review.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/session-review.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/dropdown-menu.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/dropdown-menu.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/list.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/list.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/image-preview.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/image-preview.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/select.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/select.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/progress-circle.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/progress-circle.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/progress.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/progress.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/storybook/scaffold.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/storybook/scaffold.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/resize-handle.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/resize-handle.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/context/marked.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/context/marked.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/context/dialog.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/context/dialog.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/spinner.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/spinner.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/message-part.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/message-part.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/tag.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/tag.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/sticky-accordion-header.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/sticky-accordion-header.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/session-turn.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/session-turn.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/text-field.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/text-field.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/provider-icon.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/provider-icon.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/switch.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/switch.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/text-shimmer.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/text-shimmer.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/tabs.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/tabs.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/text-reveal.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/text-reveal.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/motion-spring.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/motion-spring.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/text-strikethrough.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/text-strikethrough.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/typewriter.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/typewriter.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/tool-error-card.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/tool-error-card.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/tooltip.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/tooltip.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/tool-count-summary.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/tool-count-summary.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/tool-status-title.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/tool-status-title.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/toast.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/toast.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] ../ui/src/context/data.tsx:
+│  Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/context/data.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] ../ui/src/context/file.tsx:
+│  Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/context/file.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/dock-surface.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/dock-surface.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript] ../ui/src/context/i18n.tsx:
+│  Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/context/i18n.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/scroll-view.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/scroll-view.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/line-comment-annotations.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/line-comment-annotations.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/theme/context.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/theme/context.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/context/helper.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/context/helper.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  .storybook/mocks/solid-router.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/storybook/.storybook/mocks/solid-router.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/session-retry.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/session-retry.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/tool-count-label.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/tool-count-label.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/hooks/use-filtered-list.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/hooks/use-filtered-list.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/hooks/create-auto-scroll.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/hooks/create-auto-scroll.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../ui/src/components/animated-number.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/ui/src/components/animated-number.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/pages/session/composer/session-composer-region.tsx:
+│  Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/pages/session/composer/session-composer-region.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/pages/session/composer/session-followup-dock.tsx: Skipping
+│  docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/pages/session/composer/session-followup-dock.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/pages/session/composer/session-revert-dock.tsx: Skipping
+│  docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/pages/session/composer/session-revert-dock.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/pages/session/composer/session-permission-dock.tsx:
+│  Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/pages/session/composer/session-permission-dock.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/pages/session/composer/session-todo-dock.tsx: Skipping
+│  docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/pages/session/composer/session-todo-dock.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/pages/session/composer/session-question-dock.tsx: Skipping
+│  docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/pages/session/composer/session-question-dock.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/components/prompt-input.tsx: Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/components/prompt-input.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/components/prompt-input/drag-overlay.tsx: Skipping docgen
+│  for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/components/prompt-input/drag-overlay.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/components/prompt-input/image-attachments.tsx: Skipping
+│  docgen for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/components/prompt-input/image-attachments.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/components/prompt-input/context-items.tsx: Skipping docgen
+│  for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/components/prompt-input/context-items.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  ../app/src/components/prompt-input/slash-popover.tsx: Skipping docgen
+│  for
+│  "/Users/macbook/mekongmind/packages/ide/app/src/components/prompt-input/slash-popover.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  .storybook/mocks/app/components/dialog-select-model-unpaid.tsx:
+│  Skipping docgen for
+│  "/Users/macbook/mekongmind/packages/ide/storybook/.storybook/mocks/app/components/dialog-select-model-unpaid.tsx"
+│  because it is not included in the active TypeScript project.
+│
+▲  Vite [plugin vite:react-docgen-typescript]
+│  .storybook/mocks/app/components/dialog-select-model.tsx: Skipping
+│  docgen for
+│  "/Users/macbook/mekongmind/packages/ide/storybook/.storybook/mocks/app/components/dialog-select-model.tsx"
+│  because it is not included in the active TypeScript project.
+│
+└  Storybook exited with an error
+
+ ELIFECYCLE  Command failed with exit code 1.

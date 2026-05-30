@@ -1,0 +1,25 @@
+---
+title: "Environment Variables"
+description: "Environment variable reference"
+---
+
+## Required
+
+| Variable | Description |
+|----------|-------------|
+| `OPENAI_API_KEY` | OpenAI API key |
+| `ANTHROPIC_API_KEY` | Anthropic API key |
+| `GOOGLE_API_KEY` | Google AI API key |
+
+At least one is required.
+
+## Optional
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `POLAR_TOKEN` | Polar.sh API token for billing | — |
+| `MEKONG_CONFIG` | Path to config file | `~/.mekong/config.json` |
+| `MEKONG_HOME` | Data directory | `~/.mekong` |
+| `LOG_LEVEL` | Logging level | `INFO` |
+| `MCP_HOST` | MCP server host | `127.0.0.1` |
+| `MCP_PORT` | MCP server port | `8080` |

@@ -1,0 +1,54 @@
+name = "mekong-lead-api"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+# D1 binding (user must create db: wrangler d1 create mekong-leads)
+[[d1_databases]]
+binding = "DB"
+database_name = "mekong-leads"
+database_id = "8aa92606-f53e-43d5-b8de-68f5d2240ee2"
+
+# Default env (used by `wrangler dev` and as fallback)
+[vars]
+ALLOWED_ORIGIN = "http://localhost:4321,https://*.pages.dev"
+RESEND_FROM_ADDRESS = "Mekong Digital <onboarding@resend.dev>"  # placeholder cho dev
+LEAD_NOTIFICATION_TO = "founder@mekongdigital.example"           # placeholder cho dev
+SITE_URL = "http://localhost:4321"
+
+# Secrets (set via: `wrangler secret put <NAME>`)
+# RESEND_API_KEY        — required for email
+# TELEGRAM_BOT_TOKEN    — optional, for Telegram alert
+# TELEGRAM_CHAT_ID      — optional
+
+# ----------------------------------------------------------------------
+# PRODUCTION ENV — deploy with: wrangler deploy --env production
+# ----------------------------------------------------------------------
+[env.production]
+name = "mekong-lead-api-production"
+
+[env.production.vars]
+# Tighten CORS to final domains (apex + www + pages.dev fallback)
+ALLOWED_ORIGIN = "https://mekongmind.com,https://www.mekongmind.com,https://mekong-digital.pages.dev"
+# Resend FROM address — domain mekongmind.com phải verified ở Resend trước khi email gửi đi
+RESEND_FROM_ADDRESS = "Mekong Digital <noreply@mekongmind.com>"
+# Real founder email — update khi mailbox sẵn sàng
+LEAD_NOTIFICATION_TO = "founder@mekongmind.com"
+# Used for redirect target (replaces fragile referer header)
+SITE_URL = "https://mekongmind.com"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "mekong-leads"
+database_id = "8aa92606-f53e-43d5-b8de-68f5d2240ee2"
+
+# Secrets in production set via: wrangler secret put <NAME> --env production
+# RESEND_API_KEY
+# TELEGRAM_BOT_TOKEN
+# TELEGRAM_CHAT_ID
+
+[env.production.observability]
+enabled = true

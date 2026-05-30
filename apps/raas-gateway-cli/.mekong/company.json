@@ -1,0 +1,14 @@
+{
+  "name": "raas-gateway-cli",
+  "goal": "$1M ARR via RaaS CLI gateway tooling",
+  "stack": "nodejs",
+  "next_commands": [
+    "/idea",
+    "/cook"
+  ],
+  "kpis": {
+    "mrr": 0,
+    "users": 0,
+    "arr_target": 1000000
+  }
+}

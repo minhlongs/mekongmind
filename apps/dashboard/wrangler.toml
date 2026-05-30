@@ -1,0 +1,32 @@
+# Cloudflare Pages — Mekong IDE Dashboard
+#
+# Deploy:   wrangler pages deploy .next --project-name mekong-ide
+#           or use ../../scripts/deploy-dashboard.sh
+#
+# Custom domain: ide.mekongmind.com → Cloudflare Pages → mekong-ide.pages.dev
+# (configure in Cloudflare Dashboard → Pages → mekong-ide → Custom domains)
+
+name = "mekong-ide"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".next"
+
+# Production environment vars are set in Cloudflare Pages UI, NOT here.
+# Required for prod:
+#   NEXT_PUBLIC_SUPABASE_URL
+#   SUPABASE_SERVICE_KEY
+# Optional (graceful degradation):
+#   POLAR_PRODUCT_STARTER, POLAR_PRODUCT_GROWTH, POLAR_PRODUCT_PRO
+#   POLAR_WEBHOOK_SECRET
+#   STRIPE_SECRET_KEY (legacy)
+#   NEXT_PUBLIC_POSTHOG_KEY
+
+[vars]
+NEXT_PUBLIC_APP_NAME = "Mekong IDE"
+NEXT_PUBLIC_API_URL = "https://api.cashclaw.cc"
+
+# Routes — pages handles these automatically once custom domain is mapped.
+# Listed here for reference only.
+# routes = [
+#   { pattern = "ide.mekongmind.com/*", zone_name = "mekongmind.com" },
+# ]

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mekong Parallel Goal Coordinator — Cook-Auto-Parallel Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep-space: #030014;
+      --neon-cyan: #00F5FF;
+      --electric-purple: #8B5CF6;
+      --hot-pink: #EC4899;
+      --glass-surface: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-deep-space);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      opacity: 0.02;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    header {
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.5rem 2rem;
+      backdrop-filter: blur(12px);
+      background: rgba(3, 0, 20, 0.7);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--electric-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-title::before {
+      content: "🌊";
+    }
+
+    .system-status {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #10B981;
+      box-shadow: 0 0 8px #10B981;
+    }
+
+    .pulse {
+      animation: pulse-glow 2s infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.01);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(0, 245, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05);
+    }
+
+    .dashboard-section-title {
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-left: 3px solid var(--neon-cyan);
+      padding-left: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Dependency Graph Visualizer */
+    .graph-container {
+      height: 380px;
+      position: relative;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 1rem;
+      border: 1px dashed rgba(255, 255, 255, 0.05);
+    }
+
+    .column-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .node {
+      background: rgba(15, 12, 30, 0.85);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1rem;
+      width: 190px;
+      text-align: center;
+      font-size: 0.85rem;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s;
+    }
+
+    .node.satisfied {
+      border-color: #10B981;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .node.running {
+      border-color: var(--neon-cyan);
+      background: rgba(0, 245, 255, 0.05);
+      box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+      animation: border-pulse 1.5s infinite alternate;
+    }
+
+    @keyframes border-pulse {
+      0% { border-color: rgba(0, 245, 255, 0.3); }
+      100% { border-color: rgba(0, 245, 255, 1); }
+    }
+
+    .node.blocked {
+      border-color: #EF4444;
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .node-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .node-role {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .node-badge {
+      position: absolute;
+      top: -10px;
+      right: 10px;
+      font-size: 0.65rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .node.satisfied .node-badge { background: #10B981; color: #fff; }
+    .node.running .node-badge { background: var(--neon-cyan); color: #030014; }
+    .node.blocked .node-badge { background: #EF4444; color: #fff; }
+
+    /* SVG connections */
+    .svg-connections {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .conn-line {
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .conn-line.active {
+      stroke: var(--neon-cyan);
+      stroke-dasharray: 6, 4;
+      animation: dash 1s linear infinite;
+    }
+
+    @keyframes dash {
+      to { stroke-dashoffset: -10; }
+    }
+
+    /* Right column details */
+    .details-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--neon-cyan);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 0.25rem;
+    }
+
+    /* Live logs */
+    .log-window {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      height: 250px;
+      overflow-y: auto;
+      padding: 1rem;
+      color: #A0AEC0;
+    }
+
+    .log-line {
+      margin-bottom: 0.4rem;
+      line-height: 1.4;
+    }
+
+    .log-time { color: var(--electric-purple); }
+    .log-info { color: var(--neon-cyan); }
+    .log-success { color: #10B981; }
+
+    /* Action bar */
+    .action-bar {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--electric-purple));
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(0, 245, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-title">Mekong Parallel Goal Coordinator</div>
+    <div class="system-status">
+      <div class="status-item">
+        <span class="status-dot pulse"></span>
+        <span>Engine Active (WAL Mode)</span>
+      </div>
+      <div class="status-item">
+        <span>Active ThreadPool Workers: 3/3</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Left Column: Graph Visualizer -->
+    <div class="glass-card">
+      <div class="dashboard-section-title">
+        <span>Dependency Execution Graph</span>
+        <span style="font-size: 0.8rem; color: var(--neon-cyan);">Goal: Build Sophia AI Factory MVP</span>
+      </div>
+
+      <div class="graph-container">
+        <!-- SVG lines linking stages -->
+        <svg class="svg-connections">
+          <!-- Stage 1 to Stage 2 -->
+          <line x1="160" y1="190" x2="360" y2="120" class="conn-line" />
+          <line x1="160" y1="190" x2="360" y2="260" class="conn-line" />
+          <!-- Stage 2 to Stage 3 -->
+          <line x1="550" y1="120" x2="740" y2="90" class="conn-line active" />
+          <line x1="550" y1="120" x2="740" y2="190" class="conn-line active" />
+          <line x1="550" y1="260" x2="740" y2="190" class="conn-line" />
+          <line x1="550" y1="260" x2="740" y2="290" class="conn-line" />
+          <!-- Stage 3 to Stage 4 -->
+          <line x1="930" y1="90" x2="1120" y2="190" class="conn-line" />
+          <line x1="930" y1="190" x2="1120" y2="190" class="conn-line" />
+          <line x1="930" y1="290" x2="1120" y2="190" class="conn-line" />
+        </svg>
+
+        <!-- Column 1: Planning -->
+        <div class="column-stage" style="left: 10%;">
+          <div class="node satisfied">
+            <span class="node-badge">100%</span>
+            <div class="node-title">Architect</div>
+            <div class="node-role">System Design</div>
+          </div>
+        </div>
+
+        <!-- Column 2: Implementation (Run in Parallel) -->
+        <div class="column-stage" style="left: 35%;">
+          <div class="node satisfied">
+            <span class="node-badge">100%</span>
+            <div class="node-title">Backend</div>
+            <div class="node-role">FastAPI & D1 API</div>
+          </div>
+          <div class="node satisfied">
+            <span class="node-badge">100%</span>
+            <div class="node-title">Infra</div>
+            <div class="node-role">CF Workers Deploy</div>
+          </div>
+        </div>
+
+        <!-- Column 3: Verification & Docs (Run in Parallel) -->
+        <div class="column-stage" style="left: 65%;">
+          <div class="node running">
+            <span class="node-badge">ACTIVE</span>
+            <div class="node-title">QA / Tester</div>
+            <div class="node-role">4,800+ Vitest Runs</div>
+          </div>
+          <div class="node running">
+            <span class="node-badge">ACTIVE</span>
+            <div class="node-title">Security</div>
+            <div class="node-role">Secret Scanning</div>
+          </div>
+          <div class="node satisfied">
+            <span class="node-badge">100%</span>
+            <div class="node-title">Docs</div>
+            <div class="node-role">handover-sop.md</div>
+          </div>
+        </div>
+
+        <!-- Column 4: Review -->
+        <div class="column-stage" style="left: 90%;">
+          <div class="node">
+            <div class="node-title">Reviewer</div>
+            <div class="node-role">Code Quality Review</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Column: Sidebar Stats & Logs -->
+    <div class="details-sidebar">
+      <div class="glass-card">
+        <h3 class="dashboard-section-title">Throughput Metrics</h3>
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-value">4.7s</div>
+            <div class="metric-label">Avg Task Time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">0</div>
+            <div class="metric-label">DB Collisions</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">1,940</div>
+            <div class="metric-label">Tokens / Sec</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">3</div>
+            <div class="metric-label">Active Threads</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 class="dashboard-section-title">Execution Log</h3>
+        <div class="log-window">
+          <div class="log-line"><span class="log-time">[18:34:02]</span> <span class="log-info">[GOAL]</span> Initialized task execution graph for 'Build Sophia AI Factory MVP'</div>
+          <div class="log-line"><span class="log-time">[18:34:02]</span> <span class="log-success">[TASK]</span> Architect node marked SATISFIED</div>
+          <div class="log-line"><span class="log-time">[18:34:03]</span> <span class="log-info">[SCHEDULER]</span> Found 2 concurrent ready tasks: [Backend, Infra]</div>
+          <div class="log-line"><span class="log-time">[18:34:03]</span> <span class="log-info">[THREAD-1]</span> Executing D1 schema migrations...</div>
+          <div class="log-line"><span class="log-time">[18:34:03]</span> <span class="log-info">[THREAD-2]</span> Wrangler build injection started...</div>
+          <div class="log-line"><span class="log-time">[18:34:06]</span> <span class="log-success">[THREAD-1]</span> Backend completed: schema migrated successfully (42ms)</div>
+          <div class="log-line"><span class="log-time">[18:34:07]</span> <span class="log-success">[THREAD-2]</span> Wrangler deploy completed: target version active</div>
+          <div class="log-line"><span class="log-time">[18:34:07]</span> <span class="log-info">[SCHEDULER]</span> Found 3 concurrent ready tasks: [QA, Security, Docs]</div>
+          <div class="log-line"><span class="log-time">[18:34:08]</span> <span class="log-info">[THREAD-1]</span> Running test suites (vitest - 4868 tests)...</div>
+          <div class="log-line"><span class="log-time">[18:34:08]</span> <span class="log-info">[THREAD-2]</span> STRIDE risk scanner active...</div>
+          <div class="log-line"><span class="log-time">[18:34:10]</span> <span class="log-success">[THREAD-3]</span> Docs completed: client-handover-sop.md created</div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn btn-secondary">Pause Queue</button>
+          <button class="btn btn-primary">Force Verify</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

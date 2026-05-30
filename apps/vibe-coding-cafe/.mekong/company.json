@@ -1,0 +1,14 @@
+{
+  "name": "vibe-coding-cafe",
+  "goal": "$1M ARR via RaaS",
+  "stack": "unknown",
+  "next_commands": [
+    "/idea",
+    "/plan"
+  ],
+  "kpis": {
+    "mrr": 0,
+    "users": 0,
+    "arr_target": 1000000
+  }
+}

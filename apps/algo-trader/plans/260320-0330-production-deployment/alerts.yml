@@ -1,0 +1,63 @@
+groups:
+  - name: algo-trader-alerts
+    interval: 30s
+    rules:
+      # Circuit Breaker Tripped
+      - alert: CircuitBreakerOpen
+        expr: algo_trader_circuit_breaker_state == 1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Circuit breaker is OPEN - Trading halted"
+          description: "Circuit breaker has been tripped. Check for losses or latency issues."
+
+      # Daily Loss Limit
+      - alert: DailyLossLimit
+        expr: algo_trader_daily_pnl_usd < -500
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Daily loss limit exceeded"
+          description: "Daily P&L is below -$500 threshold."
+
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: algo_trader_heap_used_bytes > 800000000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Heap memory usage is above 800MB."
+
+      # Service Down
+      - alert: ServiceDown
+        expr: up{job="algo-trader"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Algo-Trader service is down"
+          description: "The algo-trader service is not responding."
+
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "More than 10% of requests are returning 5xx errors."
+
+      # Exchange Latency High
+      - alert: ExchangeLatencyHigh
+        expr: algo_trader_exchange_latency_ms > 500
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High exchange latency"
+          description: "Exchange latency is above 500ms."

@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@theme {
+  --font-sans: 'Be Vietnam Pro', 'Noto Sans', system-ui, sans-serif;
+
+  --color-brand-50:  #F0F9FF;
+  --color-brand-100: #E0F2FE;
+  --color-brand-400: #38BDF8;
+  --color-brand-500: #0EA5E9;
+  --color-brand-600: #0284C7;
+  --color-brand-700: #0369A1;
+  --color-brand-800: #075985;
+  --color-brand-900: #0C4A6E;
+  --color-accent-mekong: #0E7490;
+  --color-accent-rice: #CA8A04;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900;
+    font-family: var(--font-sans);
+  }
+  *:focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

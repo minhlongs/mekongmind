@@ -1,0 +1,56 @@
+---
+title: "Configuration"
+description: "Configuration reference"
+---
+
+Configuration is stored in `~/.mekong/config.json`.
+
+## LLM Configuration
+
+```json
+{
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "fallback": "anthropic",
+    "base_url": null,
+    "temperature": 0.7,
+    "max_tokens": 4096
+  }
+}
+```
+
+## MCP Server
+
+```json
+{
+  "mcp": {
+    "transport": "stdio",
+    "port": 8080,
+    "host": "127.0.0.1"
+  }
+}
+```
+
+## Billing
+
+```json
+{
+  "billing": {
+    "provider": "polar",
+    "polar_token": "...",
+    "organization": "mekongmind"
+  }
+}
+```
+
+## Storage
+
+```json
+{
+  "storage": {
+    "path": "~/.mekong",
+    "memory_backend": "json"
+  }
+}
+```

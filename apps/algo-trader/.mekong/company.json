@@ -1,0 +1,123 @@
+{
+  "name": "Algo-Trader",
+  "tagline": "AI-powered multi-exchange crypto arbitrage engine",
+  "version": "1.0.0",
+  "stage": "zero",
+  "founded": "2026-03-19",
+  "target_arr": "$1M",
+  "target_months": 12,
+
+  "market": {
+    "segment": "SaaS B2B + Performance Fee (Crypto Trading)",
+    "tam": "$115B (crypto arbitrage opportunity on $2.3T daily volume)",
+    "customers": ["Crypto funds ($10M-100M AUM)", "DeFi protocol treasury teams", "Asia family offices (crypto-allocated)", "Prop trading firms"]
+  },
+
+  "product": {
+    "type": "SaaS + Performance Fee",
+    "core": "Multi-exchange arbitrage engine with AI-driven spread detection",
+    "exchanges": ["Binance", "OKX", "Bybit"],
+    "features": ["Real-time spread detection", "Automated execution", "P&L dashboard", "Risk controls", "Compliance reporting"],
+    "automation_pct": 85,
+    "target_latency_ms": 100
+  },
+
+  "pricing": {
+    "pro": { "price": 499, "description": "Pro trader", "currency": "USD", "billing": "monthly" },
+    "institutional": { "price": 10000, "description": "Fund/Enterprise", "currency": "USD", "billing": "monthly", "custom_pricing": true },
+    "performance_fee": { "rate": 0.10, "benchmark": "USDC baseline", "description": "10% of profits above benchmark" }
+  },
+
+  "revenue_model": {
+    "streams": ["SaaS subscription", "Performance fees (10-20%)", "Enterprise licenses"],
+    "target_arpu": 2000,
+    "tiers": [
+      { "name": "Pro", "price_mo": 499, "target_customers": 100 },
+      { "name": "Institutional", "price_mo": 10000, "target_customers": 10 }
+    ],
+    "target_arr_month_12": 1000000
+  },
+
+  "go_to_market": {
+    "phase1_months_1_2": "MVP Hardening (multi-exchange live, P&L dashboard)",
+    "phase2_months_3_4": "SaaS Layer (auth, billing, multi-tenant)",
+    "phase3_months_5_6": "Compliance (AML/KYC, audit logging, MAS prep)",
+    "phase4_months_7_12": "Scale (enterprise sales, $1M ARR)"
+  },
+
+  "team": {
+    "founder_allocation": 0.80,
+    "customer_allocation": 0.10,
+    "human_allocation": 0.10,
+    "planned_hires": {
+      "month_1_2": ["CTO (cofounder)"],
+      "month_3": ["Backend Engineer"],
+      "month_4": ["Compliance Officer (contractor)"],
+      "month_6": ["Sales Lead"]
+    }
+  },
+
+  "risk_profile": {
+    "technical": ["Exchange API downtime", "Latency spikes", "Smart contract exploits"],
+    "business": ["Regulatory crackdown", "Competitor undercutting", "Key person risk"],
+    "mitigation": ["Multi-exchange redundancy", "SG entity + MAS compliance", "Third-party audits + insurance"]
+  },
+
+  "success_metrics": {
+    "month_2": { "exchanges": 3, "latency_ms": 100, "paper_traders": 50, "mrr": 0 },
+    "month_6": { "paying_customers": 20, "mrr": 50000, "uptime": "99.9%", "nps": 40 },
+    "month_12": { "customers": 110, "mrr": 83000, "arr": 1000000, "retention_d7": 60 }
+  },
+
+  "icp": "Crypto funds ($10M-100M AUM), DeFi protocol treasuries, Asia family offices with crypto allocation, prop trading firms seeking automated arbitrage alpha",
+  "moat": "Sub-100ms multi-exchange execution, compliance-first architecture (MAS-ready), AI-driven strategy optimization, institutional P&L tracking",
+
+  "agents": {
+    "cto": "Trading Agent (arb detection + execution)",
+    "risk": "Risk Agent (position limits, drawdown, exposure)",
+    "pnl": "P&L Agent (real-time tracking, reporting)",
+    "compliance": "Compliance Agent (AML/KYC, trade validation)",
+    "ops": "Ops Agent (infra monitoring, alerting)",
+    "sales": "Sales Agent (pipeline, outreach)",
+    "support": "Support Agent (customer onboarding, troubleshooting)"
+  },
+
+  "okrs": {
+    "q2_2026": {
+      "o1": "Ship MVP with 3 exchanges live",
+      "krs": ["<100ms latency end-to-end", "99.9% uptime", "50 paper traders active"]
+    },
+    "q2_2026_o2": {
+      "o2": "First revenue",
+      "krs": ["$10K MRR", "5 paying Pro customers", "1 institutional pilot"]
+    },
+    "q3_2026": {
+      "o1": "Scale to $50K MRR",
+      "krs": ["20 paying customers", "MAS compliance ready", "Close $3M Seed round"]
+    }
+  },
+
+  "next_commands": [
+    "/cto-architect",
+    "/product-sprint-plan",
+    "/sales-pipeline-build",
+    "/marketing-campaign-run",
+    "/release-ship"
+  ],
+
+  "stack": ["nodejs", "typescript", "python", "ccxt", "redis", "postgresql"],
+  "deploy_target": "cloudflare",
+  "repo": "https://github.com/longtho638-jpg/mekong-cli/apps/algo-trader",
+  "language": "en",
+  "locale": "en-US",
+
+  "openclaw": {
+    "status": "activated",
+    "activated_at": "2026-03-19T20:55:00+07:00",
+    "mode": "build",
+    "priority": "mvp-to-first-dollar"
+  },
+
+  "created_at": "2026-03-19T20:55:00+07:00",
+  "updated_at": "2026-03-19T20:55:00+07:00"
+}

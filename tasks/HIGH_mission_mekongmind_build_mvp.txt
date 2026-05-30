@@ -1,0 +1,12 @@
+MISSION: Build MVP and core features
+PRIORITY: HIGH
+ASSIGNEE: CTO Agent
+
+OBJECTIVE:
+Consolidate the local-first CLI CheetahClaws with 25+ native tools.
+
+TASKS:
+1. Implement local database persistence using SQLite.
+2. Build adapters for multi-provider routing (OpenAI, Gemini, Anthropic).
+3. Implement the Water Protocol (水) context routing.
+4. Pass all core unit tests.

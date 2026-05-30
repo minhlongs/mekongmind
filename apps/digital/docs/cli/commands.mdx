@@ -1,0 +1,87 @@
+---
+title: "CLI Commands"
+description: "Complete CLI reference"
+---
+
+## Global Flags
+
+| Flag | Description |
+|------|-------------|
+| `--config` | Path to config file |
+| `--verbose` | Enable verbose logging |
+| `--version` | Print version |
+| `--help` | Show help |
+
+## Commands
+
+### `mekong mcp`
+
+Start the MCP server.
+
+```bash
+mekong mcp [--transport stdio|sse] [--port 8080]
+```
+
+### `mekong config`
+
+Manage configuration.
+
+```bash
+mekong config set <key> <value>
+mekong config get <key>
+mekong config list
+```
+
+### `mekong plan`
+
+Manage plans.
+
+```bash
+mekong plan create "<goal>"
+mekong plan list
+mekong plan status <id>
+```
+
+### `mekong task`
+
+Manage tasks.
+
+```bash
+mekong task create <plan-id> "<description>"
+mekong task list [--status pending|in_progress|completed]
+mekong task update <id> --status completed
+```
+
+### `mekong memory`
+
+Memory operations.
+
+```bash
+mekong memory store "<content>"
+mekong memory search "<query>"
+```
+
+### `mekong doctor`
+
+Run system diagnostics.
+
+```bash
+mekong doctor
+```
+
+### `mekong agent`
+
+Sub-agent management.
+
+```bash
+mekong agent spawn "<task>"
+mekong agent list
+```
+
+### `mekong mcp-call`
+
+Direct MCP tool invocation.
+
+```bash
+mekong mcp-call <tool-name> --key value
+```

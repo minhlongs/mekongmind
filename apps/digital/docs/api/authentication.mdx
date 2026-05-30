@@ -1,0 +1,20 @@
+---
+title: "Authentication"
+description: "API authentication"
+---
+
+The API supports bearer token authentication.
+
+## Setting a Token
+
+```bash
+mekong config set api.token my-secret-token
+mekong mcp --transport sse
+```
+
+## Making Requests
+
+```bash
+curl -H "Authorization: Bearer my-secret-token" \
+  http://localhost:8080/health
+```

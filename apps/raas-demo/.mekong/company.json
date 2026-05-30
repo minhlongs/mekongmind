@@ -1,0 +1,14 @@
+{
+  "name": "raas-demo",
+  "goal": "Showcase RaaS capabilities for sales",
+  "stack": "static",
+  "next_commands": [
+    "/idea",
+    "/deploy"
+  ],
+  "kpis": {
+    "mrr": 0,
+    "users": 0,
+    "arr_target": 1000000
+  }
+}

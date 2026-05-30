@@ -1,0 +1,16 @@
+[project]
+name = "mekong-model-orchestrator"
+version = "0.1.0"
+description = "Mekong IDE - CheetahClaws AI OS Model Orchestrator"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Mekong IDE Contributors" },
+]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.setuptools]
+py-modules = []

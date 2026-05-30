@@ -1,0 +1,39 @@
+---
+title: "Plan Store"
+description: "Goal decomposition and task orchestration"
+---
+
+The Plan Store is MekongMind's intelligent task orchestration engine. Give it a high-level goal, and it breaks it down into actionable tasks.
+
+## How It Works
+
+1. **Submit a goal** — describe what you want to achieve
+2. **Auto-decomposition** — the plan store breaks it into logical phases
+3. **Task tracking** — each phase becomes a trackable task
+4. **Progress reporting** — query plan status at any time
+
+## Example
+
+```bash
+mekong plan create "Build a landing page for my SaaS"
+```
+
+This creates:
+
+1. Research competitor landing pages
+2. Choose tech stack (Next.js + Tailwind)
+3. Design hero section
+4. Implement pricing section
+5. Deploy to Vercel
+
+## Task States
+
+- `pending` — not started
+- `in_progress` — actively working
+- `completed` — finished
+- `blocked` — waiting on dependency
+- `cancelled` — no longer needed
+
+## Persistence
+
+All plans and tasks are stored as JSON files in `~/.mekong/plans/`. They survive restarts and can be shared via version control.

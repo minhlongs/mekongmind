@@ -1,0 +1,102 @@
+{
+  "theme": "mint",
+  "name": "MekongMind Docs",
+  "description": "MekongMind AI Agent Orchestration Platform — documentation, guides, API reference",
+  "colors": {
+    "primary": "#0369A1",
+    "light": "#38BDF8",
+    "dark": "#075985"
+  },
+  "logo": "/logo.svg",
+  "favicon": "/favicon.svg",
+  "font": {
+    "headings": "Inter",
+    "body": "Inter",
+    "code": "JetBrains Mono"
+  },
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://polar.sh/mekongmind"
+  },
+  "anchors": [
+    {
+      "name": "Website",
+      "icon": "globe",
+      "url": "https://mekongmind.com"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/mekong-cli"
+    },
+    {
+      "name": "Polar",
+      "icon": "shopping-cart",
+      "url": "https://polar.sh/mekongmind"
+    }
+  ],
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "getting-started/introduction",
+          "getting-started/quickstart",
+          "getting-started/installation"
+        ]
+      },
+      {
+        "group": "Core Concepts",
+        "pages": [
+          "concepts/architecture",
+          "concepts/mcp-tools",
+          "concepts/multi-provider-llm",
+          "concepts/plan-store"
+        ]
+      },
+      {
+        "group": "CLI Reference",
+        "pages": [
+          "cli/commands",
+          "cli/configuration",
+          "cli/environment-variables"
+        ]
+      },
+      {
+        "group": "API Reference",
+        "pages": [
+          "api/overview",
+          "api/authentication",
+          "api/endpoints"
+        ]
+      },
+      {
+        "group": "Billing",
+        "pages": [
+          "billing/pricing",
+          "billing/credits",
+          "billing/polar-integration"
+        ]
+      },
+      {
+        "group": "Development",
+        "pages": [
+          "development/plugin-guide",
+          "development/contributing",
+          "development/testing"
+        ]
+      },
+      {
+        "group": "Support",
+        "pages": [
+          "support/troubleshooting",
+          "support/faq"
+        ]
+      }
+    ]
+  },
+  "footerSocials": {
+    "github": "https://github.com/mekong-cli",
+    "website": "https://mekongmind.com"
+  }
+}

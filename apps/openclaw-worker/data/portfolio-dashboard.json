@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-03-22T04:42:52.643Z",
+  "agiLevel": 7,
+  "evolutionScore": 80,
+  "totalProjects": 3,
+  "healthyProjects": 3,
+  "needsAttention": 0,
+  "projects": [
+    {
+      "project": "mekong-cli",
+      "score": 30,
+      "errorCount": 0,
+      "basePriority": 3,
+      "stalenessFactor": 5,
+      "successRate": 50,
+      "lastMission": "never",
+      "missionCount": 0,
+      "health": {}
+    },
+    {
+      "project": "algo-trader",
+      "score": 30,
+      "errorCount": 0,
+      "basePriority": 2,
+      "stalenessFactor": 5,
+      "successRate": 0,
+      "lastMission": "2026-03-20T11:03:01.239Z",
+      "missionCount": 5,
+      "health": {}
+    },
+    {
+      "project": "well",
+      "score": 10,
+      "errorCount": 0,
+      "basePriority": 1,
+      "stalenessFactor": 5,
+      "successRate": 50,
+      "lastMission": "never",
+      "missionCount": 0,
+      "health": {}
+    }
+  ],
+  "crossProjectFixes": 0,
+  "rebalanceCount": 4
+}

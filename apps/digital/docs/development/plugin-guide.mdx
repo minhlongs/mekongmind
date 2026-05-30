@@ -1,0 +1,47 @@
+---
+title: "Plugin Development Guide"
+description: "Build custom MCP tools"
+---
+
+MekongMind supports plugins — custom MCP tools you write in Python.
+
+## Plugin Structure
+
+```
+my-plugin/
+├── __init__.py
+├── plugin.py        # Tool definitions
+└── requirements.txt # Dependencies
+```
+
+## Writing a Plugin
+
+```python
+# plugin.py
+from mekong.plugin import BaseTool
+
+class HelloWorld(BaseTool):
+    name = "hello_world"
+    description = "Say hello to someone"
+    
+    arguments = {
+        "name": {
+            "type": "string",
+            "description": "Name to greet"
+        }
+    }
+    
+    def execute(self, name: str) -> str:
+        return f"Hello, {name}!"
+
+TOOLS = [HelloWorld]
+```
+
+## Loading a Plugin
+
+```bash
+mekong config set plugins.path ./my-plugin
+mekong mcp
+```
+
+Your tool will appear in the tool list alongside built-in tools.

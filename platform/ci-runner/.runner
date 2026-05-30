@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 2,
+  "agentName": "m1max-mekong",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus21.actions.githubusercontent.com/P8azh5xGCdlZq8gWvuoc6LVErMHhRCO9k2zSi8wkUR4O2X7crv/",
+  "gitHubUrl": "https://github.com/longtho638-jpg/mekong-ide-core",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}

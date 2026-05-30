@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #09090b;
+    --font-inter: 'Inter', sans-serif;
+    --font-outfit: 'Outfit', sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #064E3B; /* Base Forest Jade background for dark mode */
+      --foreground: #f4f4f5;
+    }
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-inter);
+  }
+}
+
+/* Custom scrollbar styling */
+@layer utilities {
+  /* For Chrome, Safari, and Opera */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #064E3B; /* Base Forest Jade */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #10B981; /* Primary Emerald */
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #059669; /* Hover Deep Emerald */
+  }
+
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #10B981 #064E3B;
+  }
+}

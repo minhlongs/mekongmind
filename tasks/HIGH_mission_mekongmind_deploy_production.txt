@@ -1,0 +1,11 @@
+MISSION: Production Deployment and Verification
+PRIORITY: HIGH
+ASSIGNEE: CTO Agent
+
+OBJECTIVE:
+Deploy Astro landing page and lead-api worker to Cloudflare.
+
+TASKS:
+1. Trigger wrangler build and deploy pipeline.
+2. Setup domain bindings and custom routing rules.
+3. Run post-deploy smoke checks (verify-production.sh).

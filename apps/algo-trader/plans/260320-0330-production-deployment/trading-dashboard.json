@@ -1,0 +1,180 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "algo-trading-overview",
+    "title": "Algo-Trading Overview",
+    "tags": ["trading", "overview"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 0,
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "stat",
+        "title": "Daily P&L",
+        "targets": [
+          {
+            "expr": "algo_trader_daily_pnl_usd",
+            "legendFormat": "Daily P&L (USD)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 0},
+                {"color": "green", "value": 100}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "stat",
+        "title": "Total Trades",
+        "targets": [
+          {
+            "expr": "algo_trader_trades_total",
+            "legendFormat": "Total Trades"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 8},
+        "type": "gauge",
+        "title": "Win Rate",
+        "targets": [
+          {
+            "expr": "algo_trader_win_rate",
+            "legendFormat": "Win Rate %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 40},
+                {"color": "green", "value": 60}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 8},
+        "type": "stat",
+        "title": "Circuit Breaker",
+        "targets": [
+          {
+            "expr": "algo_trader_circuit_breaker_state",
+            "legendFormat": "State (0=CLOSED, 1=OPEN, 2=HALF_OPEN)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"options": {"0": {"text": "CLOSED"}}, "type": "value"},
+              {"options": {"1": {"text": "OPEN"}}, "type": "value"},
+              {"options": {"2": {"text": "HALF_OPEN"}}, "type": "value"}
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 1}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 8},
+        "type": "stat",
+        "title": "Active Positions",
+        "targets": [
+          {
+            "expr": "algo_trader_open_positions",
+            "legendFormat": "Open Positions"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16},
+        "type": "timeseries",
+        "title": "P&L Over Time",
+        "targets": [
+          {
+            "expr": "algo_trader_daily_pnl_usd",
+            "legendFormat": "Daily P&L"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
+        "type": "timeseries",
+        "title": "Heap Memory",
+        "targets": [
+          {
+            "expr": "algo_trader_heap_used_bytes",
+            "legendFormat": "Heap Used"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+        "type": "timeseries",
+        "title": "Uptime",
+        "targets": [
+          {
+            "expr": "algo_trader_uptime_seconds",
+            "legendFormat": "Uptime (seconds)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        }
+      }
+    ]
+  },
+  "overwrite": true
+}

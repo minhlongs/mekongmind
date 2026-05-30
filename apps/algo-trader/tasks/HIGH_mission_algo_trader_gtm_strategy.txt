@@ -1,0 +1,51 @@
+HIGH_mission_algo_trader_gtm_strategy.txt
+
+================================================================================
+MISSION: Algo-Trader GTM Strategy — Zero to $1M ARR
+PRIORITY: HIGH
+DEADLINE: 7 days
+OWNER: CEO + CMO Agent
+================================================================================
+
+OBJECTIVE:
+Define and execute Go-To-Market strategy for Algo-Trader crypto arbitrage engine.
+Target: Institutional crypto traders, DeFi funds, family offices in Asia.
+
+KEY RESULTS:
+[ ] ICP validated (10 customer interviews completed)
+[ ] Pricing validated (3 LOIs from pilot customers)
+[ ] Content engine launched (2 pillar posts, 4 tweets/week)
+[ ] Ad campaigns running (LinkedIn + Twitter, $5K test budget)
+[ ] Landing page live with conversion tracking
+
+DELIVERABLES:
+1. Customer Interview Report (10 interviews, key insights)
+2. Pricing Page (Pro $499/mo, Institutional $10K/mo, 10% performance fee)
+3. Landing Page Copy (hero, problem, solution, proof, CTA)
+4. Ad Creatives (3 angles: ROI proof, FOMO, security)
+5. Content Calendar (8 posts/month, SEO pillars)
+
+TIMELINE:
+Day 1-2: Customer interviews (10 calls)
+Day 3-4: Landing page + pricing finalization
+Day 5-6: Ad creative production
+Day 7: Launch campaigns
+
+RESOURCES:
+- Budget: $10K (Month 1), scale to $30K/mo by Month 3
+- Team: CEO (outbound), CMO Agent (content), Designer (creatives)
+- Tools: LinkedIn Ads, Twitter Ads, Webflow, Fathom Analytics
+
+RISKS:
+- Low interview response rate → Use warm intros, offer $100 gift card
+- Pricing resistance → A/B test $299 vs $499, offer annual discount
+- Ad CTR <1% → Iterate creatives, test new angles
+
+SUCCESS CRITERIA:
+- 50+ signups in Week 1
+- 10+ demo requests
+- 3+ pilot commitments (LOI signed)
+
+================================================================================
+CTO DAEMON: Execute /cooking this mission with /marketing-campaign-run, /frontend-ui-build
+================================================================================

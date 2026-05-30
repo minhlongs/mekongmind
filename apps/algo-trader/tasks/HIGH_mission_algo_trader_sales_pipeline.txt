@@ -1,0 +1,51 @@
+HIGH_mission_algo_trader_sales_pipeline.txt
+
+================================================================================
+MISSION: Algo-Trader Sales Pipeline — Enterprise Lead Gen + Closing
+PRIORITY: HIGH
+DEADLINE: 30 days
+OWNER: Sales Lead + CEO Agent
+================================================================================
+
+OBJECTIVE:
+Build enterprise sales pipeline for Algo-Trader. Target: crypto funds, DeFi protocols, family offices.
+Goal: $10K MRR by Day 30 (5 Pro customers + 1 institutional pilot).
+
+KEY RESULTS:
+[ ] 100 qualified leads in pipeline (LinkedIn, outbound, inbound)
+[ ] 20 demo calls completed
+[ ] 5 pilot customers signed (LOI)
+[ ] 1 institutional customer live (paying $10K/mo)
+[ ] $10K MRR achieved
+
+DELIVERABLES:
+1. Lead List (100 targets: fund name, AUM, contact, status)
+2. Sales Deck (12 slides: problem, solution, market, traction, ask)
+3. Demo Script (live walkthrough, Q&A handling)
+4. LOI Template (pilot terms, pricing, success criteria)
+5. Closing Playbook (objection handling, negotiation, legal)
+
+TIMELINE:
+Week 1: Lead list build (LinkedIn Sales Navigator, crypto databases)
+Week 2: Outbound blitz (100 emails, 50 LinkedIn messages)
+Week 3: Demo calls (20 scheduled, run demos)
+Week 4: Closing (LOI → contract → live)
+
+RESOURCES:
+- Tools: LinkedIn Sales Navigator, HubSpot (CRM), Calendly (scheduling)
+- Budget: $5K (outreach tools, events, travel)
+- Team: Sales Lead (pipeline), CEO (closings), CTO (technical demos)
+
+RISKS:
+- Low response rate (<5%) → Iterate messaging, add social proof
+- Demo no-shows → Send calendar invites, reminder sequence
+- Long sales cycle (>60 days) → Offer pilot program (30 days, moneyback)
+
+SUCCESS CRITERIA:
+- Pipeline velocity: 20% lead→demo, 25% demo→LOI, 50% LOI→close
+- CAC < $5,000 (blended)
+- First $10K MRR by Day 30
+
+================================================================================
+CTO DAEMON: Execute /cook this mission with /sales-pipeline-build, /founder-raise
+================================================================================

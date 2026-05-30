@@ -1,0 +1,12 @@
+Persist and retrieve facts, observations, and learned procedures across sessions within a project.
+
+Memory is organized into three tiers:
+- episodic: specific events, conversations, or observations tied to a session
+- semantic: general facts, concepts, and domain knowledge about the project
+- procedural: workflows, patterns, and step-by-step instructions
+
+Use `store` to save important information that should survive the current session.
+Use `query` to retrieve relevant memories before starting a task.
+Use `prune` to remove outdated or low-relevance entries.
+
+All memory is scoped to the current project — entries from other projects are never returned.

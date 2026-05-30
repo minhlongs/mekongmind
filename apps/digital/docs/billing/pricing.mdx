@@ -1,0 +1,34 @@
+---
+title: "Pricing"
+description: "Usage-based pricing via Polar.sh"
+---
+
+MekongMind uses a simple, usage-based pricing model powered by Polar.sh.
+
+## Tiers
+
+| Tier | Price | Credits | Features |
+|------|-------|---------|----------|
+| **Free** | $0 | 1,000/mo | All tools, community support |
+| **Pro** | $29/mo | 50,000/mo | 3 team seats, email support, analytics |
+| **Enterprise** | $199/mo | Unlimited | White-label, audit, SLA, dedicated support |
+
+## What Is a Credit?
+
+1 credit ≈ 1 MCP tool call. Simple operations (memory search, task list) cost 1 credit. Complex operations (plan creation with goal decomposition) may cost 2-3 credits.
+
+## BYOK
+
+All plans include BYOK (Bring Your Own Key). You pay only for platform usage, not LLM inference costs.
+
+## How to Subscribe
+
+1. Visit [polar.sh/mekongmind](https://polar.sh/mekongmind)
+2. Choose your tier
+3. Complete checkout (Polar.sh handles billing)
+4. Get your API token
+5. Configure MekongMind:
+
+```bash
+mekong config set billing.polar_token "your-token"
+```

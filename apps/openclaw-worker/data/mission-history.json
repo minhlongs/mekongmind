@@ -1,0 +1,1556 @@
+[
+  {
+    "timestamp": "2026-03-20T01:26:43.628Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_pipeline_fix_1773968438802",
+    "taskType": "fix",
+    "duration": 8,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T01:31:23.083Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_pipeline_test_1773970027920",
+    "taskType": "test",
+    "duration": 11,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T01:34:59.070Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_pipeline_review_1773970309315",
+    "taskType": "mekong",
+    "duration": 8,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T01:39:04.789Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_pipeline_ship_1773970537242",
+    "taskType": "deploy",
+    "duration": 12,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T02:09:57.927Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773970896453",
+    "taskType": "fix",
+    "duration": 14,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T02:24:26.562Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773972852065",
+    "taskType": "fix",
+    "duration": 15,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T02:45:17.237Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773973594981",
+    "taskType": "fix",
+    "duration": 14,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T03:01:27.308Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773974843037",
+    "taskType": "fix",
+    "duration": 24,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T03:10:45.350Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773976027744",
+    "taskType": "fix",
+    "duration": 24,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T03:17:59.714Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773976375720",
+    "taskType": "fix",
+    "duration": 13,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T03:26:14.404Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773976802726",
+    "taskType": "fix",
+    "duration": 23,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T03:37:45.026Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773977364837",
+    "taskType": "fix",
+    "duration": 13,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T03:44:31.888Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773978011287",
+    "taskType": "fix",
+    "duration": 27,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:07:17.766Z",
+    "project": "sophia",
+    "missionId": "HIGH_mission_sophia_factory_cto_architect",
+    "taskType": "sophia",
+    "duration": 99,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:07:17.811Z",
+    "project": "wellnex",
+    "missionId": "HIGH_mission_wellnex_build_mvp",
+    "taskType": "build",
+    "duration": 44,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:07:17.868Z",
+    "project": "wellnex",
+    "missionId": "HIGH_mission_wellnex_deploy_production",
+    "taskType": "deploy",
+    "duration": 56,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:07:17.913Z",
+    "project": "wellnex",
+    "missionId": "HIGH_mission_wellnex_gtm_strategy",
+    "taskType": "wellnex",
+    "duration": 44,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:08:18.119Z",
+    "project": "wellnex",
+    "missionId": "HIGH_mission_wellnex_marketing_launch",
+    "taskType": "wellnex",
+    "duration": 69,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:08:18.179Z",
+    "project": "wellnex",
+    "missionId": "HIGH_mission_wellnex_sales_pipeline",
+    "taskType": "wellnex",
+    "duration": 58,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:08:18.228Z",
+    "project": "sophia",
+    "missionId": "HIGH_mission_sophia_factory_build_mvp",
+    "taskType": "build",
+    "duration": 49,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:08:18.286Z",
+    "project": "sophia",
+    "missionId": "HIGH_mission_sophia_factory_sales_pipeline",
+    "taskType": "sophia",
+    "duration": 57,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:08:18.336Z",
+    "project": "sophia",
+    "missionId": "HIGH_mission_sophia_factory_marketing_launch",
+    "taskType": "sophia",
+    "duration": 49,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:08:18.450Z",
+    "project": "sophia",
+    "missionId": "HIGH_mission_sophia_factory_deploy_production",
+    "taskType": "deploy",
+    "duration": 113,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:14:54.395Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773979757400",
+    "taskType": "fix",
+    "duration": 23,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:20:48.571Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773980298297",
+    "taskType": "fix",
+    "duration": 34,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:28:37.630Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773980715785",
+    "taskType": "fix",
+    "duration": 16,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:36:54.955Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773981200831",
+    "taskType": "fix",
+    "duration": 24,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:49:23.564Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773981547238",
+    "taskType": "fix",
+    "duration": 25,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:53:59.567Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773982238362",
+    "taskType": "fix",
+    "duration": 17,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T04:59:47.295Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773982637026",
+    "taskType": "fix",
+    "duration": 53,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T05:13:29.151Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773983010670",
+    "taskType": "fix",
+    "duration": 23,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T05:17:19.565Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773983689351",
+    "taskType": "fix",
+    "duration": 29,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T05:47:41.143Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773985510899",
+    "taskType": "fix",
+    "duration": 48,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T06:18:07.670Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773987337405",
+    "taskType": "fix",
+    "duration": 60,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T06:48:10.004Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773989139736",
+    "taskType": "fix",
+    "duration": 57,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T07:18:19.759Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773990949497",
+    "taskType": "fix",
+    "duration": 32,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T07:21:22.445Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1773991132286",
+    "taskType": "fix",
+    "duration": 21,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T10:36:33.696Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_gtm_strategy",
+    "taskType": "openclaw",
+    "duration": 10,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T10:37:33.746Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_deploy_production",
+    "taskType": "deploy",
+    "duration": 10,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T10:37:33.754Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_beta_onboard",
+    "taskType": "openclaw",
+    "duration": 7,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T10:37:33.763Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_monitoring_ops",
+    "taskType": "openclaw",
+    "duration": 8,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T10:38:03.750Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_revenue_engine",
+    "taskType": "revenue",
+    "duration": 10,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T10:39:03.823Z",
+    "project": "mekong",
+    "missionId": "MEDIUM_mission_mekong_cli_fix_lint_1773992760936",
+    "taskType": "fix",
+    "duration": 14,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T10:44:28.339Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774003318040",
+    "taskType": "fix",
+    "duration": 44,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:02:01.032Z",
+    "project": "algo-trader",
+    "missionId": "HIGH_mission_algo-trader_gtm_strategy",
+    "taskType": "algo-trader",
+    "duration": 8,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:02:01.089Z",
+    "project": "algo-trader",
+    "missionId": "HIGH_mission_algo-trader_build_mvp",
+    "taskType": "build",
+    "duration": 56,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:02:01.100Z",
+    "project": "algo-trader",
+    "missionId": "HIGH_mission_algo-trader_sales_pipeline",
+    "taskType": "algo-trader",
+    "duration": 10,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:02:01.111Z",
+    "project": "algo-trader",
+    "missionId": "HIGH_mission_algo-trader_marketing_launch",
+    "taskType": "algo-trader",
+    "duration": 10,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:03:01.239Z",
+    "project": "algo-trader",
+    "missionId": "HIGH_mission_algo-trader_deploy_production",
+    "taskType": "deploy",
+    "duration": 69,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:11:41.966Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_marketing_campaign",
+    "taskType": "openclaw",
+    "duration": 10,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:11:41.977Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_ops_health",
+    "taskType": "fix",
+    "duration": 10,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:11:41.989Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_release_ship",
+    "taskType": "deploy",
+    "duration": 11,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:11:42.009Z",
+    "project": "openclaw",
+    "missionId": "HIGH_mission_openclaw_sales_pipeline",
+    "taskType": "openclaw",
+    "duration": 9,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:14:12.116Z",
+    "project": "openclaw",
+    "missionId": "MEDIUM_mission_openclaw_founder_raise",
+    "taskType": "openclaw",
+    "duration": 7,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:19:07.323Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774005397071",
+    "taskType": "fix",
+    "duration": 46,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:23:44.628Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774005584189",
+    "taskType": "fix",
+    "duration": 34,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:25:14.754Z",
+    "project": "configure",
+    "missionId": "HIGH_mission_configure_secrets",
+    "taskType": "configure",
+    "duration": 38,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:25:14.776Z",
+    "project": "marketing",
+    "missionId": "HIGH_mission_marketing_campaign",
+    "taskType": "marketing",
+    "duration": 20,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:25:21.803Z",
+    "project": "sales",
+    "missionId": "HIGH_mission_sales_pipeline",
+    "taskType": "sales",
+    "duration": 41,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:27:45.349Z",
+    "project": "founder",
+    "missionId": "MEDIUM_mission_founder_raise",
+    "taskType": "founder",
+    "duration": 87,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:31:11.568Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774006121288",
+    "taskType": "fix",
+    "duration": 45,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:33:45.852Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774006275585",
+    "taskType": "fix",
+    "duration": 39,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T11:49:37.889Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774007227659",
+    "taskType": "fix",
+    "duration": 33,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:18:43.390Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774008973085",
+    "taskType": "fix",
+    "duration": 57,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:21:31.221Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774009140961",
+    "taskType": "fix",
+    "duration": 25,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:24:53.747Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774009343419",
+    "taskType": "fix",
+    "duration": 42,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:27:26.396Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774009496088",
+    "taskType": "fix",
+    "duration": 64,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:30:37.761Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774009687431",
+    "taskType": "fix",
+    "duration": 54,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:35:46.393Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774009996111",
+    "taskType": "fix",
+    "duration": 48,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:41:05.635Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774010315344",
+    "taskType": "fix",
+    "duration": 46,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:47:56.032Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774010590469",
+    "taskType": "fix",
+    "duration": 23,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T12:54:31.199Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774011038731",
+    "taskType": "fix",
+    "duration": 18,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T13:07:53.972Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774011617477",
+    "taskType": "fix",
+    "duration": 26,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T13:46:18.903Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774012203102",
+    "taskType": "fix",
+    "duration": 20,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T15:54:09.502Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774014515989",
+    "taskType": "fix",
+    "duration": 24,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T15:57:54.666Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774022124362",
+    "taskType": "fix",
+    "duration": 53,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T16:00:33.504Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774022283221",
+    "taskType": "fix",
+    "duration": 48,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T16:03:06.491Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774022436224",
+    "taskType": "fix",
+    "duration": 46,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T16:29:35.877Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774024025585",
+    "taskType": "fix",
+    "duration": 43,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T16:32:08.441Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774024178155",
+    "taskType": "fix",
+    "duration": 46,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-20T16:34:56.512Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774024346219",
+    "taskType": "fix",
+    "duration": 46,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T16:54:43.338Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774111933031",
+    "taskType": "fix",
+    "duration": 42,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T17:25:06.878Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774113756564",
+    "taskType": "fix",
+    "duration": 44,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T17:55:59.831Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774115609561",
+    "taskType": "fix",
+    "duration": 41,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T18:28:13.507Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774117543201",
+    "taskType": "fix",
+    "duration": 50,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T19:02:02.561Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774119572285",
+    "taskType": "fix",
+    "duration": 45,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T19:33:17.328Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774121446963",
+    "taskType": "fix",
+    "duration": 61,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T20:12:03.868Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774123773570",
+    "taskType": "fix",
+    "duration": 44,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T20:43:16.557Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774125646234",
+    "taskType": "fix",
+    "duration": 46,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T21:16:16.238Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774127475602",
+    "taskType": "fix",
+    "duration": 44,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T21:49:04.325Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774129594039",
+    "taskType": "fix",
+    "duration": 47,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T22:20:05.261Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774131454976",
+    "taskType": "fix",
+    "duration": 48,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T22:50:18.156Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774133267862",
+    "taskType": "fix",
+    "duration": 43,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T23:21:28.503Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774135138207",
+    "taskType": "fix",
+    "duration": 41,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-21T23:52:04.012Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774136973660",
+    "taskType": "fix",
+    "duration": 50,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T00:22:53.085Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774138822600",
+    "taskType": "fix",
+    "duration": 43,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T00:56:36.956Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774140846646",
+    "taskType": "fix",
+    "duration": 47,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T01:27:06.976Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774142676595",
+    "taskType": "fix",
+    "duration": 64,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T01:57:06.952Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774144476654",
+    "taskType": "fix",
+    "duration": 44,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T02:32:12.056Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774146581755",
+    "taskType": "fix",
+    "duration": 50,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T03:03:46.823Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774148476503",
+    "taskType": "fix",
+    "duration": 47,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T03:37:45.622Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774150515306",
+    "taskType": "fix",
+    "duration": 47,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T04:20:52.606Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774153102318",
+    "taskType": "fix",
+    "duration": 46,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T04:51:51.116Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774154960699",
+    "taskType": "fix",
+    "duration": 45,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T05:22:26.616Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774156796334",
+    "taskType": "fix",
+    "duration": 45,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T05:56:13.541Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774158823215",
+    "taskType": "fix",
+    "duration": 53,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T06:26:24.845Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774160634533",
+    "taskType": "fix",
+    "duration": 47,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T06:56:27.783Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774162437460",
+    "taskType": "fix",
+    "duration": 35,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T07:31:22.679Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774164532370",
+    "taskType": "fix",
+    "duration": 48,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T08:01:25.883Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774166335584",
+    "taskType": "fix",
+    "duration": 43,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  },
+  {
+    "timestamp": "2026-03-22T08:33:24.207Z",
+    "project": "mekong",
+    "missionId": "HIGH_mission_mekong_cli_fix_build_1774168253872",
+    "taskType": "fix",
+    "duration": 48,
+    "success": false,
+    "failureType": "all_workers_busy",
+    "buildResult": {
+      "build": false,
+      "output": "all_workers_busy"
+    },
+    "tokensUsed": 0
+  }
+]

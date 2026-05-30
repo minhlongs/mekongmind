@@ -1,0 +1,64 @@
+---
+title: "API Endpoints"
+description: "Complete API endpoint reference"
+---
+
+## Health Check
+
+```bash
+GET /health
+```
+
+Response:
+
+```json
+{
+  "status": "ok",
+  "version": "0.1.0",
+  "uptime": 3600
+}
+```
+
+## List Tools
+
+```bash
+POST /tools
+```
+
+Response:
+
+```json
+{
+  "tools": ["memory_search", "memory_store", "task_create", "..."]
+}
+```
+
+## Execute Tool
+
+```bash
+POST /tools/memory_search
+Content-Type: application/json
+
+{
+  "arguments": {
+    "query": "hello world"
+  }
+}
+```
+
+## List Plans
+
+```bash
+GET /plans
+```
+
+## Create Plan
+
+```bash
+POST /plans
+Content-Type: application/json
+
+{
+  "goal": "Build a landing page"
+}
+```

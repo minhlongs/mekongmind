@@ -1,0 +1,12 @@
+MISSION: GTM Strategy and Positioning
+PRIORITY: HIGH
+ASSIGNEE: CEO Agent
+
+OBJECTIVE:
+Formulate the positioning and detailed launch plan for mekongmind.com.
+
+TASKS:
+1. Review competitor positioning (LangChain, CrewAI).
+2. Refine categories and draft core taglines.
+3. Map initial acquisition channels (GitHub, newsletters, LinkedIn).
+4. Establish conversion KPIs.

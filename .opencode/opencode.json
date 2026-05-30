@@ -1,0 +1,23 @@
+{
+  "instructions": [
+    "AGENTS.md",
+    "AGENTS-CLI.md",
+    ".claude/rules/*.md",
+    "docs/README.md",
+    "docs/architecture/*.md",
+    "docs/cli/*.md",
+    "docs/operations/*.md",
+    "plans/mekongmind-overhaul/plan.md",
+    "plans/mekongmind-overhaul/phase-05-goals-pipeline.md",
+    "plans/mekongmind-overhaul/phase-06-orchestration.md"
+  ],
+  "project": {
+    "name": "mekongmind",
+    "description": "MekongMind — Unified AI Operating System",
+    "type": "monorepo",
+    "packageManager": "pnpm"
+  },
+  "goals": [
+    "~/.config/opencode/goals/active/goal_20260529_152734.json"
+  ]
+}

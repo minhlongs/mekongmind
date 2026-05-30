@@ -1,0 +1,12 @@
+﻿{
+  "repositoryName": "longtho638-jpg/mekong-ide-core",
+  "pipelineDirectory": "mekong-ide-core",
+  "workspaceDirectory": "mekong-ide-core/mekong-ide-core",
+  "repositories": {
+    "longtho638-jpg/mekong-ide-core": {
+      "repositoryPath": "mekong-ide-core/mekong-ide-core",
+      "lastRunOn": "04/14/2026 19:40:15 -07:00"
+    }
+  },
+  "lastRunOn": "04/16/2026 08:32:27 -07:00"
+}

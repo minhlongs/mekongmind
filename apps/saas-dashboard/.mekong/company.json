@@ -1,0 +1,15 @@
+{
+  "name": "saas-dashboard",
+  "goal": "$1M ARR via analytics dashboard SaaS",
+  "stack": "typescript",
+  "next_commands": [
+    "/idea",
+    "/plan",
+    "/review"
+  ],
+  "kpis": {
+    "mrr": 0,
+    "users": 0,
+    "arr_target": 1000000
+  }
+}

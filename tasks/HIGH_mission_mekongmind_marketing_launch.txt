@@ -1,0 +1,11 @@
+MISSION: Marketing Launch Prep
+PRIORITY: HIGH
+ASSIGNEE: Revenue Agent
+
+OBJECTIVE:
+Launch waiting list and seed initial tech posts.
+
+TASKS:
+1. Setup waitlist form on landing page.
+2. Compile and schedule social media calendar.
+3. Prepare Product Hunt assets and launch manifest.

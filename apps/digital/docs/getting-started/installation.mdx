@@ -1,0 +1,56 @@
+---
+title: "Installation"
+description: "Detailed installation guide for all platforms"
+---
+
+## Python Package (Recommended)
+
+```bash
+pip install mekong-cli
+```
+
+For development:
+
+```bash
+pip install mekong-cli[dev]
+```
+
+## From Source
+
+```bash
+git clone https://github.com/mekong-cli/mekong-cli
+cd mekong-cli
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+## Local LLM via MLX
+
+On Apple Silicon (M1+), run local models:
+
+```bash
+pip install mekong-cli[mlx]
+mekong config set llm.provider mlx
+mekong config set llm.model mlx-community/Qwen3.6-35B
+```
+
+## IDE Client
+
+```bash
+npx mekong-ide@latest
+```
+
+## Verify Installation
+
+```bash
+mekong --version
+mekong doctor
+```
+
+## Docker
+
+```bash
+docker pull ghcr.io/mekong-cli/mekong-cli:latest
+docker run -it --rm ghcr.io/mekong-cli/mekong-cli mekong --version
+```

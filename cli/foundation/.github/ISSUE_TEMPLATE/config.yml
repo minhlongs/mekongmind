@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Canonical issue tracker (GitLab)
+    url: https://gitlab.com/agency.os/mekong-foundation/-/issues
+    about: This GitHub repo is a read-only mirror — please open issues on GitLab.
+  - name: Security disclosure
+    url: https://gitlab.com/agency.os/mekong-foundation/-/issues/new?issue%5Bconfidential%5D=true
+    about: Report a vulnerability privately via a GitLab confidential issue, or email longtho638@gmail.com.

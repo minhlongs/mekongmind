@@ -1,0 +1,74 @@
+---
+title: "Quickstart"
+description: "Get up and running in 5 minutes"
+---
+
+## Prerequisites
+
+- Python 3.11+
+- An API key from OpenAI, Anthropic, or Google
+
+## Install
+
+```bash
+pip install mekong-cli
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/mekong-cli/mekong-cli
+cd mekong-cli
+pip install -e .
+```
+
+## Set Your API Key
+
+```bash
+export OPENAI_API_KEY="sk-..."
+# or
+export ANTHROPIC_API_KEY="sk-ant-..."
+# or
+export GOOGLE_API_KEY="..."
+```
+
+## Start the MCP Server
+
+```bash
+mekong mcp
+```
+
+This starts the MCP server on stdio, ready to connect to any MCP-compatible client.
+
+## Connect with mekong-ide
+
+```bash
+npx mekong-ide
+```
+
+Or connect from Claude Desktop, Cursor, or VS Code with Continue.dev:
+
+```json
+{
+  "mcpServers": {
+    "mekong": {
+      "command": "mekong",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+## Try a Tool
+
+```bash
+mekong mcp-call memory_search --query "hello world"
+```
+
+You should see a response from the memory search tool.
+
+## Next Steps
+
+- Explore the [CLI Reference](/cli/commands)
+- Learn about [MCP Tools](/concepts/mcp-tools)
+- Set up [Polar Billing](/billing/pricing)

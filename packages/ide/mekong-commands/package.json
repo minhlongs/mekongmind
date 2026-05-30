@@ -1,0 +1,12 @@
+{
+  "name": "@mekongmind/commands",
+  "version": "1.0.0",
+  "description": "Mekong IDE — 385 pre-built business-ops commands across 22 departments",
+  "private": true,
+  "scripts": {
+    "validate": "bun run validate.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

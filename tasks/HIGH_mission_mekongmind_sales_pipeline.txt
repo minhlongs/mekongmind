@@ -1,0 +1,11 @@
+MISSION: Sales Pipeline and Pricing Setup
+PRIORITY: HIGH
+ASSIGNEE: Revenue Agent
+
+OBJECTIVE:
+Integrate Stripe, Polar, and Creem checkouts for usage billing.
+
+TASKS:
+1. Map developer waitlist inputs to Polar subscription IDs.
+2. Setup webhooks for user license checks.
+3. Configure rate limits based on active subscription tiers.

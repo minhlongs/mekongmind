@@ -1,0 +1,35 @@
+{
+  "name": "MekongMind",
+  "stage": "zero",
+  "model": "SaaS B2B",
+  "target_arr": "$1M",
+  "icp": "Tech Startups & Indie Devs building complex AI apps in SEA",
+  "moat": "Water Protocol (水) context flow and local-first CheetahClaws MCP server",
+  "agents": {
+    "Founder": "CEO Agent",
+    "Business": "Revenue Agent",
+    "Product": "Product Agent",
+    "Engineering": "CTO Agent",
+    "Ops": "Ops Agent"
+  },
+  "okrs": [
+    "Q1 OKR: Reach 2,500 active CLI installs and 100 beta testers",
+    "Q2 OKR: Launch Mekong Cloud with 50 paid B2B subscribers"
+  ],
+  "next_commands": [
+    "/studio-strategy",
+    "/product-sprint-plan",
+    "/sales-pipeline-build",
+    "/marketing-campaign-run",
+    "/release-ship"
+  ],
+  "binh_phap_state": {
+    "current_chapter": 1,
+    "current_phase": "intelligence",
+    "completed_chapters": [],
+    "chain_status": "active",
+    "next_command": "/swot",
+    "campaign": "first_blood",
+    "target_mrr": 1000
+  }
+}
