@@ -1,12 +1,13 @@
 """Serve OpenClaw daemon reports via API.
 
-Reports sit in ~/mekong-cli/content/openclaw-reports/ — this makes them
+Reports sit in docs/openclaw-reports/ (relative to repo root) — this makes them
 accessible via https://api.cashclaw.cc/raas/reports so the world can see
 what the autonomous daemon produces. Transparency = trust.
 """
 from __future__ import annotations
 
 import logging
+import os
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -19,7 +20,10 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/raas", tags=["Reports"])
 
-_REPORTS_DIR = Path.home() / "mekong-cli" / "content" / "openclaw-reports"
+_REPORTS_DIR = Path(
+    os.environ.get("MEKONGMIND_HOME")
+    or str(Path(__file__).resolve().parents[3]),
+) / "docs" / "openclaw-reports"
 
 # Simple in-memory rate limiter: 30 requests per minute per IP
 _RATE_LIMIT = 30

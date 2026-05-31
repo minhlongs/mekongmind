@@ -6,6 +6,7 @@ Infinite Supervisor for AgencyOS RaaS & Mekong CLI.
 import time
 import sys
 import os
+from pathlib import Path
 from typing import Dict
 from rich.console import Console
 from rich.table import Table
@@ -81,9 +82,12 @@ def delegate_task(failed_check: "StandardCheck") -> str:
     # Prefix with /cook for ClaudeKit agent activation
     command = f"/cook {task_description}"
 
-    # 1. Supreme Commander Protocol: Write to ~/mekong-cli/tasks/
+    # 1. Supreme Commander Protocol: Write to tasks/ (MEKONG_TASKS_DIR or repo root)
     timestamp = int(time.time())
-    tasks_dir = os.path.expanduser("~/mekong-cli/tasks")
+    tasks_dir = os.environ.get(
+        "MEKONG_TASKS_DIR",
+        str(Path(__file__).resolve().parents[3] / "tasks"),
+    )
     if not os.path.exists(tasks_dir):
         os.makedirs(tasks_dir, exist_ok=True)
 

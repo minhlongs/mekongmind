@@ -50,7 +50,11 @@ def _dispatch_command(command: str, llm_level: str) -> dict:
     start = time.time()
 
     # Build the CC CLI command
-    mekong_root = os.getenv("MEKONG_ROOT", os.path.expanduser("~/mekong-cli"))
+    _HERE = Path(__file__).resolve()
+    mekong_root = os.getenv(
+        "MEKONG_ROOT",
+        str((_HERE.parents[2] if len(_HERE.parents) >= 3 else Path.cwd())),
+    )
     cmd = f"/{command}"
 
     try:

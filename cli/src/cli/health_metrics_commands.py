@@ -7,6 +7,7 @@ Health and metrics commands for mekong CLI.
 import json
 import os
 import subprocess
+from pathlib import Path
 
 import typer
 from rich.console import Console
@@ -85,8 +86,9 @@ def register_health_metrics_commands(app: typer.Typer) -> None:
             table.add_row("Metrics Log", "[yellow]EMPTY[/yellow]", "No metrics yet")
 
         # 5. Brain learning state
-        brain_file = os.path.expanduser(
-            "~/mekong-cli/apps/openclaw-worker/brain-learning-state.json"
+        brain_file = str(
+            Path(__file__).resolve().parents[3]
+            / "apps/openclaw-worker/brain-learning-state.json"
         )
         if os.path.exists(brain_file):
             try:

@@ -81,14 +81,16 @@ class CCSpawner:
         # session.status will update as CC CLI runs
     """
 
-    DEFAULT_CWD = str(Path.home() / "mekong-cli")
+    # MEKONGMIND_HOME or two-parents-up from this file (cli/src/core/ → repo root)
+    _THIS_DIR = Path(__file__).resolve().parent
+    DEFAULT_CWD = os.environ.get("MEKONGMIND_HOME") or str((_THIS_DIR / ".." / "..").resolve())
     DEFAULT_TIMEOUT = 600  # 10 minutes
 
     def __init__(self, cwd: str | None = None, timeout: int = DEFAULT_TIMEOUT) -> None:
         """Initialize CCSpawner with working directory and timeout.
 
         Args:
-            cwd: Working directory for CC CLI sessions. Defaults to ~/mekong-cli.
+            cwd: Working directory for CC CLI sessions. Defaults to $MEKONGMIND_HOME or the repo root.
             timeout: Default timeout in seconds for each session.
 
         """
@@ -118,7 +120,7 @@ class CCSpawner:
 
         Args:
             goal: The coding goal to accomplish.
-            cwd: Working directory. Defaults to mekong-cli root.
+            cwd: Working directory. Defaults to the MekongMind repo root.
             timeout: Timeout in seconds. Defaults to 600.
             project: Optional project name under apps/ (e.g. 'agencyos-web').
             agent_role: Optional agent role for identity injection (e.g. 'cto', 'cfo').
