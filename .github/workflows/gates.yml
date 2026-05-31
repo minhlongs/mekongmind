@@ -49,17 +49,15 @@ jobs:
 
       - name: Pyright type check
         run: pyright src/ --pythonversion 3.12
-        continue-on-error: true
 
       - name: Install TS deps
         run: pnpm install --filter "./packages/**" --no-frozen-lockfile
 
       - name: TypeScript type check
         run: pnpm --filter mekong-engine typecheck
-        continue-on-error: true
 
       - name: Python unit tests
-        continue-on-error: true
+
         run: |
           pytest tests/ \
             --ignore=tests/backend \
@@ -125,7 +123,6 @@ jobs:
 
       - name: Semgrep scan
         run: semgrep --config=auto src/ cli/ --error --exclude=node_modules --exclude=.venv --exclude=dist
-        continue-on-error: true
 
       - name: Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
@@ -135,7 +132,6 @@ jobs:
           exit-code: 0
           severity: HIGH,CRITICAL
           format: table
-        continue-on-error: true
 
   # ------------------------------------------------------------------ #
   # G3 — QUALITY: coverage >= 70% (pytest + vitest)                     #
@@ -167,7 +163,7 @@ jobs:
           pip install -e .
 
       - name: Python coverage check
-        continue-on-error: true
+
         run: |
           pytest tests/ \
             --ignore=tests/backend \
@@ -207,7 +203,6 @@ jobs:
 
       - name: TS test coverage
         run: pnpm --filter mekong-engine test
-        continue-on-error: true
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -241,14 +236,12 @@ jobs:
             --config=ci/config/osv-scanner.toml
             --recursive
             .
-        continue-on-error: true
 
       - name: Install TS deps
         run: pnpm install --filter "./packages/**" --no-frozen-lockfile
 
       - name: pnpm audit
         run: pnpm audit --audit-level=high
-        continue-on-error: true
 
   # ------------------------------------------------------------------ #
   # G5 — DEPLOY READY: CF Pages dry-run (needs g1..g4)                  #

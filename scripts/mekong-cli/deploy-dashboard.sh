@@ -50,10 +50,18 @@ else
   WRANGLER="wrangler"
 fi
 
+COMMIT_DIRTY="false"
+if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null; then
+    echo "[WARN] Uncommitted changes detected."
+    read -p "Deploy dirty state? [y/N] " -n 1 -r
+    echo
+    [[ $REPLY =~ ^[Yy]$ ]] && COMMIT_DIRTY="true"
+fi
+
 "${WRANGLER}" pages deploy .next \
   --project-name "${PROJECT_NAME}" \
   --branch "${BRANCH}" \
-  --commit-dirty=true
+  --commit-dirty=${COMMIT_DIRTY}
 
 echo
 echo "==> Deployed."

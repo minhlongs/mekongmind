@@ -153,7 +153,7 @@ jobs:
 
       - name: Helm Deploy to Staging Namespace
         run: |
-          helm upgrade --install ndx-staging ./apps/nhipdieuxanh-orchestrator/helm/nhipdieuxanh \
+          helm upgrade --install --atomic ndx-staging ./apps/nhipdieuxanh-orchestrator/helm/nhipdieuxanh \
             --namespace ndx-staging --create-namespace \
             --set image.frontend.tag=${{ github.sha }} \
             --set image.backend.tag=${{ github.sha }} \
@@ -202,7 +202,7 @@ jobs:
 
       - name: Helm Deploy to Production (Rolling Update)
         run: |
-          helm upgrade --install ndx-prod ./apps/nhipdieuxanh-orchestrator/helm/nhipdieuxanh \
+          helm upgrade --install --atomic ndx-prod ./apps/nhipdieuxanh-orchestrator/helm/nhipdieuxanh \
             --namespace ndx-prod --create-namespace \
             --set image.frontend.tag=${{ github.sha }} \
             --set image.backend.tag=${{ github.sha }} \

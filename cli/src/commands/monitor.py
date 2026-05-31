@@ -297,7 +297,7 @@ def logs(
     elif service == "custom":
         custom_log_path = os.environ.get("CUSTOM_LOG_PATH", "./custom.log")
  safe_log = _safe_path(custom_log_path)
-        if Path(custom_log_path).exists():
+        if safe_log.exists():
             tail_log(safe_log, lines, follow, filter_pattern)
         else:
             console.print(f"[red]❌ Custom log file not found: {custom_log_path}[/red]")
