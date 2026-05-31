@@ -33,6 +33,8 @@ class SQLiteGoalStore:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
         except OSError as exc:
             raise RuntimeError(f"Cannot create database directory {self.db_path.parent}: {exc}") from exc
+        self.db_path = raw.resolve()
+        self._validate_path()
         self.lock = threading.RLock()
         self._init_schema()
 
@@ -425,20 +427,26 @@ class SQLiteGoalStore:
             goal = self.get_goal(goal_id)
             if goal is None:
                 raise KeyError(goal_id)
+            criteria = self.get_criteria(goal_id)
+            tasks = self.get_tasks(goal_id)
+            checkpoints = self.get_checkpoints(goal_id)
+            verification = self.get_latest_verification(goal_id)
+            events = self.get_events(goal_id)
+            memory = self.get_memory(goal_id)
             return {
                 "goal": asdict(goal) | {"status": goal.status.value},
-                "criteria": [asdict(item) for item in self.get_criteria(goal_id)],
+                "criteria": [asdict(item) for item in criteria],
                 "tasks": [
                     asdict(task) | {"role": task.role.value, "status": task.status.value}
-                    for task in self.get_tasks(goal_id)
+                    for task in tasks
                 ],
-                "checkpoints": [asdict(item) for item in self.get_checkpoints(goal_id)],
+                "checkpoints": [asdict(item) for item in checkpoints],
                 "verification": (
-                    asdict(self.get_latest_verification(goal_id))
-                    if self.get_latest_verification(goal_id)
+                    asdict(verification)
+                    if verification
                     else None
                 ),
-                "events": self.get_events(goal_id),
-                "memory": self.get_memory(goal_id),
+                "events": events,
+                "memory": memory,
             }
 

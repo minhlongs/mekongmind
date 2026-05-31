@@ -196,6 +196,11 @@ class GoalEngine:
                     for task in new_ready:
                         task.status = TaskStatus.RUNNING
                         task.attempts += 1
+                    if task.attempts >= task.max_attempts:
+                        task.status = TaskStatus.FAILED
+                        task.result_summary = f"max_attempts ({task.max_attempts}) exceeded"
+                        self.store.save_tasks([task])
+                        continue
                         self.store.save_tasks([task])
                         assignment = self.roles.assign(task)
                         self._event(

@@ -62,11 +62,11 @@ class RaasLicenseGate(LicenseGateCheckMixin, LicenseGateSyncMixin):
         "init": 1, "version": 1, "list": 1, "search": 1, "status": 1,
         "config": 1, "doctor": 1, "help": 1, "dash": 1,
         "cook": 3, "gateway": 3, "binh-phap": 3, "telegram": 3, "agi": 3,
-        "swarm": 5, "schedule": 5, "autonomous": 5,
+        "swarm": 5, "schedule": 5, "autonomous": 5, "cook-auto": 3,
     }
 
     FREE_COMMANDS = {"init", "version", "list", "search", "status", "config", "doctor", "help", "dash"}
-    PREMIUM_COMMANDS = {"cook", "gateway", "binh-phap", "swarm", "schedule", "telegram", "autonomous", "agi"}
+    PREMIUM_COMMANDS = {"cook", "gateway", "binh-phap", "swarm", "schedule", "telegram", "autonomous", "agi", "cook-auto"}
 
     def __init__(self, enable_remote: bool = True) -> None:
         self._license_key: Optional[str] = os.getenv("RAAS_LICENSE_KEY")

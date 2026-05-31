@@ -141,7 +141,11 @@ def register_cook_command(app: typer.Typer) -> None:
         goal_title = " ".join(goal).strip()
         if not goal_title:
             raise typer.BadParameter("goal cannot be empty", param_hint="GOAL")
-    if not check_license("cook-auto"):
+    try:
+        licensed = check_license("cook-auto")
+    except Exception as exc:
+        raise RuntimeError(f"License check failed — system error: {exc}") from exc
+    if not licensed:
         raise RuntimeError("License check failed — insufficient credits for autonomous execution")
         engine = _goal_engine(db_path)
         created = engine.create_goal(goal_title)
@@ -221,7 +225,11 @@ def register_cook_command(app: typer.Typer) -> None:
         goal_title = " ".join(goal).strip()
         if not goal_title:
             raise typer.BadParameter("goal cannot be empty", param_hint="GOAL")
-    if not check_license("cook-auto"):
+    try:
+        licensed = check_license("cook-auto")
+    except Exception as exc:
+        raise RuntimeError(f"License check failed — system error: {exc}") from exc
+    if not licensed:
         raise RuntimeError("License check failed — insufficient credits for autonomous execution")
         engine = _goal_engine(db_path)
         created = engine.create_goal(goal_title)

@@ -6,8 +6,11 @@ before execution to prevent injection attacks.
 
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass, field
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -145,15 +148,35 @@ class CommandSanitizer:
             result.blocked_reason = "Empty command"
             return result
 
-        # Check deny list patterns first
+                # Check allow list patterns first (override dangerous/suspicious)
+        allow_matched = False
+        for pattern_str in self.allow_patterns:
+         try:
+          if re.search(pattern_str, command, re.IGNORECASE):
+           result.warnings.append(
+            f"Command matches allow pattern: {pattern_str}",
+           )
+           allow_matched = True
+         except re.error as exc:
+           logger.warning("Invalid allow_pattern regex '%s': %s", pattern_str, exc)
+
+        if allow_matched:
+         result.is_safe = True
+         result.blocked_patterns.clear()
+         result.blocked_reason = ""
+
+        # Check deny list patterns (always apply)
         for pattern_str in self.deny_patterns:
-            try:
-                if re.search(pattern_str, command, re.IGNORECASE):
-                    result.is_safe = False
-                    result.blocked_patterns.append(f"custom_deny:{pattern_str}")
-                    result.blocked_reason = f"Matches custom deny pattern: {pattern_str}"
-            except re.error:
-                pass
+         try:
+          if re.search(pattern_str, command, re.IGNORECASE):
+           result.is_safe = False
+           result.blocked_patterns.append(f"custom_deny:{pattern_str}")
+           result.blocked_reason = f"Matches custom deny pattern: {pattern_str}"
+         except re.error as exc:
+           logger.warning("Invalid deny_pattern regex '%s': %s", pattern_str, exc)
+
+        if not result.is_safe:
+         return result
 
         # Check dangerous patterns
         for regex, name in self._dangerous_regex:

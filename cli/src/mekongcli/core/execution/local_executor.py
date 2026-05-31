@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.core.command_sanitizer import CommandSanitizer
+from src.core.command_sanitizer import CommandSanitizer, get_sanitizer
 
 
 @dataclass
@@ -31,7 +31,7 @@ class LocalExecutor:
     def __init__(self, cwd: str | Path = ".", timeout_seconds: int = 60) -> None:
         self.cwd = Path(cwd)
         self.timeout_seconds = timeout_seconds
-        self._sanitizer = CommandSanitizer(strict_mode=False)
+        self._sanitizer = get_sanitizer(strict_mode=False)
 
     def run(self, command: str) -> ExecutionOutcome:
         started = time.time()
