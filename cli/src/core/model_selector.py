@@ -42,8 +42,8 @@ MODEL_ROUTING_MATRIX: dict[tuple[str, str, bool | str, str], str] = {
     ("cto", "simple", False, "public"): "gemini-2.0-flash",
     ("cto", "simple", False, "internal"): "gemini-2.0-flash",
     ("cto", "simple", False, "sensitive"): "mlx:deepseek-coder-v2:16b",
-    ("cto", "standard", True, "public"): "claude-sonnet-4-6",
-    ("cto", "standard", True, "internal"): "claude-sonnet-4-6",
+    ("cto", "standard", True, "public"): "claude-sonnet-4-6-20250514",
+    ("cto", "standard", True, "internal"): "claude-sonnet-4-6-20250514",
     ("cto", "standard", True, "sensitive"): "mlx:deepseek-coder-v2:33b",
     ("cto", "complex", True, "public"): "claude-opus-4-6",
     ("cto", "complex", True, "internal"): "claude-opus-4-6",
@@ -78,13 +78,13 @@ MODEL_ROUTING_MATRIX: dict[tuple[str, str, bool | str, str], str] = {
     ("cs", "complex", True, "*"): "claude-haiku-4-5",
     # SALES
     ("sales", "simple", False, "*"): "claude-haiku-4-5",
-    ("sales", "standard", True, "*"): "claude-sonnet-4-6",
-    ("sales", "complex", True, "*"): "claude-sonnet-4-6",
+    ("sales", "standard", True, "*"): "claude-sonnet-4-6-20250514",
+    ("sales", "complex", True, "*"): "claude-sonnet-4-6-20250514",
 }
 
 CONTEXT_WINDOW_MAP: dict[str, int] = {
     "claude-opus-4-6": 200000,
-    "claude-sonnet-4-6": 200000,
+    "claude-sonnet-4-6-20250514": 200000,
     "claude-haiku-4-5": 200000,
     "gemini-2.0-flash": 1000000,
     "gemini-2.0-flash-lite": 1000000,
@@ -243,7 +243,7 @@ def select_model(profile: TaskProfile, state: SystemState) -> ModelConfig:
 
     # Step 3: Tenant tier override
     if state.tenant_tier == "starter" and model_id == "claude-opus-4-6":
-        model_id = "claude-sonnet-4-6"
+        model_id = "claude-sonnet-4-6-20250514"
 
     if (state.tenant_tier == "starter"
             and state.local_available

@@ -25,7 +25,7 @@ class CostEstimate:
 # $/MTok (input, output) — ollama = free
 COST_TABLE: dict[str, tuple[float, float]] = {
     "claude-opus-4-6": (15.0, 75.0),
-    "claude-sonnet-4-6": (3.0, 15.0),
+    "claude-sonnet-4-6-20250514": (3.0, 15.0),
     "claude-haiku-4-5": (0.25, 1.25),
     "gemini-2.0-flash": (0.075, 0.30),
     "gemini-2.0-flash-lite": (0.02, 0.08),

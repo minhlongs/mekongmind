@@ -2,6 +2,12 @@ node_modules/
 .turbo/
 dist/
 .next/
+out/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+target/
 *.dylib
 .env
 .wrangler/

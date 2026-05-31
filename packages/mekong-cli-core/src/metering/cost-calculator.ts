@@ -6,7 +6,7 @@
 /** Pricing: [inputCostPerMToken, outputCostPerMToken] in USD */
 const PRICING: Record<string, [number, number]> = {
   // Anthropic
-  'anthropic/claude-sonnet-4-20250514': [3.0, 15.0],
+  'anthropic/claude-sonnet-4-6-20250514': [3.0, 15.0],
   'anthropic/claude-sonnet-4': [3.0, 15.0],
   'anthropic/claude-haiku-4-5-20251001': [0.8, 4.0],
   'anthropic/claude-opus-4-6': [15.0, 75.0],
@@ -21,7 +21,7 @@ const PRICING: Record<string, [number, number]> = {
   'openrouter/anthropic/claude-sonnet-4': [3.0, 15.0],
   'openrouter/openai/gpt-4o': [2.5, 10.0],
   // Standalone model keys (without provider prefix)
-  'claude-sonnet-4-20250514': [3.0, 15.0],
+  'claude-sonnet-4-6-20250514': [3.0, 15.0],
   'claude-sonnet-4': [3.0, 15.0],
   'claude-haiku-4-5-20251001': [0.8, 4.0],
   'claude-opus-4-6': [15.0, 75.0],
@@ -39,7 +39,7 @@ export class CostCalculator {
   /**
    * Calculate cost in USD for a completed LLM call.
    * @param provider - provider name (e.g. 'anthropic', 'ollama')
-   * @param model - model name (e.g. 'claude-sonnet-4-20250514')
+   * @param model - model name (e.g. 'claude-sonnet-4-6-20250514')
    * @param inputTokens - number of input tokens
    * @param outputTokens - number of output tokens
    */

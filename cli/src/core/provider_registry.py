@@ -221,7 +221,7 @@ class OpenAICompatProvider:
             "gemini-3-pro-high",
             "gemini-2.5-pro",
             "gemini-2.0-flash",
-            "claude-sonnet-4-6",
+            "claude-sonnet-4-6-20250514",
             "claude-opus-4-6",
         ]
 

@@ -1,6 +1,6 @@
 """Model Alias Map — translate canonical model names to provider-specific names.
 
-When model_selector picks "claude-sonnet-4-6" but active provider is DashScope,
+When model_selector picks "claude-sonnet-4-6-20250514" but active provider is DashScope,
 this translates to "qwen3-coder-plus" before API call.
 """
 
@@ -23,7 +23,7 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "ollama-local": "deepseek-coder-v2:33b",
     },
     # STANDARD (daily coding, analysis)
-    "claude-sonnet-4-6": {
+    "claude-sonnet-4-6-20250514": {
         "qwen": "qwen3-coder-plus",
         "deepseek": "deepseek-chat",
         "openrouter": "anthropic/claude-sonnet-4",
@@ -70,7 +70,7 @@ def resolve_model(canonical_model: str, provider_name: str) -> str:
     """Translate canonical model name to provider-specific name.
 
     Args:
-        canonical_model: From model_selector (e.g. "claude-sonnet-4-6")
+        canonical_model: From model_selector (e.g. "claude-sonnet-4-6-20250514")
         provider_name: Active provider (e.g. "qwen", "deepseek", "openrouter")
 
     Returns:

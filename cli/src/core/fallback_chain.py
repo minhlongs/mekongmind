@@ -30,7 +30,7 @@ FALLBACK_HIERARCHY: dict[str, list[str]] = {
     "ollama:deepseek-r1:32b": ["ollama:qwen3.6-35b", "ollama:qwen3.5-9b"],
     # Cloud → always fallback to local
     "claude-opus-4-6": ["ollama:qwen3.6-35b", "ollama:deepseek-r1:32b"],
-    "claude-sonnet-4-6": ["ollama:qwen3.6-35b", "ollama:qwen3.5-9b"],
+    "claude-sonnet-4-6-20250514": ["ollama:qwen3.6-35b", "ollama:qwen3.5-9b"],
     "claude-haiku-4-5": ["ollama:qwen3.5-4b"],
     "gemini-2.0-pro": ["ollama:qwen3.6-35b"],
     "gemini-2.0-flash": ["ollama:qwen3.6-35b"],

@@ -50,7 +50,7 @@ MODEL_PRICES: dict[str, dict[str, float]] = {
         "output_cost_per_token": 75.0e-06,
         "max_input_tokens": 200000,
     },
-    "claude-sonnet-4-6": {
+    "claude-sonnet-4-6-20250514": {
         "input_cost_per_token": 3.0e-06,
         "output_cost_per_token": 15.0e-06,
         "max_input_tokens": 200000,

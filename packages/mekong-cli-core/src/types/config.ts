@@ -4,13 +4,28 @@ export const ConfigSchema = z.object({
   version: z.string().default('1'),
   llm: z.object({
     default_provider: z.enum(['anthropic', 'openai', 'deepseek', 'ollama']).default('anthropic'),
-    default_model: z.string().default('claude-sonnet-4-20250514'),
+    default_model: z.string().default('claude-sonnet-4-6-20250514'),
     providers: z.record(z.object({
       api_key: z.string().optional(),
       api_key_env: z.string().optional(),
       base_url: z.string().optional(),
       default_model: z.string().optional(),
     })).default({}),
+  }).default({}),
+  models: z.object({
+    thinking: z.object({
+      provider: z.string(),
+      model: z.string(),
+      temperature: z.number().optional(),
+      max_tokens: z.number().optional(),
+    }).optional(),
+    coding: z.object({
+      provider: z.string(),
+      model: z.string(),
+      temperature: z.number().optional(),
+      max_tokens: z.number().optional(),
+    }).optional(),
+    fallback: z.enum(['thinking', 'coding']).optional(),
   }).default({}),
   agents: z.object({
     max_iterations: z.number().default(10),

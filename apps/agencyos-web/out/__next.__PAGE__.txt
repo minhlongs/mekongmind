@@ -1,5 +1,0 @@
-1:"$Sreact.fragment"
-2:I[6846,["/_next/static/chunks/0uwjba68kry3p.js"],"OutletBoundary"]
-3:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","main",null,{"className":"min-h-screen bg-zinc-950 text-white p-8","children":[["$","h1",null,{"className":"text-4xl font-bold mb-4","children":"AgencyOS Web"}],["$","p",null,{"className":"text-zinc-400","children":"AgencyOS Web Interface"}]]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"dCMDxWnJqfH7xlul0RdjJ"}
-4:null

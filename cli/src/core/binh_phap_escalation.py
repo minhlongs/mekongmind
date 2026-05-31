@@ -25,12 +25,12 @@ ESCALATION_PROVIDERS: dict[str, dict[str, str]] = {
         "fallback_name": "ollama-fallback",
     },
     "cloud_sonnet": {
-        "base_url": "https://api.anthropic.com/v1",
-        "model": "claude-sonnet-4-6",
+        "base_url": "https://api.anthropic.com",
+        "model": "claude-sonnet-4-6-20250514",
         "provider_name": "anthropic-sonnet",
     },
     "cloud_opus": {
-        "base_url": "https://api.anthropic.com/v1",
+        "base_url": "https://api.anthropic.com",
         "model": "claude-opus-4-6",
         "provider_name": "anthropic-opus",
     },
@@ -68,11 +68,11 @@ def resolve_llm_provider(escalation_level: str) -> dict[str, str]:
 def create_provider_for_level(escalation_level: str) -> Any:
     """Create an LLMProvider instance for the given escalation level.
 
-    Returns OpenAICompatibleProvider configured for the right endpoint.
+    Returns a provider configured for the right endpoint.
     Returns None if provider can't be created.
     """
     try:
-        from .providers import OpenAICompatibleProvider
+        from .providers import AnthropicCompatibleProvider, OpenAICompatibleProvider
     except ImportError:
         return None
 
@@ -91,7 +91,7 @@ def create_provider_for_level(escalation_level: str) -> Any:
         if not api_key:
             logger.warning("No API key for %s escalation", escalation_level)
             return None
-        return OpenAICompatibleProvider(
+        return AnthropicCompatibleProvider(
             base_url=config["base_url"],
             api_key=api_key,
             model=config["model"],

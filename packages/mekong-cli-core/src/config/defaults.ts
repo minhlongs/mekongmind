@@ -5,9 +5,10 @@ export const DEFAULT_CONFIG: MekongConfig = {
   version: '1',
   llm: {
     default_provider: 'anthropic',
-    default_model: 'claude-sonnet-4-20250514',
+    default_model: 'claude-sonnet-4-6-20250514',
     providers: {},
   },
+  models: {},
   agents: {
     max_iterations: 10,
     max_tokens_per_turn: 4096,

@@ -49,7 +49,7 @@ interface TaskBudget {
 
 /** Model pricing per million tokens [input, output] in USD */
 const MODEL_PRICING: Record<string, [number, number]> = {
-  'claude-sonnet-4-20250514': [3, 15],
+  'claude-sonnet-4-6-20250514': [3, 15],
   'claude-sonnet-4': [3, 15],
   'gpt-4o': [2.5, 10],
   'deepseek-chat': [0.14, 0.28],

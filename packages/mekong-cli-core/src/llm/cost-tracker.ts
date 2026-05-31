@@ -25,7 +25,7 @@ export interface UsageSummary {
 
 /** Model pricing per million tokens [input, output] */
 const MODEL_PRICING: Record<string, [number, number]> = {
-  'claude-sonnet-4-20250514': [3, 15],
+  'claude-sonnet-4-6-20250514': [3, 15],
   'claude-sonnet-4': [3, 15],
   'claude-haiku-4-5-20251001': [0.80, 4],
   'claude-opus-4-6': [15, 75],

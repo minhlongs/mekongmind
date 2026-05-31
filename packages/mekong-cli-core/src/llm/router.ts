@@ -16,19 +16,48 @@ import type { MeteringCollector } from '../metering/collector.js';
 
 /** Provider factory configs */
 const PROVIDER_DEFAULTS: Record<string, { baseUrl: string; defaultModel: string }> = {
-  anthropic: { baseUrl: 'https://api.anthropic.com/v1', defaultModel: 'claude-sonnet-4-20250514' },
+  anthropic: { baseUrl: 'https://api.anthropic.com', defaultModel: 'claude-sonnet-4-6-20250514' },
   openai: { baseUrl: 'https://api.openai.com/v1', defaultModel: 'gpt-4o' },
   deepseek: { baseUrl: 'https://api.deepseek.com/v1', defaultModel: 'deepseek-chat' },
   openrouter: { baseUrl: 'https://openrouter.ai/api/v1', defaultModel: 'anthropic/claude-sonnet-4' },
 };
 
-/** Environment variable names for API keys */
-const ENV_KEY_MAP: Record<string, string> = {
-  anthropic: 'ANTHROPIC_API_KEY',
-  openai: 'OPENAI_API_KEY',
-  deepseek: 'DEEPSEEK_API_KEY',
-  openrouter: 'OPENROUTER_API_KEY',
+function looksLikeAnthropicEndpoint(baseUrl: string): boolean {
+  const lower = baseUrl.toLowerCase();
+  return lower.includes('anthropic') || lower.includes('claude');
+}
+
+function anthropicDefaultModel(baseUrl: string, fallback: string): string {
+  const configured = process.env.ANTHROPIC_MODEL ?? process.env.LLM_MODEL;
+  if (configured) return configured;
+  if (baseUrl.toLowerCase().includes('zunef.com')) return 'claude-sonnet-4-6-20250514';
+  return fallback;
+}
+
+/** Model aliases for multi-model routing (Qwen ↔ Soren) */
+const MODEL_ALIASES: Record<string, string> = {
+  'qwen': 'mlx',
+  'qwen3': 'mlx',
+  'qwen-3.6': 'mlx',
+  'soren': 'local-llm',
+  'soren-1': 'local-llm',
 };
+
+/** Environment variable names for API keys */
+const ENV_KEY_MAP: Record<string, string[]> = {
+  anthropic: ['ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN'],
+  openai: ['OPENAI_API_KEY'],
+  deepseek: ['DEEPSEEK_API_KEY'],
+  openrouter: ['OPENROUTER_API_KEY'],
+};
+
+function firstEnv(names: string[]): string | undefined {
+  for (const name of names) {
+    const value = process.env[name];
+    if (value) return value;
+  }
+  return undefined;
+}
 
 export class LlmRouter {
   private providers: Map<string, LlmProvider> = new Map();
@@ -56,10 +85,7 @@ export class LlmRouter {
 
     if (provider) {
       try {
-        const response = await provider.chat({
-          ...request,
-          model: request.model ?? this.defaultModel,
-        });
+        const response = await provider.chat(request);
         const costRecord = this.costTracker.record(
           response.provider, response.model,
           response.usage.inputTokens, response.usage.outputTokens,
@@ -102,10 +128,7 @@ export class LlmRouter {
         const available = await provider.isAvailable();
         if (!available) continue;
 
-        const response = await provider.chat({
-          ...request,
-          model: request.model ?? this.defaultModel,
-        });
+        const response = await provider.chat(request);
         const fallbackCost = this.costTracker.record(
           response.provider, response.model,
           response.usage.inputTokens, response.usage.outputTokens,
@@ -141,11 +164,31 @@ export class LlmRouter {
     const envModel = process.env.LLM_MODEL;
 
     if (envBaseUrl && envApiKey) {
-      this.providers.set(this.defaultProvider, new OpenAICompatProvider({
-        name: this.defaultProvider,
-        baseUrl: envBaseUrl,
-        apiKey: envApiKey,
-        defaultModel: envModel ?? this.defaultModel,
+      this.providers.set(
+        this.defaultProvider,
+        looksLikeAnthropicEndpoint(envBaseUrl)
+          ? new AnthropicProvider({
+              apiKey: envApiKey,
+              baseUrl: envBaseUrl,
+              defaultModel: envModel ?? anthropicDefaultModel(envBaseUrl, this.defaultModel),
+            })
+          : new OpenAICompatProvider({
+              name: this.defaultProvider,
+              baseUrl: envBaseUrl,
+              apiKey: envApiKey,
+              defaultModel: envModel ?? this.defaultModel,
+            }),
+      );
+    }
+
+    const directAnthropicKey = firstEnv(ENV_KEY_MAP.anthropic);
+    if (directAnthropicKey && directAnthropicKey !== envApiKey) {
+      const baseUrl = process.env.ANTHROPIC_BASE_URL ?? PROVIDER_DEFAULTS.anthropic.baseUrl;
+      const providerKey = this.providers.has('anthropic') ? 'anthropic-direct' : 'anthropic';
+      this.providers.set(providerKey, new AnthropicProvider({
+        apiKey: directAnthropicKey,
+        baseUrl,
+        defaultModel: anthropicDefaultModel(baseUrl, PROVIDER_DEFAULTS.anthropic.defaultModel),
       }));
     }
 
@@ -163,11 +206,17 @@ export class LlmRouter {
 
     // Auto-detect from env vars if no providers configured yet
     if (this.providers.size === 0) {
-      for (const [providerName, envKey] of Object.entries(ENV_KEY_MAP)) {
-        const key = process.env[envKey];
+      for (const [providerName, envKeys] of Object.entries(ENV_KEY_MAP)) {
+        const key = firstEnv(envKeys);
         if (key) {
           const defaults = PROVIDER_DEFAULTS[providerName]!;
-          this.providers.set(providerName, this.createProvider(providerName, key, defaults.baseUrl, defaults.defaultModel));
+          const baseUrl = providerName === 'anthropic'
+            ? (process.env.ANTHROPIC_BASE_URL ?? defaults.baseUrl)
+            : defaults.baseUrl;
+          const defaultModel = providerName === 'anthropic'
+            ? anthropicDefaultModel(baseUrl, defaults.defaultModel)
+            : defaults.defaultModel;
+          this.providers.set(providerName, this.createProvider(providerName, key, baseUrl, defaultModel));
         }
       }
 
@@ -190,7 +239,10 @@ export class LlmRouter {
 
   /** Create the best provider implementation for a given name */
   private createProvider(name: string, apiKey: string, baseUrl: string, defaultModel: string): LlmProvider {
-    switch (name) {
+    // Resolve model aliases (qwen → mlx, soren → local-llm)
+    const resolvedName = MODEL_ALIASES[name] ?? name;
+
+    switch (resolvedName) {
       case 'anthropic':
         return new AnthropicProvider({ apiKey, baseUrl: baseUrl || undefined, defaultModel });
       case 'openai':
