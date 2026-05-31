@@ -17,6 +17,7 @@ from src.core.llm_client import get_client
 from src.core.orchestrator import RecipeOrchestrator, OrchestrationStatus
 from src.mekongcli.core.goal_engine import GoalEngine, GoalStatus, SQLiteGoalStore
 from src.mekongcli.core.verification import VerificationPipeline
+from src.lib.raas_gate import check_license
 
 console = Console()
 
@@ -140,6 +141,8 @@ def register_cook_command(app: typer.Typer) -> None:
         goal_title = " ".join(goal).strip()
         if not goal_title:
             raise typer.BadParameter("goal cannot be empty", param_hint="GOAL")
+    if not check_license("cook-auto"):
+        raise RuntimeError("License check failed — insufficient credits for autonomous execution")
         engine = _goal_engine(db_path)
         created = engine.create_goal(goal_title)
         completed = engine.run_goal(
@@ -218,6 +221,8 @@ def register_cook_command(app: typer.Typer) -> None:
         goal_title = " ".join(goal).strip()
         if not goal_title:
             raise typer.BadParameter("goal cannot be empty", param_hint="GOAL")
+    if not check_license("cook-auto"):
+        raise RuntimeError("License check failed — insufficient credits for autonomous execution")
         engine = _goal_engine(db_path)
         created = engine.create_goal(goal_title)
         completed = engine.run_goal_parallel(

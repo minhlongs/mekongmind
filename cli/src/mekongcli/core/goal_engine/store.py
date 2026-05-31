@@ -26,20 +26,45 @@ class SQLiteGoalStore:
     """Durable local-first store for goals, tasks, checkpoints, events, and gates."""
 
     def __init__(self, db_path: str | Path | None = None) -> None:
-        self.db_path = Path(db_path) if db_path else Path(".mekong/goals.sqlite3")
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        raw = Path(db_path) if db_path else Path(".mekong/goals.sqlite3")
+        self.db_path = raw.resolve()
+        self._validate_path()
+        try:
+            self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            raise RuntimeError(f"Cannot create database directory {self.db_path.parent}: {exc}") from exc
         self.lock = threading.RLock()
         self._init_schema()
 
     def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(str(self.db_path), timeout=30.0)
+        try:
+            conn = sqlite3.connect(str(self.db_path), timeout=30.0)
+        except sqlite3.OperationalError as exc:
+            raise RuntimeError(f"Cannot open database {self.db_path}: {exc}") from exc
         conn.row_factory = sqlite3.Row
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
             conn.execute("PRAGMA synchronous=NORMAL;")
+            check = conn.execute("PRAGMA integrity_check;").fetchone()
+            if check and check[0] != "ok":
+                raise RuntimeError(f"Database integrity check failed: {check[0]}")
         except sqlite3.OperationalError:
             pass
         return conn
+
+    def _validate_path(self) -> None:
+        cwd = Path.cwd().resolve()
+        if not str(self.db_path).startswith(str(cwd)):
+            raise ValueError(
+                f"Database path {self.db_path} is outside project directory {cwd}"
+            )
+
+    @staticmethod
+    def _safe_json(raw: str) -> Any:
+        try:
+            return json.loads(raw)
+        except (json.JSONDecodeError, ValueError):
+            return {} if raw.strip() in ("", "null") else {"_corrupt": raw[:200]}
 
 
     def _init_schema(self) -> None:
@@ -154,8 +179,8 @@ class SQLiteGoalStore:
                 created_at=row["created_at"],
                 updated_at=row["updated_at"],
                 retry_limit=row["retry_limit"],
-                stop_conditions=json.loads(row["stop_conditions"]),
-                metadata=json.loads(row["metadata"]),
+                stop_conditions=self._safe_json(row["stop_conditions"]),
+                metadata=self._safe_json(row["metadata"]),
             )
 
     def list_goals(self) -> list[Goal]:
@@ -259,7 +284,7 @@ class SQLiteGoalStore:
                     description=row["description"],
                     role=AgentRole(row["role"]),
                     status=TaskStatus(row["status"]),
-                    depends_on=json.loads(row["depends_on"]),
+                    depends_on=self._safe_json(row["depends_on"]),
                     attempts=row["attempts"],
                     max_attempts=row["max_attempts"],
                     command=row["command"],
@@ -301,7 +326,7 @@ class SQLiteGoalStore:
                     goal_id=row["goal_id"],
                     task_id=row["task_id"],
                     label=row["label"],
-                    state=json.loads(row["state"]),
+                    state=self._safe_json(row["state"]),
                     created_at=row["created_at"],
                 )
                 for row in rows
@@ -344,7 +369,7 @@ class SQLiteGoalStore:
                 goal_id=row["goal_id"],
                 profile=row["profile"],
                 passed=bool(row["passed"]),
-                results=json.loads(row["results"]),
+                results=self._safe_json(row["results"]),
                 created_at=row["created_at"],
             )
 
@@ -369,7 +394,7 @@ class SQLiteGoalStore:
             return [
                 {
                     "event_name": row["event_name"],
-                    "payload": json.loads(row["payload"]),
+                    "payload": self._safe_json(row["payload"]),
                     "created_at": row["created_at"],
                 }
                 for row in rows

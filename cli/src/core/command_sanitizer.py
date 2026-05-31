@@ -99,7 +99,7 @@ class CommandSanitizer:
 
     def __init__(
         self,
-        strict_mode: bool = False,
+        strict_mode: bool = True,
         allow_patterns: list[str] | None = None,
         deny_patterns: list[str] | None = None,
     ) -> None:
