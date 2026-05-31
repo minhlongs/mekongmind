@@ -8,9 +8,20 @@ from rich.table import Table
 from rich.progress import Progress, BarColumn, TextColumn
 import subprocess
 from pathlib import Path
+
+def _safe_path(user_path: str, allow_create: bool = False) -> Path:
+    """Contain file access to user's home directory."""
+    p = Path(user_path).expanduser().resolve()
+    home = Path.home().resolve()
+    if not str(p).startswith(str(home)):
+        raise ValueError(f"Path outside home directory: {p}")
+    if not allow_create and not p.exists():
+        raise ValueError(f"File does not exist: {p}")
+    return p
 import time
 import os
 import json
+import shlex
 from datetime import datetime
 
 try:
@@ -285,8 +296,9 @@ def logs(
 
     elif service == "custom":
         custom_log_path = os.environ.get("CUSTOM_LOG_PATH", "./custom.log")
+ safe_log = _safe_path(custom_log_path)
         if Path(custom_log_path).exists():
-            tail_log(custom_log_path, lines, follow, filter_pattern)
+            tail_log(safe_log, lines, follow, filter_pattern)
         else:
             console.print(f"[red]❌ Custom log file not found: {custom_log_path}[/red]")
             console.print("[dim]Set CUSTOM_LOG_PATH environment variable to specify log location[/dim]")
@@ -307,7 +319,7 @@ def tail_log(log_file: str, lines: int, follow: bool, filter_pattern: Optional[s
         if filter_pattern:
             # Combine tail with grep
             tail_process = subprocess.Popen(cmd[:-1], stdout=subprocess.PIPE, text=True)
-            grep_cmd = ["grep", filter_pattern]
+            grep_cmd = ["grep", "-F", filter_pattern]  # -F = fixed string, no regex interpretation
             if follow:
                 grep_cmd.append("--line-buffered")
 
@@ -427,7 +439,8 @@ def performance(
 
     # Save to file if requested
     if output_file:
-        with open(output_file, 'w') as f:
+        safe_out = _safe_path(output_file, allow_create=True)
+    with open(safe_out, 'w') as f:
             json.dump(metrics_history, f, indent=2)
         console.print(f"\n[green]💾 Metrics saved to {output_file}[/green]")
 

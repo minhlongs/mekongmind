@@ -151,7 +151,7 @@ def set(key: str, value: str) -> None:
         console.print(f"[green]✓[/green] Created {ENV_FILE}")
 
     set_key(str(ENV_FILE), key, value)
-    console.print(f"[green]✓[/green] Set {key} = {mask_value(value) if 'key' in key.lower() or 'token' in key.lower() else value}")
+    console.print(f"[green]✓[/green] Set {key} = {mask_value(value) if any(p in key.lower() for p in ('key', 'token', 'password', 'secret', 'private_key')) else value}")
 
 
 @app.command()

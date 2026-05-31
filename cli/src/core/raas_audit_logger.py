@@ -67,7 +67,11 @@ class AuditResult:
 
 
 @dataclass
-class RaaSInteractionTrace:
+SANITIZED_HEADER_KEYS = {"authorization", "x-jwt-attribution", "x-api-key", "x-auth-token", "x-raas-key"}
+
+def _sanitize_headers(headers: Dict[str, str]) -> Dict[str, str]:
+    return {k: "***REDACTED***" if k.lower() in SANITIZED_HEADER_KEYS else v
+            for k, v in headers.items()}
     """Full trace of RaaS interaction for debugging."""
 
     timestamp: str
@@ -218,7 +222,7 @@ class RAASAuditLogger:
             event_type=event,
             endpoint=self.AUDIT_ENDPOINT,
             method="POST",
-            headers_sent=headers,
+            headers_sent=_sanitize_headers(headers),
             payload_sent=payload,
             status_code=0,
             response_body=None,
@@ -252,7 +256,7 @@ class RAASAuditLogger:
                     event_id=event_id,
                     elapsed_ms=elapsed_ms,
                     payload=payload,
-                    headers_sent=headers,
+                    headers_sent=_sanitize_headers(headers),
                 )
 
             else:
@@ -267,7 +271,7 @@ class RAASAuditLogger:
                     error=error_msg,
                     elapsed_ms=elapsed_ms,
                     payload=payload,
-                    headers_sent=headers,
+                    headers_sent=_sanitize_headers(headers),
                 )
 
         except requests.RequestException as e:
@@ -285,7 +289,7 @@ class RAASAuditLogger:
                 error=error_msg,
                 elapsed_ms=elapsed_ms,
                 payload=payload,
-                headers_sent=headers,
+                headers_sent=_sanitize_headers(headers),
             )
 
     def log_completion(

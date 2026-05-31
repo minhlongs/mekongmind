@@ -146,6 +146,14 @@ def deploy_to_kubernetes(image_tag: str, verbose: bool):
 def deploy_custom(env: str, verbose: bool):
     """Deploy using custom script or command"""
     deploy_script = os.environ.get("CUSTOM_DEPLOY_SCRIPT", "./deploy.sh")
+    # Validate script path is within project directory
+    script_path = Path(deploy_script).resolve()
+    cwd = Path.cwd().resolve()
+    try:
+        script_path.relative_to(cwd)
+    except ValueError:
+        console.print(f"[red]❌ Script outside project directory: {deploy_script}[/red]")
+        raise typer.Exit(code=1)
 
     if not Path(deploy_script).exists():
         console.print(f"[red]❌ Custom deployment script not found: {deploy_script}[/red]")

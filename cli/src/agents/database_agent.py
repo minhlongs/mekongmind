@@ -1,3 +1,4 @@
+
 """
 Mekong CLI - DatabaseAgent
 
@@ -10,6 +11,18 @@ from typing import List, Optional, cast
 from pathlib import Path
 
 from ..core.agent_base import AgentBase, Task, Result
+
+ALLOWED_TABLES = {
+    "raas_users", "license_keys", "billing_records",
+    "audit_logs", "usage_events", "tenants",
+    "credit_meters", "report_signatures",
+}
+
+def _validate_table(table_name: str) -> str:
+    if table_name not in ALLOWED_TABLES:
+        raise ValueError(f"Invalid table name: {table_name}")
+    return table_name
+
 
 
 # Type alias for database connection
@@ -188,39 +201,12 @@ class DatabaseAgent(AgentBase):
             # Check if this is a multi-statement query (contains semicolons)
             statements = [stmt.strip() for stmt in query.split(';') if stmt.strip()]
 
-            if len(statements) > 1:
-                # Execute multiple statements
-                for stmt in statements[:-1]:  # Execute all but the last statement
-                    if stmt.upper().strip().startswith("SELECT"):
-                        # For SELECT statements in multi-query, just execute
-                        cursor.execute(stmt)
-                    else:
-                        cursor.execute(stmt)
+        if len(statements) > 1:
+            raise ValueError("Multi-statement queries not allowed")
 
-                # Handle the last statement specially if it's a SELECT
-                last_stmt = statements[-1]
-                if last_stmt.strip().upper().startswith("SELECT"):
-                    cursor.execute(last_stmt)
-                    rows = cursor.fetchall()
-                    columns = [description[0] for description in cursor.description] if cursor.description else []
-
-                    # Format results
-                    result_data = {
-                        "columns": columns,
-                        "rows": [dict(zip(columns, row)) for row in rows],
-                        "row_count": len(rows)
-                    }
-
-                    output = f"Multi-query executed successfully. Rows returned: {len(rows)}"
-                    if rows:
-                        output += f"\nSample data: {result_data}"
-                else:
-                    # Non-SELECT last statement
-                    cursor.execute(last_stmt)
-                    self.connection.commit()
-                    output = f"Multi-query executed successfully. Rows affected: {cursor.rowcount}"
             else:
                 # Single statement
+        _check_safe_query(query)
                 cursor.execute(query)
 
                 if query.strip().upper().startswith("SELECT"):
@@ -295,7 +281,8 @@ class DatabaseAgent(AgentBase):
         if table_name:
             # Get schema for specific table
             try:
-                cursor.execute(f"PRAGMA table_info({table_name})")
+                _validate_table(table_name)
+        cursor.execute(f"PRAGMA table_info({table_name}")
                 columns = cursor.fetchall()
 
                 schema_info = [
@@ -371,6 +358,7 @@ class DatabaseAgent(AgentBase):
 
             if self.connection is not None:
                 cursor = self.connection.cursor()
+            _check_safe_script(sql_script)
                 cursor.executescript(sql_script)
                 self.connection.commit()
                 output = f"Database restored from: {backup_path}"
@@ -386,5 +374,21 @@ class DatabaseAgent(AgentBase):
             error=None
         )
 
+
+
+def _check_safe_query(query: str) -> None:
+    """Reject dangerous SQL operations."""
+    DANGEROUS_KEYWORDS = {"DROP", "DELETE", "ALTER", "TRUNCATE", "INSERT", "UPDATE", "EXEC", "ATTACH", "CREATE"}
+    for kw in DANGEROUS_KEYWORDS:
+        if kw in query.upper().split():
+            raise ValueError(f"Operation not allowed: {kw}")
+
+
+def _check_safe_script(script: str) -> None:
+    """Reject dangerous SQL operations in scripts."""
+    DANGEROUS_KEYWORDS = {"DROP", "DELETE", "ALTER", "TRUNCATE", "INSERT", "UPDATE", "EXEC", "ATTACH", "CREATE"}
+    for kw in DANGEROUS_KEYWORDS:
+        if kw in script.upper().split():
+            raise ValueError(f"Operation not allowed in script: {kw}")
 
 __all__ = ["DatabaseAgent"]
