@@ -14,6 +14,8 @@
 | `LLM_THINKING_MODEL` | Model id for planning/reasoning intents | `claude-opus-4-7` | No |
 | `LLM_MAX_TOKENS` | Max output tokens | `16384` | No |
 | `LLM_TEMPERATURE` | Default temperature | `0.3` (coding) \| `0.1` (thinking) | No |
+| `ANTHROPIC_TIMEOUT_MS` | HTTP timeout for Anthropic cloud calls (ms) | `60000` (60s) | No |
+| `LLM_TIMEOUT_MS` | Generic HTTP timeout fallback (ms) | `60000` (60s) | No |
 
 ## Routing Contract
 
@@ -59,7 +61,7 @@ Escalate from local to cloud **only** when:
 | TS meta-router | `packages/mekong-cli-core/src/llm/meta-router.ts` | Intent-based routing + fallback |
 | TS classifier | `packages/mekong-cli-core/src/llm/classifier.ts` | Intent detection (planning/coding/chat) |
 | TS local provider | `packages/mekong-cli-core/src/llm/providers/ollama.ts` | Ollama backend |
-| TS MLX provider | `packages/mekong-cli-core/src/llm/providers/mlx.ts` | MLX backend (if present) |
+| `packages/mekong-cli-core/src/llm/providers/mlx.ts` | TS MLX provider | MLX backend (Apple Silicon) |
 | Python CLI | `cli/src/core/providers.py` | Python LLMProvider ABC + built-ins |
 | Python client | `cli/src/core/llm_client.py` | Python-side chat dispatcher |
 | Worker script | `apps/openclaw-worker/scripts/qwen-warmup.sh` | Warmup for local model |
@@ -118,7 +120,7 @@ cd /Users/macbook/mekongmind/cli && python -c "from src.core.llm_client import L
 ```
 
 ## Unresolved Questions
-- Q1: Does `packages/mekong-cli-core/src/llm/providers/mlx.ts` exist? (Phase 2 may need to reconcile from mekong-cli source)
+- Q1: ~~Does `packages/mekong-cli-core/src/llm/providers/mlx.ts` exist?~~ → YES, created (P1.3) (Phase 2 may need to reconcile from mekong-cli source)
 - Q2: Python CLI `llm_client.py` — does it use the same env var names or a different convention?
 - Q3: OpenClaw worker scripts — do they call local LLM directly or via the TS router?
 - Q4: Metering — should cloud token usage be logged to a local file for cost tracking?
@@ -408,8 +410,8 @@ grep -n "cheetahclaws\|cc_daemon\|CheetahClaws" /Users/macbook/mekongmind/cli/sr
 ---
 
 ## Unresolved Questions (updated)
-- Q1: Does `packages/mekong-cli-core/src/llm/providers/mlx.ts` exist?
-- Q2: Python CLI `llm_client.py` env var convention — same as TS or different?
+- Q1: ~~Does `packages/mekong-cli-core/src/llm/providers/mlx.ts` exist?~~ → YES, created (P1.3)
+- Q2: ~~Python CLI `llm_client.py` env var convention — same as TS or different?~~ → Resolved: ANTHROPIC_TIMEOUT_MS / LLM_TIMEOUT_MS (ms) now supported (P1.1)
 - Q3: OpenClaw worker scripts call local LLM directly or via TS router?
 - Q4: Cloud token metering — local file log or external service?
 - Q5: OpenClaw upstream `~/projects/openclaw` — which interfaces does target actually consume today?

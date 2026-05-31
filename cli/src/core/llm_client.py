@@ -39,6 +39,7 @@ import requests  # type: ignore[import-untyped]
 from .hooks import HookContext, HookPhase, HookPipeline, create_default_pipeline
 from .llm_cache import LLMCache
 from .providers import (
+    AnthropicCompatibleProvider,
     GeminiProvider,
     LLMProvider,
     LLMResponse,
@@ -47,6 +48,38 @@ from .providers import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _looks_like_anthropic_endpoint(base_url: str) -> bool:
+    """True for Claude/Anthropic native Messages API gateways."""
+    lower = base_url.lower()
+    return "anthropic" in lower or "claude" in lower
+
+
+def _env_float(name: str, fallback: float) -> float:
+    """Read a float env var, falling back on parse failure."""
+    try:
+        val = os.environ.get(name)
+        if val is not None:
+            return float(val)
+    except (ValueError, TypeError):
+        pass
+    return fallback
+
+
+def _llm_timeout() -> float:
+    """Resolve effective HTTP timeout in seconds.
+
+    Precedence (highest → lowest):
+      1. ANTHROPIC_TIMEOUT_MS   (milliseconds, cloud calls)
+      2. LLM_TIMEOUT_MS         (milliseconds, generic)
+      3. Hardcoded default      60 seconds
+    """
+    ms = _env_float(
+        "ANTHROPIC_TIMEOUT_MS",
+        _env_float("LLM_TIMEOUT_MS", 60_000.0),
+    )
+    return ms / 1000.0
 
 
 @dataclass
@@ -93,7 +126,7 @@ class LLMClient:
         api_key: str | None = None,
         gemini_key: str | None = None,
         model: str | None = None,
-        timeout: int = 60,
+        timeout: int | None = None,
         enable_cache: bool = True,
         enable_hooks: bool = True,
         providers: list[LLMProvider] | None = None,
@@ -112,7 +145,7 @@ class LLMClient:
 
         """
         self.model = model or os.getenv("LLM_MODEL", "qwen3.6-35b")
-        self.timeout = timeout
+        self.timeout = int(timeout if timeout is not None else _llm_timeout())
 
         # Keep legacy attrs for backward compat (some callers read them directly)
         self.proxy_url = proxy_url or os.getenv("ANTIGRAVITY_PROXY_URL", "") or os.getenv("LLM_BASE_URL", "")
@@ -155,7 +188,7 @@ class LLMClient:
         cls,
         config_path: str,
         model: str | None = None,
-        timeout: int = 60,
+        timeout: int | None = None,
         enable_cache: bool = True,
         enable_hooks: bool = True,
     ) -> "LLMClient":
@@ -219,15 +252,26 @@ class LLMClient:
         api_key = os.getenv("LLM_API_KEY", "")
         llm_model = os.getenv("LLM_MODEL", "")
         if base_url and api_key:
-            built.append(
-                OpenAICompatibleProvider(
-                    base_url=base_url,
-                    api_key=api_key,
-                    model=llm_model or self.model,
-                    provider_name="primary",
-                    timeout=self.timeout,
-                ),
-            )
+            if _looks_like_anthropic_endpoint(base_url):
+                built.append(
+                    AnthropicCompatibleProvider(
+                        base_url=base_url,
+                        api_key=api_key,
+                        model=llm_model,
+                        provider_name="primary",
+                        timeout=self.timeout,
+                    ),
+                )
+            else:
+                built.append(
+                    OpenAICompatibleProvider(
+                        base_url=base_url,
+                        api_key=api_key,
+                        model=llm_model or self.model,
+                        provider_name="primary",
+                        timeout=self.timeout,
+                    ),
+                )
 
         # --- Auto-detect from provider-specific env vars ---
 
@@ -263,15 +307,17 @@ class LLMClient:
                     ),
                 )
 
-        # Anthropic (skip if ANTHROPIC_BASE_URL points to local proxy)
-        anthropic_key = os.getenv("ANTHROPIC_API_KEY", "")
-        anthropic_base = os.getenv("ANTHROPIC_BASE_URL", "")
-        if anthropic_key and "localhost" not in anthropic_base and "127.0.0.1" not in anthropic_base:
+        # Anthropic native Messages API. Accept custom gateways via
+        # ANTHROPIC_BASE_URL; the provider appends /v1/messages as needed.
+        anthropic_key = os.getenv("ANTHROPIC_API_KEY", "") or os.getenv("ANTHROPIC_AUTH_TOKEN", "")
+        anthropic_base = os.getenv("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
+        anthropic_model = os.getenv("ANTHROPIC_MODEL", "")
+        if anthropic_key:
             built.append(
-                OpenAICompatibleProvider(
-                    base_url="https://api.anthropic.com/v1",
+                AnthropicCompatibleProvider(
+                    base_url=anthropic_base,
                     api_key=anthropic_key,
-                    model="claude-sonnet-4-6-20250514",
+                    model=anthropic_model,
                     provider_name="anthropic-direct",
                     timeout=self.timeout,
                 ),
@@ -430,6 +476,7 @@ class LLMClient:
         Portkey-inspired: hooks → cache → status-code failover.
         """
         use_model = model or self.model
+        provider_model = model or ""
         call_start = time.time()
 
         # Pre-request hooks
@@ -473,7 +520,7 @@ class LLMClient:
             try:
                 result = provider.chat(
                     messages=messages,
-                    model=use_model,
+                    model=provider_model,
                     temperature=temperature,
                     max_tokens=max_tokens,
                     json_mode=json_mode,
