@@ -16,6 +16,7 @@
 | `LLM_TEMPERATURE` | Default temperature | `0.3` (coding) \| `0.1` (thinking) | No |
 | `ANTHROPIC_TIMEOUT_MS` | HTTP timeout for Anthropic cloud calls (ms) | `60000` (60s) | No |
 | `LLM_TIMEOUT_MS` | Generic HTTP timeout fallback (ms) | `60000` (60s) | No |
+| `LLM_AUDIT_LOG` | Path to JSONL audit log for cloud LLM calls | `.mekong/llm-cloud-audit.jsonl` | No |
 
 ## Routing Contract
 
@@ -52,6 +53,34 @@ Escalate from local to cloud **only** when:
 - **Local loop (default)**: zero cloud cost. Run on Mac compute.
 - **Cloud burst (explicit)**: billed per token via Anthropic/OpenRouter API key. Operator must have `LLM_API_KEY` set.
 - **No hidden paid calls**: local-first default means no background cloud spend without env config.
+
+### Cloud Audit Log (P2)
+
+Enable `LLMClient(enable_audit_log=True)` to write one JSON record per cloud API call to `LLM_AUDIT_LOG` (default: `.mekong/llm-cloud-audit.jsonl`). Local providers (Ollama/MLX) are excluded automatically.
+
+```python
+from src.core.llm_client import LLMClient
+
+client = LLMClient(enable_audit_log=True)
+# ... every cloud call is now logged
+
+# Inspect recent calls
+logger = client.audit_logger
+for rec in logger.tail(10):
+    print(f"{rec["ts"]} {rec["provider"]} {rec["status"]} {rec.get("duration_ms", 0):.0f}ms")
+    print(f"  tokens: in={rec["input_tokens"]} out={rec["output_tokens"]}")
+
+# Aggregated summary
+print(logger.summary())
+```
+
+Log format (JSONL, append-only, thread-safe):
+
+```json
+{"ts":"2026-05-31T12:00:00+00:00","provider":"anthropic-direct","model":"claude-sonnet-4-6-20250514","input_tokens":120,"output_tokens":340,"duration_ms":1234.5,"status":"success"}
+{"ts":"2026-05-31T12:01:00+00:00","provider":"openai-direct","model":"gpt-4o","input_tokens":null,"output_tokens":null,"duration_ms":5000.0,"status":"http_error","error":"openai-direct:429:Too Many Requests"}
+```
+
 
 ## Implementation Surface
 

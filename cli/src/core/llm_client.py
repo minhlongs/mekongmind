@@ -29,9 +29,11 @@ import json
 import logging
 import os
 import re
+import threading
 import time
 import hashlib
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any
 
 import requests  # type: ignore[import-untyped]
@@ -105,6 +107,140 @@ class ProviderHealth:
         self.failures = 0
 
 
+# Provider names that count as "cloud" for audit purposes
+_CLOUD_PROVIDER_NAMES: set[str] = {
+    "anthropic-direct",
+    "openai-direct",
+    "deepseek",
+    "google-gemini",
+    "openrouter",
+    "agentrouter",
+    "proxy",
+    "primary",
+}
+
+
+@dataclass
+class _CloudAuditRecord:
+    """Immutable record for a single cloud LLM call."""
+
+    ts: str
+    provider: str
+    model: str
+    input_tokens: int | None
+    output_tokens: int | None
+    duration_ms: float
+    status: str  # "success" | "http_error" | "provider_error"
+    error: str = ""
+
+
+class LLMAuditLogger:
+    """Thread-safe JSONL audit logger for cloud LLM calls.
+
+    Only cloud providers (anthropic, openai, deepseek, openrouter, agentrouter,
+    google) are recorded — local providers (Ollama, MLX) are excluded since they
+    carry zero cloud cost.
+
+    Output path: ``LLM_AUDIT_LOG`` env var (default: ``.mekong/llm-cloud-audit.jsonl``).
+    Enable per-client via ``LLMClient(enable_audit_log=True)``.
+    """
+
+    _PATH_ENV = "LLM_AUDIT_LOG"
+    _DEFAULT_PATH = ".mekong/llm-cloud-audit.jsonl"
+
+    def __init__(self, path: str | None = None) -> None:
+        self._path = path or os.environ.get(self._PATH_ENV, self._DEFAULT_PATH)
+        self._lock = threading.Lock()
+
+    def log_call(
+        self,
+        *,
+        provider_name: str,
+        model: str,
+        input_tokens: int | None,
+        output_tokens: int | None,
+        duration_ms: float,
+        status: str,
+        error: str = "",
+    ) -> None:
+        """Append a single cloud call record to the JSONL file."""
+        if provider_name not in _CLOUD_PROVIDER_NAMES:
+            return
+        record = _CloudAuditRecord(
+            ts=datetime.now(timezone.utc).isoformat(),
+            provider=provider_name,
+            model=model,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            duration_ms=round(duration_ms, 2),
+            status=status,
+            error=error,
+        )
+        line = json.dumps(record.__dict__, default=str)
+        try:
+            with self._lock:
+                p = Path(self._path)
+                p.parent.mkdir(parents=True, exist_ok=True)
+                with p.open("a") as fh:
+                    fh.write(line + "\n")
+        except Exception:
+            # Audit logging must never break the request path
+            pass
+
+    def tail(self, n: int = 20) -> list[dict[str, Any]]:
+        """Return the last *n* records (newest first)."""
+        entries: list[dict[str, Any]] = []
+        try:
+            with self._lock:
+                p = Path(self._path)
+                if not p.exists():
+                    return []
+                lines = p.read_text().splitlines()
+                for line in lines[-n:][::-1]:
+                    try:
+                        entries.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
+        except Exception:
+            pass
+        return entries
+
+    def summary(self) -> dict[str, Any]:
+        """Aggregate cost/token stats from the audit log."""
+        total_calls = 0
+        total_input_tokens = 0
+        total_output_tokens = 0
+        total_duration_ms = 0.0
+        by_provider: dict[str, int] = {}
+        try:
+            with self._lock:
+                p = Path(self._path)
+                if not p.exists():
+                    return {}
+                for line in p.read_text().splitlines():
+                    try:
+                        rec = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    total_calls += 1
+                    total_input_tokens += rec.get("input_tokens") or 0
+                    total_output_tokens += rec.get("output_tokens") or 0
+                    total_duration_ms += rec.get("duration_ms") or 0.0
+                    prov = rec.get("provider", "unknown")
+                    by_provider[prov] = by_provider.get(prov, 0) + 1
+        except Exception:
+            pass
+        return {
+            "total_calls": total_calls,
+            "total_input_tokens": total_input_tokens,
+            "total_output_tokens": total_output_tokens,
+            "total_duration_ms": round(total_duration_ms, 2),
+            "avg_duration_ms": round(total_duration_ms / total_calls, 2) if total_calls else 0,
+            "by_provider": by_provider,
+            "audit_file": self._path,
+        }
+
+
 class LLMClient:
     """LLMClient — thin router over List[LLMProvider] with circuit-breaker failover.
 
@@ -129,6 +265,7 @@ class LLMClient:
         timeout: int | None = None,
         enable_cache: bool = True,
         enable_hooks: bool = True,
+        enable_audit_log: bool = False,
         providers: list[LLMProvider] | None = None,
     ) -> None:
         """Initialize LLMClient.
@@ -141,6 +278,9 @@ class LLMClient:
             timeout: HTTP timeout in seconds.
             enable_cache: Enable LRU response caching.
             enable_hooks: Enable hooks middleware pipeline.
+            enable_audit_log: Enable JSONL audit logging for cloud LLM calls
+                (path controlled by LLM_AUDIT_LOG env var, default .mekong/llm-cloud-audit.jsonl).
+                Local providers (Ollama/MLX) are excluded from the audit trail.
             providers: Explicit provider list. If None, auto-detects from env vars.
 
         """
@@ -155,6 +295,7 @@ class LLMClient:
         # Portkey-inspired: hooks pipeline + LRU cache
         self.hooks: HookPipeline | None = create_default_pipeline() if enable_hooks else None
         self.cache: LLMCache | None = LLMCache() if enable_cache else None
+        self.audit_logger: LLMAuditLogger | None = LLMAuditLogger() if enable_audit_log else None
 
         # Request deduplication — in-flight requests
         self._pending_requests: dict[str, LLMResponse | None] = {}  # Keyed by hash
@@ -527,6 +668,17 @@ class LLMClient:
                 )
                 self._provider_health[provider.name].record_success()
 
+                # Cloud audit logging (local providers excluded in LLMAuditLogger)
+                if self.audit_logger:
+                    self.audit_logger.log_call(
+                        provider_name=provider.name,
+                        model=result.model,
+                        input_tokens=(result.usage or {}).get("prompt_tokens") or (result.usage or {}).get("input_tokens"),
+                        output_tokens=(result.usage or {}).get("completion_tokens") or (result.usage or {}).get("output_tokens"),
+                        duration_ms=(time.time() - call_start) * 1000,
+                        status="success",
+                    )
+
                 # Cache successful response
                 if self.cache and not json_mode and result.content:
                     self.cache.put(
@@ -548,6 +700,16 @@ class LLMClient:
                 last_error = f"{provider.name}:{status_code}:{e}"
                 logger.warning("[LLM] Provider %s HTTP %d: %s", provider.name, status_code, e)
                 self._provider_health[provider.name].record_failure()
+                if self.audit_logger:
+                    self.audit_logger.log_call(
+                        provider_name=provider.name,
+                        model=use_model,
+                        input_tokens=None,
+                        output_tokens=None,
+                        duration_ms=(time.time() - call_start) * 1000,
+                        status="http_error",
+                        error=last_error,
+                    )
 
                 if status_code == 400:
                     return self._offline_response(messages, error=f"bad request: {e}")
@@ -557,6 +719,16 @@ class LLMClient:
                 last_error = str(e)
                 logger.warning("[LLM] Provider %s failed: %s", provider.name, e)
                 self._provider_health[provider.name].record_failure()
+                if self.audit_logger:
+                    self.audit_logger.log_call(
+                        provider_name=provider.name,
+                        model=use_model,
+                        input_tokens=None,
+                        output_tokens=None,
+                        duration_ms=(time.time() - call_start) * 1000,
+                        status="provider_error",
+                        error=str(e),
+                    )
 
                 if self.hooks:
                     hook_ctx.error = e
@@ -656,4 +828,4 @@ def get_client() -> LLMClient:
     return _default_client
 
 
-__all__ = ["LLMClient", "LLMResponse", "ProviderHealth", "get_client"]
+__all__ = ["LLMClient", "LLMResponse", "ProviderHealth", "LLMAuditLogger", "get_client"]
