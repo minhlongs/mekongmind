@@ -36,8 +36,12 @@ export class SessionMemory {
       ...entry,
     };
     this.entries.push(full);
-    await mkdir(dirname(this.filePath), { recursive: true });
-    await appendFile(this.filePath, JSON.stringify(full) + '\n', 'utf-8');
+    try {
+      await mkdir(dirname(this.filePath), { recursive: true });
+      await appendFile(this.filePath, JSON.stringify(full) + '\n', 'utf-8');
+    } catch {
+      // Disk full or permission errors must not crash the engine
+    }
     return full;
   }
 

@@ -2,7 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { CostTracker } from '../../src/llm/cost-tracker.js';
 import { LlmRouter } from '../../src/llm/router.js';
 import { ConfigSchema } from '../../src/types/config.js';
-import { AnthropicProvider } from '../../src/llm/providers/anthropic.js';
+import { MetaRouter } from '../../src/llm/meta-router.js';
+import { MultiModelSchema } from '../../src/llm/model-config.js';
+import type { ChatRequest, ChatResponse } from '../../src/llm/types.js';
+import { AnthropicProvider, anthropicMessagesUrl, normalizeAnthropicBaseUrl } from '../../src/llm/providers/anthropic.js';
+import { OpenAICompatProvider } from '../../src/llm/providers/openai-compatible.js';
 import { OpenAIProvider } from '../../src/llm/providers/openai.js';
 import { LocalProvider } from '../../src/llm/providers/local.js';
 
@@ -97,6 +101,145 @@ describe('AnthropicProvider', () => {
     });
     expect(provider.name).toBe('anthropic');
   });
+
+  it('builds messages URL without double-appending /v1', () => {
+    expect(anthropicMessagesUrl('https://api.anthropic.com')).toBe('https://api.anthropic.com/v1/messages');
+    expect(anthropicMessagesUrl('https://api.anthropic.com/v1')).toBe('https://api.anthropic.com/v1/messages');
+    expect(anthropicMessagesUrl('https://claude.zunef.com/v1/ai')).toBe('https://claude-api.zunef.com/v1/ai/messages');
+    expect(anthropicMessagesUrl('https://claude-api.zunef.com/v1/ai')).toBe('https://claude-api.zunef.com/v1/ai/messages');
+    expect(anthropicMessagesUrl('https://claude.zunef.com/v1/ai/messages')).toBe('https://claude-api.zunef.com/v1/ai/messages');
+  });
+
+  it('normalizes Zunef frontend host to API host by default', () => {
+    expect(normalizeAnthropicBaseUrl('https://claude.zunef.com/v1/ai')).toBe('https://claude-api.zunef.com/v1/ai');
+  });
+
+  it('posts to normalized messages URL', async () => {
+    const originalFetch = global.fetch;
+    const calls: string[] = [];
+    const initCalls: RequestInit[] = [];
+    global.fetch = (async (url: string | URL | Request, init?: RequestInit) => {
+      calls.push(String(url));
+      initCalls.push(init ?? {});
+      return new Response(JSON.stringify({
+        content: [{ type: 'text', text: 'ok' }],
+        usage: { input_tokens: 1, output_tokens: 2 },
+        stop_reason: 'end_turn',
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }) as typeof fetch;
+
+    try {
+      const provider = new AnthropicProvider({
+        apiKey: 'sk-test',
+        baseUrl: 'https://api.anthropic.com/v1',
+      });
+      const response = await provider.chat({
+        messages: [{ role: 'user', content: 'hi' }],
+      });
+
+      expect(calls[0]).toBe('https://api.anthropic.com/v1/messages');
+      expect(initCalls[0].signal).toBeDefined();
+      expect(response.content).toBe('ok');
+    } finally {
+      global.fetch = originalFetch;
+    }
+  });
+
+  it('parses Zunef text/event-stream responses', async () => {
+    const originalFetch = global.fetch;
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode([
+          'event: message_start',
+          'data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","usage":{"input_tokens":2,"output_tokens":1}}}',
+          '',
+          'event: content_block_delta',
+          'data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"O',
+        ].join('\n')));
+        controller.enqueue(encoder.encode('K"}}\n\n'));
+        controller.close();
+      },
+    });
+    global.fetch = (async () => new Response(stream, { status: 200, headers: { 'content-type': 'text/event-stream' } })) as typeof fetch;
+
+    try {
+      const provider = new AnthropicProvider({
+        apiKey: 'sk-test',
+        baseUrl: 'https://claude.zunef.com/v1/ai',
+      });
+      const response = await provider.chat({
+        messages: [{ role: 'user', content: 'hi' }],
+      });
+
+      expect(response.content).toBe('OK');
+      expect(response.model).toBe('claude-sonnet-4-6');
+    } finally {
+      global.fetch = originalFetch;
+    }
+  });
+
+  it('enables low-latency streaming by default for Zunef', async () => {
+    const originalFetch = global.fetch;
+    let body: Record<string, unknown> | undefined;
+    let headers: HeadersInit | undefined;
+    global.fetch = (async (_url: string | URL | Request, init?: RequestInit) => {
+      body = JSON.parse(String(init?.body));
+      headers = init?.headers;
+      return new Response([
+        'event: content_block_delta',
+        'data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"ok"}}',
+        '',
+      ].join('\n'), { status: 200, headers: { 'content-type': 'text/event-stream' } });
+    }) as typeof fetch;
+
+    try {
+      const provider = new AnthropicProvider({
+        apiKey: 'sk-test',
+        baseUrl: 'https://claude.zunef.com/v1/ai',
+      });
+      await provider.chat({
+        messages: [{ role: 'user', content: 'hi' }],
+      });
+
+      expect(String(headers && (headers as Record<string, string>)['X-ZUNEF-CLIENT'])).toBe('claude-code');
+      expect(body?.stream).toBe(true);
+      expect(headers).toMatchObject({
+        Accept: 'text/event-stream',
+        Connection: 'keep-alive',
+      });
+    } finally {
+      global.fetch = originalFetch;
+    }
+  });
+
+  it('can disable Zunef streaming for compatibility', async () => {
+    const originalFetch = global.fetch;
+    let body: Record<string, unknown> | undefined;
+    global.fetch = (async (_url: string | URL | Request, init?: RequestInit) => {
+      body = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({
+        content: [{ type: 'text', text: 'ok' }],
+        usage: { input_tokens: 1, output_tokens: 1 },
+        stop_reason: 'end_turn',
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }) as typeof fetch;
+
+    try {
+      const provider = new AnthropicProvider({
+        apiKey: 'sk-test',
+        baseUrl: 'https://claude.zunef.com/v1/ai',
+      });
+      await provider.chat({
+        messages: [{ role: 'user', content: 'hi' }],
+        stream: false,
+      });
+
+      expect(body?.stream).toBeUndefined();
+    } finally {
+      global.fetch = originalFetch;
+    }
+  });
 });
 
 describe('OpenAIProvider', () => {
@@ -187,6 +330,134 @@ describe('LlmRouter', () => {
     }
   });
 
+  it('routes Claude gateway LLM_BASE_URL through AnthropicProvider', () => {
+    const originalUrl = process.env.LLM_BASE_URL;
+    const originalKey = process.env.LLM_API_KEY;
+    const originalModel = process.env.LLM_MODEL;
+    process.env.LLM_BASE_URL = 'https://claude.zunef.com/v1/ai';
+    process.env.LLM_API_KEY = 'test-key';
+    process.env.LLM_MODEL = 'claude-sonnet-4-6';
+
+    try {
+      const config = ConfigSchema.parse({});
+      const router = new LlmRouter(config);
+      const providers = (router as unknown as { providers: Map<string, unknown> }).providers;
+      expect(providers.get('anthropic')).toBeInstanceOf(AnthropicProvider);
+      expect(providers.get('anthropic')).not.toBeInstanceOf(OpenAICompatProvider);
+    } finally {
+      if (originalUrl) process.env.LLM_BASE_URL = originalUrl;
+      else delete process.env.LLM_BASE_URL;
+      if (originalKey) process.env.LLM_API_KEY = originalKey;
+      else delete process.env.LLM_API_KEY;
+      if (originalModel) process.env.LLM_MODEL = originalModel;
+      else delete process.env.LLM_MODEL;
+    }
+  });
+
+  it('uses LLM_MODEL for Claude gateway requests without explicit model', async () => {
+    const originalUrl = process.env.LLM_BASE_URL;
+    const originalKey = process.env.LLM_API_KEY;
+    const originalModel = process.env.LLM_MODEL;
+    const originalFetch = global.fetch;
+    process.env.LLM_BASE_URL = 'https://claude.zunef.com/v1/ai';
+    process.env.LLM_API_KEY = 'test-key';
+    process.env.LLM_MODEL = 'claude-sonnet-4';
+    let body: Record<string, unknown> | undefined;
+
+    global.fetch = (async (_url: string | URL | Request, init?: RequestInit) => {
+      body = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({
+        content: [{ type: 'text', text: 'ok' }],
+        usage: { input_tokens: 1, output_tokens: 1 },
+        stop_reason: 'end_turn',
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }) as typeof fetch;
+
+    try {
+      const config = ConfigSchema.parse({});
+      const router = new LlmRouter(config);
+      const response = await router.chat({
+        messages: [{ role: 'user', content: 'ping' }],
+      });
+
+      expect(body?.model).toBe('claude-sonnet-4');
+      expect(response.model).toBe('claude-sonnet-4');
+    } finally {
+      global.fetch = originalFetch;
+      if (originalUrl) process.env.LLM_BASE_URL = originalUrl;
+      else delete process.env.LLM_BASE_URL;
+      if (originalKey) process.env.LLM_API_KEY = originalKey;
+      else delete process.env.LLM_API_KEY;
+      if (originalModel) process.env.LLM_MODEL = originalModel;
+      else delete process.env.LLM_MODEL;
+    }
+  });
+
+  it('uses Zunef-compatible default model when LLM_MODEL is unset', async () => {
+    const originalUrl = process.env.LLM_BASE_URL;
+    const originalKey = process.env.LLM_API_KEY;
+    const originalModel = process.env.LLM_MODEL;
+    const originalAnthropicModel = process.env.ANTHROPIC_MODEL;
+    const originalFetch = global.fetch;
+    process.env.LLM_BASE_URL = 'https://claude.zunef.com/v1/ai';
+    process.env.LLM_API_KEY = 'test-key';
+    delete process.env.LLM_MODEL;
+    delete process.env.ANTHROPIC_MODEL;
+    let body: Record<string, unknown> | undefined;
+    let headers: HeadersInit | undefined;
+
+    global.fetch = (async (_url: string | URL | Request, init?: RequestInit) => {
+      body = JSON.parse(String(init?.body));
+      headers = init?.headers;
+      return new Response(JSON.stringify({
+        content: [{ type: 'text', text: 'ok' }],
+        usage: { input_tokens: 1, output_tokens: 1 },
+        stop_reason: 'end_turn',
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }) as typeof fetch;
+
+    try {
+      const config = ConfigSchema.parse({});
+      const router = new LlmRouter(config);
+      await router.chat({
+        messages: [{ role: 'user', content: 'ping' }],
+      });
+
+      expect(body?.model).toBe('claude-sonnet-4-6');
+      expect(body?.stream).toBe(true);
+      expect(headers).toMatchObject({ 'X-ZUNEF-CLIENT': 'claude-code' });
+    } finally {
+      global.fetch = originalFetch;
+      if (originalUrl) process.env.LLM_BASE_URL = originalUrl;
+      else delete process.env.LLM_BASE_URL;
+      if (originalKey) process.env.LLM_API_KEY = originalKey;
+      else delete process.env.LLM_API_KEY;
+      if (originalModel) process.env.LLM_MODEL = originalModel;
+      else delete process.env.LLM_MODEL;
+      if (originalAnthropicModel) process.env.ANTHROPIC_MODEL = originalAnthropicModel;
+      else delete process.env.ANTHROPIC_MODEL;
+    }
+  });
+
+  it('keeps generic LLM_BASE_URL on OpenAI-compatible provider', () => {
+    const originalUrl = process.env.LLM_BASE_URL;
+    const originalKey = process.env.LLM_API_KEY;
+    process.env.LLM_BASE_URL = 'https://api.deepseek.com/v1';
+    process.env.LLM_API_KEY = 'test-key';
+
+    try {
+      const config = ConfigSchema.parse({});
+      const router = new LlmRouter(config);
+      const providers = (router as unknown as { providers: Map<string, unknown> }).providers;
+      expect(providers.get('anthropic')).toBeInstanceOf(OpenAICompatProvider);
+    } finally {
+      if (originalUrl) process.env.LLM_BASE_URL = originalUrl;
+      else delete process.env.LLM_BASE_URL;
+      if (originalKey) process.env.LLM_API_KEY = originalKey;
+      else delete process.env.LLM_API_KEY;
+    }
+  });
+
   it('throws when all providers fail', async () => {
     const config = ConfigSchema.parse({});
     const router = new LlmRouter(config);
@@ -213,15 +484,72 @@ describe('LlmRouter', () => {
 
   it('auto-detects ANTHROPIC_API_KEY from env', () => {
     const original = process.env.ANTHROPIC_API_KEY;
+    const originalBase = process.env.ANTHROPIC_BASE_URL;
     process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
+    process.env.ANTHROPIC_BASE_URL = 'https://claude.zunef.com/v1/ai';
 
     try {
       const config = ConfigSchema.parse({});
       const router = new LlmRouter(config);
       expect(router.getProviders()).toContain('anthropic');
+      const providers = (router as unknown as { providers: Map<string, unknown> }).providers;
+      expect(providers.get('anthropic')).toBeInstanceOf(AnthropicProvider);
     } finally {
       if (original) process.env.ANTHROPIC_API_KEY = original;
       else delete process.env.ANTHROPIC_API_KEY;
+      if (originalBase) process.env.ANTHROPIC_BASE_URL = originalBase;
+      else delete process.env.ANTHROPIC_BASE_URL;
+    }
+  });
+
+  it('auto-detects ANTHROPIC_AUTH_TOKEN from env', () => {
+    const originalKey = process.env.ANTHROPIC_API_KEY;
+    const originalToken = process.env.ANTHROPIC_AUTH_TOKEN;
+    const originalBase = process.env.ANTHROPIC_BASE_URL;
+    delete process.env.ANTHROPIC_API_KEY;
+    process.env.ANTHROPIC_AUTH_TOKEN = 'zf-test';
+    process.env.ANTHROPIC_BASE_URL = 'https://claude.zunef.com/v1/ai';
+
+    try {
+      const config = ConfigSchema.parse({});
+      const router = new LlmRouter(config);
+      expect(router.getProviders()).toContain('anthropic');
+      const providers = (router as unknown as { providers: Map<string, unknown> }).providers;
+      expect(providers.get('anthropic')).toBeInstanceOf(AnthropicProvider);
+    } finally {
+      if (originalKey) process.env.ANTHROPIC_API_KEY = originalKey;
+      else delete process.env.ANTHROPIC_API_KEY;
+      if (originalToken) process.env.ANTHROPIC_AUTH_TOKEN = originalToken;
+      else delete process.env.ANTHROPIC_AUTH_TOKEN;
+      if (originalBase) process.env.ANTHROPIC_BASE_URL = originalBase;
+      else delete process.env.ANTHROPIC_BASE_URL;
+    }
+  });
+
+  it('keeps direct Anthropic token as fallback beside universal endpoint', () => {
+    const originalUrl = process.env.LLM_BASE_URL;
+    const originalApiKey = process.env.LLM_API_KEY;
+    const originalToken = process.env.ANTHROPIC_AUTH_TOKEN;
+    const originalBase = process.env.ANTHROPIC_BASE_URL;
+    process.env.LLM_BASE_URL = 'https://claude.zunef.com/v1/ai';
+    process.env.LLM_API_KEY = 'primary-key';
+    process.env.ANTHROPIC_AUTH_TOKEN = 'backup-key';
+    process.env.ANTHROPIC_BASE_URL = 'https://claude-api.zunef.com/v1/ai';
+
+    try {
+      const config = ConfigSchema.parse({});
+      const router = new LlmRouter(config);
+      expect(router.getProviders()).toContain('anthropic');
+      expect(router.getProviders()).toContain('anthropic-direct');
+    } finally {
+      if (originalUrl) process.env.LLM_BASE_URL = originalUrl;
+      else delete process.env.LLM_BASE_URL;
+      if (originalApiKey) process.env.LLM_API_KEY = originalApiKey;
+      else delete process.env.LLM_API_KEY;
+      if (originalToken) process.env.ANTHROPIC_AUTH_TOKEN = originalToken;
+      else delete process.env.ANTHROPIC_AUTH_TOKEN;
+      if (originalBase) process.env.ANTHROPIC_BASE_URL = originalBase;
+      else delete process.env.ANTHROPIC_BASE_URL;
     }
   });
 
@@ -241,5 +569,80 @@ describe('LlmRouter', () => {
       if (origTok) process.env.CF_API_TOKEN = origTok;
       else delete process.env.CF_API_TOKEN;
     }
+  });
+});
+
+describe('MetaRouter', () => {
+  function createCapturingRouter(calls: ChatRequest[]) {
+    return {
+      chat: async (request: ChatRequest): Promise<ChatResponse> => {
+        calls.push(request);
+        return {
+          content: 'ok',
+          usage: { inputTokens: 1, outputTokens: 1 },
+          cost: 0,
+          model: request.model ?? 'unknown',
+          provider: request.provider ?? 'unknown',
+          latencyMs: 1,
+          finishReason: 'stop',
+        };
+      },
+    } as unknown as LlmRouter;
+  }
+
+  it('routes planning requests to Claude 4.7 thinking defaults', async () => {
+    const calls: ChatRequest[] = [];
+    const meta = new MetaRouter({
+      router: createCapturingRouter(calls),
+      config: ConfigSchema.parse({}),
+    });
+
+    await meta.route({ messages: [{ role: 'user', content: 'plan the architecture for this adapter' }] });
+
+    expect(calls[0].provider).toBe('anthropic');
+    expect(calls[0].model).toBe('claude-opus-4-7');
+    expect(calls[0].temperature).toBe(0.1);
+    expect(calls[0].maxTokens).toBe(32768);
+    expect(calls[0].messages[0].role).toBe('system');
+  });
+
+  it('routes coding/default requests to Claude Sonnet coding defaults', async () => {
+    const calls: ChatRequest[] = [];
+    const meta = new MetaRouter({
+      router: createCapturingRouter(calls),
+      config: ConfigSchema.parse({}),
+    });
+
+    await meta.route({ messages: [{ role: 'user', content: 'implement the provider fix' }] });
+
+    expect(calls[0].provider).toBe('anthropic');
+    expect(calls[0].model).toBe('claude-sonnet-4-6');
+    expect(calls[0].temperature).toBe(0.3);
+    expect(calls[0].maxTokens).toBe(16384);
+  });
+
+  it('normalizes explicit local model aliases to the configured local provider', async () => {
+    const calls: ChatRequest[] = [];
+    const meta = new MetaRouter({
+      router: createCapturingRouter(calls),
+      config: ConfigSchema.parse({
+        models: {
+          coding: { provider: 'mlx', model: 'qwen-local', max_tokens: 2048 },
+        },
+      }),
+    });
+
+    await meta.route({ messages: [{ role: 'user', content: 'implement a local-only test' }] });
+
+    expect(calls[0].provider).toBe('local-llm');
+    expect(calls[0].model).toBe('qwen-local');
+    expect(calls[0].maxTokens).toBe(2048);
+  });
+
+  it('parses multi-model defaults without requiring local fallback models', () => {
+    const parsed = MultiModelSchema.parse({});
+    expect(parsed.models.thinking.provider).toBe('anthropic');
+    expect(parsed.models.thinking.model).toBe('claude-opus-4-7');
+    expect(parsed.models.coding.model).toBe('claude-sonnet-4-6');
   });
 });

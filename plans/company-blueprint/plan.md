@@ -5,7 +5,7 @@ This document details the Zero→IPO Company Architecture for **MekongMind**, ge
 ---
 
 ## Stage Detection
-* **Classified Stage**: **Post-MVP, Pre-Revenue** (CLI v6.0.0 shipped, 319 commands, Go/Rust engine running. Targeting GTM launch and initial paid users.)
+* **Classified Stage**: **Post-MVP, Pre-Revenue** (CLI v6.0.0 shipped, Go/Rust engine running with 294 @app.command decorated functions across 65 Python modules. Targeting GTM launch and initial paid users.)
 
 ---
 
@@ -164,8 +164,8 @@ This document details the Zero→IPO Company Architecture for **MekongMind**, ge
 
 | Layer | Key Commands | Agent |
 |-------|-------------|-------|
-| **Founder** | `/studio-strategy`, `/founder-raise`, `/studio-portfolio` | CEO Agent |
-| **Business** | `/sales-pipeline-build`, `/marketing-campaign-run`, `/finance-budget-plan` | Revenue Agent |
-| **Product** | `/product-sprint-plan`, `/pm-sprint`, `/design-sprint` | Product Agent |
-| **Engineering** | `/cook`, `/dev-feature`, `/cto-architect`, `/release-ship` | CTO Agent |
-| **Ops** | `/ops-health-sweep`, `/sre-morning-check`, `/analyst-report` | Ops Agent |
+| **Founder** | `/marketing`, `/bootstrap`, `/plan:hard`, `/goal` | CEO Agent |
+| **Business** | `/marketing`, `/marketing-copy`, `/marketing-seo`, `/marketing-growth`, `/sales-revenue`, `/crm-operations` | Revenue Agent |
+| **Product** | `/plan:hard`, `/plan:fast`, `/bootstrap`, `/review-codebase` | Product Agent |
+| **Engineering** | `/cook`, `/fix`, `/debug`, `/scout`, `/code-review`, `/ship`, `/test` | CTO Agent |
+| **Ops** | `/docs`, `/audit-compliance`, `/deploy`, `/monitoring-observability`, `/engineering-ops` | Ops Agent |

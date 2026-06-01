@@ -13,3 +13,4 @@ target/
 .wrangler/
 .trash/
 .Trash/
+platform/, export_out/, *.log, *.bak, *.png, *.ico, *.svg, *.map, *.d.ts, *.tsbuildinfo

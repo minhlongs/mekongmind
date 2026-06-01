@@ -287,19 +287,19 @@ describe('CostCalculator boundary properties', () => {
   const calc = new CostCalculator();
 
   it('zero tokens = zero cost', () => {
-    const cost = calc.calculate('anthropic', 'claude-sonnet-4-20250514', 0, 0);
+    const cost = calc.calculate('anthropic', 'claude-sonnet-4-6-20250514', 0, 0);
     expect(cost).toBe(0);
   });
 
   it('output tokens always cost more than input tokens for same count', () => {
-    const inputOnlyCost = calc.calculate('anthropic', 'claude-sonnet-4-20250514', 1000, 0);
-    const outputOnlyCost = calc.calculate('anthropic', 'claude-sonnet-4-20250514', 0, 1000);
+    const inputOnlyCost = calc.calculate('anthropic', 'claude-sonnet-4-6-20250514', 1000, 0);
+    const outputOnlyCost = calc.calculate('anthropic', 'claude-sonnet-4-6-20250514', 0, 1000);
     expect(outputOnlyCost).toBeGreaterThanOrEqual(inputOnlyCost);
   });
 
   it('cost scales linearly with token count', () => {
-    const cost1x = calc.calculate('anthropic', 'claude-sonnet-4-20250514', 1000, 500);
-    const cost2x = calc.calculate('anthropic', 'claude-sonnet-4-20250514', 2000, 1000);
+    const cost1x = calc.calculate('anthropic', 'claude-sonnet-4-6-20250514', 1000, 500);
+    const cost2x = calc.calculate('anthropic', 'claude-sonnet-4-6-20250514', 2000, 1000);
     expect(Math.abs(cost2x - cost1x * 2)).toBeLessThan(0.001);
   });
 });

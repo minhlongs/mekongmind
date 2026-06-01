@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { MekongEngine, attachObservability } from '../core/index.js';
 import { registerRunCommand } from './commands/run.js';
+import { registerCookAutoCommand } from './commands/cook-auto.js';
 import { registerSopCommand } from './commands/sop.js';
 import { registerStatusCommand } from './commands/status.js';
 import { registerCrmCommand } from './commands/crm.js';
@@ -84,6 +85,7 @@ export async function main(argv?: string[]): Promise<void> {
   });
 
   registerRunCommand(program, engine);
+  registerCookAutoCommand(program, engine);
   registerSopCommand(program, engine);
   registerStatusCommand(program, engine);
   registerCrmCommand(program, engine);

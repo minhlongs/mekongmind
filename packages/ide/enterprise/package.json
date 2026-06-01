@@ -13,6 +13,7 @@
     "shell-prod": "sst shell --target Teams --stage production"
   },
   "dependencies": {
+    "@mekongmind/sdk": "workspace:*",
     "@mekongmind/util": "workspace:*",
     "@mekongmind/ui": "workspace:*",
     "aws4fetch": "^1.0.20",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",
     "@tailwindcss/vite": "catalog:",
+    "sst": "catalog:",
     "@typescript/native-preview": "catalog:",
     "@types/luxon": "catalog:",
     "tailwindcss": "catalog:",

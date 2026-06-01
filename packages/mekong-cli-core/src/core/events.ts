@@ -17,7 +17,11 @@ export const eventBus = new EventEmitter();
 
 /** Type-safe emit */
 export function emit(event: MekongEvent, data?: unknown): void {
-  eventBus.emit(event, data);
+  try {
+    eventBus.emit(event, data);
+  } catch {
+    // Bad listener must not crash the caller
+  }
 }
 
 /** Type-safe listener */

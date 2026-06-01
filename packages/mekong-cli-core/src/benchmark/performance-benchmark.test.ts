@@ -35,7 +35,7 @@ function makeEvent(i: number): Omit<UsageEvent, 'id' | 'timestamp'> {
   return {
     category: 'llm_call',
     provider: 'anthropic',
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6-20250514',
     inputTokens: 100 + i,
     outputTokens: 50 + i,
     estimatedCost: 0.001,
@@ -225,7 +225,7 @@ describe('CostCalculator throughput', () => {
 
     const start = performance.now();
     for (let i = 0; i < iters; i++) {
-      const cost = calc.calculate('anthropic', 'claude-sonnet-4-20250514', 1000 + i, 500 + i);
+      const cost = calc.calculate('anthropic', 'claude-sonnet-4-6-20250514', 1000 + i, 500 + i);
       expect(cost).toBeGreaterThanOrEqual(0);
     }
     const elapsed = performance.now() - start;

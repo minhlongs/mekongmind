@@ -1,5 +1,7 @@
 export type { ChatRequest, ChatResponse, ChatMessage, LlmProvider, LlmToolDefinition, ToolCall } from './types.js';
 export { LlmRouter } from './router.js';
+export { MetaRouter } from './meta-router.js';
+export { classifier, type Intent } from './classifier.js';
 export { CostTracker, type UsageRecord, type UsageSummary } from './cost-tracker.js';
 export { OpenAICompatProvider, type OpenAICompatConfig } from './providers/openai-compatible.js';
 export { LocalLLMProvider, OllamaProvider } from './providers/ollama.js';

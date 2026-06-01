@@ -28,7 +28,7 @@ function makeEvent(overrides: Partial<UsageEvent> = {}): UsageEvent {
     category: 'llm_call',
     timestamp: new Date().toISOString(),
     provider: 'anthropic',
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6-20250514',
     inputTokens: 100,
     outputTokens: 50,
     estimatedCost: 0.001,
@@ -435,7 +435,7 @@ describe('CostCalculator', () => {
 
   it('calculates cost for anthropic/claude-sonnet-4', () => {
     // 1M input @ $3, 1M output @ $15
-    const cost = calc.calculate('anthropic', 'claude-sonnet-4-20250514', 1_000_000, 1_000_000);
+    const cost = calc.calculate('anthropic', 'claude-sonnet-4-6-20250514', 1_000_000, 1_000_000);
     expect(cost).toBeCloseTo(18.0);
   });
 
@@ -582,7 +582,7 @@ describe('Engine Integration', () => {
   it('CostCalculator integrates with collected LLM events', () => {
     const calc = new CostCalculator();
     const events: UsageEvent[] = [
-      makeEvent({ provider: 'anthropic', model: 'claude-sonnet-4-20250514', inputTokens: 1000, outputTokens: 500 }),
+      makeEvent({ provider: 'anthropic', model: 'claude-sonnet-4-6-20250514', inputTokens: 1000, outputTokens: 500 }),
       makeEvent({ provider: 'ollama', model: 'llama3', inputTokens: 5000, outputTokens: 2000 }),
     ];
     const totalCost = events.reduce((sum, e) => {
