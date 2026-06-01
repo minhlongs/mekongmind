@@ -93,11 +93,57 @@ class TaskGraph:
 
     def ready_tasks(self) -> list[GoalTask]:
         completed = {task.id for task in self.tasks if task.status == TaskStatus.COMPLETED}
+        cycle = self._detect_cycle()
+        if cycle:
+            raise ValueError(f"Circular dependency detected in task graph: {' -> '.join(cycle)}")
         return [
             task
             for task in self.tasks
             if task.status == TaskStatus.PENDING and all(dep in completed for dep in task.depends_on)
         ]
+
+    @staticmethod
+    def _detect_cycle(tasks: list | None = None) -> list[str] | None:
+        """Detect circular dependencies using DFS with WHITE/GRAY/BLACK coloring."""
+        from enum import Enum, auto
+        class _Color(Enum):
+            WHITE = auto()
+            GRAY = auto()
+            BLACK = auto()
+
+        node_map: dict[str, list[str]] = {}
+        if tasks is None:
+            tasks = []
+        for task in tasks:
+            node_map[task.id] = list(task.depends_on)
+
+        WHITE, GRAY, BLACK = _Color.WHITE, _Color.GRAY, _Color.BLACK
+        color = {tid: WHITE for tid in node_map}
+        path: list[str] = []
+
+        def dfs(node: str) -> list[str] | None:
+            color[node] = GRAY
+            path.append(node)
+            for dep in node_map.get(node, []):
+                if dep not in color:
+                    continue
+                if color[dep] == GRAY:
+                    cycle_start = path.index(dep)
+                    return path[cycle_start:] + [dep]
+                if color[dep] == WHITE:
+                    result = dfs(dep)
+                    if result:
+                        return result
+            path.pop()
+            color[node] = BLACK
+            return None
+
+        for tid in list(node_map.keys()):
+            if color[tid] == WHITE:
+                result = dfs(tid)
+                if result:
+                    return result
+        return None
 
 
 @dataclass

@@ -1,0 +1,410 @@
+#!/usr/bin/env node
+import http from 'node:http';
+import { spawn } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+
+const PORT = Number(process.env.ZUNEF_PROXY_PORT || 3091);
+const HOST = process.env.ZUNEF_PROXY_HOST || '127.0.0.1';
+const UPSTREAM = process.env.ZUNEF_UPSTREAM || 'https://claude-api.zunef.com/v1/ai/v1/messages';
+const HELPER = process.env.ZUNEF_HELPER || '/Users/macbook/mekongmind/scripts/mekong-cli/zunef-api-key-helper.py';
+const HEDGE_DELAY_MS = Number(process.env.ZUNEF_HEDGE_DELAY_MS || 120);
+const DUPLICATE_ATTEMPTS = Number(process.env.ZUNEF_DUPLICATE_ATTEMPTS || 5);
+const DUPLICATE_DELAY_MS = Number(process.env.ZUNEF_DUPLICATE_DELAY_MS || 220);
+const FIRST_OUTPUT_TIMEOUT_MS = Number(
+  process.env.ZUNEF_FIRST_OUTPUT_TIMEOUT_MS || process.env.ZUNEF_FIRST_TEXT_TIMEOUT_MS || 45000,
+);
+const DISABLE_PARALLEL_TOOL_USE = process.env.ZUNEF_DISABLE_PARALLEL_TOOL_USE !== '0';
+const MARKDOWN_GUARD = process.env.ZUNEF_MARKDOWN_GUARD === '0'
+  ? ''
+  : 'Markdown rendering guard: for user-visible long answers and reports, put blank lines before and after headings, lists, tables, horizontal rules, and code fences. Never inline markdown headings/tables into a paragraph. Keep table rows on separate lines. Keep short status updates as plain sentences.';
+const TOKEN_CACHE_TTL_MS = Number(process.env.ZUNEF_PROXY_TOKEN_CACHE_TTL_MS || 600000);
+const TOKEN_CACHE_SKEW_MS = Number(process.env.ZUNEF_PROXY_TOKEN_CACHE_SKEW_MS || 30000);
+const FAST_MODEL = process.env.ZUNEF_FAST_MODEL || process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
+const REWRITE_OPUS_TO_FAST = process.env.ZUNEF_REWRITE_OPUS_TO_FAST !== '0';
+const MAX_TOKENS_CAP = Number(process.env.ZUNEF_MAX_TOKENS_CAP || 20000);
+
+const tokenCache = new Map();
+
+async function loadAccounts() {
+  if (process.env.ZUNEF_AUTH_URLS) {
+    return process.env.ZUNEF_AUTH_URLS.split(',')
+      .map((authUrl, index) => ({ name: `env-${index + 1}`, authUrl: authUrl.trim() }))
+      .filter((account) => account.authUrl);
+  }
+  const configPath = process.env.ZUNEF_ACCOUNTS_FILE || join(homedir(), '.config/mekongmind/zunef-accounts.json');
+  const parsed = JSON.parse(await readFile(configPath, 'utf8'));
+  const accounts = Array.isArray(parsed) ? parsed : parsed.accounts;
+  if (!Array.isArray(accounts) || accounts.length === 0) {
+    throw new Error(`No Zunef accounts in ${configPath}`);
+  }
+  return accounts.filter((account) => account && account.authUrl);
+}
+
+function fetchToken(authUrl) {
+  const helperStarted = Date.now();
+  return new Promise((resolve, reject) => {
+    const child = spawn(HELPER, [authUrl], { stdio: ['ignore', 'pipe', 'pipe'] });
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', (chunk) => { stdout += chunk; });
+    child.stderr.on('data', (chunk) => { stderr += chunk; });
+    child.on('error', reject);
+    child.on('close', (code) => {
+      const token = stdout.trim();
+      if (code === 0 && token) resolve({ token, helperMs: Date.now() - helperStarted });
+      else reject(new Error(`helper failed exit=${code} stderr_present=${Boolean(stderr.trim())}`));
+    });
+  });
+}
+
+async function getToken(authUrl) {
+  const now = Date.now();
+  const cached = tokenCache.get(authUrl);
+  if (cached?.token && now < cached.expiresAt - TOKEN_CACHE_SKEW_MS) {
+    return { token: cached.token, tokenMs: 0, tokenCacheHit: true };
+  }
+  if (cached?.inflight) {
+    const token = await cached.inflight;
+    return { token, tokenMs: Date.now() - now, tokenCacheHit: false, tokenInflightHit: true };
+  }
+  const inflight = fetchToken(authUrl)
+    .then(({ token, helperMs }) => {
+      tokenCache.set(authUrl, {
+        token,
+        expiresAt: Date.now() + TOKEN_CACHE_TTL_MS,
+        lastHelperMs: helperMs,
+      });
+      return token;
+    })
+    .catch((error) => {
+      tokenCache.delete(authUrl);
+      throw error;
+    });
+  tokenCache.set(authUrl, {
+    token: cached?.token,
+    expiresAt: cached?.expiresAt || 0,
+    inflight,
+  });
+  const token = await inflight;
+  return { token, tokenMs: Date.now() - now, tokenCacheHit: false };
+}
+
+function invalidateToken(authUrl) {
+  tokenCache.delete(authUrl);
+}
+
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function systemHasMarkdownGuard(system) {
+  if (!MARKDOWN_GUARD) return true;
+  if (typeof system === 'string') return system.includes('Markdown rendering guard:');
+  if (Array.isArray(system)) {
+    return system.some((block) => typeof block?.text === 'string' && block.text.includes('Markdown rendering guard:'));
+  }
+  return false;
+}
+
+function appendMarkdownGuard(payload) {
+  if (systemHasMarkdownGuard(payload.system)) return false;
+  if (!payload.system) {
+    payload.system = MARKDOWN_GUARD;
+    return true;
+  }
+  if (typeof payload.system === 'string') {
+    payload.system = `${payload.system}\n\n${MARKDOWN_GUARD}`;
+    return true;
+  }
+  if (Array.isArray(payload.system)) {
+    payload.system = [
+      ...payload.system,
+      { type: 'text', text: MARKDOWN_GUARD },
+    ];
+    return true;
+  }
+  return false;
+}
+
+function systemBytes(system) {
+  if (typeof system === 'string') return Buffer.byteLength(system);
+  if (Array.isArray(system)) {
+    return system.reduce((total, block) => total + Buffer.byteLength(String(block?.text || '')), 0);
+  }
+  return 0;
+}
+
+function rewriteRequestBody(body, headers) {
+  const contentType = String(headers['content-type'] || '');
+  if (!contentType.includes('application/json')) {
+    return { body, rewroteToolChoice: false, rewroteMarkdownGuard: false, requestMeta: {} };
+  }
+  let payload;
+  try {
+    payload = JSON.parse(body.toString('utf8'));
+  } catch {
+    return { body, rewroteToolChoice: false, rewroteMarkdownGuard: false, requestMeta: {} };
+  }
+  const originalModel = typeof payload.model === 'string' ? payload.model : undefined;
+  let rewroteModel = false;
+  if (REWRITE_OPUS_TO_FAST && originalModel?.includes('opus') && FAST_MODEL && FAST_MODEL !== originalModel) {
+    payload.model = FAST_MODEL;
+    rewroteModel = true;
+  }
+  let rewroteMaxTokens = false;
+  if (Number.isFinite(MAX_TOKENS_CAP) && MAX_TOKENS_CAP > 0 && Number(payload.max_tokens) > MAX_TOKENS_CAP) {
+    payload.max_tokens = MAX_TOKENS_CAP;
+    rewroteMaxTokens = true;
+  }
+  const requestMeta = {
+    model: typeof payload.model === 'string' ? payload.model : undefined,
+    originalModel,
+    toolCount: Array.isArray(payload.tools) ? payload.tools.length : 0,
+    systemBytes: systemBytes(payload.system),
+    messageCount: Array.isArray(payload.messages) ? payload.messages.length : 0,
+    maxTokens: payload.max_tokens,
+    rewroteModel,
+    rewroteMaxTokens,
+  };
+  const rewroteMarkdownGuard = appendMarkdownGuard(payload);
+  let rewroteToolChoice = false;
+  if (DISABLE_PARALLEL_TOOL_USE && Array.isArray(payload.tools) && payload.tools.length > 0) {
+    if (payload.tool_choice && typeof payload.tool_choice === 'object' && !Array.isArray(payload.tool_choice)) {
+      if (payload.tool_choice.disable_parallel_tool_use !== true) {
+        payload.tool_choice = {
+          ...payload.tool_choice,
+          disable_parallel_tool_use: true,
+        };
+        rewroteToolChoice = true;
+      }
+    } else {
+      payload.tool_choice = {
+        type: 'auto',
+        disable_parallel_tool_use: true,
+      };
+      rewroteToolChoice = true;
+    }
+  }
+  if (!rewroteMarkdownGuard && !rewroteToolChoice && !rewroteModel && !rewroteMaxTokens) {
+    return { body, rewroteToolChoice: false, rewroteMarkdownGuard: false, requestMeta };
+  }
+  return { body: Buffer.from(JSON.stringify(payload)), rewroteToolChoice, rewroteMarkdownGuard, requestMeta };
+}
+
+function firstOutputFromEvent(event) {
+  if (event?.type === 'content_block_start' && event?.content_block?.type === 'tool_use') {
+    return 'tool_use_start';
+  }
+  if (event?.type === 'content_block_delta') {
+    const delta = event.delta || {};
+    if (delta.text) return 'text_delta';
+    if (delta.partial_json) return 'tool_use_input_delta';
+    if (delta.type === 'input_json_delta') return 'tool_use_input_delta';
+  }
+  if (event?.type === 'message_delta' && event?.delta?.stop_reason) {
+    return 'message_delta';
+  }
+  return null;
+}
+
+function parseDataLines(buffer, chunk) {
+  buffer.text += new TextDecoder().decode(chunk, { stream: true });
+  let newlineIndex = buffer.text.search(/\r?\n/);
+  while (newlineIndex >= 0) {
+    const line = buffer.text.slice(0, newlineIndex).trim();
+    buffer.text = buffer.text.slice(buffer.text[newlineIndex] === '\r' ? newlineIndex + 2 : newlineIndex + 1);
+    if (line.startsWith('data: ')) {
+      const data = line.slice(6);
+      if (data !== '[DONE]') {
+        try {
+          const event = JSON.parse(data);
+          const firstOutputEvent = firstOutputFromEvent(event);
+          if (firstOutputEvent) return firstOutputEvent;
+        } catch {
+          // Ignore partial or vendor-specific events.
+        }
+      }
+    }
+    newlineIndex = buffer.text.search(/\r?\n/);
+  }
+  return false;
+}
+
+async function startCandidate(candidate, body, headers, controllers) {
+  const started = Date.now();
+  const { token, tokenMs, tokenCacheHit, tokenInflightHit } = await getToken(candidate.account.authUrl);
+  const fetchStarted = Date.now();
+  const controller = new AbortController();
+  controllers.add(controller);
+  const response = await fetch(UPSTREAM, {
+    method: 'POST',
+    headers: {
+      'content-type': headers['content-type'] || 'application/json',
+      'accept': 'text/event-stream',
+      'connection': 'keep-alive',
+      'anthropic-version': headers['anthropic-version'] || '2023-06-01',
+      'x-zunef-client': 'claude-code',
+      'x-api-key': token,
+    },
+    body,
+    signal: controller.signal,
+  });
+  const headersMs = Date.now() - fetchStarted;
+  if (!response.ok || !response.body) {
+    const text = await response.text().catch(() => '');
+    if (response.status === 401 || response.status === 403) {
+      invalidateToken(candidate.account.authUrl);
+    }
+    throw new Error(`${candidate.name} upstream ${response.status} bytes=${text.length}`);
+  }
+  const reader = response.body.getReader();
+  const chunks = [];
+  const lineBuffer = { text: '' };
+  let firstOutputMs = null;
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) throw new Error(`${candidate.name} ended before output`);
+    chunks.push(value);
+    const firstOutputEvent = parseDataLines(lineBuffer, value);
+    if (firstOutputEvent) {
+      firstOutputMs = Date.now() - started;
+      return {
+        candidate,
+        response,
+        reader,
+        chunks,
+        controller,
+        firstOutputMs,
+        firstOutputEvent,
+        tokenMs,
+        tokenCacheHit,
+        tokenInflightHit: Boolean(tokenInflightHit),
+        headersMs,
+      };
+    }
+  }
+}
+
+async function chooseCandidate(accounts, body, headers) {
+  const controllers = new Set();
+  let settled = false;
+  let lastError;
+  const candidates = [];
+  for (let attempt = 0; attempt < DUPLICATE_ATTEMPTS; attempt += 1) {
+    accounts.forEach((account, accountIndex) => {
+      const suffix = attempt === 0 ? '' : `#${attempt + 1}`;
+      candidates.push({
+        account,
+        name: `${account.name}${suffix}`,
+        delayMs: (attempt * DUPLICATE_DELAY_MS) + (accountIndex * HEDGE_DELAY_MS),
+      });
+    });
+  }
+  const launch = async (candidate) => {
+    if (candidate.delayMs > 0) await wait(candidate.delayMs);
+    if (settled) throw new Error(`${candidate.name} skipped after winner`);
+    return startCandidate(candidate, body, headers, controllers);
+  };
+  const pending = candidates.map((candidate) => launch(candidate).catch((error) => {
+    lastError = error;
+    throw error;
+  }));
+  const timeout = wait(FIRST_OUTPUT_TIMEOUT_MS).then(() => {
+    throw new Error(`first output timeout; last_error=${lastError?.message || 'none'}`);
+  });
+  const winner = await Promise.race([
+    Promise.any(pending),
+    timeout,
+  ]);
+  settled = true;
+  for (const controller of controllers) {
+    if (controller !== winner.controller) controller.abort();
+  }
+  return winner;
+}
+
+function writeHeaders(res, upstreamResponse) {
+  res.writeHead(upstreamResponse.status, {
+    'content-type': upstreamResponse.headers.get('content-type') || 'text/event-stream',
+    'cache-control': 'no-cache',
+    'connection': 'keep-alive',
+  });
+}
+
+async function pipeWinner(winner, res) {
+  writeHeaders(res, winner.response);
+  for (const chunk of winner.chunks) res.write(Buffer.from(chunk));
+  while (!res.destroyed) {
+    const { value, done } = await winner.reader.read();
+    if (done) break;
+    res.write(Buffer.from(value));
+  }
+  res.end();
+}
+
+const accounts = await loadAccounts();
+const prewarmResults = await Promise.allSettled(accounts.map((account) => getToken(account.authUrl)));
+console.error(JSON.stringify({
+  event: 'zunef_proxy_token_prewarm',
+  ok: prewarmResults.filter((result) => result.status === 'fulfilled').length,
+  failed: prewarmResults.filter((result) => result.status === 'rejected').length,
+}));
+const server = http.createServer(async (req, res) => {
+  const pathname = new URL(req.url || '/', 'http://127.0.0.1').pathname;
+  if (req.method === 'GET' && pathname === '/health') {
+    res.writeHead(200, { 'content-type': 'application/json' });
+    res.end(JSON.stringify({
+      ok: true,
+      accounts: accounts.length,
+      hedgeDelayMs: HEDGE_DELAY_MS,
+      duplicateAttempts: DUPLICATE_ATTEMPTS,
+      duplicateDelayMs: DUPLICATE_DELAY_MS,
+      firstOutputTimeoutMs: FIRST_OUTPUT_TIMEOUT_MS,
+      disableParallelToolUse: DISABLE_PARALLEL_TOOL_USE,
+      markdownGuard: Boolean(MARKDOWN_GUARD),
+      tokenCacheTtlMs: TOKEN_CACHE_TTL_MS,
+      tokenCacheEntries: [...tokenCache.values()].filter((entry) => entry.token).length,
+      rewriteOpusToFast: REWRITE_OPUS_TO_FAST,
+      fastModel: FAST_MODEL,
+      maxTokensCap: MAX_TOKENS_CAP,
+    }));
+    return;
+  }
+  if (req.method !== 'POST' || !pathname.endsWith('/messages')) {
+    res.writeHead(404, { 'content-type': 'application/json' });
+    res.end(JSON.stringify({ error: 'not_found' }));
+    return;
+  }
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  const originalBody = Buffer.concat(chunks);
+  const { body, rewroteToolChoice, rewroteMarkdownGuard, requestMeta } = rewriteRequestBody(originalBody, req.headers);
+  const started = Date.now();
+  try {
+    const winner = await chooseCandidate(accounts, body, req.headers);
+    console.error(JSON.stringify({
+      event: 'zunef_proxy_winner',
+      account: winner.candidate.name,
+      firstOutputMs: winner.firstOutputMs,
+      firstOutputEvent: winner.firstOutputEvent,
+      tokenMs: winner.tokenMs,
+      tokenCacheHit: winner.tokenCacheHit,
+      tokenInflightHit: winner.tokenInflightHit,
+      headersMs: winner.headersMs,
+      totalSelectMs: Date.now() - started,
+      rewroteToolChoice,
+      rewroteMarkdownGuard,
+      ...requestMeta,
+    }));
+    await pipeWinner(winner, res);
+  } catch (error) {
+    res.writeHead(502, { 'content-type': 'application/json' });
+    res.end(JSON.stringify({ error: 'zunef_proxy_failed', message: error.message }));
+  }
+});
+
+server.listen(PORT, HOST, () => {
+  console.error(JSON.stringify({ event: 'zunef_proxy_listening', host: HOST, port: PORT, accounts: accounts.length }));
+});

@@ -79,6 +79,7 @@ class RaasLicenseGate(LicenseGateCheckMixin, LicenseGateSyncMixin):
         self._warning_displayed: set = set()
         self._license_status: str = "active"
         self._license_expires_at: Optional[int] = None
+        self._offline_mode: bool = False
         self._offline_failures: int = 0
         self._last_offline_error: Optional[str] = None
         self._jwt_payload: Optional[Dict[str, Any]] = None
@@ -206,14 +207,14 @@ class RaasLicenseGate(LicenseGateCheckMixin, LicenseGateSyncMixin):
         Validate license key with remote API.
 
         Returns:
-            Tuple of (is_valid, license_info, error_message)
+        Tuple of (is_valid, license_info, error_message)
         """
         if not self._enable_remote:
             is_valid, info, error = _get_validate_license()(license_key)
             if is_valid:
                 self._license_tier = info.get("tier") if info else None
                 self._key_id = info.get("key_id") if info else None
-            return is_valid, info, error
+                return is_valid, info, error
 
         try:
             response = _get_requests().post(
@@ -221,78 +222,106 @@ class RaasLicenseGate(LicenseGateCheckMixin, LicenseGateSyncMixin):
                 json={"license_key": license_key},
                 timeout=5,
             )
-            if response.status_code == 200:
-                data = response.json()
-                status = data.get("status", "active")
-                if status == "revoked":
-                    self._offline_failures = 0
-                    return False, None, "License has been revoked"
-                if status == "expired":
-                    self._offline_failures = 0
-                    return False, None, "License has expired"
-
-                self._validated = True
-                self._license_tier = data.get("tier")
-                self._key_id = data.get("key_id")
-                self._license_status = status
-                self._license_expires_at = data.get("expires_at")
-                self._offline_failures = 0
-
-                if self._key_id:
-                    cache_quota(
-                        key_id=self._key_id, daily_used=0,
-                        daily_limit=TIER_LIMITS.get(self._license_tier, {}).get("daily", 10),
-                        tier=self._license_tier, status=self._license_status,
-                        expires_at_ts=self._license_expires_at or 0,
-                        is_offline_mode=False, grace_period_remaining=GRACE_PERIOD_SECONDS,
-                    )
-                return True, data, ""
-
-            elif response.status_code == 401:
-                self._offline_failures = 0
-                record_license_failure(error_code="invalid_or_revoked", key_id=None, command=None, error_message="Invalid or revoked license key")
-                return False, None, "Invalid or revoked license key"
-
-            elif response.status_code == 403:
-                data = response.json() if response.content else {}
-                reason = data.get("reason", "forbidden")
-                self._offline_failures = 0
-                if reason == "revoked":
-                    record_license_failure(error_code="revoked", key_id=None, command=None, error_message="License has been revoked")
-                    return False, None, "License has been revoked"
-                elif reason == "expired":
-                    record_license_failure(error_code="expired", key_id=None, command=None, error_message="License has expired")
-                    return False, None, "License has expired"
-                record_license_failure(error_code="access_denied", key_id=None, command=None, error_message="Access denied")
-                return False, None, "Access denied"
-
-            elif response.status_code == 429:
-                record_license_failure(error_code="rate_limit", key_id=None, command=None, error_message="Rate limit exceeded")
-                return False, None, "Rate limit exceeded. Try again later."
-
-            else:
-                self._offline_failures += 1
-                self._last_offline_error = f"HTTP {response.status_code}"
-                record_license_failure(error_code=f"http_{response.status_code}", key_id=None, command=None, error_message=f"Remote validation failed: {response.status_code}")
-                return False, None, f"Remote validation failed: {response.status_code}"
-
         except _requests_base.exceptions.RequestException as e:
             self._offline_failures += 1
             self._last_offline_error = str(e)
-
             if self._key_id:
                 cached_state = get_cached_quota(self._key_id)
                 if cached_state and cached_state.is_in_grace_period():
+                    self._offline_mode = True
                     remaining_hours = cached_state.remaining_grace_hours()
-                    logger.warning("OFFLINE MODE: %dh grace period remaining", remaining_hours)
+                    logger.warning(
+                        "OFFLINE MODE: %dh grace period remaining", remaining_hours
+                    )
                     return True, None, ""
-
-            logger.warning("Remote validation unavailable, using local validation: %s", e)
+            logger.warning(
+                "Remote validation unavailable, using local validation: %s", e
+            )
             is_valid, info, error = _get_validate_license()(license_key)
             if is_valid:
                 self._license_tier = info.get("tier") if info else None
                 self._key_id = info.get("key_id") if info else None
             return is_valid, info, error
+
+        try:
+            data = response.json()
+        except ValueError:
+            return False, None, "Invalid response from license server"
+
+        if response.status_code == 200:
+            status = data.get("status", "active")
+            if status == "revoked":
+                self._offline_failures = 0
+                return False, None, "License has been revoked"
+            if status == "expired":
+                self._offline_failures = 0
+                return False, None, "License has expired"
+            if not data.get("tier") or not data.get("key_id"):
+                return False, None, "Invalid license response: missing tier or key_id"
+            self._validated = True
+            self._license_tier = data.get("tier")
+            self._key_id = data.get("key_id")
+            self._license_status = status
+            self._license_expires_at = data.get("expires_at")
+            self._offline_failures = 0
+            if self._key_id:
+                cache_quota(
+                    key_id=self._key_id, daily_used=0,
+                    daily_limit=TIER_LIMITS.get(self._license_tier, {})
+                    .get("daily", 10),
+                    tier=self._license_tier, status=self._license_status,
+                    expires_at_ts=self._license_expires_at or 0,
+                    is_offline_mode=False,
+                    grace_period_remaining=GRACE_PERIOD_SECONDS,
+                )
+            return True, data, ""
+
+        if response.status_code == 401:
+            self._offline_failures = 0
+            record_license_failure(
+                error_code="invalid_or_revoked", key_id=None, command=None,
+                error_message="Invalid or revoked license key",
+            )
+            return False, None, "Invalid or revoked license key"
+
+        if response.status_code == 403:
+            try:
+                data = response.json() if response.content else {}
+            except ValueError:
+                data = {}
+            reason = data.get("reason", "forbidden")
+            self._offline_failures = 0
+            if reason == "revoked":
+                record_license_failure(
+                    error_code="revoked", key_id=None, command=None,
+                    error_message="License has been revoked",
+                )
+                return False, None, "License has been revoked"
+            if reason == "expired":
+                record_license_failure(
+                    error_code="expired", key_id=None, command=None,
+                    error_message="License has expired",
+                )
+                record_license_failure(
+                    error_code="access_denied", key_id=None, command=None,
+                    error_message="Access denied",
+                )
+            return False, None, "Access denied"
+
+        if response.status_code == 429:
+            record_license_failure(
+                error_code="rate_limit", key_id=None, command=None,
+                error_message="Rate limit exceeded",
+            )
+            return False, None, "Rate limit exceeded. Try again later."
+
+        self._offline_failures += 1
+        self._last_offline_error = f"HTTP {response.status_code}"
+        record_license_failure(
+            error_code=f"http_{response.status_code}", key_id=None, command=None,
+            error_message=f"Remote validation failed: {response.status_code}",
+        )
+        return False, None, f"Remote validation failed: {response.status_code}"
 
     def get_license_info(self) -> dict:
         """Get current license info dict."""

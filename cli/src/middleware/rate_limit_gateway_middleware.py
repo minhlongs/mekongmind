@@ -18,7 +18,7 @@ from starlette.types import ASGIApp
 
 from src.auth.rate_limiter import RateLimitPreset, get_rate_limiter
 
-_RATE_LIMIT_ACTIVE = os.getenv("RATE_LIMIT_ENABLED", "0") == "1"
+_RATE_LIMIT_ACTIVE = os.getenv("RATE_LIMIT_ENABLED", "1") == "1"
 _SKIP_PATHS = {"/health", "/healthz", "/metrics"}
 
 

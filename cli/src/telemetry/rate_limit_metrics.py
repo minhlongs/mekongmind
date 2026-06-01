@@ -1,10 +1,10 @@
-"""
-Rate Limit Metrics Emitter — ROIaaS Phase 6
+"""Rate Limit Metrics Emitter — ROIaaS Phase 6
 
 Emits rate limit events to telemetry pipeline for dashboard integration.
 Persists events to rate_limit_events table and provides query methods.
 """
 
+import hashlib
 import logging
 import json
 from dataclasses import dataclass, field
@@ -16,6 +16,13 @@ from src.db.database import DatabaseConnection
 logger = logging.getLogger("mekong.rate_limits.metrics")
 
 
+def anonymize_ip(ip: str) -> str:
+    """Anonymize IP address using SHA-256 hash (first 16 chars)."""
+    if not ip:
+        return ip
+    return hashlib.sha256(ip.encode()).hexdigest()[:16]
+
+
 @dataclass
 class RateLimitEvent:
     """Rate limit event data structure."""
@@ -23,7 +30,7 @@ class RateLimitEvent:
     tier: str
     endpoint: str
     preset: str
-    event_type: str  # 'override_applied', 'request_allowed', 'rate_limited'
+    event_type: str # 'override_applied', 'request_allowed', 'rate_limited'
 
     # Quota information
     quota_limit: Optional[int] = None
@@ -60,7 +67,7 @@ class RateLimitMetricsEmitter:
         """Initialize emitter with database connection."""
         self._db = db or DatabaseConnection()
         self._batch_buffer: List[RateLimitEvent] = []
-        self._batch_size: int = 100  # Flush after N events
+        self._batch_size: int = 100 # Flush after N events
 
     async def emit_event(self, event: RateLimitEvent) -> bool:
         """
@@ -101,15 +108,15 @@ class RateLimitMetricsEmitter:
     async def _persist_event(self, event: RateLimitEvent) -> str:
         """Persist event to database."""
         query = """
-            INSERT INTO rate_limit_events (
-                tenant_id, tier, endpoint, preset, event_type,
-                quota_limit, quota_remaining, quota_utilization_pct,
-                client_ip, method, path, user_agent,
-                response_status, retry_after, metadata, created_at
-            ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
-            )
-            RETURNING id
+        INSERT INTO rate_limit_events (
+            tenant_id, tier, endpoint, preset, event_type,
+            quota_limit, quota_remaining, quota_utilization_pct,
+            client_ip, method, path, user_agent,
+            response_status, retry_after, metadata, created_at
+        ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+        )
+        RETURNING id
         """
 
         params = (
@@ -121,7 +128,7 @@ class RateLimitMetricsEmitter:
             event.quota_limit,
             event.quota_remaining,
             event.quota_utilization_pct,
-            event.client_ip,
+            anonymize_ip(event.client_ip) if event.client_ip else None,
             event.method,
             event.path,
             event.user_agent,
@@ -146,11 +153,11 @@ class RateLimitMetricsEmitter:
             Count of rate_limited events
         """
         query = """
-            SELECT COUNT(*) as count
-            FROM rate_limit_events
-            WHERE tenant_id = $1
-              AND event_type = 'rate_limited'
-              AND created_at > NOW() - INTERVAL '%s hours'
+        SELECT COUNT(*) as count
+        FROM rate_limit_events
+        WHERE tenant_id = $1
+        AND event_type = 'rate_limited'
+        AND created_at > NOW() - INTERVAL '%s hours'
         """ % hours
 
         result = await self._db.fetch_one(query, (tenant_id,))
@@ -168,13 +175,13 @@ class RateLimitMetricsEmitter:
             Dict with avg/max utilization percentages
         """
         query = """
-            SELECT
-                AVG(quota_utilization_pct) as avg_utilization,
-                MAX(quota_utilization_pct) as max_utilization,
-                COUNT(*) as total_requests
-            FROM rate_limit_events
-            WHERE tenant_id = $1
-              AND created_at > NOW() - INTERVAL '%s hours'
+        SELECT
+            AVG(quota_utilization_pct) as avg_utilization,
+            MAX(quota_utilization_pct) as max_utilization,
+            COUNT(*) as total_requests
+        FROM rate_limit_events
+        WHERE tenant_id = $1
+        AND created_at > NOW() - INTERVAL '%s hours'
         """ % hours
 
         result = await self._db.fetch_one(query, (tenant_id,))
@@ -198,14 +205,12 @@ class RateLimitMetricsEmitter:
             List of dicts with tier, event_type, count
         """
         query = """
-            SELECT
-                tier,
-                event_type,
-                COUNT(*) as count
-            FROM rate_limit_events
-            WHERE created_at > NOW() - INTERVAL '%s hours'
-            GROUP BY tier, event_type
-            ORDER BY tier, count DESC
+        SELECT
+            tier, event_type, COUNT(*) as count
+        FROM rate_limit_events
+        WHERE created_at > NOW() - INTERVAL '%s hours'
+        GROUP BY tier, event_type
+        ORDER BY tier, count DESC
         """ % hours
 
         results = await self._db.fetch_all(query)
@@ -223,16 +228,14 @@ class RateLimitMetricsEmitter:
             List of dicts with tenant_id, tier, violation_count
         """
         query = """
-            SELECT
-                tenant_id,
-                tier,
-                COUNT(*) as violation_count
-            FROM rate_limit_events
-            WHERE event_type = 'rate_limited'
-              AND created_at > NOW() - INTERVAL '%s hours'
-            GROUP BY tenant_id, tier
-            ORDER BY violation_count DESC
-            LIMIT %s
+        SELECT
+            tenant_id, tier, COUNT(*) as violation_count
+        FROM rate_limit_events
+        WHERE event_type = 'rate_limited'
+        AND created_at > NOW() - INTERVAL '%s hours'
+        GROUP BY tenant_id, tier
+        ORDER BY violation_count DESC
+        LIMIT %s
         """ % (hours, limit)
 
         results = await self._db.fetch_all(query)
@@ -270,14 +273,14 @@ class RateLimitMetricsEmitter:
             param_count += 1
 
         query = f"""
-            SELECT
-                id, tenant_id, tier, endpoint, preset, event_type,
-                quota_limit, quota_remaining, quota_utilization_pct,
-                response_status, retry_after, created_at
-            FROM rate_limit_events
-            WHERE {' AND '.join(conditions)}
-            ORDER BY created_at DESC
-            LIMIT ${param_count}
+        SELECT
+            id, tenant_id, tier, endpoint, preset, event_type,
+            quota_limit, quota_remaining, quota_utilization_pct,
+            response_status, retry_after, created_at
+        FROM rate_limit_events
+        WHERE {' AND '.join(conditions)}
+        ORDER BY created_at DESC
+        LIMIT ${param_count}
         """
         params.append(limit)
 
@@ -296,34 +299,34 @@ class RateLimitMetricsEmitter:
         """
         # Total violations
         total_query = """
-            SELECT COUNT(*) as total
-            FROM rate_limit_events
-            WHERE event_type = 'rate_limited'
-              AND created_at > NOW() - INTERVAL '%s hours'
+        SELECT COUNT(*) as total
+        FROM rate_limit_events
+        WHERE event_type = 'rate_limited'
+        AND created_at > NOW() - INTERVAL '%s hours'
         """ % hours
         total_result = await self._db.fetch_one(total_query)
         total = int(total_result.get('total', 0)) if total_result else 0
 
         # By tenant
         by_tenant_query = """
-            SELECT tenant_id, COUNT(*) as count
-            FROM rate_limit_events
-            WHERE event_type = 'rate_limited'
-              AND created_at > NOW() - INTERVAL '%s hours'
-            GROUP BY tenant_id
-            ORDER BY count DESC
+        SELECT tenant_id, COUNT(*) as count
+        FROM rate_limit_events
+        WHERE event_type = 'rate_limited'
+        AND created_at > NOW() - INTERVAL '%s hours'
+        GROUP BY tenant_id
+        ORDER BY count DESC
         """ % hours
         by_tenant = await self._db.fetch_all(by_tenant_query)
 
         # Top endpoints
         top_endpoints_query = """
-            SELECT endpoint, COUNT(*) as count
-            FROM rate_limit_events
-            WHERE event_type = 'rate_limited'
-              AND created_at > NOW() - INTERVAL '%s hours'
-            GROUP BY endpoint
-            ORDER BY count DESC
-            LIMIT 10
+        SELECT endpoint, COUNT(*) as count
+        FROM rate_limit_events
+        WHERE event_type = 'rate_limited'
+        AND created_at > NOW() - INTERVAL '%s hours'
+        GROUP BY endpoint
+        ORDER BY count DESC
+        LIMIT 10
         """ % hours
         top_endpoints = await self._db.fetch_all(top_endpoints_query)
 
@@ -336,8 +339,7 @@ class RateLimitMetricsEmitter:
 
 # Integration with TelemetryCollector
 class TelemetryIntegration:
-    """
-    Integrates rate limit metrics with core telemetry system.
+    """Integrates rate limit metrics with core telemetry system.
 
     Wraps RateLimitMetricsEmitter to provide TelemetryCollector-compatible interface.
     """
@@ -384,4 +386,5 @@ __all__ = [
     "RateLimitEvent",
     "RateLimitMetricsEmitter",
     "TelemetryIntegration",
+    "anonymize_ip",
 ]

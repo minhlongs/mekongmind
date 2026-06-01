@@ -78,8 +78,8 @@ export default function Home() {
       }
 
       setSuccess(true)
-    } catch (err: any) {
-      setError(err.message || 'Lỗi kết nối mạng. Vui lòng kiểm tra lại đường truyền.')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err) || 'Lỗi kết nối mạng. Vui lòng kiểm tra lại đường truyền.')
     } finally {
       setLoading(false)
     }
@@ -190,7 +190,13 @@ export default function Home() {
                     <div className="space-y-2">
                       <h3 className="text-2xl font-bold text-slate-900">Đăng Ký Thành Công!</h3>
                       <p className="text-sm text-slate-500 leading-relaxed px-2">
-                        Thông tin nhu cầu của bạn đã được lưu lại. Đội ngũ chuyên viên Nhịp Điệu Xanh sẽ liên hệ gửi rổ hàng và bảng giá chi tiết qua điện thoại/Zalo trong vòng 15 phút.
+        <p className="text-sm text-slate-500 leading-relaxed px-2">
+          Thông tin nhu cầu của bạn đã được lưu lại. Đội ngũ chuyên viên Nhịp Điệu Xanh sẽ liên hệ gửi rổ hàng và bảng giá chi tiết qua điện thoại/Zalo trong vòng 15 phút.
+        </p>
+        <p className="text-sm text-slate-600 leading-relaxed px-2 mt-1">
+          <MapPin className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5 text-emerald-500" />
+          Khu vực quan tâm của bạn: <strong>{formData.area}</strong>
+        </p>
                       </p>
                     </div>
                     <button 

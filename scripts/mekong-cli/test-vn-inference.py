@@ -95,7 +95,7 @@ def run_tests(model_name: str) -> None:
 
     if not model_path.exists():
         print(f"[ERROR] Model not found: {model_path}")
-        print(f"  Chạy: bash scripts/setup-mlx.sh --skip-qwen  (nếu chỉ cần PhoGPT)")
+        print("  Chạy: bash scripts/setup-mlx.sh --skip-qwen  (nếu chỉ cần PhoGPT)")
         sys.exit(1)
 
     print(f"\n=== VN Inference Test: {model_name} ===")
@@ -122,7 +122,7 @@ def run_tests(model_name: str) -> None:
             passed += 1
 
     # Summary
-    print(f"\n=== Summary ===")
+    print("\n=== Summary ===")
     print(f"  Passed: {passed}/{len(VN_TEST_CASES)}")
     avg_speed = [r["toks_per_sec"] for r in results if r["toks_per_sec"]]
     if avg_speed:

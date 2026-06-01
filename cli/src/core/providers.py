@@ -308,6 +308,215 @@ class OpenAICompatibleProvider(LLMProvider):
 
 
 # ---------------------------------------------------------------------------
+# AnthropicCompatibleProvider
+# ---------------------------------------------------------------------------
+
+class AnthropicCompatibleProvider(LLMProvider):
+    """Anthropic Messages API provider.
+
+    Works with direct Anthropic and Claude gateways such as
+    https://claude.zunef.com/v1/ai. This is intentionally separate from
+    OpenAICompatibleProvider because these gateways expose /v1/messages, not
+    /chat/completions.
+    """
+
+    def __init__(
+        self,
+        base_url: str,
+        api_key: str = "",
+        model: str = "",
+        provider_name: str = "anthropic",
+        timeout: int = 60,
+        api_version: str = "2023-06-01",
+    ) -> None:
+        self._base_url = _normalize_anthropic_base_url(base_url) if base_url else ""
+        self._api_key = api_key
+        self._default_model = model or _default_anthropic_model(self._base_url)
+        self._provider_name = provider_name
+        self._timeout = timeout
+        self._api_version = api_version
+
+    @property
+    def name(self) -> str:
+        return self._provider_name
+
+    def is_available(self) -> bool:
+        return bool(self._base_url)
+
+    def chat(
+        self,
+        messages: list[dict[str, str]],
+        model: str,
+        temperature: float,
+        max_tokens: int,
+        json_mode: bool,
+    ) -> LLMResponse:
+        if not self._base_url:
+            msg = f"{self.name}: no base_url configured"
+            raise RuntimeError(msg)
+
+        use_model = model or self._default_model
+        system_prompt = "\n\n".join(
+            m.get("content", "") for m in messages if m.get("role") == "system"
+        )
+        chat_messages = [
+            {
+                "role": "assistant" if m.get("role") == "assistant" else "user",
+                "content": m.get("content", ""),
+            }
+            for m in messages
+            if m.get("role") != "system"
+        ]
+
+        payload: dict[str, Any] = {
+            "model": use_model,
+            "messages": chat_messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+        }
+        if system_prompt:
+            payload["system"] = system_prompt
+        if json_mode:
+            payload["system"] = (
+                f"{system_prompt}\n\nReturn valid JSON only.".strip()
+                if system_prompt else "Return valid JSON only."
+            )
+
+        headers: dict[str, str] = {
+            "Content-Type": "application/json",
+            "anthropic-version": self._api_version,
+        }
+        if self._api_key:
+            headers["x-api-key"] = self._api_key
+        headers.update(_anthropic_custom_headers(self._base_url))
+
+        url = _anthropic_messages_url(self._base_url)
+        logger.debug("[%s] POST %s model=%s", self.name, url, use_model)
+
+        body = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(url, data=body, headers=headers, method="POST")
+
+        try:
+            with urllib.request.urlopen(req, timeout=self._timeout) as resp:
+                raw_body = resp.read().decode("utf-8", errors="replace")
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode("utf-8", errors="replace")[:500]
+            msg = f"{self.name} HTTP {e.code}: {error_body or e.reason}"
+            raise RuntimeError(msg) from e
+        except urllib.error.URLError as e:
+            msg = f"{self.name} connection error: {e}"
+            raise RuntimeError(msg) from e
+
+        data, text = _parse_anthropic_response(raw_body)
+
+        usage_raw = data.get("usage", {})
+        usage = {
+            "prompt_tokens": usage_raw.get("input_tokens", 0),
+            "completion_tokens": usage_raw.get("output_tokens", 0),
+            "total_tokens": (
+                usage_raw.get("input_tokens", 0)
+                + usage_raw.get("output_tokens", 0)
+            ),
+        }
+
+        return LLMResponse(
+            content=text,
+            model=data.get("model", use_model),
+            usage=usage,
+            raw=data,
+        )
+
+
+def _anthropic_messages_url(base_url: str) -> str:
+    base = _normalize_anthropic_base_url(base_url)
+    if base.endswith("/messages"):
+        return base
+    if "zunef.com" in base.lower():
+        return f"{base}/messages"
+    if base.endswith("/v1"):
+        return f"{base}/messages"
+    return f"{base}/v1/messages"
+
+
+def _normalize_anthropic_base_url(base_url: str) -> str:
+    base = base_url.rstrip("/")
+    if (
+        os.getenv("ANTHROPIC_ZUNEF_PRESERVE_HOST") != "1"
+        and base.lower().startswith("https://claude.zunef.com")
+    ):
+        return "https://claude-api.zunef.com" + base[len("https://claude.zunef.com"):]
+    return base
+
+
+def _default_anthropic_model(base_url: str) -> str:
+    configured = os.getenv("ANTHROPIC_MODEL", "") or os.getenv("LLM_MODEL", "")
+    if configured:
+        return configured
+    if "zunef.com" in base_url.lower():
+        return "claude-sonnet-4-6-20250514"
+    return "claude-sonnet-4-6-20250514"
+
+
+def _anthropic_custom_headers(base_url: str) -> dict[str, str]:
+    headers: dict[str, str] = {}
+    custom = os.getenv("ANTHROPIC_CUSTOM_HEADERS", "").strip()
+    if custom:
+        for item in custom.replace("\n", ",").split(","):
+            if ":" not in item:
+                continue
+            name, value = item.split(":", 1)
+            if name.strip() and value.strip():
+                headers[name.strip()] = value.strip()
+    elif "zunef.com" in base_url.lower():
+        headers["X-ZUNEF-CLIENT"] = "claude-code"
+    return headers
+
+
+def _parse_anthropic_response(raw_body: str) -> tuple[dict[str, Any], str]:
+    if not raw_body.lstrip().startswith("event:"):
+        data = json.loads(raw_body)
+        content_blocks = data.get("content", [])
+        text = "".join(
+            block.get("text", "")
+            for block in content_blocks
+            if block.get("type") == "text"
+        )
+        return data, text
+
+    text_parts: list[str] = []
+    model = ""
+    usage: dict[str, int] = {}
+    for line in raw_body.splitlines():
+        line = line.strip()
+        if not line.startswith("data: "):
+            continue
+        data_str = line[6:]
+        if data_str == "[DONE]":
+            continue
+        try:
+            event = json.loads(data_str)
+        except json.JSONDecodeError:
+            continue
+        if event.get("type") == "message_start":
+            message = event.get("message", {})
+            model = message.get("model", model)
+            usage.update(message.get("usage", {}) or {})
+        elif event.get("type") == "message_delta":
+            usage.update(event.get("usage", {}) or {})
+        elif event.get("type") == "content_block_delta":
+            delta = event.get("delta", {})
+            if "text" in delta:
+                text_parts.append(delta.get("text", ""))
+
+    return {
+        "content": [{"type": "text", "text": "".join(text_parts)}],
+        "model": model,
+        "usage": usage,
+        "raw_sse": True,
+    }, "".join(text_parts)
+
+
+# ---------------------------------------------------------------------------
 # OfflineProvider
 # ---------------------------------------------------------------------------
 

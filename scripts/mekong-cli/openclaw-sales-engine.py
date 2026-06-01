@@ -30,7 +30,7 @@ def call_llm(prompt):
             "max_tokens": 500,
         }, timeout=300)
         return r.json()["choices"][0]["message"]["content"]
-    except Exception as e:
+    except Exception:
         return None
 
 def send_email(to_email, to_name, subject, html_body):
@@ -70,7 +70,7 @@ def run():
             continue
         
         # Extract subject and body
-        subject = f"Mekong IDE — run your company solo"
+        subject = "Mekong IDE — run your company solo"
         html_body = f"""<div style="font-family:system-ui;max-width:600px;color:#333">
 <p>Hi {target["name"]},</p>
 {content}

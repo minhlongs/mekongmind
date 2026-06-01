@@ -40,8 +40,9 @@ export async function POST(req: Request) {
       { success: true, leadId: lead.id, message: 'Thông tin đăng ký đã được ghi nhận.' },
       { status: 201 }
     )
-  } catch (error: any) {
-    console.error('[POST /api/leads] Ingestion error:', error.message)
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+  console.error('[POST /api/leads] Ingestion error:', message)
     return NextResponse.json(
       { error: 'server_error', message: 'Đã xảy ra lỗi trên hệ thống. Xin vui lòng thử lại sau.' },
       { status: 500 }

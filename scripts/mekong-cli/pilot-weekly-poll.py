@@ -201,7 +201,7 @@ def cmd_record(args: argparse.Namespace) -> int:
     _append_jsonl(RESPONSES_FILE, asdict(resp))
     print(f"✅ Recorded score {args.score} for {args.user_id} ({iso_week})")
     if args.score < LOW_NPS_THRESHOLD - 2:  # 1, 2, 3 = detractor
-        print(f"⚠️  Low score — founder should reach out within 24h")
+        print("⚠️  Low score — founder should reach out within 24h")
     return 0
 
 
@@ -245,7 +245,7 @@ def cmd_report(args: argparse.Namespace) -> int:
     detractors = [(uid, s) for uid, s in avg_scores.items() if s < LOW_NPS_THRESHOLD - 2]
     if detractors:
         print()
-        print(f"🚨 LOW-NPS ALERTS — Founder phải Zalo trong 24h:")
+        print("🚨 LOW-NPS ALERTS — Founder phải Zalo trong 24h:")
         for uid, s in detractors:
             p = pilots.get(uid, {})
             print(f"   • {uid} ({p.get('name','?')}, {p.get('zalo','?')}) — score {s:.1f}")

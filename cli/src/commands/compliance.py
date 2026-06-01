@@ -1,5 +1,4 @@
-"""
-Compliance Reporting Commands — ROIaaS Phase 7
+"""Compliance Reporting Commands — ROIaaS Phase 7
 
 CLI commands for audit log export, digital signing, and verification.
 """
@@ -21,6 +20,17 @@ from src.raas.report_signer import (
 
 console = Console()
 app = typer.Typer()
+
+
+def _safe_path(user_path: str, allow_create: bool = False) -> Path:
+    """Contain file access to user's home directory."""
+    p = Path(user_path).expanduser().resolve()
+    home = Path.home().resolve()
+    if not str(p).startswith(str(home)):
+        raise ValueError(f"Path outside home directory: {p}")
+    if not allow_create and not p.exists():
+        raise ValueError(f"File does not exist: {p}")
+    return p
 
 
 def parse_date_range(date_range: str) -> tuple[datetime, datetime]:
@@ -151,7 +161,7 @@ def export(
             private_key = private_key_env or "~/.mekong/keys/audit_signing.pem"
             signer = ReportSigner()
 
-            if not Path(private_key).expanduser().exists():
+            if not _safe_path(private_key).exists():
                 # Generate key pair
                 console.print("[yellow]No signing key found. Generating new key pair...[/yellow]")
                 priv_path, pub_path = signer.generate_key_pair(
@@ -159,8 +169,8 @@ def export(
                     public_key_path=private_key.replace("audit_signing.pem", "audit_signing_pub.pem")
                 )
                 console.print("[green]✓ Generated keys:[/green]")
-                console.print(f"  Private: {priv_path}")
-                console.print(f"  Public:  {pub_path}")
+                console.print(f" Private: {priv_path}")
+                console.print(f" Public: {pub_path}")
             else:
                 signer.load_private_key(private_key)
 
@@ -168,8 +178,8 @@ def export(
             signature_path = sig_output
 
             console.print(f"[green]✓ Report signed:[/green] {sig_output}")
-            console.print(f"  Key ID: {result.key_id}")
-            console.print(f"  Hash:   {result.hash_value[:32]}...")
+            console.print(f" Key ID: {result.key_id}")
+            console.print(f" Hash: {result.hash_value[:32]}...")
 
         # Show summary for JSON export
         if format_lower == "json" and include_summary:
@@ -219,8 +229,8 @@ def verify(
 ) -> None:
     """Verify a signed audit report."""
     try:
-        # Load signature file
-        sig_path = Path(signature_file).expanduser()
+        # Load signature file with path containment
+        sig_path = _safe_path(signature_file)
         if not sig_path.exists():
             console.print(f"[bold red]Error:[/bold red] Signature file not found: {signature_file}")
             raise typer.Exit(code=1)
@@ -236,7 +246,7 @@ def verify(
                 # Try to infer from signature filename
                 report_file = signature_file.replace(".sig", "")
 
-        report_path = Path(report_file).expanduser()
+        report_path = _safe_path(report_file)
         if not report_path.exists():
             console.print(f"[bold red]Error:[/bold red] Report file not found: {report_file}")
             raise typer.Exit(code=1)
@@ -246,9 +256,9 @@ def verify(
         if public_key:
             verifier.load_public_key(public_key)
         else:
-            # Try default location
+            # Try default location with path containment
             default_pub = "~/.mekong/keys/audit_signing_pub.pem"
-            if Path(default_pub).expanduser().exists():
+            if _safe_path(default_pub).exists():
                 verifier.load_public_key(default_pub)
 
         result = verifier.verify_signature_file(str(report_path), str(sig_path))
@@ -382,10 +392,11 @@ def summary(
 
             console.print(rate_table)
 
-        # Save to file if requested
+        # Save to file if requested with path containment
         if output:
             import json
-            with open(output, "w", encoding="utf-8") as f:
+            safe_out = _safe_path(output, allow_create=True)
+            with open(safe_out, "w", encoding="utf-8") as f:
                 json.dump({
                     "summary": summary,
                     "date_range": {
@@ -420,7 +431,8 @@ def init_keys(
 ) -> None:
     """Generate signing key pair for report signatures."""
     try:
-        output_path = Path(output_dir).expanduser()
+        # Contain output directory to home
+        output_path = _safe_path(output_dir, allow_create=True)
         output_path.mkdir(parents=True, exist_ok=True)
 
         private_key_path = str(output_path / "audit_signing.pem")
@@ -437,11 +449,11 @@ def init_keys(
             Panel(
                 f"[bold green]✓ Key Pair Generated[/bold green]\n\n"
                 f"Private Key: {priv_path}\n"
-                f"  [dim](Keep this secure! Set permissions to 600)[/dim]\n\n"
-                f"Public Key:  {pub_path}\n\n"
+                f" [dim](Keep this secure! Set permissions to 600)[/dim]\n\n"
+                f"Public Key: {pub_path}\n\n"
                 f"Key ID: {signer.key_id}\n\n"
                 f"[yellow]Set AUDIT_SIGNING_KEY env var to use the private key:[/yellow]\n"
-                f"  export AUDIT_SIGNING_KEY={priv_path}",
+                f" export AUDIT_SIGNING_KEY={priv_path}",
                 title="🔑 Signing Keys Initialized",
                 border_style="green",
             )
@@ -472,8 +484,9 @@ def chain(
     try:
         import json
 
-        # Read events
-        with open(input_file, "r", encoding="utf-8") as f:
+        # Read events with path containment
+        safe_input = _safe_path(input_file)
+        with open(safe_input, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         # Extract events (handle both array and object with events key)

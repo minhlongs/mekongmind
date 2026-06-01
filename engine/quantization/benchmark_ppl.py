@@ -10,7 +10,6 @@ Tests:
 import mlx.core as mx
 import sys
 import time
-import math
 
 
 def test_flash_attention_compatibility():

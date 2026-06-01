@@ -116,11 +116,11 @@ def main() -> None:
     print(f"  scopes       : {args.scopes}")
     print(f"  allowed_orgs : {allowed_orgs}")
     print(f"  expires      : {exp_dt.isoformat()} (TTL={args.ttl})")
-    print(f"\nUsage:")
-    print(f'  curl -X POST https://gateway.cashclaw.cc/v1/pilot/convert \\')
+    print("\nUsage:")
+    print('  curl -X POST https://gateway.cashclaw.cc/v1/pilot/convert \\')
     print(f'    -H "Authorization: Bearer {token}" \\')
-    print(f'    -H "Content-Type: application/json" \\')
-    print(f'    -d \'{{"user_id":"<uid>","tier":"starter","monthly_vnd":199000}}\'')
+    print('    -H "Content-Type: application/json" \\')
+    print('    -d \'{"user_id":"<uid>","tier":"starter","monthly_vnd":199000}\'')
 
 
 if __name__ == "__main__":

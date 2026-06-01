@@ -38,6 +38,10 @@ deps:
 tidy:
 	go mod tidy
 
+## The user's ~/.local/bin/cc is an LLM-routing shim that invokes router.py; pin to system cc.
+export CC := /usr/bin/cc
+export CXX := /usr/bin/cc
+
 ## build: compile the mekong binary into ./bin/
 ## LC_RPATH entries are injected via -extldflags so dyld resolves libmekong_safety.dylib
 ## from /usr/local/lib (standard install) or adjacent lib/ dir (portable bundle) without
@@ -45,7 +49,7 @@ tidy:
 ## #cgo LDFLAGS, so rpath must come from the go build command instead.
 build: deps
 	@mkdir -p $(BUILD_DIR)
-	CGO_ENABLED=1 go build \
+	CGO_ENABLED=1 CC=$(CC) CXX=$(CXX) go build \
 		-ldflags '$(LDFLAGS) -extldflags "-Wl,-rpath,@executable_path/../lib -Wl,-rpath,@executable_path/lib -Wl,-rpath,/usr/local/lib"' \
 		-o $(BUILD_DIR)/$(BINARY) $(CMD_DIR)
 	@echo "Built: $(BUILD_DIR)/$(BINARY)"

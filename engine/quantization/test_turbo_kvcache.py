@@ -9,7 +9,6 @@ Tests:
 """
 
 import mlx.core as mx
-import math
 import sys
 
 def test_wht_roundtrip():
@@ -133,7 +132,7 @@ def test_compression_ratio():
             cache.update(layer, k, v)
 
     stats = cache.memory_stats()
-    print(f"  32-layer, 32-head, 128-dim, 10 tokens, 4-bit:")
+    print("  32-layer, 32-head, 128-dim, 10 tokens, 4-bit:")
     print(f"  Original: {stats['original_mb']:.1f} MB")
     print(f"  Compressed: {stats['compressed_mb']:.1f} MB")
     print(f"  Ratio: {stats['compression_ratio']:.2f}x")

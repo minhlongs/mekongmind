@@ -141,12 +141,17 @@ def register_cook_command(app: typer.Typer) -> None:
         goal_title = " ".join(goal).strip()
         if not goal_title:
             raise typer.BadParameter("goal cannot be empty", param_hint="GOAL")
-    try:
-        licensed = check_license("cook-auto")
-    except Exception as exc:
-        raise RuntimeError(f"License check failed — system error: {exc}") from exc
-    if not licensed:
-        raise RuntimeError("License check failed — insufficient credits for autonomous execution")
+        if len(goal_title) > 500:
+            raise typer.BadParameter(
+                f"goal title must be 500 characters or less (got {len(goal_title)})",
+                param_hint="GOAL",
+            )
+        try:
+            licensed = check_license('cook-auto')
+        except Exception as exc:
+            raise RuntimeError(f'License check failed — system error: {exc}') from exc
+        if not licensed:
+            raise RuntimeError('License check failed — insufficient credits for autonomous execution')
         engine = _goal_engine(db_path)
         created = engine.create_goal(goal_title)
         completed = engine.run_goal(
@@ -225,12 +230,17 @@ def register_cook_command(app: typer.Typer) -> None:
         goal_title = " ".join(goal).strip()
         if not goal_title:
             raise typer.BadParameter("goal cannot be empty", param_hint="GOAL")
-    try:
-        licensed = check_license("cook-auto")
-    except Exception as exc:
-        raise RuntimeError(f"License check failed — system error: {exc}") from exc
-    if not licensed:
-        raise RuntimeError("License check failed — insufficient credits for autonomous execution")
+        if len(goal_title) > 500:
+            raise typer.BadParameter(
+                f"goal title must be 500 characters or less (got {len(goal_title)})",
+                param_hint="GOAL",
+            )
+        try:
+            licensed = check_license('cook-auto')
+        except Exception as exc:
+            raise RuntimeError(f'License check failed — system error: {exc}') from exc
+        if not licensed:
+            raise RuntimeError('License check failed — insufficient credits for autonomous execution')
         engine = _goal_engine(db_path)
         created = engine.create_goal(goal_title)
         completed = engine.run_goal_parallel(

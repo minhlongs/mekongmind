@@ -7,6 +7,7 @@ Phase 6: Gateway-based validation, usage reporting, dashboard handoff.
 
 import os
 import typer
+from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -31,6 +32,16 @@ def generate(
     try:
         key = generate_license(tier, email, days)
         limits = get_tier_limits(tier)
+
+    # CRITICAL: Check revocation before allowing use
+    if _check_revoked(key_id):
+        console.print(Panel(
+            "[bold red]Key Revoked[/bold red]\n\n"
+            "This license key has been revoked. Contact support to restore.",
+            title="❌ License Revoked",
+            border_style="red",
+        ))
+        raise typer.Exit(code=1)
 
         console.print(
             Panel(
@@ -222,6 +233,26 @@ def _validate_with_gateway(key: str, verbose: bool) -> None:
         console.print("[dim]Falling back to local validation...[/dim]\n")
         _validate_local(key, verbose, gateway_mode=True)
 
+
+def _check_revoked(key_id: str) -> bool:
+    """Check if a key_id is in the local revocation list."""
+    revoked_path = Path.home() / ".mekong" / "revoked.json"
+    if not revoked_path.exists():
+        return False
+    try:
+        with open(revoked_path, "r") as f:
+            revoked = json.load(f)
+        return key_id in revoked
+    except Exception:
+        return False
+
+async def _check_revoked_async(key_id: str) -> bool:
+    """Check revocation via PostgreSQL (gateway)."""
+    try:
+        from src.lib.license_generator import get_generator
+        return await get_generator().is_revoked(key_id)
+    except Exception:
+        return _check_revoked(key_id)  # Fallback to local check
 
 def _show_dashboard_link(tenant_id: str, tier: str) -> None:
     """Phase 6.4: Show dashboard handoff link."""

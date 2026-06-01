@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import concurrent.futures
 import threading
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -194,15 +195,50 @@ class GoalEngine:
                         break
 
                     for task in new_ready:
+                        if task.attempts >= task.max_attempts:
+
+                            task.status = TaskStatus.FAILED
+
+                            task.result_summary = f"max_attempts ({task.max_attempts}) exceeded"
+
+                            self.store.save_tasks([task])
+
+                            self._event(
+
+                                goal.id, "task.skipped",
+
+                                {"task_id": task.id, "reason": "max_attempts"},
+
+                            )
+
+                            continue
+
                         task.status = TaskStatus.RUNNING
+
                         task.attempts += 1
-                    if task.attempts >= task.max_attempts:
-                        task.status = TaskStatus.FAILED
-                        task.result_summary = f"max_attempts ({task.max_attempts}) exceeded"
+
                         self.store.save_tasks([task])
-                        continue
-                        self.store.save_tasks([task])
+
                         assignment = self.roles.assign(task)
+
+                        self._event(
+
+                                goal.id,
+
+                                "task.started",
+
+                                {
+
+                                    "task_id": task.id,
+
+                                    "role": assignment.role.value,
+
+                                    "rationale": assignment.rationale,
+
+                                },
+
+                        )
+
                         self._event(
                             goal.id,
                             "task.started",
@@ -219,6 +255,7 @@ class GoalEngine:
                 done, _ = concurrent.futures.wait(
                     active_futures.keys(),
                     return_when=concurrent.futures.FIRST_COMPLETED,
+                    timeout=300,
                 )
 
                 for future in done:
@@ -250,9 +287,15 @@ class GoalEngine:
                         for future, task in list(active_futures.items()):
                             if not future.done():
                                 future.cancel()
+                            else:
+                                logger.warning(
+                                    "Cannot cancel future for task %s — already executing",
+                                    task.id,
+                                )
                         goal.status = GoalStatus.BLOCKED
                         self.store.save_goal(goal)
                         self._event(goal.id, "goal.blocked", {"reason": "tasks_failed"})
+                        return goal
                         return goal
 
         return self.verify_goal(goal.id, verification_profile)

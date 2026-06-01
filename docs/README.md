@@ -8,6 +8,8 @@
 | `design-guidelines.md` | Brand identity & design system |
 | `project-roadmap.md` | Development roadmap & milestones |
 | `codebase-summary.md` | Codebase snapshot & directory structure |
+| `source-consolidation-map.md` | Source-to-target migration map (Phase 2) |
+| `harness-engineering.md` | Local-first LLM runtime + adapter contracts (Phase 3+4) |
 | `mekong-cli/` | CLI documentation (setup, commands, API) |
 | `mekong-digital/` | Agency operations & templates |
 | `api/` | API reference documentation |

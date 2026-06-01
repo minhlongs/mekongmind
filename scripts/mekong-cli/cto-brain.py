@@ -8,7 +8,11 @@ New approach (v5): send ONE comprehensive prompt with FULL context. Let worker s
 Worker is CC CLI (Claude Code) — it CAN read codebase, plan, implement, test, commit.
 CTO just needs to give it the RIGHT mission, then GET OUT OF THE WAY.
 """
-import json, sys, os, subprocess, re, time
+import json
+import sys
+import os
+import subprocess
+import time
 from pathlib import Path
 
 project = sys.argv[1] if len(sys.argv) > 1 else "unknown"
@@ -109,12 +113,12 @@ if dirty_count > 0:
 # Sales mission (mekong-cli only, 13-17h)
 if project == "mekong-cli" and 13 <= hour < 17:
     mission = (
-        f"You are the Sales CTO for OpenClaw RaaS. "
-        f"Product: AI CTO as a Service ($49-499/mo). "
-        f"Landing: https://mekong-raas.pages.dev. "
-        f"Task: Research 10 potential customers (AI startups, dev agencies) and write cold outreach. "
-        f"Output to ~/.mekong/output/sales/. "
-        f"Read the raas-landing and raas-gateway code to understand the product first."
+        "You are the Sales CTO for OpenClaw RaaS. "
+        "Product: AI CTO as a Service ($49-499/mo). "
+        "Landing: https://mekong-raas.pages.dev. "
+        "Task: Research 10 potential customers (AI startups, dev agencies) and write cold outreach. "
+        "Output to ~/.mekong/output/sales/. "
+        "Read the raas-landing and raas-gateway code to understand the product first."
     )
     print(f'/cook "{mission}" --fast')
     sys.exit(0)

@@ -278,6 +278,9 @@ class CommandSanitizer:
 _sanitizer: CommandSanitizer | None = None
 
 
+_sanitizer_strict_mode: bool | None = None
+
+
 def get_sanitizer(strict_mode: bool = False) -> CommandSanitizer:
     """Get or create global CommandSanitizer instance.
 
@@ -288,9 +291,18 @@ def get_sanitizer(strict_mode: bool = False) -> CommandSanitizer:
         CommandSanitizer instance
 
     """
-    global _sanitizer
+    global _sanitizer, _sanitizer_strict_mode
     if _sanitizer is None:
+        _sanitizer_strict_mode = strict_mode
         _sanitizer = CommandSanitizer(strict_mode=strict_mode)
+    elif _sanitizer_strict_mode != strict_mode:
+        import warnings
+        warnings.warn(
+            f"CommandSanitizer already initialized with strict_mode={_sanitizer_strict_mode}, "
+            f"ignoring requested strict_mode={strict_mode}. "
+            "Create a new CommandSanitizer instance directly if you need different settings.",
+            RuntimeWarning,
+        )
     return _sanitizer
 
 

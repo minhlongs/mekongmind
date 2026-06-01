@@ -14,21 +14,19 @@ Targets uncovered branches in:
 from __future__ import annotations
 
 import json
-import sys
-import os
 from unittest.mock import MagicMock, Mock, patch
-
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 import pytest
 
 from src.core.providers import (
+    AnthropicCompatibleProvider,
     GeminiProvider,
     LiteLLMProvider,
     LLMResponse,
     OfflineProvider,
     OpenAICompatibleProvider,
 )
+from src.core.llm_client import LLMClient
 
 
 # ---------------------------------------------------------------------------
@@ -341,6 +339,234 @@ class TestOpenAICompatibleProvider:
                    side_effect=urllib.error.URLError("connection refused")):
             with pytest.raises(RuntimeError, match="connection error"):
                 p.chat([{"role": "user", "content": "hi"}], "gpt-4", 0.5, 100, False)
+
+
+# ---------------------------------------------------------------------------
+# AnthropicCompatibleProvider
+# ---------------------------------------------------------------------------
+
+class TestAnthropicCompatibleProvider:
+    def test_chat_success_uses_messages_endpoint(self):
+        p = AnthropicCompatibleProvider(
+            base_url="https://claude.zunef.com/v1/ai",
+            api_key="sk-test",
+            model="claude-sonnet-4-6",
+        )
+        response_data = {
+            "content": [{"type": "text", "text": "Hello Claude"}],
+            "model": "claude-sonnet-4-6",
+            "usage": {"input_tokens": 3, "output_tokens": 4},
+        }
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps(response_data).encode()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = Mock(return_value=False)
+
+        captured_req = []
+
+        def _urlopen(req, timeout):
+            captured_req.append(req)
+            return mock_resp
+
+        with patch("urllib.request.urlopen", side_effect=_urlopen):
+            result = p.chat(
+                [
+                    {"role": "system", "content": "Be concise."},
+                    {"role": "user", "content": "hi"},
+                ],
+                "claude-sonnet-4-6",
+                0.2,
+                100,
+                False,
+            )
+
+        assert captured_req[0].full_url == "https://claude-api.zunef.com/v1/ai/messages"
+        assert captured_req[0].get_header("X-api-key") == "sk-test"
+        assert captured_req[0].get_header("X-zunef-client") == "claude-code"
+        assert result.content == "Hello Claude"
+        assert result.usage["total_tokens"] == 7
+
+    def test_chat_official_v1_base_does_not_double_append(self):
+        p = AnthropicCompatibleProvider(
+            base_url="https://api.anthropic.com/v1",
+            api_key="sk-test",
+            model="claude-sonnet-4-6",
+        )
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps({"content": []}).encode()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = Mock(return_value=False)
+
+        captured_req = []
+
+        with patch("urllib.request.urlopen", side_effect=lambda req, timeout: captured_req.append(req) or mock_resp):
+            p.chat([{"role": "user", "content": "hi"}], "claude-sonnet-4-6", 0.2, 100, False)
+
+        assert captured_req[0].full_url == "https://api.anthropic.com/v1/messages"
+
+    def test_chat_http_error_raises_runtime(self):
+        p = AnthropicCompatibleProvider(
+            base_url="https://claude.zunef.com/v1/ai",
+            api_key="sk-test",
+            model="claude-sonnet-4-6",
+        )
+        import urllib.error
+        err = urllib.error.HTTPError(
+            url="https://x", code=401, msg="Unauthorized", hdrs=None,
+            fp=MagicMock(read=MagicMock(return_value=b'{"error":"bad key"}')),
+        )
+        with patch("urllib.request.urlopen", side_effect=err):
+            with pytest.raises(RuntimeError, match="HTTP 401"):
+                p.chat([{"role": "user", "content": "hi"}], "m", 0.5, 100, False)
+
+    def test_zunef_default_model_when_model_unset(self, monkeypatch):
+        monkeypatch.delenv("LLM_MODEL", raising=False)
+        monkeypatch.delenv("ANTHROPIC_MODEL", raising=False)
+        p = AnthropicCompatibleProvider(
+            base_url="https://claude.zunef.com/v1/ai",
+            api_key="sk-test",
+        )
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps({"content": []}).encode()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = Mock(return_value=False)
+        captured_payload = []
+
+        def _urlopen(req, timeout):
+            captured_payload.append(json.loads(req.data.decode("utf-8")))
+            return mock_resp
+
+        with patch("urllib.request.urlopen", side_effect=_urlopen):
+            p.chat([{"role": "user", "content": "hi"}], "", 0.5, 100, False)
+
+        assert captured_payload[0]["model"] == "claude-sonnet-4-6"
+
+    def test_chat_parses_zunef_sse_response(self):
+        p = AnthropicCompatibleProvider(
+            base_url="https://claude.zunef.com/v1/ai",
+            api_key="sk-test",
+            model="claude-sonnet-4-6",
+        )
+        sse = "\n".join([
+            'event: message_start',
+            'data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","usage":{"input_tokens":2,"output_tokens":1}}}',
+            "",
+            'event: content_block_delta',
+            'data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"OK"}}',
+            "",
+            'event: message_delta',
+            'data: {"type":"message_delta","usage":{"output_tokens":3}}',
+            "",
+        ])
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = sse.encode()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = Mock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_resp):
+            result = p.chat([{"role": "user", "content": "hi"}], "", 0.5, 100, False)
+
+        assert result.content == "OK"
+        assert result.model == "claude-sonnet-4-6"
+        assert result.usage["total_tokens"] == 5
+
+
+# ---------------------------------------------------------------------------
+# LLMClient Claude/Anthropic routing
+# ---------------------------------------------------------------------------
+
+class TestLLMClientAnthropicRouting:
+    def test_universal_claude_endpoint_uses_anthropic_provider(self, monkeypatch):
+        monkeypatch.setenv("LLM_BASE_URL", "https://claude.zunef.com/v1/ai")
+        monkeypatch.setenv("LLM_API_KEY", "test-key")
+        monkeypatch.setenv("LLM_MODEL", "claude-sonnet-4-6")
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("LOCAL_LLM_URL", raising=False)
+        monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
+        monkeypatch.setattr(LLMClient, "_check_local_llm_running", lambda self: False)
+
+        client = LLMClient()
+        primary = client.providers[0]
+
+        assert primary.name == "primary"
+        assert isinstance(primary, AnthropicCompatibleProvider)
+        assert not isinstance(primary, OpenAICompatibleProvider)
+
+    def test_generic_universal_endpoint_keeps_openai_compatible_provider(self, monkeypatch):
+        monkeypatch.setenv("LLM_BASE_URL", "https://api.deepseek.com/v1")
+        monkeypatch.setenv("LLM_API_KEY", "test-key")
+        monkeypatch.setenv("LLM_MODEL", "deepseek-chat")
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("LOCAL_LLM_URL", raising=False)
+        monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
+        monkeypatch.setattr(LLMClient, "_check_local_llm_running", lambda self: False)
+
+        client = LLMClient()
+        primary = client.providers[0]
+
+        assert primary.name == "primary"
+        assert isinstance(primary, OpenAICompatibleProvider)
+
+    def test_anthropic_api_key_uses_native_provider(self, monkeypatch):
+        monkeypatch.delenv("LLM_BASE_URL", raising=False)
+        monkeypatch.delenv("LLM_API_KEY", raising=False)
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+        monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://claude.zunef.com/v1/ai")
+        monkeypatch.delenv("LOCAL_LLM_URL", raising=False)
+        monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
+        monkeypatch.setattr(LLMClient, "_check_local_llm_running", lambda self: False)
+
+        client = LLMClient()
+        anthropic = next(p for p in client.providers if p.name == "anthropic-direct")
+
+        assert isinstance(anthropic, AnthropicCompatibleProvider)
+        assert not isinstance(anthropic, OpenAICompatibleProvider)
+
+    def test_anthropic_auth_token_uses_native_provider(self, monkeypatch):
+        monkeypatch.delenv("LLM_BASE_URL", raising=False)
+        monkeypatch.delenv("LLM_API_KEY", raising=False)
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.setenv("ANTHROPIC_AUTH_TOKEN", "auth-token")
+        monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://claude.zunef.com/v1/ai")
+        monkeypatch.delenv("LOCAL_LLM_URL", raising=False)
+        monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
+        monkeypatch.setattr(LLMClient, "_check_local_llm_running", lambda self: False)
+
+        client = LLMClient()
+        anthropic = next(p for p in client.providers if p.name == "anthropic-direct")
+
+        assert isinstance(anthropic, AnthropicCompatibleProvider)
+
+    def test_chat_lets_anthropic_provider_default_model_win(self, monkeypatch):
+        monkeypatch.setenv("LLM_BASE_URL", "https://claude.zunef.com/v1/ai")
+        monkeypatch.setenv("LLM_API_KEY", "test-key")
+        monkeypatch.delenv("LLM_MODEL", raising=False)
+        monkeypatch.delenv("ANTHROPIC_MODEL", raising=False)
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("LOCAL_LLM_URL", raising=False)
+        monkeypatch.delenv("OLLAMA_BASE_URL", raising=False)
+        monkeypatch.setattr(LLMClient, "_check_local_llm_running", lambda self: False)
+
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps({
+            "content": [{"type": "text", "text": "ok"}],
+            "model": "claude-sonnet-4-6",
+            "usage": {"input_tokens": 1, "output_tokens": 1},
+        }).encode()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = Mock(return_value=False)
+        captured_payload = []
+
+        def _urlopen(req, timeout):
+            captured_payload.append(json.loads(req.data.decode("utf-8")))
+            return mock_resp
+
+        client = LLMClient(enable_cache=False, enable_hooks=False)
+        with patch("urllib.request.urlopen", side_effect=_urlopen):
+            result = client.chat([{"role": "user", "content": "hi"}])
+
+        assert captured_payload[0]["model"] == "claude-sonnet-4-6"
+        assert result.content == "ok"
 
 
 # ---------------------------------------------------------------------------

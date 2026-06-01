@@ -56,9 +56,17 @@ class SQLiteGoalStore:
 
     def _validate_path(self) -> None:
         cwd = Path.cwd().resolve()
-        if not str(self.db_path).startswith(str(cwd)):
+        if self.db_path.exists() and self.db_path.is_symlink():
             raise ValueError(
-                f"Database path {self.db_path} is outside project directory {cwd}"
+                f"Database path {self.db_path} is a symlink — symlinks are not allowed"
+            )
+        try:
+            real_path = self.db_path.resolve(strict=False)
+        except RuntimeError:
+            real_path = self.db_path
+        if not str(real_path).startswith(str(cwd)):
+            raise ValueError(
+                f"Database path {self.db_path} (real: {real_path}) is outside project directory {cwd}"
             )
 
     @staticmethod
@@ -313,6 +321,14 @@ class SQLiteGoalStore:
                         json.dumps(checkpoint.state),
                         checkpoint.created_at,
                     ),
+                )
+
+    def delete_checkpoint(self, checkpoint_id: str) -> None:
+        with self.lock:
+            with self._connect() as conn:
+                conn.execute(
+                    "DELETE FROM checkpoints WHERE id = ?",
+                    (checkpoint_id,),
                 )
 
     def get_checkpoints(self, goal_id: str) -> list[Checkpoint]:

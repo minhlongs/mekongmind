@@ -9,12 +9,16 @@ Targets uncovered paths:
 from __future__ import annotations
 
 import json
+import sys
+import types
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from src.core.api_adapter import (
     APIAdapter,
+    _anthropic_messages_url,
+    _get_anthropic_base_url,
     _get_api_key,
     format_for_gemini,
     format_for_openai,
@@ -61,6 +65,115 @@ class TestGetApiKey:
         # key_map.get returns "" for unknown provider → env var "" → OSError
         with pytest.raises(OSError):
             _get_api_key("unknown_provider")
+
+    def test_anthropic_key_falls_back_to_universal_key(self, monkeypatch):
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.setenv("LLM_API_KEY", "universal-key")
+        assert _get_api_key("anthropic") == "universal-key"
+
+    def test_anthropic_key_accepts_auth_token(self, monkeypatch):
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("LLM_API_KEY", raising=False)
+        monkeypatch.setenv("ANTHROPIC_AUTH_TOKEN", "auth-token")
+        assert _get_api_key("anthropic") == "auth-token"
+
+
+# ---------------------------------------------------------------------------
+# Anthropic gateway URL handling
+# ---------------------------------------------------------------------------
+
+class TestAnthropicGatewayConfig:
+    def test_messages_url_appends_path_for_gateway_root(self):
+        assert (
+            _anthropic_messages_url("https://claude.zunef.com/v1/ai")
+            == "https://claude-api.zunef.com/v1/ai/messages"
+        )
+        assert (
+            _anthropic_messages_url("https://claude-api.zunef.com/v1/ai")
+            == "https://claude-api.zunef.com/v1/ai/messages"
+        )
+
+    def test_messages_url_does_not_double_append_path(self):
+        assert (
+            _anthropic_messages_url("https://claude.zunef.com/v1/ai/messages")
+            == "https://claude-api.zunef.com/v1/ai/messages"
+        )
+
+    def test_messages_url_handles_official_v1_base(self):
+        assert (
+            _anthropic_messages_url("https://api.anthropic.com/v1")
+            == "https://api.anthropic.com/v1/messages"
+        )
+
+    def test_anthropic_base_url_prefers_explicit_env(self, monkeypatch):
+        monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://explicit.example/v1/ai")
+        monkeypatch.setenv("LLM_BASE_URL", "https://claude.zunef.com/v1/ai")
+        assert _get_anthropic_base_url() == "https://explicit.example/v1/ai"
+
+    def test_anthropic_base_url_accepts_claude_universal_env(self, monkeypatch):
+        monkeypatch.delenv("ANTHROPIC_BASE_URL", raising=False)
+        monkeypatch.setenv("LLM_BASE_URL", "https://claude.zunef.com/v1/ai")
+        assert _get_anthropic_base_url() == "https://claude-api.zunef.com/v1/ai"
+
+    def test_anthropic_base_url_ignores_openai_compatible_universal_env(self, monkeypatch):
+        monkeypatch.delenv("ANTHROPIC_BASE_URL", raising=False)
+        monkeypatch.setenv("LLM_BASE_URL", "https://api.deepseek.com/v1")
+        assert _get_anthropic_base_url() == "https://api.anthropic.com"
+
+    @pytest.mark.asyncio
+    async def test_stream_http_error_raises_instead_of_empty_success(self, monkeypatch):
+        class FakeContent:
+            def __aiter__(self):
+                return self
+
+            async def __anext__(self):
+                raise StopAsyncIteration
+
+        class FakeResponse:
+            status = 401
+            content = FakeContent()
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, exc_type, exc, tb):
+                return False
+
+            async def text(self):
+                return '{"error":{"message":"Missing API key"}}'
+
+        class FakeSession:
+            last_url = ""
+            last_kwargs = {}
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, exc_type, exc, tb):
+                return False
+
+            def post(self, url, **kwargs):
+                FakeSession.last_url = url
+                FakeSession.last_kwargs = kwargs
+                return FakeResponse()
+
+        fake_aiohttp = types.SimpleNamespace(
+            ClientSession=FakeSession,
+            ClientTimeout=lambda **kwargs: kwargs,
+        )
+
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "key")
+        monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://claude.zunef.com/v1/ai")
+        monkeypatch.setitem(sys.modules, "aiohttp", fake_aiohttp)
+
+        adapter = APIAdapter()
+        config = _make_config("claude-opus-4-6")
+
+        with pytest.raises(OSError, match="Anthropic API error 401"):
+            [token async for token in adapter._generate_anthropic(config, [], None)]
+
+        assert FakeSession.last_url == "https://claude-api.zunef.com/v1/ai/messages"
+        assert FakeSession.last_kwargs["headers"]["X-ZUNEF-CLIENT"] == "claude-code"
 
 
 # ---------------------------------------------------------------------------
@@ -182,6 +295,25 @@ class TestGenerateSyncAnthropic:
             call_args = mock_open.call_args
             req = call_args[0][0]
             assert "custom.endpoint.com" in req.full_url
+
+    def test_sse_body_returns_text(self, monkeypatch):
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "key")
+        sse = "\n".join([
+            "event: content_block_delta",
+            'data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"OK"}}',
+            "",
+        ])
+        cm = MagicMock()
+        cm.__enter__ = MagicMock(return_value=cm)
+        cm.__exit__ = MagicMock(return_value=False)
+        cm.read.return_value = sse.encode()
+
+        with patch("urllib.request.urlopen", return_value=cm):
+            adapter = APIAdapter()
+            config = _make_config("claude-sonnet-4-6")
+            result = adapter._sync_anthropic(config, [], None, "key")
+
+        assert result == "OK"
 
 
 # ---------------------------------------------------------------------------

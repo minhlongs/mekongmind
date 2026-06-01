@@ -278,7 +278,7 @@ def run_cycle(state: dict) -> dict:
     state["cycle_count"] = cycle
 
     # ── ITERATE: analyze what worked, adjust priorities ──
-    print(f"\n  --- Paperclip Iterate ---")
+    print("\n  --- Paperclip Iterate ---")
     runs = state.get("runs", [])
     if len(runs) >= 5:
         published = [r for r in runs if r.get("published")]
@@ -311,7 +311,7 @@ def run_cycle(state: dict) -> dict:
     save_state(state)
 
     # ── TENANT AUTOPILOT ── Run all customer daemons
-    print(f"\n  --- Running tenant autopilots ---")
+    print("\n  --- Running tenant autopilots ---")
     try:
         import sys
         sys.path.insert(0, str(Path.home() / "mekong-cli"))

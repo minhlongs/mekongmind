@@ -107,13 +107,28 @@ class TestEscalationRouting:
         from src.core.binh_phap_escalation import resolve_llm_provider
         config = resolve_llm_provider("cloud_sonnet")
         assert "anthropic" in config["base_url"]
+        assert not config["base_url"].endswith("/v1")
         assert "sonnet" in config["model"]
 
     def test_resolve_cloud_opus(self) -> None:
         from src.core.binh_phap_escalation import resolve_llm_provider
         config = resolve_llm_provider("cloud_opus")
         assert "anthropic" in config["base_url"]
+        assert not config["base_url"].endswith("/v1")
         assert "opus" in config["model"]
+
+    def test_cloud_escalation_uses_native_anthropic_provider(self, monkeypatch) -> None:
+        from src.core.binh_phap_escalation import create_provider_for_level
+        from src.core.providers import AnthropicCompatibleProvider, OpenAICompatibleProvider
+
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+        monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://claude.zunef.com/v1/ai")
+
+        provider = create_provider_for_level("cloud_sonnet")
+
+        assert isinstance(provider, AnthropicCompatibleProvider)
+        assert not isinstance(provider, OpenAICompatibleProvider)
+        assert provider.name == "anthropic-sonnet"
 
     def test_resolve_unknown_defaults_to_local(self) -> None:
         from src.core.binh_phap_escalation import resolve_llm_provider

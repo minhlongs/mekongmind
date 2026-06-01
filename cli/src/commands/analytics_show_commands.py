@@ -1,5 +1,4 @@
-"""
-ROI Analytics CLI Commands — ROIaaS Phase 5
+"""ROI Analytics CLI Commands — ROIaaS Phase 5
 
 Commands for calculating and displaying ROI metrics:
 - Time saved per command vs manual coding
@@ -8,32 +7,33 @@ Commands for calculating and displaying ROI metrics:
 - JSON export for frontend dashboard
 
 Usage:
-    mekong analytics show
-    mekong analytics show --days 30
-    mekong analytics show --json
+mekong analytics show
+mekong analytics show --days 30
+mekong analytics show --json
 """
 
 import typer
 import os
 from rich.console import Console
 from typing import Optional, Dict
+from pathlib import Path
 
 console = Console()
 
 # Time estimates (minutes) for manual vs CLI — synced with src/analytics/roi_dashboard.py
 TIME_ESTIMATES: Dict[str, Dict[str, int]] = {
     # Commands
-    "cook": {"manual": 120, "cli": 5},      # 2h → 5min = 24x faster
-    "plan": {"manual": 60, "cli": 2},        # 1h → 2min = 30x faster
-    "fix": {"manual": 90, "cli": 10},        # 1.5h → 10min = 9x faster
-    "code": {"manual": 180, "cli": 15},      # 3h → 15min = 12x faster
-    "test": {"manual": 60, "cli": 5},        # 1h → 5min = 12x faster
-    "review": {"manual": 45, "cli": 3},      # 45min → 3min = 15x faster
-    "deploy": {"manual": 30, "cli": 2},      # 30min → 2min = 15x faster
-    "debug": {"manual": 120, "cli": 15},      # 2h → 15min = 8x faster
+    "cook": {"manual": 120, "cli": 5}, # 2h → 5min = 24x faster
+    "plan": {"manual": 60, "cli": 2}, # 1h → 2min = 30x faster
+    "fix": {"manual": 90, "cli": 10}, # 1.5h → 10min = 9x faster
+    "code": {"manual": 180, "cli": 15}, # 3h → 15min = 12x faster
+    "test": {"manual": 60, "cli": 5}, # 1h → 5min = 12x faster
+    "review": {"manual": 45, "cli": 3}, # 45min → 3min = 15x faster
+    "deploy": {"manual": 30, "cli": 2}, # 30min → 2min = 15x faster
+    "debug": {"manual": 120, "cli": 15}, # 2h → 15min = 8x faster
     # Agents
-    "planner": {"manual": 90, "cli": 3},      # 1.5h → 3min = 30x faster
-    "researcher": {"manual": 180, "cli": 5},  # 3h → 5min = 36x faster
+    "planner": {"manual": 90, "cli": 3}, # 1.5h → 3min = 30x faster
+    "researcher": {"manual": 180, "cli": 5}, # 3h → 5min = 36x faster
     "fullstack-developer": {"manual": 240, "cli": 10},
     "tester": {"manual": 60, "cli": 3},
     "code-reviewer": {"manual": 90, "cli": 5},
@@ -63,12 +63,25 @@ app = typer.Typer(
 )
 
 
+def _safe_path(user_path: str, allow_create: bool = False) -> Path:
+    """Contain file access to user's home directory."""
+    p = Path(user_path).expanduser().resolve()
+    home = Path.home().resolve()
+    if not str(p).startswith(str(home)):
+        raise ValueError(f"Path outside home directory: {p}")
+    if not allow_create and not p.exists():
+        raise ValueError(f"File does not exist: {p}")
+    return p
+
+
 @app.command(name="show")
 def analytics_show(
     days: int = typer.Option(30, "--days", "-d", help="Number of days to analyze"),
     json_output: bool = typer.Option(False, "--json", "-j", help="Export as JSON"),
     license_key: Optional[str] = typer.Option(
-        None, "--license", "-l",
+        None,
+        "--license",
+        "-l",
         help="License key (defaults to RAAS_LICENSE_KEY env var)"
     ),
 ) -> None:
@@ -82,10 +95,10 @@ def analytics_show(
     - Labor cost avoided
 
     Examples:
-        mekong analytics show
-        mekong analytics show --days 30
-        mekong analytics show --json
-        mekong analytics show -d 7 -l mk_your_key
+    mekong analytics show
+    mekong analytics show --days 30
+    mekong analytics show --json
+    mekong analytics show -d 7 -l mk_your_key
     """
     current_license = license_key or os.getenv("RAAS_LICENSE_KEY")
     if not current_license:
@@ -117,20 +130,21 @@ def analytics_show(
 def analytics_export(
     output: str = typer.Option(
         "~/.mekong/raas/roi-export.json",
-        "--output", "-o",
+        "--output",
+        "-o",
         help="Output file path"
     ),
     days: int = typer.Option(30, "--days", "-d", help="Number of days to export"),
     license_key: Optional[str] = typer.Option(
-        None, "--license", "-l",
+        None,
+        "--license",
+        "-l",
         help="License key (defaults to RAAS_LICENSE_KEY env var)"
     ),
 ) -> None:
     """
     Export ROI analytics to JSON file for frontend dashboard.
     """
-    from pathlib import Path
-
     current_license = license_key or os.getenv("RAAS_LICENSE_KEY")
     if not current_license:
         console.print("[bold red]No license key[/bold red]")
@@ -144,7 +158,7 @@ def analytics_export(
         dashboard = ROIDashboard(current_license, tracker=tracker)
         json_str = dashboard.export_json(days)
 
-        output_path = Path(output).expanduser()
+        output_path = _safe_path(output, allow_create=True)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(output_path, 'w') as f:

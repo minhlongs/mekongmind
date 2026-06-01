@@ -1,5 +1,6 @@
-"""
-Usage Tracking CLI Commands — ROIaaS Phase 4
+        raise ValueError(f"File does not exist: {p}")
+    return p
+"""Usage Tracking CLI Commands — ROIaaS Phase 4
 
 Commands for tracking and reporting CLI command usage per license key.
 - Track command invocations, agent calls, pipeline runs
@@ -19,6 +20,17 @@ from rich.table import Table
 from rich.panel import Panel
 from datetime import datetime
 from typing import Optional
+
+
+def _safe_path(user_path: str, allow_create: bool = False) -> Path:
+    """Contain file access to user's home directory."""
+    p = Path(user_path).expanduser().resolve()
+    home = Path.home().resolve()
+    if not str(p).startswith(str(home)):
+        raise ValueError(f"Path outside home directory: {p}")
+    if not allow_create and not p.exists():
+        raise ValueError(f"File does not exist: {p}")
+    return p
 
 console = Console()
 
@@ -216,7 +228,7 @@ def usage_export(
         meter = CreditMeter()
         events = meter.list_events(current_license, limit=1000)
 
-        output_path = Path(output).expanduser()
+        output_path = _safe_path(output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         export_data = {

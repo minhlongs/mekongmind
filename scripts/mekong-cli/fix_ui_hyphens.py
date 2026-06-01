@@ -1,6 +1,5 @@
 import os
 import re
-import glob
 
 components_dir = "/Users/macbook/mekong-cli/packages/ui/src/components"
 
