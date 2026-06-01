@@ -292,7 +292,6 @@ test -f ~/.cheetahclaws-src/providers.py && echo "OK: providers.py intact"
 
 **Unresolved (carry to Phase 5):**
 - CheetahClaws adapter stubs need to be created (new files, low risk).
-- Path fix in `cli/src/core/cc_spawner.py`, `cli/src/binh_phap/*.py` needs code change.
 
 ---
 
@@ -324,15 +323,12 @@ MekongMind command
 3. `_bridge/` files in `packages/openclaw-engine/src/` are **legacy debt** — no new code should use them. Remove after migration (Phase 2 deliverable).
 4. OpenClaw upstream (`~/projects/openclaw`) is **external source**. Adapter only — no vendoring.
 
-**Stale path references (BLOCKERS — fix before smoke):**
-
-| File | Old Path | New Resolution |
-|---|---|---|
-| `cli/src/core/cc_spawner.py:91` | `~/mekong-cli` default cwd | Use `MEKONGMIND_HOME` env or `Path(__file__).resolve().parents[2]` |
-| `cli/src/cli/health_metrics_commands.py:89` | `~/mekong-cli/apps/openclaw-worker/brain-learning-state.json` | Resolve relative to `MEKONGMIND_HOME` |
-| `cli/src/binh_phap/cto_daemon.py:53` | `os.path.expanduser("~/mekong-cli")` | Use `os.getenv("MEKONG_ROOT", ...)` with fallback |
-| `cli/src/binh_phap/immortal_loop.py:84-86` | `~/mekong-cli/tasks` | Use `os.getenv("MEKONG_TASKS_DIR", ...)` |
-| `cli/src/raas/reports_router.py:3` | `~/mekong-cli/content/openclaw-reports/` | Resolve relative to repo root |
+**Path references — all verified resolved:**
+- `cli/src/core/cc_spawner.py` — uses `MEKONGMIND_HOME` env or `Path(__file__).resolve().parents[2]` ✅
+- `cli/src/cli/health_metrics_commands.py` — uses `Path(__file__).resolve().parents[3] / "apps/..."` ✅
+- `cli/src/binh_phap/cto_daemon.py` — uses `os.getenv("MEKONG_ROOT", ...)` ✅
+- `cli/src/binh_phap/immortal_loop.py` — uses `os.getenv("MEKONG_TASKS_DIR", ...)` ✅
+- `cli/src/raas/reports_router.py` — uses relative path from repo root ✅
 
 **Non-blocker path references (document, don't fix):**
 - `scripts/mekong-cli/` — pilot scripts referencing old monorepo. These are operational scripts, not runtime code. Document as source-only.
