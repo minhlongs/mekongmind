@@ -440,6 +440,6 @@ grep -n "cheetahclaws\|cc_daemon\|CheetahClaws" /Users/macbook/mekongmind/cli/sr
 - Q1: ~~Does `packages/mekong-cli-core/src/llm/providers/mlx.ts` exist?~~ → YES, created (P1.3)
 - Q2: ~~Python CLI `llm_client.py` env var convention — same as TS or different?~~ → Resolved: ANTHROPIC_TIMEOUT_MS / LLM_TIMEOUT_MS (ms) now supported (P1.1)
 - ~~Q3: OpenClaw worker scripts call local LLM directly or via TS router?~~ → Resolved: worker `lib/` are stubs (zero LLM calls); `qwen-warmup.sh` calls Ollama directly via curl — intentional separation, TS router not involved
-- Q5: OpenClaw upstream `~/projects/openclaw` — which interfaces does target actually consume today?
+- ~~Q5: OpenClaw upstream `~/projects/openclaw` — which interfaces does target actually consume today?~~ → Resolved: zero consumption — upstream repo is not linked; all `@openclaw/*` packages are internal mekongmind monorepo
 - Q6: CheetahClaws daemon — is it currently running on a known port, or does the adapter need to spawn it?
 - ~~Q7: `_bridge/` files — which callers still use them, and what is the migration path?~~ → Resolved: 31 files migrated to `shared/`, `_bridge/` deleted (P3)
