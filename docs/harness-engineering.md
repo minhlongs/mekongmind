@@ -291,7 +291,6 @@ test -f ~/.cheetahclaws-src/providers.py && echo "OK: providers.py intact"
 | _bridge debt | ✅ Completed (P3) | 31 files migrated | Done — `_bridge/` deleted, `shared/` in place |
 
 **Unresolved (carry to Phase 5):**
-- CheetahClaws adapter stubs need to be created (new files, low risk).
 
 ---
 

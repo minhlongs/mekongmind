@@ -8,4 +8,6 @@ Boundary rule: MekongMind imports from this package, never from
 """
 from __future__ import annotations
 
-__all__: list[str] = []
+from cli.src.core.cheetahclaws_adapter import CheetahClawsAdapter
+
+__all__: list[str] = ["CheetahClawsAdapter"]
