@@ -4,7 +4,7 @@
  * Prevents cascading failures by tracking consecutive errors per named breaker.
  * Auto-resets after RESET_TIMEOUT_MS cooldown period.
  */
-const { log } = require('../_bridge/brain-logger');
+const { log } = require('../shared/brain-logger');
 
 const FAILURE_THRESHOLD = 3;
 const RESET_TIMEOUT_MS = 60_000;

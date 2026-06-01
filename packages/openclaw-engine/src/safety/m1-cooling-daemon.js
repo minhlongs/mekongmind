@@ -18,7 +18,7 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 // Import log lazily to avoid circular dependency
 let _log;
 function log(msg) {

@@ -18,7 +18,7 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 let missionCount = 0;
 const PROMPT_FILE = '/tmp/tom_hum_terminal_prompt.txt';

@@ -11,10 +11,10 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const config = require('../_bridge/config');
-const { getHandForIntent } = require('../_bridge/hands-registry');
-const { log } = require('../_bridge/brain-logger');
-const { tmuxExec, isSessionAlive, capturePane } = require('../_bridge/brain-tmux-controller');
+const config = require('../shared/config');
+const { getHandForIntent } = require('../shared/hands-registry');
+const { log } = require('../shared/brain-logger');
+const { tmuxExec, isSessionAlive, capturePane } = require('../shared/brain-tmux-controller');
 const { startHealthServer } = require('../observability/brain-health-server');
 // Lazy-require to break circular: boot-sequence ↔ spawn-manager
 // SINGLE SOURCE OF TRUTH: generateClaudeCommand lives in brain-spawn-manager.js

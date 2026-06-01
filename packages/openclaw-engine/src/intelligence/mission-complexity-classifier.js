@@ -8,7 +8,7 @@
  * COMPLEX → /cook with Agent Team instructions   (4+ parallel Task subagents, 45 min)
  */
 
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 const fs = require('fs');
 const path = require('path');
 
@@ -363,7 +363,7 @@ function assessThietKe(taskContent, project) {
 
 	// 6. 兵 BINH — Available resources (RAM, API quota)
 	try {
-		const qt = require('../_bridge/quota-tracker');
+		const qt = require('../shared/quota-tracker');
 		const summary = qt.getSummary();
 		const hourlyMissions = summary.lastHour.missions;
 		const withinBudget = hourlyMissions < config.AG_HOURLY_BUDGET;

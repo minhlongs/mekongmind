@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 let log = console.log;
 try { const bpm = require('../core/brain-process-manager'); if (bpm.log) log = bpm.log; } catch (e) {}
@@ -57,7 +57,7 @@ try {
 let optimizeStrategy = async (p) => p;
 let classifyError = () => ({ errorType: 'unknown', recoverable: false });
 try {
-	const so = require('../_bridge/strategy-optimizer');
+	const so = require('../shared/strategy-optimizer');
 	optimizeStrategy = so.optimizeStrategy;
 	classifyError = so.classifyError;
 } catch (e) {}

@@ -19,8 +19,8 @@
  */
 
 const crypto = require('crypto');
-const { log } = require('../_bridge/brain-logger');
-const config = require('../_bridge/config');
+const { log } = require('../shared/brain-logger');
+const config = require('../shared/config');
 const path = require('path');
 
 const HASH_INTERVAL_MS = 60_000; // Check every 60s

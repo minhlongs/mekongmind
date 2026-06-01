@@ -7,9 +7,9 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
-const config = require('../_bridge/config');
-const { log } = require('../_bridge/brain-logger');
-const { sendCtrlC } = require('../_bridge/brain-tmux-controller');
+const config = require('../shared/config');
+const { log } = require('../shared/brain-logger');
+const { sendCtrlC } = require('../shared/brain-tmux-controller');
 
 function getSystemMetrics() {
 	try {

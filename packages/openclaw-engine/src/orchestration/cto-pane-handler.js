@@ -12,13 +12,13 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const { scanBeforeDispatch } = require('../_bridge/cto-pre-dispatch-scan');
-const { trackIdle } = require('../_bridge/cto-progress-tracker');
-const { checkEscalation } = require('../_bridge/cto-escalation');
-const { isDispatchAllowed } = require('../_bridge/cto-ram-policy');
-const { canDispatch } = require('../_bridge/cto-worker-coordinator');
+const { scanBeforeDispatch } = require('../shared/cto-pre-dispatch-scan');
+const { trackIdle } = require('../shared/cto-progress-tracker');
+const { checkEscalation } = require('../shared/cto-escalation');
+const { isDispatchAllowed } = require('../shared/cto-ram-policy');
+const { canDispatch } = require('../shared/cto-worker-coordinator');
 const { getNextPoolTask, smartTaskFromReality, checkExternalQueue, wrapWithRole } = require('./cto-task-dispatch');
-const { scanCodebase } = require('../_bridge/cto-codebase-scanner');
+const { scanCodebase } = require('../shared/cto-codebase-scanner');
 
 const COMPLETION_PATTERN = /(?:Cooked|Worked|Crunched|Sautéed|Choreographed|Cogitated)\s+for\s+\d/i;
 const SCORE_HISTORY_FILE = '/tmp/vibe-score-history.json';
@@ -202,7 +202,7 @@ async function _handleIdle(pane, output, ctx) {
 	// Score
 	if (!global.calculateProjectScore) {
 		try {
-			global.calculateProjectScore = require('../_bridge/project-score-calculator').calculateProjectScore;
+			global.calculateProjectScore = require('../shared/project-score-calculator').calculateProjectScore;
 		} catch {
 			global.calculateProjectScore = () => ({ total: 0, grade: 'F' });
 		}
@@ -218,7 +218,7 @@ async function _handleIdle(pane, output, ctx) {
 		log(`P${pane.idx}: Grade S — generating handover`);
 		try {
 			if (!global.generateHandoverPackage) {
-				global.generateHandoverPackage = require('../_bridge/handover-generator').generateHandoverPackage;
+				global.generateHandoverPackage = require('../shared/handover-generator').generateHandoverPackage;
 			}
 			const hRes = global.generateHandoverPackage(pane.dir, pane.project, scoreResult);
 			log(`P${pane.idx}: HANDOVER: ${hRes.files.length} docs → ${hRes.outputDir}`);
@@ -232,7 +232,7 @@ async function _handleIdle(pane, output, ctx) {
 	// Factory pipeline
 	let cookCmd = null;
 	try {
-		if (!global.factoryPipeline) global.factoryPipeline = require('../_bridge/factory-pipeline');
+		if (!global.factoryPipeline) global.factoryPipeline = require('../shared/factory-pipeline');
 		const ap = global.factoryPipeline.getActivePipeline(pane.project, pane.idx);
 		if (ap) {
 			const r = global.factoryPipeline.advanceStage(ap.id);

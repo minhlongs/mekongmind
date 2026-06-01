@@ -10,7 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 const CONSTITUTION_PATH = path.join(__dirname, '..', 'config', 'safety-constitution.txt');
 

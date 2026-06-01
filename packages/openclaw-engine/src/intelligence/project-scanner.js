@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 const { log } = require('../core/brain-process-manager');
 
 let scannerInterval = null;

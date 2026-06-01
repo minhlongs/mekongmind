@@ -7,7 +7,7 @@
  */
 
 const http = require('http');
-const { log } = require('../_bridge/brain-logger');
+const { log } = require('../shared/brain-logger');
 
 const HEALTH_PORT = parseInt(process.env.TOM_HUM_HEALTH_PORT || '9090', 10);
 const HEALTH_TOKEN = process.env.TOM_HUM_HEALTH_TOKEN || '';
@@ -39,7 +39,7 @@ function buildHealthResponse() {
 
 	let queueStats = { pending: 0, active: 0, dlqCount: 0 };
 	try {
-		queueStats = require('../_bridge/task-queue').getQueueStats();
+		queueStats = require('../shared/task-queue').getQueueStats();
 	} catch (e) {}
 
 	let circuitState = 'CLOSED';

@@ -7,8 +7,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
-const { isProAvailable } = require('../_bridge/system-status-registry');
+const config = require('../shared/config');
+const { isProAvailable } = require('../shared/system-status-registry');
 
 let log = console.log;
 try { const bpm = require('../core/brain-process-manager'); if (bpm.log) log = bpm.log; } catch (e) {}
@@ -31,9 +31,9 @@ try {
 } catch (e) {}
 
 let matchRole = null;
-try { matchRole = require('../_bridge/hands-registry').matchRole; } catch (e) {}
+try { matchRole = require('../shared/hands-registry').matchRole; } catch (e) {}
 let getTopLessons = () => '';
-try { getTopLessons = require('../_bridge/post-mortem-reflector').getTopLessons || getTopLessons; } catch (e) {}
+try { getTopLessons = require('../shared/post-mortem-reflector').getTopLessons || getTopLessons; } catch (e) {}
 
 const { detectProjectDir, classifyPriority, isComplexRawMission } = require('./dispatch-router');
 const { stripPollution, findLatestPlan, checkSafety, getDispatchHints, getProjectHealthScore, optimizeStrategy, classifyError } = require('./dispatch-validator');

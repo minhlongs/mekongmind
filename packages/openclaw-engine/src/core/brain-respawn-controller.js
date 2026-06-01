@@ -11,7 +11,7 @@
  * Exports: respawnBrain, compactIfNeeded
  */
 
-const { log } = require('../_bridge/brain-logger');
+const { log } = require('../shared/brain-logger');
 
 /**
  * compactIfNeeded — DISABLED.

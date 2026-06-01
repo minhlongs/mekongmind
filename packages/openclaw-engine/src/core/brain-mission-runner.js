@@ -21,8 +21,8 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const config = require('../_bridge/config');
-const { log } = require('../_bridge/brain-logger');
+const config = require('../shared/config');
+const { log } = require('../shared/brain-logger');
 const {
 	TMUX_SESSION_PRO,
 	TMUX_SESSION_API,
@@ -31,7 +31,7 @@ const {
 	capturePane,
 	sendEnter,
 	sendCtrlC,
-} = require('../_bridge/brain-tmux-controller');
+} = require('../shared/brain-tmux-controller');
 const { detectState } = require('./brain-state-machine');
 const {
 	findIdleWorker,
@@ -43,8 +43,8 @@ const {
 	isShellPrompt,
 } = require('./brain-spawn-manager');
 const { respawnBrain, compactIfNeeded } = require('./brain-respawn-controller');
-const { preDispatchGuard, autoApproveQuestion } = require('../_bridge/brain-dispatch-helpers');
-const { raasLicenseMiddleware } = require('../_bridge/raas-license-validator'); // RaaS Phase 1
+const { preDispatchGuard, autoApproveQuestion } = require('../shared/brain-dispatch-helpers');
+const { raasLicenseMiddleware } = require('../shared/raas-license-validator'); // RaaS Phase 1
 
 const MIN_MISSION_SECONDS = 60;
 const IDLE_CONFIRM_POLLS = 8;
@@ -117,7 +117,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
 	// ══════════════════════════════════════════════════════════════
 	const _projName = projectDir ? require('path').basename(projectDir) : '';
 	// Dynamic HARD GUARD: query tmux pane's actual project (2026-03-09)
-	const { getActivePaneProjects } = require('../_bridge/brain-tmux-controller');
+	const { getActivePaneProjects } = require('../shared/brain-tmux-controller');
 	const livePaneMap = getActivePaneProjects(TMUX_SESSION);
 	const paneInfo = livePaneMap[workerIdx];
 	const isMekongRoot = projectDir === config.MEKONG_DIR;
@@ -137,7 +137,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
 	setCurrentWorkerIdx(workerIdx);
 
 	try {
-		const { countTokensBetween, recordMission, getDailyUsage } = require('../_bridge/token-tracker');
+		const { countTokensBetween, recordMission, getDailyUsage } = require('../shared/token-tracker');
 		log(`MISSION #${num} → P${workerIdx}: ${prompt.slice(0, 150)}...`);
 		log(`PROJECT: ${projectDir} | WORKER: P${workerIdx}`);
 
@@ -332,7 +332,7 @@ async function _handleIdleState(
 			const d = getDailyUsage();
 			if (d.overBudget) log(`⚠️ DAILY BUDGET EXCEEDED — ${d.tokens.toLocaleString()} tokens!`);
 			try {
-				const { getMissionSummary, clearCache } = require('../_bridge/llm-interpreter');
+				const { getMissionSummary, clearCache } = require('../shared/llm-interpreter');
 				clearCache();
 				try {
 					require('../intelligence/learning-engine').recordOutcome(prompt.slice(0, 40), path.basename(projectDir || ''), 'done', elapsedSec);
@@ -359,7 +359,7 @@ async function _handleIdleState(
 		}
 		if (count >= IDLE_CONFIRM_POLLS * 6) {
 			log(`ERROR: Mission #${num} failed to start after ${elapsedSec}s. Aborting.`);
-			const { tmuxExec: tx } = require('../_bridge/brain-tmux-controller');
+			const { tmuxExec: tx } = require('../shared/brain-tmux-controller');
 			tx(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
 			await new Promise((r) => setTimeout(r, 1000));
 			tx(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
@@ -505,8 +505,8 @@ function shouldRetry(failureCount, failureAnalysis, complexity = 'standard') {
  * Returns: { success: boolean, message: string }
  */
 async function executeRecovery(recoveryType, workerIdx, sessionName, prompt) {
-	const { tmuxExec, sendEnter } = require('../_bridge/brain-tmux-controller');
-	const { log } = require('../_bridge/brain-logger');
+	const { tmuxExec, sendEnter } = require('../shared/brain-tmux-controller');
+	const { log } = require('../shared/brain-logger');
 
 	log(`[RECOVERY] Executing ${recoveryType} on P${workerIdx}...`);
 

@@ -17,8 +17,8 @@
  *   log, isOverheating, getSystemMetrics, checkStuckIntervention, capturePane
  */
 
-const { log } = require('../_bridge/brain-logger');
-const { capturePane } = require('../_bridge/brain-tmux-controller');
+const { log } = require('../shared/brain-logger');
+const { capturePane } = require('../shared/brain-tmux-controller');
 const { spawnBrain, killBrain, isBrainAlive } = require('./brain-spawn-manager');
 const { runMission } = require('./brain-mission-runner');
 const { isOverheating, getSystemMetrics, checkStuckIntervention } = require('../reliability/brain-system-monitor');

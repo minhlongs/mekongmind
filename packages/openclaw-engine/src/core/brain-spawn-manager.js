@@ -17,9 +17,9 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
-const { log } = require('../_bridge/brain-logger');
-const { TMUX_SESSION_PRO, TMUX_SESSION_API, tmuxExec, isSessionAlive, capturePane } = require('../_bridge/brain-tmux-controller');
+const config = require('../shared/config');
+const { log } = require('../shared/brain-logger');
+const { TMUX_SESSION_PRO, TMUX_SESSION_API, tmuxExec, isSessionAlive, capturePane } = require('../shared/brain-tmux-controller');
 const { startHeartbeat, stopHeartbeat } = require('../reliability/brain-heartbeat');
 const { startOutputHashWatchdog, stopOutputHashWatchdog } = require('../reliability/brain-output-hash-stagnation-watchdog');
 
@@ -175,7 +175,7 @@ function isBrainAlive(paneTarget = `${config.TMUX_SESSION}:0.0`) {
 
 /** Check if pane is at a raw shell prompt instead of Claude */
 function isShellPrompt(output) {
-	const { getCleanTail } = require('../_bridge/brain-tmux-controller');
+	const { getCleanTail } = require('../shared/brain-tmux-controller');
 	const tail = getCleanTail(output, 5).join('\n');
 	if (tail.includes('❯')) return false;
 	if (tail.includes('Choose a capability:')) return false;
@@ -203,7 +203,7 @@ function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION',
 	const projectName = projectDir ? require('path').basename(projectDir) : '';
 
 	// Query tmux for live pane→project mapping
-	const { getActivePaneProjects } = require('../_bridge/brain-tmux-controller');
+	const { getActivePaneProjects } = require('../shared/brain-tmux-controller');
 	const paneMap = getActivePaneProjects(sessionName);
 
 	// Find the pane that matches the requested project
@@ -233,7 +233,7 @@ function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION',
 
 	// 🏭 Vibe Coding Factory Lock check
 	try {
-		const factory = require('../_bridge/factory-pipeline');
+		const factory = require('../shared/factory-pipeline');
 		if (factory.isPaneLocked(targetPane)) {
 			log(`DISPATCH: ⏳ P${targetPane} LOCKED by Vibe Factory Pipeline — 🚫 blocking task injection!`);
 			return -1;

@@ -11,7 +11,7 @@
  */
 
 const fs = require('fs');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 const LOCK_FILE = '/tmp/tom_hum_api.lock';
 const MIN_GAP_MS = config.API_RATE_GATE_MS || 5000;

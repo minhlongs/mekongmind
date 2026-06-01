@@ -15,8 +15,8 @@
  *          detectStateWithConfidence, recordFeedback, getPatternStats
  */
 
-const { log } = require('../_bridge/brain-logger');
-const { getCleanTail } = require('../_bridge/brain-tmux-controller');
+const { log } = require('../shared/brain-logger');
+const { getCleanTail } = require('../shared/brain-tmux-controller');
 
 // ═══════════════════════════════════════════════════
 // AGI L4: Adaptive Pattern Weights

@@ -10,7 +10,7 @@ const { execSync, spawn } = cp;
 const path = require('path');
 const fs = require('fs');
 const { log } = require('../core/brain-process-manager');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 /**
  * Safety Gate v2.0 — 3-tier destructive change protection (火攻 Ch.12)

@@ -28,8 +28,8 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const { execSync } = require('child_process');
-const config = require('../_bridge/config');
-const { sendTelegram } = require('../_bridge/telegram-client');
+const config = require('../shared/config');
+const { sendTelegram } = require('../shared/telegram-client');
 
 let _log;
 function log(msg) {

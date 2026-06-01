@@ -15,7 +15,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const EVOLUTION_STATE_FILE = path.join(DATA_DIR, 'evolution-state.json');
@@ -427,7 +427,7 @@ function getEvolutionScore() {
 		} catch (e) {}
 
 		try {
-			dlqCount = require('../_bridge/task-queue').getQueueStats().dlqCount;
+			dlqCount = require('../shared/task-queue').getQueueStats().dlqCount;
 		} catch (e) {}
 
 		let circuitState = 'CLOSED';

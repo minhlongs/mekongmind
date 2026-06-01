@@ -12,10 +12,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 const { log, isBrainAlive } = require('../core/brain-process-manager');
 const { isOverheating, isSafeToScan } = require('../safety/m1-cooling-daemon');
-const { isQueueEmpty } = require('../_bridge/task-queue');
+const { isQueueEmpty } = require('../shared/task-queue');
 
 const { loadState, saveState, isMissionDuplicate, markMissionDispatched, onProjectMissionFailed, onProjectMissionSuccess } = require('./cto-context-optimizer');
 const { scanProject, generateFixMission } = require('./cto-task-generator');
@@ -90,7 +90,7 @@ function startAutoCTO() {
 				currentPhase = state.phase;
 
 				// Dynamic project discovery from live tmux panes
-				const { getActivePaneProjects } = require('../_bridge/brain-tmux-controller');
+				const { getActivePaneProjects } = require('../shared/brain-tmux-controller');
 				const paneMap = getActivePaneProjects(config.TMUX_SESSION);
 				const liveProjects = sortByPriority(Object.values(paneMap).map((p) => p.projectName));
 				if (liveProjects.length === 0) { scheduleNext(); return; }
@@ -174,12 +174,12 @@ async function handleFix(state, project) {
 	let webIntel = '';
 	if (error.severity === 'critical' || error.type === 'build') {
 		try {
-			const { researchErrorWithGemini } = require('../_bridge/gemini-agentic');
+			const { researchErrorWithGemini } = require('../shared/gemini-agentic');
 			webIntel = await researchErrorWithGemini(error.message, project) || '';
 		} catch (e) {}
 		if (!webIntel) {
 			try {
-				const { researchError } = require('../_bridge/web-researcher');
+				const { researchError } = require('../shared/web-researcher');
 				webIntel = await researchError(error.message, project) || '';
 			} catch (e) {}
 		}
@@ -220,7 +220,7 @@ async function handleVerify(state, project, projectDir) {
 
 	// Aider self-heal attempt
 	try {
-		const { tryAiderFix, isAiderAvailable } = require('../_bridge/aider-bridge');
+		const { tryAiderFix, isAiderAvailable } = require('../shared/aider-bridge');
 		if (isAiderAvailable()) {
 			const errorSummary = errors.map((e) => `${e.file || ''}: ${e.message}`).join('\n');
 			const aiderResult = await tryAiderFix({ projectDir, errorLog: errorSummary, testCmd: 'npm run build' });
@@ -245,7 +245,7 @@ async function handleVerify(state, project, projectDir) {
 function advanceProject(state) {
 	let totalProjects = config.PROJECTS.length;
 	try {
-		const { getActivePaneProjects } = require('../_bridge/brain-tmux-controller');
+		const { getActivePaneProjects } = require('../shared/brain-tmux-controller');
 		const paneMap = getActivePaneProjects(config.TMUX_SESSION);
 		const liveCount = Object.keys(paneMap).length;
 		if (liveCount > 0) totalProjects = liveCount;

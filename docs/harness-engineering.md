@@ -270,15 +270,14 @@ test -f ~/.cheetahclaws-src/providers.py && echo "OK: providers.py intact"
 
 ---
 
-## OpenClaw `_bridge` Debt — Remediation Plan
+## OpenClaw `_bridge` Debt — ✅ Completed (P3)
 
-Current state: 28 files under `packages/openclaw-engine/src/_bridge/` proxy into `apps/openclaw-worker/lib/*`.
+**Completed:** 2026-05-31
 
-**Action (Phase 5):**
-1. Extract shared types/interfaces to `packages/openclaw-engine/src/shared/`.
-2. Update `apps/openclaw-worker/scripts/*.js` to import from `shared/` directly.
-3. Delete `_bridge/*` after migration verified.
-4. Do NOT create new bridge files — fix existing debt, don't grow it.
+- Migrated 31 bridge files from `packages/openclaw-engine/src/_bridge/` → `packages/openclaw-engine/src/shared/`.
+- Updated 30 caller files (79 import references) from `../_bridge/X` → `../shared/X`.
+- Verified with `pnpm --filter openclaw-engine exec tsc --noEmit` — clean.
+- Deleted `_bridge/` directory. No inter-dependencies between bridge files; migration was import-path only.
 
 ---
 
@@ -289,10 +288,9 @@ Current state: 28 files under `packages/openclaw-engine/src/_bridge/` proxy into
 | OpenClaw mission | ✅ Documented | ✅ No secrets required | Ready for Phase 5 |
 | CheetahClaws assistant | ✅ Documented | ✅ No secrets required | Ready for Phase 5 |
 | Path blockers | ✅ 10 references found | — | Documented; fix in Phase 5 |
-| _bridge debt | ✅ Remediation plan | — | Deferred to Phase 5 |
+| _bridge debt | ✅ Completed (P3) | 31 files migrated | Done — `_bridge/` deleted, `shared/` in place |
 
 **Unresolved (carry to Phase 5):**
-- _bridge/ migration needs actual code changes (28 files, high risk).
 - CheetahClaws adapter stubs need to be created (new files, low risk).
 - Path fix in `cli/src/core/cc_spawner.py`, `cli/src/binh_phap/*.py` needs code change.
 
@@ -442,7 +440,6 @@ grep -n "cheetahclaws\|cc_daemon\|CheetahClaws" /Users/macbook/mekongmind/cli/sr
 - Q1: ~~Does `packages/mekong-cli-core/src/llm/providers/mlx.ts` exist?~~ → YES, created (P1.3)
 - Q2: ~~Python CLI `llm_client.py` env var convention — same as TS or different?~~ → Resolved: ANTHROPIC_TIMEOUT_MS / LLM_TIMEOUT_MS (ms) now supported (P1.1)
 - Q3: OpenClaw worker scripts call local LLM directly or via TS router?
-- Q4: Cloud token metering — local file log or external service?
 - Q5: OpenClaw upstream `~/projects/openclaw` — which interfaces does target actually consume today?
 - Q6: CheetahClaws daemon — is it currently running on a known port, or does the adapter need to spawn it?
-- Q7: `_bridge/` files — which callers still use them, and what is the migration path?
+- ~~Q7: `_bridge/` files — which callers still use them, and what is the migration path?~~ → Resolved: 31 files migrated to `shared/`, `_bridge/` deleted (P3)

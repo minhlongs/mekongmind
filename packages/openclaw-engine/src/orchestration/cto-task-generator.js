@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 const MAX_FIXES_PER_SCAN = 3; // Ch.6 虛實: focus force on fewer targets
 

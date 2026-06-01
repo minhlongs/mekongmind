@@ -7,11 +7,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 const { log } = require('../core/brain-process-manager');
-const { scanRevenueHealth, generateRevenueMission } = require('../_bridge/revenue-health-scanner');
-const { dispatchDueTradingMissions } = require('../_bridge/trading-cadence-scheduler');
-const shipPipeline = require('../_bridge/ship-pipeline');
+const { scanRevenueHealth, generateRevenueMission } = require('../shared/revenue-health-scanner');
+const { dispatchDueTradingMissions } = require('../shared/trading-cadence-scheduler');
+const shipPipeline = require('../shared/ship-pipeline');
 
 const RAAS_COOLDOWN_MS = 30 * 60 * 1000;
 

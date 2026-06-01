@@ -11,7 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 const DATA_DIR = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data');
 const OUTCOMES_FILE = path.join(DATA_DIR, 'mission-outcomes.json');

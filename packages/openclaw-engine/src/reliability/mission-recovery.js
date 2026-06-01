@@ -8,7 +8,7 @@
  * 有所不取 — Not every city is worth taking
  */
 
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 
 // 九變 Triple-Mix MAX Adaptation v10.2
 // 7 states matching BINH_PHAP_MASTER.md exactly

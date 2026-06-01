@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const config = require('../_bridge/config');
+const config = require('../shared/config');
 const { log } = require('../core/brain-process-manager');
 const { incrementPaneQuestionCount, resetPaneQuestionCount } = require('./cto-context-optimizer');
 
@@ -158,7 +158,7 @@ function dispatchQueuedTasks() {
 async function evaluateAllPanes() {
 	let isApiBusy = false;
 	try {
-		const { interpretState, clearCache } = require('../_bridge/llm-interpreter');
+		const { interpretState, clearCache } = require('../shared/llm-interpreter');
 		for (let pIdx = 0; pIdx < TOTAL_PANES; pIdx++) {
 			try {
 				const paneOutput = execSync(`tmux capture-pane -t tom_hum:0.${pIdx} -p -S -50 2>/dev/null`, { encoding: 'utf-8', timeout: 3000 });
