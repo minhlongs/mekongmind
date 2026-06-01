@@ -292,6 +292,8 @@ test -f ~/.cheetahclaws-src/providers.py && echo "OK: providers.py intact"
 
 **Unresolved (carry to Phase 5):**
 
+- CheetahClaws adapter stubs — ✅ wired via `cli/src/core/bridges/__init__.py` (re-exports `CheetahClawsAdapter`)
+
 ---
 
 ## Phase 4 — OpenClaw + CheetahClaws Adapter Contracts
