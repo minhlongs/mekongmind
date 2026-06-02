@@ -1,0 +1,3 @@
+[console_scripts]
+agencyos = agencyos.kernel.bootstrap:_run_cli
+agencyos-cli = adapters.cli.main:main

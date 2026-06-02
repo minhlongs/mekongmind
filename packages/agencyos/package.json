@@ -1,0 +1,102 @@
+{
+  "name": "@mekong/agencyos",
+  "version": "0.1.0",
+  "private": false,
+  "description": "AgencyOS (Mekong Mind) — Multi-agent Business OS with Clean Architecture. Runs on Apple Silicon M1 Max (64GB) + Vertex AI.",
+  "author": "MekongMind",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/kernel/bootstrap.py",
+  "module": "./src/kernel/bootstrap.py",
+  "types": "./src/kernel/bootstrap.py",
+  "bin": {
+    "agencyos": "./src/cli/agencyos_cli.py"
+  },
+  "scripts": {
+    "bootstrap": "python -m agencyos.kernel.bootstrap",
+    "bootstrap:auto": "python -m agencyos.kernel.bootstrap --auto",
+    "bootstrap:parallel": "python -m agencyos.kernel.bootstrap --auto --parallel",
+    "agencyos": "python -m agencyos.cli.agencyos_cli",
+    "test": "python -m pytest tests/ -v --tb=short",
+    "test:unit": "python -m pytest tests/unit -v",
+    "test:integration": "python -m pytest tests/integration -v",
+    "lint": "ruff check src/ tests/",
+    "lint:fix": "ruff check --fix src/ tests/",
+    "format": "black src/ tests/ --line-length 100",
+    "typecheck": "mypy src/",
+    "dev": "watch -n 2 python -m agencyos.kernel.bootstrap --auto"
+  },
+  "dependencies": {
+    "pydantic": "^2.10.0",
+    "pydantic-settings": "^2.7.0",
+    "litellm": "^1.55.0",
+    "tenacity": "^9.0.0",
+    "httpx": "^0.28.0",
+    "sqlalchemy": "^2.0.36",
+    "aiosqlite": "^0.20.0",
+    "aiofiles": "^24.1.0",
+    "cachetools": "^5.5.0",
+    "prometheus-client": "^0.21.0",
+    "python-json-logger": "^2.0.7",
+    "tenacity": "^9.0.0",
+    "jsonschema": "^4.23.0",
+    "semver": "^3.0.2",
+    "rich": "^13.9.0",
+    "click": "^8.1.7",
+    "instructor": "^1.6.0",
+    "pandas": "^2.2.3",
+    "numpy": "^2.1.3",
+    "geopy": "^2.4.1",
+    "ortools": "^9.11.4210",
+    "python-dotenv": "^1.0.1",
+    "sentry-sdk": "^2.18.0",
+    "opentelemetry-api": "^1.28.0",
+    "opentelemetry-sdk": "^1.28.0",
+    "opentelemetry-exporter-otlp": "^1.28.0",
+    "pydantic-ai": "^0.0.24"
+  },
+  "devDependencies": {
+    "pytest": "^8.3.4",
+    "pytest-asyncio": "^24.1.0",
+    "pytest-cov": "^6.0.0",
+    "pytest-mock": "^3.14.0",
+    "mypy": "^1.13.0",
+    "black": "^24.10.0",
+    "ruff": "^0.7.4",
+    "pre-commit": "^3.8.0",
+    "factory-boy": "^3.3.0",
+    "faker": "^25.9.0",
+    "typeshed-client": "^2.7.0"
+  },
+  "peerDependencies": {
+    "litellm": ">=1.55.0",
+    "pydantic": ">=2.0.0"
+  },
+  "engines": {
+    "python": ">=3.11,<3.13"
+  },
+  "keywords": [
+    "agencyos",
+    "mekong-mind",
+    "multi-agent",
+    "clean-architecture",
+    "llm-orchestration",
+    "route-optimization",
+    "business-os",
+    "apple-silicon",
+    "vertex-ai",
+    "vertex"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/agencyos.git"
+  },
+  "files": [
+    "src/kernel/",
+    "src/domain/",
+    "src/application/",
+    "src/infrastructure/",
+    "src/adapters/"
+  ],
+  "packageManager": "pnpm@9.15.0"
+}

@@ -1,0 +1,6 @@
+adapters
+agencyos
+application
+domain
+infrastructure
+kernel
