@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "coqui-tts",
+  "product_path": "/Users/macbook/sophia-ai-factory.backup-260517-20260601-2125/services/coqui-tts",
+  "snapshot_dir": "state/products/evidence/coqui-tts-936ade40",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/coqui-tts-936ade40/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/coqui-tts-936ade40/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:26:34.434137Z"
+}

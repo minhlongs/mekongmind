@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "release-test-rust-crate",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/packages/cleo-new/packages/cleo/test/fixtures/release-test-rust-crate",
+  "snapshot_dir": "state/products/evidence/release-test-rust-crate-1b91e1e8",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/release-test-rust-crate-1b91e1e8/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/release-test-rust-crate-1b91e1e8/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:56.456471Z"
+}

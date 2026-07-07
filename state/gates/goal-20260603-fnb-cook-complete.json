@@ -1,0 +1,94 @@
+{
+  "current_gate": "scale-ready",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "at": "2026-06-03T02:10:20.947390Z",
+          "note": "initial gate",
+          "source": "local-state"
+        }
+      ],
+      "id": "idea-intake",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-03T02:10:20.989833Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "company-blueprint",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-03T02:10:21.049765Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "offer-validated",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-03T02:10:21.141689Z",
+          "note": "/Users/macbook/state/evidence/mvp-live.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "mvp-live",
+      "status": "passed"
+    },
+    {
+      "evidence": [],
+      "id": "first-revenue",
+      "status": "pending"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-03T02:10:21.216039Z",
+          "note": "/Users/macbook/state/evidence/repeatable-channel.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "repeatable-channel",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-03T02:10:21.283016Z",
+          "note": "/Users/macbook/state/evidence/fulfillment-stable.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "fulfillment-stable",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-03T02:10:21.345402Z",
+          "note": "/Users/macbook/state/evidence/scale-ready.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "scale-ready",
+      "status": "active"
+    },
+    {
+      "evidence": [],
+      "id": "first-1m-mrr",
+      "status": "pending"
+    }
+  ],
+  "goal_id": "goal-20260603-fnb-cook-complete",
+  "updated_at": "2026-06-03T02:10:21.345402Z"
+}

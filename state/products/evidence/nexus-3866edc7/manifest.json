@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "nexus",
+  "product_path": "/Users/macbook/mekong-cli/packages/cleo-new/packages/nexus",
+  "snapshot_dir": "state/products/evidence/nexus-3866edc7",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/nexus-3866edc7/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/nexus-3866edc7/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:19:26.168593Z"
+}

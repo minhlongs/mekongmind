@@ -1,0 +1,8 @@
+# Claude Code local overrides (should NOT be committed)
+.settings.local.json
+
+# Claude Code worktrees (isolated git repos)
+worktrees/
+
+# Claude Code memory (auto-stored per project)
+memory/

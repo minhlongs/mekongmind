@@ -1,0 +1,250 @@
+{
+  "recoveries": {
+    "recovery-license-recovery-1783432371876-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432371876-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432371.876859,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2041.1269664764404,
+        "metadata": {
+          "failure_count": 3,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432373929-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432373929-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432373.9297001,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2048.8688945770264,
+        "metadata": {
+          "failure_count": 4,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432375981-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432375981-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432375.981311,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2045.5830097198486,
+        "metadata": {
+          "failure_count": 5,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432378039-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432378039-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432378.039391,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2039.0710830688477,
+        "metadata": {
+          "failure_count": 6,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied",
+            "rate_limit"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432395610-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432395610-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432395.610579,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2041.2371158599854,
+        "metadata": {
+          "failure_count": 7,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied",
+            "rate_limit",
+            "invalid_or_revoked"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432397657-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432397657-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432397.657967,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2039.7679805755615,
+        "metadata": {
+          "failure_count": 8,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied",
+            "rate_limit",
+            "invalid_or_revoked",
+            "rate_limit"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432399714-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432399714-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432399.714853,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2039.524793624878,
+        "metadata": {
+          "failure_count": 9,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied",
+            "rate_limit",
+            "invalid_or_revoked",
+            "rate_limit",
+            "invalid_format"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432401760-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432401760-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432401.7604291,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2049.0119457244873,
+        "metadata": {
+          "failure_count": 10,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied",
+            "rate_limit",
+            "invalid_or_revoked",
+            "rate_limit",
+            "invalid_format",
+            "validation_failed"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432403949-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432403949-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432403.949158,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2039.7977828979492,
+        "metadata": {
+          "failure_count": 11,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied",
+            "rate_limit",
+            "invalid_or_revoked",
+            "rate_limit",
+            "invalid_format",
+            "validation_failed",
+            "invalid_or_revoked"
+          ]
+        }
+      }
+    ],
+    "recovery-license-recovery-1783432405990-12275": [
+      {
+        "recovery_id": "recovery-license-recovery-1783432405990-12275",
+        "recovery_type": "license:recovery",
+        "timestamp": 1783432405.990783,
+        "attempt_number": 1,
+        "status": "success",
+        "delay_seconds": 1.0,
+        "error_message": null,
+        "duration_ms": 2042.6900386810303,
+        "metadata": {
+          "failure_count": 12,
+          "error_codes": [
+            "invalid_format",
+            "invalid_or_revoked",
+            "revoked",
+            "expired",
+            "access_denied",
+            "rate_limit",
+            "invalid_or_revoked",
+            "rate_limit",
+            "invalid_format",
+            "validation_failed",
+            "invalid_or_revoked",
+            "validation_failed"
+          ]
+        }
+      }
+    ]
+  },
+  "updated_at": 1783432408.033678
+}

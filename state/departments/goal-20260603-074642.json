@@ -1,0 +1,26 @@
+{
+  "departments": {
+    "ceo-command": {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-03T00:50:26.743434Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-03T00:50:26.743434Z"
+    }
+  ],
+  "goal_id": "goal-20260603-074642",
+  "updated_at": "2026-06-03T00:50:26.743434Z"
+}

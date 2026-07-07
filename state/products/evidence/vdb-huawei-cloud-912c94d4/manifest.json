@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "vdb-huawei-cloud",
+  "product_path": "/Users/macbook/dify/api/providers/vdb/vdb-huawei-cloud",
+  "snapshot_dir": "state/products/evidence/vdb-huawei-cloud-912c94d4",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/vdb-huawei-cloud-912c94d4/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/vdb-huawei-cloud-912c94d4/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:13:16.968500Z"
+}

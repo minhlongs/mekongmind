@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "agi-evolution",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/packages/agi-evolution",
+  "snapshot_dir": "state/products/evidence/agi-evolution-50c6b37a",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/agi-evolution-50c6b37a/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/agi-evolution-50c6b37a/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:21.777189Z"
+}

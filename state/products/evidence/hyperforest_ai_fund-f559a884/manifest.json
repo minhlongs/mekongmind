@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "hyperforest_ai_fund",
+  "product_path": "/Users/macbook/hyperforest_ai_fund",
+  "snapshot_dir": "state/products/evidence/hyperforest_ai_fund-f559a884",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/hyperforest_ai_fund-f559a884/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/hyperforest_ai_fund-f559a884/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:18:17.763121Z"
+}

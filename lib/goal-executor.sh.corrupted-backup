@@ -1,0 +1,3764 @@
+#!/bin/bash
+# goal-executor.sh — Goal state manipulation for me-deep-wrapper
+# Provides: latest_goal_file, goal_field, set_goal_field,
+# list_completed_steps, mark_step_done, step_done,
+# goal_next_step, add_step_output, create_goal
+
+PROJECT_ROOT="${PROJECT_ROOT:-/Users/macbook/Documents/me-deep-wrapper}"
+STATE_DIR="${STATE_DIR:-$PROJECT_ROOT/state}"
+REVENUE_DIR="${REVENUE_DIR:-$STATE_DIR/revenue}"
+GATES_DIR="${GATES_DIR:-$STATE_DIR/gates}"
+DEPARTMENTS_DIR="${DEPARTMENTS_DIR:-$STATE_DIR/departments}"
+PRODUCTS_DIR="${PRODUCTS_DIR:-$STATE_DIR/products}"
+REGISTRY_FILE="${REGISTRY_FILE:-/Users/macbook/Documents/me-deep-wrapper/agents/registry.json}"
+
+goal_executor_lib_dir() {
+  if [ -n "${LIB_DIR:-}" ] && [ -f "$LIB_DIR/update-goal-state.py" ]; then
+    echo "$LIB_DIR"
+    return 0
+  fi
+  local source_path="${BASH_SOURCE[0]:-$0}"
+  if [[ "$source_path" == */* ]]; then
+    cd "$(dirname "$source_path")" 2>/dev/null && pwd
+  else
+    echo "/Users/macbook/Documents/me-deep-wrapper/lib"
+  fi
+}
+
+if ! command -v portable_sed >/dev/null 2>&1; then
+  portable_sed() {
+    local expr="${1:-}"
+    local file="${2:-}"
+    [ -z "$expr" ] || [ -z "$file" ] && return 1
+    sed -i.bak "$expr" "$file" && rm -f "${file}.bak"
+  }
+fi
+
+latest_goal_file() {
+  local active
+  active=$(grep -l '^Status: active$' "$STATE_DIR"/goal-*.md 2>/dev/null | sort | tail -1)
+  if [ -n "$active" ]; then
+    echo "$active"
+  else
+    ls -t "$STATE_DIR"/goal-*.md 2>/dev/null | head -1
+  fi
+}
+
+ensure_product_portfolio_goal_file() {
+  local f="$STATE_DIR/goal-product-portfolio.md"
+  mkdir -p "$STATE_DIR"
+  if [ ! -f "$f" ]; then
+    cat >"$f" <<'EOF'
+# Goal: sell local product portfolio to $1M MRR
+Status: active
+CurrentGate: company-blueprint
+CurrentMRR: 0
+RevenueTarget: 1000000
+RevenueTargetType: MRR
+SoloCompanyMode: autonomous
+FactoryLoop: active
+EOF
+  fi
+  echo "$f"
+}
+
+# Usage: goal_field [<file>] <field_name>
+goal_field() {
+  local f="${1:-}"
+  local field="${2:-}"
+  if [ -n "$f" ] && [ -f "$f" ]; then :; else f="$(latest_goal_file)"; fi
+  [ -z "$f" ] && { echo ""; return; }
+  grep -E "^#? *${field}:" "$f" 2>/dev/null | head -1 | sed -E "s/^#? *${field}: *//"
+}
+
+set_goal_field() {
+  local f="${1:-}"
+  local k="${2:-}"
+  local v="${3:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  if grep -qE "^${k}:" "$f" 2>/dev/null; then
+    portable_sed "s|^${k}:.*|${k}: ${v}|" "$f"
+  else
+    echo "${k}: ${v}" >> "$f"
+  fi
+}
+
+goal_id_from_file() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  basename "$f" .md
+}
+
+goal_state_dir_from_file() {
+  local f="${1:-}"
+  if [ -n "$f" ] && [ -f "$f" ]; then
+    local dir
+    dir="$(cd "$(dirname "$f")" 2>/dev/null && pwd)"
+    if [ -n "$dir" ] && [ "$(basename "$dir")" = "state" ]; then
+      echo "$dir"
+      return 0
+    fi
+  fi
+  echo "$STATE_DIR"
+}
+
+new_goal_stamp() {
+  local stamp f attempts=0
+  while :; do
+    stamp=$(date +%Y%m%d-%H%M%S)
+    f="$STATE_DIR/goal-${stamp}.md"
+    [ ! -e "$f" ] && { echo "$stamp"; return 0; }
+    attempts=$((attempts+1))
+    [ "$attempts" -gt 3 ] && { echo "$stamp"; return 0; }
+    sleep 1
+  done
+}
+
+revenue_metrics_file() {
+  local f="${1:-}"
+  local gid state_dir
+  gid=$(goal_id_from_file "$f") || return 1
+  state_dir="$(goal_state_dir_from_file "$f")"
+  echo "$state_dir/revenue/${gid}.json"
+}
+
+product_inventory_file() {
+  echo "${PRODUCT_INVENTORY_FILE:-$PRODUCTS_DIR/local-product-inventory.json}"
+}
+
+product_self_selling_queue_file() {
+  echo "${PRODUCT_SELF_SELLING_QUEUE_FILE:-$PRODUCTS_DIR/self-selling-queue.json}"
+}
+
+gate_state_file() {
+  local f="${1:-}"
+  local gid state_dir
+  gid=$(goal_id_from_file "$f") || return 1
+  state_dir="$(goal_state_dir_from_file "$f")"
+  echo "$state_dir/gates/${gid}.json"
+}
+
+
+# gate_passed <goal-file> <gate-id>
+# Returns 0 if the gate exists and has status "passed", else 1
+# Optimized: jq replaces python3 spawn (~50ms -> ~1ms)
+gate_passed() {
+	local f="${1:-}" gate="${2:-}"
+	[ -z "$f" ] || [ -z "$gate" ] && return 1
+	local gsf
+	gsf=$(gate_state_file "$f") || return 1
+	[ -f "$gsf" ] || return 1
+	jq -e --arg gid "$gate" '.gates[] | select(.id == $gid and .status == "passed")' "$gsf" >/dev/null 2>&1
+}
+
+department_state_file() {
+  local f="${1:-}"
+  local gid state_dir
+  gid=$(goal_id_from_file "$f") || return 1
+  state_dir="$(goal_state_dir_from_file "$f")"
+  echo "$state_dir/departments/${gid}.json"
+}
+
+init_gate_state() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local gate_file gid current_gate
+  gate_file=$(gate_state_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  current_gate=$(goal_field "$f" "CurrentGate")
+  [ -z "$current_gate" ] && current_gate="idea-intake"
+  mkdir -p "$GATES_DIR"
+  python3 - "$gate_file" "$gid" "$current_gate" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, goal_id, current_gate = sys.argv[1:4]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+gates = [
+    "idea-intake",
+    "company-blueprint",
+    "offer-validated",
+    "mvp-live",
+    "first-revenue",
+    "repeatable-channel",
+    "fulfillment-stable",
+    "scale-ready",
+    "first-1m-mrr",
+]
+data = {
+    "goal_id": goal_id,
+    "current_gate": current_gate,
+    "updated_at": now,
+    "gates": [{"id": gate, "status": "pending", "evidence": []} for gate in gates],
+}
+for gate in data["gates"]:
+    if gate["id"] == current_gate:
+        gate["status"] = "active"
+        gate["evidence"].append({"at": now, "source": "local-state", "note": "initial gate"})
+        break
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "GateEvidence" "$gate_file"
+}
+
+record_gate_evidence() {
+  local f="${1:-}"
+  local gate="${2:-}"
+  local source="${3:-manual}"
+  local note="${4:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$gate" ] && { echo "ERROR: gate required" >&2; return 1; }
+  local gate_file gid
+  gate_file=$(gate_state_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  [ -f "$gate_file" ] || init_gate_state "$f" >/dev/null 2>&1 || return 1
+  python3 - "$gate_file" "$gid" "$gate" "$source" "$note" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, goal_id, gate_id, source, note = sys.argv[1:6]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+with open(path) as f:
+    data = json.load(f)
+gates = data.setdefault("gates", [])
+known = {gate.get("id"): gate for gate in gates}
+if gate_id not in known:
+    raise SystemExit(f"unknown gate: {gate_id}")
+for gate in gates:
+    if gate.get("status") == "active":
+        gate["status"] = "passed"
+for gate in gates:
+    if gate.get("id") == gate_id:
+        gate["status"] = "active"
+        gate.setdefault("evidence", []).append({"at": now, "source": source, "note": note})
+        break
+data["goal_id"] = goal_id
+data["current_gate"] = gate_id
+data["updated_at"] = now
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "CurrentGate" "$gate"
+  set_goal_field "$f" "GateEvidence" "$gate_file"
+}
+
+gate_state_summary() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local gate_file
+  gate_file=$(gate_state_file "$f") || return 1
+  [ -f "$gate_file" ] || init_gate_state "$f" >/dev/null 2>&1 || return 1
+  python3 - "$gate_file" <<'PY'
+import json, sys
+path = sys.argv[1]
+canonical = [
+    "idea-intake",
+    "company-blueprint",
+    "offer-validated",
+    "mvp-live",
+    "first-revenue",
+    "repeatable-channel",
+    "fulfillment-stable",
+    "scale-ready",
+    "first-1m-mrr",
+]
+try:
+    with open(path) as f:
+        data = json.load(f)
+except Exception as exc:
+    print(f"DRIFT gate-state invalid JSON: {path} ({exc})")
+    raise SystemExit(1)
+gates = data.get("gates")
+if not isinstance(gates, list):
+    print(f"DRIFT gate-state missing gates[]: {path}")
+    raise SystemExit(1)
+bad = [gate.get("id") for gate in gates if not isinstance(gate, dict) or gate.get("id") not in canonical]
+if bad:
+    print(f"DRIFT gate-state uses non-canonical gate ids: {', '.join(map(str, bad))}")
+    print(f"Evidence: {path}")
+    raise SystemExit(1)
+print(f"CurrentGate: {data.get('current_gate','')}")
+print(f"Evidence: {path}")
+for gate in gates:
+    evidence = gate.get("evidence", [])
+    last = evidence[-1]["note"] if evidence else ""
+    print(f"- {gate.get('id')}: {gate.get('status')} {last}")
+PY
+}
+
+_gate_artifact_root() {
+  if [ -n "${PROJECT_ROOT:-}" ]; then
+    echo "$PROJECT_ROOT"
+    return 0
+  fi
+  local registry_dir
+  registry_dir=$(dirname "$REGISTRY_FILE")
+  (cd "$registry_dir/.." 2>/dev/null && pwd) || pwd
+}
+
+_has_any_artifact() {
+  local root="$1"; shift
+  local rel
+  for rel in "$@"; do
+    [ -e "$root/$rel" ] && { echo "$root/$rel"; return 0; }
+  done
+  return 1
+}
+
+artifact_path_for_gate() {
+  local gate="${1:-}"
+  case "$gate" in
+    company-blueprint) echo "state/evidence/company-blueprint.json" ;;
+    offer-validated) echo "state/evidence/offer-validated.json" ;;
+    mvp-live) echo "state/evidence/mvp-live.json" ;;
+    repeatable-channel) echo "state/evidence/repeatable-channel.json" ;;
+    fulfillment-stable) echo "state/evidence/fulfillment-stable.json" ;;
+    scale-ready) echo "state/evidence/scale-ready.json" ;;
+    first-revenue) echo "state/evidence/first-revenue.json" ;;
+    first-1m-mrr) echo "state/evidence/first-1m-mrr.json" ;;
+    *) return 1 ;;
+  esac
+}
+
+write_gate_artifact() {
+  local gate="${1:-}"
+  local owner="${2:-unknown}"
+  local status="${3:-ready}"
+  local note="${4:-}"
+  local department="${5:-}"
+  [ -z "$gate" ] && { echo "ERROR: gate required" >&2; return 1; }
+  local root rel out
+  root=$(_gate_artifact_root)
+  rel=$(artifact_path_for_gate "$gate") || { echo "ERROR: unknown artifact gate: $gate" >&2; return 1; }
+  out="$root/$rel"
+  mkdir -p "$(dirname "$out")"
+  python3 - "$out" "$gate" "$owner" "$status" "$note" "$department" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, gate, owner, status, note, department = sys.argv[1:7]
+data = {
+    "gate": gate,
+    "owner": owner,
+    "status": status,
+    "note": note,
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+}
+if department:
+    data["department"] = department
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  echo "$out"
+}
+
+validate_department_artifact() {
+  local department="${1:-}"
+  local artifact="${2:-}"
+  [ -z "$department" ] && { echo "ERROR: department required" >&2; return 1; }
+  local root
+  root=$(_gate_artifact_root)
+  python3 - "$REGISTRY_FILE" "$department" "$root" "$artifact" <<'PY'
+import json, os, sys
+registry_path, department, root, artifact = sys.argv[1:5]
+with open(registry_path) as f:
+    registry = json.load(f)
+contracts = registry.get("mekongmind_evidence_contracts", [])
+contract = next((c for c in contracts if c.get("department") == department), None)
+if not contract:
+    raise SystemExit(f"ERROR: unknown evidence contract department: {department}")
+artifact_path = artifact or os.path.join(root, contract["artifact_path"])
+if not os.path.isabs(artifact_path):
+    artifact_path = os.path.join(root, artifact_path)
+if not os.path.exists(artifact_path):
+    raise SystemExit(f"MISS {department} artifact not found: {artifact_path}")
+try:
+    with open(artifact_path) as f:
+        data = json.load(f)
+except Exception as exc:
+    raise SystemExit(f"FAIL {department} artifact is not valid JSON: {artifact_path} ({exc})")
+missing = []
+empty = []
+for field in contract.get("required_fields", []):
+    source = data
+    if field not in source and isinstance(data.get("evidence"), dict):
+        source = data["evidence"]
+    if field not in source:
+        missing.append(field)
+        continue
+    value = source[field]
+    if value in ("", None, [], {}):
+        empty.append(field)
+if missing or empty:
+    if missing:
+        print(f"MISS {department} missing fields: {', '.join(missing)}")
+    if empty:
+        print(f"MISS {department} empty fields: {', '.join(empty)}")
+    print(f"Artifact: {artifact_path}")
+    print(f"ProofRule: {contract.get('proof_rule','')}")
+    raise SystemExit(1)
+
+def value(name):
+    if name in data:
+        return data.get(name)
+    if isinstance(data.get("evidence"), dict):
+        return data["evidence"].get(name)
+    return None
+
+def text(name):
+    raw = value(name)
+    if isinstance(raw, (dict, list)):
+        return json.dumps(raw, sort_keys=True)
+    return "" if raw is None else str(raw)
+
+semantic_failures = []
+if department == "quality-compliance":
+    decision = text("release_decision").lower()
+    if any(term in decision for term in ("block", "blocked", "not approved", "fail", "failed")):
+        semantic_failures.append("release_decision is blocking, not releasable")
+if department == "platform-operations":
+    status = text("http_status").strip()
+    if status != "200":
+        semantic_failures.append("http_status must be 200")
+    version_match = text("version_match").lower()
+    if version_match not in ("true", "yes", "matched", "match", "verified"):
+        semantic_failures.append("version_match must be verified")
+    provider = text("provider").lower()
+    if any(term in provider for term in ("unknown", "blocked", "missing")):
+        semantic_failures.append("provider must be a real reachable provider")
+if department == "growth-marketing":
+    outreach_log = value("outreach_log")
+    if not isinstance(outreach_log, list) or not outreach_log:
+        semantic_failures.append("outreach_log must be a non-empty list of real send/reply events")
+    else:
+        sent_events = 0
+        opt_out_events = 0
+        for idx, event in enumerate(outreach_log, start=1):
+            if not isinstance(event, dict):
+                semantic_failures.append(f"outreach_log[{idx}] must be an object")
+                continue
+            if not (event.get("sent_at") or event.get("date") or event.get("timestamp")):
+                semantic_failures.append(f"outreach_log[{idx}] missing sent_at/date/timestamp")
+            if not (event.get("recipient") or event.get("recipient_id") or event.get("audience_ref")):
+                semantic_failures.append(f"outreach_log[{idx}] missing recipient/recipient_id/audience_ref")
+            if not (event.get("recipient_source") or event.get("source") or event.get("audience_source")):
+                semantic_failures.append(f"outreach_log[{idx}] missing recipient_source/source/audience_source")
+            status = str(event.get("status", "")).lower()
+            if not status:
+                semantic_failures.append(f"outreach_log[{idx}] missing status")
+            if status in {"sent", "delivered", "replied", "reply", "opened", "bounced"}:
+                sent_events += 1
+            opt_out = event.get("opt_out_notice")
+            if opt_out is True or (isinstance(opt_out, str) and opt_out.strip()):
+                opt_out_events += 1
+        if sent_events <= 0:
+            semantic_failures.append("outreach_log must include at least one sent/delivered/replied/opened/bounced event")
+        if opt_out_events < sent_events:
+            semantic_failures.append("every sent outreach event must record opt_out_notice")
+    compliance = text("opt_out_compliance").lower()
+    if "opt" not in compliance:
+        semantic_failures.append("opt_out_compliance must describe opt-out handling")
+    handoff = value("sales_handoff")
+    if handoff in ("", None, [], {}):
+        semantic_failures.append("sales_handoff must record Sales handoff even when qualified leads are zero")
+if department == "sales-revenue":
+    provider = text("provider").lower()
+    if "polar" not in provider:
+        semantic_failures.append("provider must be Polar.sh")
+    sync_status = text("provider_sync_status").lower()
+    if not any(term in sync_status for term in ("synced", "verified", "provider-backed", "provider backed")):
+        semantic_failures.append("provider_sync_status must be synced or verified")
+    payment_status = text("payment_status").lower()
+    if not any(term in payment_status for term in ("paid", "active", "signed", "subscription")):
+        semantic_failures.append("payment_status must prove paid, active, signed, or subscription")
+    raw_mrr = value("current_mrr")
+    try:
+        mrr = float(raw_mrr)
+    except (TypeError, ValueError):
+        mrr = 0.0
+    if mrr <= 0:
+        semantic_failures.append("current_mrr must be greater than 0")
+if semantic_failures:
+    print(f"FAIL {department} semantic contract")
+    for failure in semantic_failures:
+        print(f"- {failure}")
+    print(f"Artifact: {artifact_path}")
+    print(f"ProofRule: {contract.get('proof_rule','')}")
+    raise SystemExit(1)
+print(f"PASS {department} artifact contract")
+print(f"Artifact: {artifact_path}")
+print(f"Gate: {contract.get('gate','')}")
+print(f"RequiredFields: {', '.join(contract.get('required_fields', []))}")
+PY
+}
+
+render_department_artifact_template() {
+  local department="${1:-}"
+  local out="${2:-}"
+  [ -z "$department" ] && { echo "ERROR: department required" >&2; return 1; }
+  local root
+  root=$(_gate_artifact_root)
+  python3 - "$REGISTRY_FILE" "$department" "$root" "$out" <<'PY'
+import json, os, sys
+from datetime import datetime, timezone
+
+registry_path, department, root, out = sys.argv[1:5]
+with open(registry_path) as f:
+    registry = json.load(f)
+contract = next((c for c in registry.get("mekongmind_evidence_contracts", []) if c.get("department") == department), None)
+if not contract:
+    raise SystemExit(f"ERROR: unknown evidence contract department: {department}")
+data = {
+    "department": department,
+    "gate": contract.get("gate", ""),
+    "artifact_path": contract.get("artifact_path", ""),
+    "proof_rule": contract.get("proof_rule", ""),
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+}
+for field in contract.get("required_fields", []):
+    data.setdefault(field, "")
+payload = json.dumps(data, indent=2, sort_keys=True) + "\n"
+if out:
+    path = out
+    if not os.path.isabs(path):
+        path = os.path.join(root, path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        f.write(payload)
+    print(path)
+else:
+    sys.stdout.write(payload)
+PY
+}
+
+record_department_run() {
+  local f="${1:-}"
+  local department="${2:-}"
+  local owner="${3:-}"
+  local gate="${4:-}"
+  local status="${5:-ready}"
+  local artifact="${6:-}"
+  local note="${7:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && { echo "ERROR: department required" >&2; return 1; }
+  local dept_file gid
+  dept_file=$(department_state_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  mkdir -p "$DEPARTMENTS_DIR"
+  python3 - "$dept_file" "$gid" "$department" "$owner" "$gate" "$status" "$artifact" "$note" <<'PY'
+import json, os, sys
+from datetime import datetime, timezone
+path, goal_id, department, owner, gate, status, artifact, note = sys.argv[1:9]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+if os.path.exists(path):
+    with open(path) as f:
+        data = json.load(f)
+else:
+    data = {"goal_id": goal_id, "departments": {}, "events": []}
+run = {
+    "department": department,
+    "owner": owner,
+    "gate": gate,
+    "status": status,
+    "artifact": artifact,
+    "note": note,
+    "updated_at": now,
+}
+data["goal_id"] = goal_id
+data.setdefault("departments", {})[department] = run
+data.setdefault("events", []).append(run)
+data["updated_at"] = now
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "DepartmentEvidence" "$dept_file"
+}
+
+department_ready() {
+  local f="${1:-}"
+  local department="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && return 1
+  local dept_file
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || return 1
+  python3 - "$dept_file" "$department" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+run = data.get("departments", {}).get(sys.argv[2], {})
+raise SystemExit(0 if run.get("status") == "ready" else 1)
+PY
+}
+
+department_ready_strict() {
+  local f="${1:-}"
+  local department="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && return 1
+  local dept_file artifact
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || return 1
+  artifact=$(python3 - "$dept_file" "$department" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+run = data.get("departments", {}).get(sys.argv[2], {})
+if run.get("status") != "ready":
+    raise SystemExit(1)
+print(run.get("artifact", ""))
+PY
+) || return 1
+  [ -n "$artifact" ] || return 1
+  validate_department_artifact "$department" "$artifact" >/dev/null 2>&1
+}
+
+department_state_summary() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local dept_file
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || { echo "DepartmentEvidence: $dept_file"; echo "- none"; return 0; }
+  python3 - "$dept_file" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+print(f"DepartmentEvidence: {sys.argv[1]}")
+for dept, run in data.get("departments", {}).items():
+    print(f"- {dept}: {run.get('status','')} gate={run.get('gate','')} owner={run.get('owner','')}")
+PY
+}
+
+department_run_artifact() {
+  local f="${1:-}"
+  local department="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && return 1
+  local dept_file
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || return 1
+  python3 - "$dept_file" "$department" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+run = data.get("departments", {}).get(sys.argv[2], {})
+artifact = run.get("artifact", "")
+if not artifact:
+    raise SystemExit(1)
+print(artifact)
+PY
+}
+
+goal_gate_drift_reason() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local gate_file goal_gate
+  gate_file=$(gate_state_file "$f") || return 1
+  goal_gate=$(goal_field "$f" "CurrentGate")
+  [ -f "$gate_file" ] || { echo "gate-state missing"; return 0; }
+  python3 - "$gate_file" "$goal_gate" <<'PY'
+import json
+import sys
+
+gate_file, goal_gate = sys.argv[1:3]
+canonical = [
+    "idea-intake",
+    "company-blueprint",
+    "offer-validated",
+    "mvp-live",
+    "first-revenue",
+    "repeatable-channel",
+    "fulfillment-stable",
+    "scale-ready",
+    "first-1m-mrr",
+]
+try:
+    with open(gate_file) as f:
+        data = json.load(f)
+except Exception as exc:
+    print(f"gate-state invalid JSON: {exc}")
+    raise SystemExit(0)
+gates = data.get("gates", [])
+if not isinstance(gates, list):
+    print("gate-state missing gates[]")
+    raise SystemExit(0)
+statuses = {}
+for gate in gates:
+    if not isinstance(gate, dict):
+        print("gate-state has non-object gate entry")
+        raise SystemExit(0)
+    gid = gate.get("id")
+    statuses[gid] = gate.get("status", "")
+    if gid not in canonical:
+        print(f"non-canonical gate id: {gid}")
+        raise SystemExit(0)
+state_gate = data.get("current_gate", "")
+if goal_gate and state_gate and goal_gate != state_gate:
+    print(f"goal CurrentGate={goal_gate} but gate-state current_gate={state_gate}")
+    raise SystemExit(0)
+order = {gid: idx for idx, gid in enumerate(canonical)}
+latest_idx = max(
+    [order[gid] for gid, status in statuses.items() if gid in order and status in ("active", "passed")]
+    or [-1]
+)
+for gid in canonical[:latest_idx]:
+    if statuses.get(gid) == "pending":
+        print(f"later gate active/passed while previous gate pending: {gid}")
+        raise SystemExit(0)
+raise SystemExit(1)
+PY
+}
+
+next_department_for_goal() {
+	local f="${1:-}" strict="${2:-}"
+	[ -z "$f" ] && f="$(latest_goal_file)"
+	[ -z "$f" ] && return 1
+	local current target dept gate reason ready_cmd
+	ready_cmd="department_ready"
+	[ "$strict" = "strict" ] && ready_cmd="department_ready_strict"
+	current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+	target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+	[ -z "$current" ] && current=0
+	[ -z "$target" ] && target=1000000
+
+	local drift_reason
+	drift_reason=$(goal_gate_drift_reason "$f" 2>/dev/null || true)
+	if [ -n "$drift_reason" ]; then
+		dept="ceo-command"; gate="company-blueprint"; reason="goal/gate drift: $drift_reason"
+		echo "Department: $dept"
+		echo "GateArtifact: $gate"
+		echo "Reason: $reason"
+		echo "Command: me solo gates reconcile"
+		return 0
+	fi
+
+	# PERFORMANCE: Single jq reads replace up to 20 python3 spawns
+	local dept_file gsf dept_statuses gate_statuses
+	dept_file=$(department_state_file "$f") || return 1
+	gsf=$(gate_state_file "$f") || return 1
+
+	# Cache all dept/gate statuses into bash variables (~7ms vs ~500ms)
+	dept_statuses=""
+	[ -f "$dept_file" ] && dept_statuses=$(jq -r '.departments | to_entries[] | "\(.key)=\(.value.status // "ns")"' "$dept_file" 2>/dev/null)
+	gate_statuses=""
+	[ -f "$gsf" ] && gate_statuses=$(jq -r '.gates[] | "\(.id)=\(.status)"' "$gsf" 2>/dev/null)
+
+	_dept_status() {
+		local dep="${1:-}"
+		[ -z "$dept_statuses" ] && return 1
+		echo "$dept_statuses" | grep -q "^${dep}=ready" 2>/dev/null
+	}
+	_gate_status() {
+		local gid="${1:-}"
+		[ -z "$gate_statuses" ] && return 1
+		echo "$gate_statuses" | grep -q "^${gid}=passed" 2>/dev/null
+	}
+
+	if ! _dept_status "ceo-command" && ! _gate_status "company-blueprint"; then
+		dept="ceo-command"; gate="company-blueprint"; reason="company blueprint not approved"
+	elif ! _dept_status "market-intelligence" && ! _gate_status "offer-validated"; then
+		dept="market-intelligence"; gate="offer-validated"; reason="ICP and demand proof not captured"
+	elif ! _dept_status "product-strategy" && ! _gate_status "offer-validated"; then
+		dept="product-strategy"; gate="offer-validated"; reason="offer, pricing, and MVP scope not locked"
+	elif ! _dept_status "engineering-factory" && ! _gate_status "mvp-live"; then
+		dept="engineering-factory"; gate="mvp-live"; reason="minimum sellable product not built"
+	elif ! _dept_status "quality-compliance" && ! _gate_status "mvp-live"; then
+		dept="quality-compliance"; gate="mvp-live"; reason="release checks not approved"
+	elif ! _dept_status "platform-operations" && ! _gate_status "mvp-live"; then
+		dept="platform-operations"; gate="mvp-live"; reason="production health not verified"
+	elif ! _dept_status "growth-marketing" && ! _gate_status "repeatable-channel"; then
+		dept="growth-marketing"; gate="repeatable-channel"; reason="repeatable demand channel not proven"
+	elif [ "$current" -le 0 ] && ! _gate_status "first-revenue"; then
+		dept="sales-revenue"; gate="first-revenue"; reason="MRR is still zero"
+	elif ! _dept_status "customer-success" && ! _gate_status "fulfillment-stable"; then
+		dept="customer-success"; gate="fulfillment-stable"; reason="fulfillment stability not proven"
+	elif ! _dept_status "knowledge-memory" && ! _gate_status "scale-ready"; then
+		dept="knowledge-memory"; gate="scale-ready"; reason="cloneable SOP memory not extracted"
+	elif [ "$current" -lt "$target" ] && ! _gate_status "first-1m-mrr"; then
+		dept="sales-revenue"; gate="first-1m-mrr"; reason="MRR gap remains $((target-current))"
+	else
+		dept="knowledge-memory"; gate="first-1m-mrr"; reason="target reached; preserve operating cadence"
+	fi
+
+	echo "Department: $dept"
+	echo "GateArtifact: $gate"
+	echo "Reason: $reason"
+	echo "Command: me solo run $dept ready "$reason""
+}
+
+goal_readiness_matrix() {
+  local f="${1:-}"
+  local strict="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local current target gap mode ready_cmd
+  mode="compat"
+  ready_cmd="department_ready"
+  if [ "$strict" = "strict" ]; then
+    mode="strict"
+    ready_cmd="department_ready_strict"
+  fi
+  current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+  target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+  [ -z "$current" ] && current=0
+  [ -z "$target" ] && target=1000000
+  gap=$((target-current))
+  [ "$gap" -lt 0 ] && gap=0
+  echo "Goal: $(goal_field "$f" "Goal")"
+  echo "Mode: $mode"
+  echo "CurrentMRR: $current"
+  echo "TargetMRR: $target"
+  echo "MRRGap: $gap"
+  echo "NextBottleneck:"
+  next_department_for_goal "$f" "$strict" | sed 's/^/  /'
+  echo "ReadinessMatrix:"
+  python3 - "$REGISTRY_FILE" <<'PY' | while IFS=$'\t' read -r dept owner gate contract_artifact proof; do
+import json, sys
+with open(sys.argv[1]) as f:
+    registry = json.load(f)
+contracts = {c["department"]: c for c in registry.get("mekongmind_evidence_contracts", [])}
+for dept in registry.get("mekongmind_departments", []):
+    contract = contracts.get(dept["id"], {})
+    print("\t".join([
+        dept["id"],
+        dept.get("owner_agent", ""),
+        dept.get("gate_artifact", ""),
+        contract.get("artifact_path", ""),
+        contract.get("proof_rule", ""),
+    ]))
+PY
+    local status blocker artifact
+    artifact=$(department_run_artifact "$f" "$dept" 2>/dev/null || true)
+    status="BLOCKED"
+    blocker="department not marked ready"
+    if [ "$dept" = "sales-revenue" ]; then
+      if [ "$current" -gt 0 ]; then
+        status="READY"
+        blocker="first revenue proven; MRR gap $gap"
+      else
+        blocker="MRR is still zero"
+      fi
+    elif "$ready_cmd" "$f" "$dept"; then
+      status="READY"
+      blocker="proof accepted"
+    elif [ "$strict" = "strict" ] && [ -n "$artifact" ]; then
+      blocker="artifact present but strict contract fails"
+    elif [ "$strict" = "strict" ] && [ -n "$contract_artifact" ] && [ -f "$(_gate_artifact_root)/$contract_artifact" ]; then
+      blocker="contract artifact present but strict contract fails"
+    elif [ -z "$artifact" ]; then
+      blocker="missing department artifact"
+    fi
+    printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\n" "$dept" "$status" "$gate" "$owner" "${artifact:-$contract_artifact}" "$blocker" "$proof"
+  done
+}
+
+list_gate_artifact_contract() {
+  cat <<'EOF'
+company-blueprint -> state/evidence/company-blueprint.json
+offer-validated -> state/evidence/offer-validated.json
+mvp-live -> state/evidence/mvp-live.json
+repeatable-channel -> state/evidence/repeatable-channel.json
+fulfillment-stable -> state/evidence/fulfillment-stable.json
+scale-ready -> state/evidence/scale-ready.json
+first-revenue -> state/evidence/first-revenue.json
+first-1m-mrr -> state/evidence/first-1m-mrr.json
+EOF
+}
+
+reconcile_goal_gate_state() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local gate_file goal_gate
+  gate_file=$(gate_state_file "$f") || return 1
+  goal_gate=$(goal_field "$f" "CurrentGate")
+  python3 - "$f" "$gate_file" "$goal_gate" <<'PY'
+import json, os, sys
+
+goal_file, gate_file, goal_gate = sys.argv[1:4]
+canonical = [
+    "idea-intake",
+    "company-blueprint",
+    "offer-validated",
+    "mvp-live",
+    "first-revenue",
+    "repeatable-channel",
+    "fulfillment-stable",
+    "scale-ready",
+    "first-1m-mrr",
+]
+drift = []
+
+if not os.path.exists(gate_file):
+    print(f"DRIFT gate-state missing: {gate_file}")
+    raise SystemExit(1)
+
+try:
+    with open(gate_file) as f:
+        data = json.load(f)
+except Exception as exc:
+    print(f"DRIFT gate-state invalid JSON: {gate_file} ({exc})")
+    raise SystemExit(1)
+
+gates = data.get("gates")
+if not isinstance(gates, list):
+    drift.append("gate-state missing gates[]")
+else:
+    ids = []
+    statuses = {}
+    for gate in gates:
+        if not isinstance(gate, dict):
+            drift.append(f"non-object gate entry: {gate!r}")
+            continue
+        gid = gate.get("id")
+        ids.append(gid)
+        statuses[gid] = gate.get("status", "")
+        if gid not in canonical:
+            drift.append(f"non-canonical gate id: {gid}")
+    if ids and all(gid in canonical for gid in ids):
+        order = {gid: idx for idx, gid in enumerate(canonical)}
+        latest_idx = max(
+            [order[gid] for gid, status in statuses.items() if status in ("active", "passed")]
+            or [-1]
+        )
+        for gid in canonical[:latest_idx]:
+            if statuses.get(gid) == "pending":
+                drift.append(f"later gate active/passed while previous gate pending: {gid}")
+
+state_gate = data.get("current_gate", "")
+if goal_gate and state_gate and goal_gate != state_gate:
+    drift.append(f"goal CurrentGate={goal_gate} but gate-state current_gate={state_gate}")
+if state_gate and state_gate not in canonical:
+    drift.append(f"non-canonical current_gate: {state_gate}")
+
+if drift:
+    print("DRIFT goal/gate reconciliation failed")
+    print(f"Goal: {goal_file}")
+    print(f"GateState: {gate_file}")
+    for item in drift:
+        print(f"- {item}")
+    raise SystemExit(1)
+
+print("PASS goal/gate reconciliation")
+print(f"Goal: {goal_file}")
+print(f"GateState: {gate_file}")
+print(f"CurrentGate: {state_gate or goal_gate}")
+PY
+}
+
+authoritative_gate_for_goal() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local current target passed
+  current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+  target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+  [ -z "$current" ] && current=0
+  [ -z "$target" ] && target=1000000
+  passed="idea-intake"
+
+  if ! validate_department_artifact "ceo-command" >/dev/null 2>&1; then
+    printf "%s\t%s\t%s\n" "company-blueprint" "$passed" "ceo-command evidence contract missing"
+    return 0
+  fi
+  passed="$passed,company-blueprint"
+
+  if ! validate_department_artifact "market-intelligence" >/dev/null 2>&1 || ! validate_department_artifact "product-strategy" >/dev/null 2>&1; then
+    printf "%s\t%s\t%s\n" "offer-validated" "$passed" "offer validation evidence contract missing"
+    return 0
+  fi
+  passed="$passed,offer-validated"
+
+  if ! validate_department_artifact "engineering-factory" >/dev/null 2>&1 || ! validate_department_artifact "quality-compliance" >/dev/null 2>&1 || ! validate_department_artifact "platform-operations" >/dev/null 2>&1; then
+    printf "%s\t%s\t%s\n" "mvp-live" "$passed" "mvp-live evidence contract missing"
+    return 0
+  fi
+  passed="$passed,mvp-live"
+
+  if ! validate_department_artifact "growth-marketing" >/dev/null 2>&1; then
+    printf "%s\t%s\t%s\n" "repeatable-channel" "$passed" "repeatable-channel evidence contract missing"
+    return 0
+  fi
+  passed="$passed,repeatable-channel"
+
+  if [ "$current" -le 0 ] || ! validate_department_artifact "sales-revenue" >/dev/null 2>&1; then
+    printf "%s\t%s\t%s\n" "first-revenue" "$passed" "Polar-backed first revenue evidence missing"
+    return 0
+  fi
+  passed="$passed,first-revenue"
+
+  if ! validate_department_artifact "customer-success" >/dev/null 2>&1; then
+    printf "%s\t%s\t%s\n" "fulfillment-stable" "$passed" "fulfillment evidence contract missing"
+    return 0
+  fi
+  passed="$passed,fulfillment-stable"
+
+  if ! validate_department_artifact "knowledge-memory" >/dev/null 2>&1; then
+    printf "%s\t%s\t%s\n" "scale-ready" "$passed" "clone memory evidence contract missing"
+    return 0
+  fi
+  passed="$passed,scale-ready"
+
+  if [ "$current" -lt "$target" ]; then
+    printf "%s\t%s\t%s\n" "first-1m-mrr" "$passed" "MRR gap remains $((target-current))"
+    return 0
+  fi
+  printf "%s\t%s\t%s\n" "first-1m-mrr" "$passed,first-1m-mrr" "target reached"
+}
+
+repair_goal_gate_state() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local gate_file gid gate passed reason row
+  gate_file=$(gate_state_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  row=$(authoritative_gate_for_goal "$f") || return 1
+  gate=$(printf '%s\n' "$row" | cut -f1)
+  passed=$(printf '%s\n' "$row" | cut -f2)
+  reason=$(printf '%s\n' "$row" | cut -f3-)
+  mkdir -p "$GATES_DIR"
+  python3 - "$gate_file" "$gid" "$gate" "$passed" "$reason" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+path, goal_id, current_gate, passed_csv, reason = sys.argv[1:6]
+canonical = [
+    "idea-intake",
+    "company-blueprint",
+    "offer-validated",
+    "mvp-live",
+    "repeatable-channel",
+    "first-revenue",
+    "fulfillment-stable",
+    "scale-ready",
+    "first-1m-mrr",
+]
+passed = {item for item in passed_csv.split(",") if item}
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+if os.path.exists(path):
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except Exception:
+        data = {"goal_id": goal_id}
+else:
+    data = {"goal_id": goal_id}
+old_gates = {
+    gate.get("id"): gate
+    for gate in data.get("gates", [])
+    if isinstance(gate, dict)
+}
+gates = []
+for gate_id in canonical:
+    old = old_gates.get(gate_id, {})
+    evidence = old.get("evidence", [])
+    if gate_id == current_gate:
+        status = "active"
+        evidence = evidence + [{"at": now, "source": "reconcile:repair", "note": reason}]
+    elif gate_id in passed:
+        status = "passed"
+    else:
+        status = "pending"
+    gates.append({"id": gate_id, "status": status, "evidence": evidence})
+data.update({
+    "goal_id": goal_id,
+    "current_gate": current_gate,
+    "updated_at": now,
+    "gates": gates,
+})
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "CurrentGate" "$gate"
+  set_goal_field "$f" "GateEvidence" "$gate_file"
+  echo "REPAIRED goal/gate state"
+  echo "Goal: $f"
+  echo "GateState: $gate_file"
+  echo "CurrentGate: $gate"
+  echo "Reason: $reason"
+}
+
+verify_gate_artifacts() {
+  local f="${1:-}"
+  local strict="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local root
+  root=$(_gate_artifact_root)
+  local current target path
+  current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+  target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+  [ -z "$current" ] && current=0
+  [ -z "$target" ] && target=1000000
+
+  echo "ArtifactRoot: $root"
+
+  path=$(_has_any_artifact "$root" "state/evidence/company-blueprint.json" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "ceo-command" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "company-blueprint" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS company-blueprint $path"
+      else
+        echo "MISS company-blueprint strict-contract ceo-command $path"
+      fi
+    else
+      record_gate_evidence "$f" "company-blueprint" "artifact" "$path" >/dev/null || return 1
+      echo "PASS company-blueprint $path"
+    fi
+  else
+    echo "MISS company-blueprint state/evidence/company-blueprint.json"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/offer-validated.json" "plans/company-blueprint/offer.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "market-intelligence" "$path" >/dev/null 2>&1 && validate_department_artifact "product-strategy" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "offer-validated" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS offer-validated $path"
+      else
+        echo "MISS offer-validated strict-contract market-intelligence+product-strategy $path"
+      fi
+    else
+      record_gate_evidence "$f" "offer-validated" "artifact" "$path" >/dev/null || return 1
+      echo "PASS offer-validated $path"
+    fi
+  else
+    echo "MISS offer-validated state/evidence/offer-validated.json|plans/company-blueprint/offer.md"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/mvp-live.json" "state/deploy/health.json" "dist" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "engineering-factory" "$path" >/dev/null 2>&1 && validate_department_artifact "quality-compliance" "$path" >/dev/null 2>&1 && validate_department_artifact "platform-operations" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "mvp-live" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS mvp-live $path"
+      else
+        echo "MISS mvp-live strict-contract engineering-factory+quality-compliance+platform-operations $path"
+      fi
+    else
+      record_gate_evidence "$f" "mvp-live" "artifact" "$path" >/dev/null || return 1
+      echo "PASS mvp-live $path"
+    fi
+  else
+    echo "MISS mvp-live state/evidence/mvp-live.json|state/deploy/health.json|dist"
+  fi
+
+  if [ "$current" -gt 0 ]; then
+    record_gate_evidence "$f" "first-revenue" "revenue" "CurrentMRR=$current" >/dev/null || return 1
+    echo "PASS first-revenue CurrentMRR=$current"
+  else
+    echo "MISS first-revenue CurrentMRR=0"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/repeatable-channel.json" "plans/company-blueprint/channel.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "growth-marketing" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "repeatable-channel" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS repeatable-channel $path"
+      else
+        echo "MISS repeatable-channel strict-contract growth-marketing $path"
+      fi
+    else
+      record_gate_evidence "$f" "repeatable-channel" "artifact" "$path" >/dev/null || return 1
+      echo "PASS repeatable-channel $path"
+    fi
+  else
+    echo "MISS repeatable-channel state/evidence/repeatable-channel.json|plans/company-blueprint/channel.md"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/fulfillment-stable.json" "sops/fulfillment.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "customer-success" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "fulfillment-stable" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS fulfillment-stable $path"
+      else
+        echo "MISS fulfillment-stable strict-contract customer-success $path"
+      fi
+    else
+      record_gate_evidence "$f" "fulfillment-stable" "artifact" "$path" >/dev/null || return 1
+      echo "PASS fulfillment-stable $path"
+    fi
+  else
+    echo "MISS fulfillment-stable state/evidence/fulfillment-stable.json|sops/fulfillment.md"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/scale-ready.json" "plans/company-blueprint/scale.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "knowledge-memory" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "scale-ready" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS scale-ready $path"
+      else
+        echo "MISS scale-ready strict-contract knowledge-memory $path"
+      fi
+    else
+      record_gate_evidence "$f" "scale-ready" "artifact" "$path" >/dev/null || return 1
+      echo "PASS scale-ready $path"
+    fi
+  else
+    echo "MISS scale-ready state/evidence/scale-ready.json|plans/company-blueprint/scale.md"
+  fi
+
+  if [ "$current" -ge "$target" ]; then
+    record_gate_evidence "$f" "first-1m-mrr" "revenue" "CurrentMRR=$current TargetMRR=$target" >/dev/null || return 1
+    echo "PASS first-1m-mrr CurrentMRR=$current"
+  else
+    echo "MISS first-1m-mrr CurrentMRR=$current TargetMRR=$target"
+  fi
+}
+
+init_revenue_metrics() {
+  local f="${1:-}"
+  local source="${2:-local-state}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local metrics_file gid target current
+  metrics_file=$(revenue_metrics_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  target=$(goal_field "$f" "RevenueTarget")
+  current=$(goal_field "$f" "CurrentMRR")
+  [ -z "$target" ] && target=1000000
+  [ -z "$current" ] && current=0
+  mkdir -p "$REVENUE_DIR"
+  python3 - "$metrics_file" "$gid" "$current" "$target" "$source" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, goal_id, current, target, source = sys.argv[1:6]
+data = {
+    "goal_id": goal_id,
+    "source": source,
+    "current_mrr": int(current),
+    "target_mrr": int(target),
+    "currency": "USD",
+    "gate": "no-revenue" if int(current) <= 0 else ("first-1m-mrr" if int(current) >= int(target) else "first-revenue"),
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    "events": []
+}
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "RevenueMetricSource" "$source"
+  set_goal_field "$f" "RevenueEvidence" "$metrics_file"
+}
+
+record_revenue_mrr() {
+  local f="${1:-}"
+  local mrr="${2:-}"
+  local source="${3:-manual}"
+  local note="${4:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  if ! printf '%s' "$mrr" | grep -qE '^[0-9]+$'; then
+    echo "ERROR: MRR must be a non-negative integer" >&2
+    return 1
+  fi
+  local metrics_file gid target gate
+  metrics_file=$(revenue_metrics_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  target=$(goal_field "$f" "RevenueTarget")
+  [ -z "$target" ] && target=1000000
+  if [ "$mrr" -ge "$target" ]; then
+    gate="first-1m-mrr"
+  elif [ "$mrr" -gt 0 ]; then
+    gate="first-revenue"
+  else
+    gate="no-revenue"
+  fi
+  mkdir -p "$REVENUE_DIR"
+  python3 - "$metrics_file" "$gid" "$mrr" "$target" "$source" "$note" "$gate" <<'PY'
+import json, os, sys
+from datetime import datetime, timezone
+path, goal_id, mrr, target, source, note, gate = sys.argv[1:8]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+if os.path.exists(path):
+    with open(path) as f:
+        data = json.load(f)
+else:
+    data = {"goal_id": goal_id, "events": []}
+data.update({
+    "goal_id": goal_id,
+    "source": source,
+    "current_mrr": int(mrr),
+    "target_mrr": int(target),
+    "currency": "USD",
+    "gate": gate,
+    "updated_at": now,
+})
+data.setdefault("events", []).append({
+    "at": now,
+    "mrr": int(mrr),
+    "source": source,
+    "note": note,
+    "gate": gate,
+})
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "CurrentMRR" "$mrr"
+  set_goal_field "$f" "RevenueMetricSource" "$source"
+  set_goal_field "$f" "RevenueEvidence" "$metrics_file"
+  set_goal_field "$f" "RevenueGate" "$gate"
+  if [ "$gate" = "first-revenue" ]; then
+    record_gate_evidence "$f" "first-revenue" "$source" "MRR reached $mrr" >/dev/null 2>&1 || true
+  fi
+  if [ "$gate" = "first-1m-mrr" ]; then
+    record_gate_evidence "$f" "first-1m-mrr" "$source" "MRR reached $mrr" >/dev/null 2>&1 || true
+  fi
+}
+
+revenue_metric_value() {
+  local f="${1:-}"
+  local key="${2:-current_mrr}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local metrics_file
+  metrics_file=$(revenue_metrics_file "$f") || return 1
+  [ -f "$metrics_file" ] || return 1
+  python3 - "$metrics_file" "$key" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+value = data.get(sys.argv[2], "")
+print(value)
+PY
+}
+
+extract_mrr_from_revenue_json() {
+  local input_file="${1:-}"
+  [ -z "$input_file" ] && return 1
+  [ -f "$input_file" ] || return 1
+  python3 - "$input_file" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+for key in ("current_mrr", "mrr", "monthly_recurring_revenue", "monthlyRecurringRevenue"):
+    if key in data:
+        print(int(data[key]))
+        raise SystemExit(0)
+subscriptions = data.get("subscriptions")
+if isinstance(subscriptions, list):
+    total = 0
+    for sub in subscriptions:
+        status = str(sub.get("status", "")).lower()
+        if status and status not in {"active", "trialing"}:
+            continue
+        amount = sub.get("mrr", sub.get("monthly_recurring_revenue", sub.get("amount", 0)))
+        total += int(amount)
+    print(total)
+    raise SystemExit(0)
+raise SystemExit("missing current_mrr/mrr/monthly_recurring_revenue/subscriptions")
+PY
+}
+
+sync_revenue_from_file() {
+  local f="${1:-}"
+  local input_file="${2:-}"
+  local source="${3:-file}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$input_file" ] && { echo "ERROR: revenue sync file required" >&2; return 1; }
+  local mrr
+  mrr=$(extract_mrr_from_revenue_json "$input_file") || return $?
+  record_revenue_mrr "$f" "$mrr" "$source" "synced from $input_file"
+}
+
+scan_local_products() {
+  local root="${1:-/Users/macbook}"
+  local out="${2:-}"
+  [ -z "$out" ] && out="$(product_inventory_file)"
+  mkdir -p "$(dirname "$out")"
+  python3 - "$root" "$out" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+root, out = sys.argv[1:3]
+root = os.path.abspath(os.path.expanduser(root))
+marker_files = {
+    "package.json": "node",
+    "pnpm-lock.yaml": "pnpm",
+    "yarn.lock": "yarn",
+    "package-lock.json": "npm",
+    "pyproject.toml": "python",
+    "requirements.txt": "python",
+    "go.mod": "go",
+    "Cargo.toml": "rust",
+    "wrangler.toml": "cloudflare-workers",
+    "vercel.json": "vercel",
+    "fly.toml": "fly",
+    "render.yaml": "render",
+    "polar.config.json": "polar",
+}
+ignored_dirs = {
+    ".git", ".next", ".nuxt", ".turbo", ".cache", ".pytest_cache",
+    "node_modules", "dist", "build", "coverage", "__pycache__",
+    "Library", "Applications", "System", "Volumes", ".Trash",
+    "extensions", "_work", "DerivedData",
+}
+secret_names = {
+    ".env", ".env.local", ".env.production", ".env.development",
+    "id_rsa", "id_ed25519", "secrets.json",
+}
+
+products = {}
+
+def classify(path, files):
+    detectors = sorted(marker_files[name] for name in files if name in marker_files)
+    if not detectors:
+        return None
+    name = os.path.basename(path) or path
+    package_manager = ""
+    if "pnpm-lock.yaml" in files:
+        package_manager = "pnpm"
+    elif "yarn.lock" in files:
+        package_manager = "yarn"
+    elif "package-lock.json" in files or "package.json" in files:
+        package_manager = "npm"
+    deploy_provider = ""
+    for marker, provider in (
+        ("wrangler.toml", "cloudflare-workers"),
+        ("vercel.json", "vercel"),
+        ("fly.toml", "fly"),
+        ("render.yaml", "render"),
+    ):
+        if marker in files:
+            deploy_provider = provider
+            break
+    polar_signals = sorted(
+        file for file in files
+        if "polar" in file.lower() and file not in secret_names
+    )
+    return {
+        "name": name,
+        "path": path,
+        "detectors": detectors,
+        "package_manager": package_manager,
+        "deploy_provider": deploy_provider,
+        "polar_signals": polar_signals,
+        "autonomy_gate": "company-blueprint",
+        "self_selling_status": "needs-ceo-blueprint",
+        "next_action": "run CEO Command to decide buyer, offer, checkout, campaign, and revenue loop",
+    }
+
+if os.path.isdir(root):
+    for current, dirs, files in os.walk(root):
+        dirs[:] = [
+            d for d in dirs
+            if d not in ignored_dirs
+            and not d.startswith(".")
+            and not d.startswith(".venv")
+            and not d.endswith(".egg-info")
+        ]
+        safe_files = [f for f in files if f not in secret_names and not f.endswith(".pem")]
+        product = classify(current, set(safe_files))
+        if product:
+            products[current] = product
+            dirs[:] = [
+                d for d in dirs
+                if d not in {"node_modules", ".next", "dist", "build", "coverage"}
+            ]
+else:
+    raise SystemExit(f"scan root not found: {root}")
+
+payload = {
+    "schema": "mekongmind.local_product_inventory.v1",
+    "root": root,
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    "count": len(products),
+    "polar_provider": "canonical",
+    "secrets_policy": "secret file names are ignored; inventory records file names and product metadata only",
+    "products": sorted(products.values(), key=lambda item: item["path"]),
+}
+with open(out, "w") as f:
+    json.dump(payload, f, indent=2, sort_keys=True)
+    f.write("\n")
+print(out)
+PY
+}
+
+product_inventory_summary() {
+  local inventory="${1:-}"
+  [ -z "$inventory" ] && inventory="$(product_inventory_file)"
+  [ -f "$inventory" ] || { echo "MISS product inventory: $inventory"; return 1; }
+  python3 - "$inventory" "${PRODUCT_INVENTORY_LIMIT:-80}" <<'PY'
+import json
+import sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+limit = int(sys.argv[2])
+print(f"ProductInventory: {sys.argv[1]}")
+print(f"Root: {data.get('root','')}")
+print(f"Count: {data.get('count', 0)}")
+print(f"PolarProvider: {data.get('polar_provider','')}")
+products = data.get("products", [])
+for product in products[:limit]:
+    detectors = ",".join(product.get("detectors", []))
+    provider = product.get("deploy_provider") or "unknown"
+    polar = ",".join(product.get("polar_signals", [])) or "none"
+    print(f"- {product.get('name','')} | provider={provider} | detectors={detectors} | polar={polar} | gate={product.get('autonomy_gate','')}")
+    print(f"  path: {product.get('path','')}")
+    print(f"  next: {product.get('next_action','')}")
+if len(products) > limit:
+    print(f"... {len(products) - limit} more product candidates omitted; set PRODUCT_INVENTORY_LIMIT to show more")
+PY
+}
+
+build_product_self_selling_queue() {
+  local inventory="${1:-}"
+  local out="${2:-}"
+  [ -z "$inventory" ] && inventory="$(product_inventory_file)"
+  [ -z "$out" ] && out="$(product_self_selling_queue_file)"
+  [ -f "$inventory" ] || { echo "ERROR: product inventory missing: $inventory" >&2; return 1; }
+  mkdir -p "$(dirname "$out")"
+  python3 - "$inventory" "$out" <<'PY'
+import json
+import sys
+from datetime import datetime, timezone
+
+inventory_path, out = sys.argv[1:3]
+with open(inventory_path) as f:
+    inventory = json.load(f)
+products = inventory.get("products", [])
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+stages = [
+    "company-blueprint",
+    "offer-validated",
+    "mvp-live",
+    "repeatable-channel",
+    "first-revenue",
+    "fulfillment-stable",
+    "scale-ready",
+    "first-1m-mrr",
+]
+queue = []
+for index, product in enumerate(products, start=1):
+    name = product.get("name", "")
+    path = product.get("path", "")
+    queue.append({
+        "id": f"product-{index:04d}",
+        "name": name,
+        "path": path,
+        "status": "queued",
+        "current_gate": "company-blueprint",
+        "target_mrr": 1000000,
+        "polar_provider": "Polar.sh canonical; do not modify verified setup without explicit approval",
+        "polar_signals": product.get("polar_signals", []),
+        "deploy_provider": product.get("deploy_provider", ""),
+        "detectors": product.get("detectors", []),
+        "required_stages": stages,
+        "next_command": f"me solo products select {path or name}",
+        "evidence_required": [
+            "state/evidence/company-blueprint.json",
+            "state/evidence/offer-validated.json",
+            "state/evidence/mvp-live.json",
+            "state/evidence/repeatable-channel.json",
+            "state/evidence/first-revenue.json",
+            "state/revenue/<goal-id>.json",
+            "state/evidence/fulfillment-stable.json",
+            "state/evidence/scale-ready.json",
+        ],
+    })
+payload = {
+    "schema": "mekongmind.self_selling_queue.v1",
+    "inventory": inventory_path,
+    "updated_at": now,
+    "count": len(queue),
+    "queued": len(queue),
+    "active": 0,
+    "self_selling": 0,
+    "polar_provider": "canonical",
+    "doctrine": [
+        "every inventory product must have a queue row before it can be claimed autonomous",
+        "queue status is not revenue evidence",
+        "Polar.sh is canonical for revenue; do not mutate verified provider setup from queue generation",
+        "real campaign/email/outreach requires Growth Marketing evidence",
+        "MRR gates require Sales & Revenue Polar provider evidence and sync status",
+    ],
+    "items": queue,
+}
+with open(out, "w") as f:
+    json.dump(payload, f, indent=2, sort_keys=True)
+    f.write("\n")
+print(out)
+PY
+}
+
+product_self_selling_queue_summary() {
+  local queue_file="${1:-}"
+  [ -z "$queue_file" ] && queue_file="$(product_self_selling_queue_file)"
+  [ -f "$queue_file" ] || { echo "MISS product self-selling queue: $queue_file"; return 1; }
+  python3 - "$queue_file" "${PRODUCT_QUEUE_LIMIT:-80}" <<'PY'
+import json
+import sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+limit = int(sys.argv[2])
+print(f"ProductSelfSellingQueue: {sys.argv[1]}")
+print(f"Inventory: {data.get('inventory','')}")
+print(f"Count: {data.get('count', 0)}")
+print(f"Queued: {data.get('queued', 0)}")
+print(f"SelfSelling: {data.get('self_selling', 0)}")
+print(f"PolarProvider: {data.get('polar_provider','')}")
+for item in data.get("items", [])[:limit]:
+    provider = item.get("deploy_provider") or "unknown"
+    polar = ",".join(item.get("polar_signals", [])) or "none"
+    print(f"- {item.get('id','')} {item.get('name','')} | status={item.get('status','')} | gate={item.get('current_gate','')} | provider={provider} | polar={polar}")
+    print(f"  path: {item.get('path','')}")
+    print(f"  next: {item.get('next_command','')}")
+if len(data.get("items", [])) > limit:
+    print(f"... {len(data.get('items', [])) - limit} more queue items omitted; set PRODUCT_QUEUE_LIMIT to show more")
+PY
+}
+
+verify_product_self_selling_queue() {
+  local inventory="${1:-}"
+  local queue_file="${2:-}"
+  local mode="${3:-coverage}"
+  [ -z "$inventory" ] && inventory="$(product_inventory_file)"
+  [ -z "$queue_file" ] && queue_file="$(product_self_selling_queue_file)"
+  [ -f "$inventory" ] || { echo "MISS inventory: $inventory"; return 1; }
+  [ -f "$queue_file" ] || { echo "MISS queue: $queue_file"; return 1; }
+  python3 - "$inventory" "$queue_file" "$mode" <<'PY'
+import json
+import sys
+inventory_path, queue_path, mode = sys.argv[1:4]
+inventory = json.load(open(inventory_path))
+queue = json.load(open(queue_path))
+products = inventory.get("products", [])
+items = queue.get("items", [])
+product_paths = {item.get("path") for item in products}
+queue_paths = {item.get("path") for item in items}
+missing = sorted(product_paths - queue_paths)
+extra = sorted(queue_paths - product_paths)
+if queue.get("schema") != "mekongmind.self_selling_queue.v1":
+    print(f"FAIL queue schema: {queue.get('schema')}")
+    raise SystemExit(1)
+if len(items) != len(products) or missing or extra:
+    print("FAIL product queue coverage")
+    print(f"InventoryCount: {len(products)}")
+    print(f"QueueCount: {len(items)}")
+    if missing:
+        print(f"MissingFromQueue: {len(missing)}")
+    if extra:
+        print(f"ExtraInQueue: {len(extra)}")
+    raise SystemExit(1)
+print("PASS product queue coverage")
+print(f"Inventory: {inventory_path}")
+print(f"Queue: {queue_path}")
+print(f"Products: {len(products)}")
+print(f"PolarProvider: {queue.get('polar_provider','')}")
+
+if mode in ("strict", "self-selling"):
+    required_stages = [
+        "company-blueprint",
+        "offer-validated",
+        "mvp-live",
+        "repeatable-channel",
+        "first-revenue",
+        "fulfillment-stable",
+        "scale-ready",
+        "first-1m-mrr",
+    ]
+    required_evidence = [
+        "state/evidence/company-blueprint.json",
+        "state/evidence/offer-validated.json",
+        "state/evidence/mvp-live.json",
+        "state/evidence/repeatable-channel.json",
+        "state/evidence/first-revenue.json",
+        "state/revenue/<goal-id>.json",
+        "state/evidence/fulfillment-stable.json",
+        "state/evidence/scale-ready.json",
+    ]
+    failures = []
+    if queue.get("polar_provider") != "canonical":
+        failures.append("queue polar_provider must be canonical")
+    for item in items:
+        label = item.get("id") or item.get("name") or item.get("path")
+        if item.get("target_mrr") != 1000000:
+            failures.append(f"{label}: target_mrr must be 1000000")
+        if item.get("polar_provider") != "Polar.sh canonical; do not modify verified setup without explicit approval":
+            failures.append(f"{label}: Polar.sh canonical warning missing")
+        if item.get("required_stages") != required_stages:
+            failures.append(f"{label}: required_stages mismatch")
+        if item.get("evidence_required") != required_evidence:
+            failures.append(f"{label}: evidence_required mismatch")
+        if not item.get("next_command"):
+            failures.append(f"{label}: next_command missing")
+        if item.get("status") == "active" and item.get("current_gate") not in ("", "company-blueprint") and not item.get("last_snapshot"):
+            failures.append(f"{label}: active product beyond company-blueprint must have last_snapshot")
+    if failures:
+        print("FAIL product queue strict contract")
+        for failure in failures[:20]:
+            print(f"- {failure}")
+        if len(failures) > 20:
+            print(f"... {len(failures) - 20} more failures")
+        raise SystemExit(1)
+    print("PASS product queue strict contract")
+    print(f"ProductsUnderControl: {len(items)}")
+
+if mode == "self-selling":
+    incomplete = [item for item in items if item.get("status") != "self-selling"]
+    if incomplete:
+        print("FAIL product self-selling completion")
+        print(f"SelfSelling: {len(items) - len(incomplete)}")
+        print(f"Incomplete: {len(incomplete)}")
+        for item in incomplete[:20]:
+            print(f"- {item.get('id','')} {item.get('name','')} status={item.get('status','')} gate={item.get('current_gate','')}")
+        if len(incomplete) > 20:
+            print(f"... {len(incomplete) - 20} more incomplete products")
+        raise SystemExit(1)
+    print("PASS product self-selling completion")
+PY
+}
+
+update_product_queue_status() {
+  local product_name="${1:-}"
+  local product_path="${2:-}"
+  local status="${3:-active}"
+  local gate="${4:-company-blueprint}"
+  local goal_id="${5:-}"
+  local artifact="${6:-}"
+  local note="${7:-}"
+  local queue_file
+  queue_file="$(product_self_selling_queue_file)"
+  [ -f "$queue_file" ] || return 0
+  python3 - "$queue_file" "$product_name" "$product_path" "$status" "$gate" "$goal_id" "$artifact" "$note" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+queue_path, product_name, product_path, status, gate, goal_id, artifact, note = sys.argv[1:9]
+with open(queue_path) as f:
+    data = json.load(f)
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+matched = None
+for item in data.get("items", []):
+    if product_path and item.get("path") == product_path:
+        matched = item
+        break
+for item in data.get("items", []):
+    if matched is None and product_name and item.get("name") == product_name:
+        matched = item
+        break
+if matched is None:
+    raise SystemExit(0)
+gate_order = {
+    "company-blueprint": 1,
+    "offer-validated": 2,
+    "mvp-live": 3,
+    "repeatable-channel": 4,
+    "first-revenue": 5,
+    "fulfillment-stable": 6,
+    "scale-ready": 7,
+    "first-1m-mrr": 8,
+}
+existing_gate = matched.get("current_gate", "")
+effective_gate = gate
+if gate_order.get(existing_gate, 0) > gate_order.get(gate, 0):
+    effective_gate = existing_gate
+matched["status"] = status
+matched["current_gate"] = effective_gate
+matched["updated_at"] = now
+matched["last_goal_id"] = goal_id
+matched["last_artifact"] = artifact
+matched["last_note"] = note
+if status == "active":
+        matched["next_command"] = (
+            f"me solo products offer"
+            if effective_gate == "company-blueprint"
+            else f"me solo products next {matched.get('path') or matched.get('name') or ''}".strip()
+        )
+elif status == "blocked":
+    matched["next_command"] = "me solo bottlenecks --strict"
+elif status == "self-selling":
+    matched["next_command"] = "me solo revenue sync polar"
+items = data.get("items", [])
+data["queued"] = sum(1 for item in items if item.get("status") == "queued")
+data["active"] = sum(1 for item in items if item.get("status") == "active")
+data["blocked"] = sum(1 for item in items if item.get("status") == "blocked")
+data["self_selling"] = sum(1 for item in items if item.get("status") == "self-selling")
+data["updated_at"] = now
+with open(queue_path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+}
+
+snapshot_product_artifacts() {
+  local product_name="${1:-}"
+  local product_path="${2:-}"
+  local goal_id="${3:-}"
+  local root queue_file
+  root="$(_gate_artifact_root)"
+  queue_file="$(product_self_selling_queue_file)"
+  [ -z "$product_name" ] && [ -z "$product_path" ] && return 0
+  python3 - "$root" "$queue_file" "$product_name" "$product_path" "$goal_id" <<'PY'
+import json
+import hashlib
+import os
+import re
+import shutil
+import sys
+from datetime import datetime, timezone
+
+root, queue_path, product_name, product_path, goal_id = sys.argv[1:6]
+label = product_name or os.path.basename(product_path.rstrip("/")) or "product"
+safe_base = re.sub(r"[^a-zA-Z0-9._-]+", "-", label).strip("-") or "product"
+path_hash = hashlib.sha1(product_path.encode("utf-8")).hexdigest()[:8] if product_path else ""
+safe = f"{safe_base}-{path_hash}" if path_hash else safe_base
+snapshot_dir = os.path.join(root, "state", "products", "evidence", safe)
+os.makedirs(snapshot_dir, exist_ok=True)
+snapshots = {}
+for source, target in (
+    ("state/evidence/company-blueprint.json", "company-blueprint.json"),
+    ("state/evidence/offer-validated.json", "offer-validated.json"),
+):
+    src = os.path.join(root, source)
+    if os.path.exists(src):
+        dst = os.path.join(snapshot_dir, target)
+        shutil.copyfile(src, dst)
+        snapshots[source] = os.path.relpath(dst, root)
+manifest = {
+    "product_name": product_name,
+    "product_path": product_path,
+    "goal_id": goal_id,
+    "snapshot_dir": os.path.relpath(snapshot_dir, root),
+    "snapshots": snapshots,
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+}
+manifest_path = os.path.join(snapshot_dir, "manifest.json")
+with open(manifest_path, "w") as f:
+    json.dump(manifest, f, indent=2, sort_keys=True)
+    f.write("\n")
+if os.path.exists(queue_path):
+    data = json.load(open(queue_path))
+    matched = None
+    if product_path:
+        for item in data.get("items", []):
+            if item.get("path") == product_path:
+                matched = item
+                break
+    if matched is None and product_name:
+        name_matches = [item for item in data.get("items", []) if item.get("name") == product_name]
+        if len(name_matches) == 1:
+            matched = name_matches[0]
+    if matched is not None:
+        matched["last_snapshot"] = os.path.relpath(manifest_path, root)
+        matched["last_snapshot_dir"] = os.path.relpath(snapshot_dir, root)
+        matched["last_snapshot_at"] = manifest["updated_at"]
+    with open(queue_path, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+        f.write("\n")
+print(os.path.relpath(manifest_path, root))
+PY
+}
+
+generate_product_growth_sales_work_packet() {
+  local goal_id="${1:-}"
+  local root queue_file blueprint offer
+  root="$(_gate_artifact_root)"
+  queue_file="$(product_self_selling_queue_file)"
+  blueprint="$root/state/evidence/company-blueprint.json"
+  offer="$root/state/evidence/offer-validated.json"
+  [ -f "$blueprint" ] || { echo "ERROR: company blueprint missing: $blueprint" >&2; return 1; }
+  [ -f "$offer" ] || { echo "ERROR: offer artifact missing: $offer" >&2; return 1; }
+  python3 - "$root" "$queue_file" "$blueprint" "$offer" "$goal_id" <<'PY'
+import hashlib
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+
+root, queue_path, blueprint_path, offer_path, goal_id = sys.argv[1:6]
+blueprint = json.load(open(blueprint_path))
+offer = json.load(open(offer_path))
+product_name = blueprint.get("product_name") or os.path.basename(str(blueprint.get("product_path", "")).rstrip("/")) or "product"
+product_path = blueprint.get("product_path", "")
+safe_base = re.sub(r"[^a-zA-Z0-9._-]+", "-", product_name).strip("-") or "product"
+path_hash = hashlib.sha1(product_path.encode("utf-8")).hexdigest()[:8] if product_path else ""
+safe = f"{safe_base}-{path_hash}" if path_hash else safe_base
+snapshot_dir = os.path.join(root, "state", "products", "evidence", safe)
+os.makedirs(snapshot_dir, exist_ok=True)
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+target_customer = offer.get("buyer") or offer.get("icp") or blueprint.get("target_customer", "")
+pain = offer.get("pain") or blueprint.get("pain", "")
+positioning = offer.get("wedge") or offer.get("promise") or blueprint.get("offer_direction", "")
+price = offer.get("pricing") or "$29/mo hypothesis; replace with product-specific Polar price before send"
+campaign_name = f"{product_name} bounded outbound validation"
+cta = "Reply with current workflow pain, book a demo, or use verified Polar checkout after mvp-live"
+
+packet = {
+    "schema": "mekongmind.product_growth_sales_work_packet.v1",
+    "product_name": product_name,
+    "product_path": product_path,
+    "goal_id": goal_id,
+    "created_at": now,
+    "packet_status": "ready-to-run-draft-not-proof",
+    "guard": [
+        "This packet is not campaign proof.",
+        "This packet is not revenue proof.",
+        "Do not send outreach until mvp-live is verified or CEO exception is recorded.",
+        "Do not mutate Polar.sh configuration from this packet.",
+        "Do not claim MRR until Sales & Revenue has Polar provider evidence and sync status.",
+    ],
+    "polar_provider": "Polar.sh canonical; verified setup must not be destroyed, rotated, or fabricated",
+    "required_before_send": [
+        "mvp-live strict evidence or explicit CEO exception",
+        "real audience/source list with lawful basis",
+        "sender identity approved for outreach",
+        "opt-out/compliance copy present in every message",
+        "verified product-specific Polar checkout URL",
+    ],
+    "growth_marketing_draft": {
+        "department": "growth-marketing",
+        "artifact_target": "state/evidence/repeatable-channel.json",
+        "audience": target_customer,
+        "positioning": positioning,
+        "channel": "bounded manual outbound email or founder-approved channel",
+        "campaign": campaign_name,
+        "campaign_asset": {
+            "subject": f"Validate {product_name} for {target_customer}",
+            "body": (
+                f"Hi {{first_name}}, we are validating {product_name} for {target_customer}. "
+                f"It targets this pain: {pain}. If this is relevant, reply with your current workaround "
+                "or choose the verified checkout/demo path. Opt out anytime."
+            ),
+        },
+        "email_sequence": [
+            {
+                "day": 0,
+                "purpose": "pain validation and CTA",
+                "copy": "Problem -> outcome -> proof/source -> CTA -> opt-out",
+            },
+            {
+                "day": 3,
+                "purpose": "follow-up with specific use case",
+                "copy": "Short reminder -> one quantified use case -> CTA -> opt-out",
+            },
+        ],
+        "outreach_log": [],
+        "cta": cta,
+        "qualification_rule": "qualified only if buyer confirms pain, budget/authority or active workflow, and agrees to demo/checkout next step",
+        "opt_out_compliance": "Every message must include a clear opt-out line and sender identity; no scraped personal outreach without lawful basis.",
+        "leads": [],
+        "conversion": "pending real send/reply data",
+        "learning": "pending real campaign data",
+        "sales_handoff": "handoff only qualified replies with source, context, CTA, and opt-out status",
+    },
+    "sales_revenue_draft": {
+        "department": "sales-revenue",
+        "artifact_target": "state/evidence/first-revenue.json",
+        "lead": "",
+        "qualification": "",
+        "campaign_source": campaign_name,
+        "offer": offer.get("offer") or blueprint.get("offer_direction", ""),
+        "price": price,
+        "checkout_url": "",
+        "polar_checkout_url": "REQUIRED: verified product-specific Polar checkout URL before revenue claim",
+        "payment_status": "not sent / no payment",
+        "provider": "Polar.sh",
+        "provider_evidence": "REQUIRED: Polar checkout/subscription/customer export or API evidence",
+        "provider_sync_status": "not synced",
+        "current_mrr": 0,
+        "next_action": "verify mvp-live, attach Polar checkout URL, run bounded outreach, then sync Polar MRR evidence",
+    },
+    "cross_department_handoff": [
+        "Engineering Factory proves checkout path and mvp-live.",
+        "Quality & Compliance reviews release and outreach risk.",
+        "Platform Operations verifies live health, version, rollback, monitoring.",
+        "Growth Marketing sends bounded campaign and records real log.",
+        "Sales & Revenue qualifies leads and records Polar-backed payment evidence.",
+    ],
+}
+packet_path = os.path.join(snapshot_dir, "growth-sales-work-packet.json")
+with open(packet_path, "w") as f:
+    json.dump(packet, f, indent=2, sort_keys=True)
+    f.write("\n")
+
+rel_packet = os.path.relpath(packet_path, root)
+if os.path.exists(queue_path):
+    data = json.load(open(queue_path))
+    matched = None
+    for item in data.get("items", []):
+        if product_path and item.get("path") == product_path:
+            matched = item
+            break
+    if matched is None:
+        matches = [item for item in data.get("items", []) if item.get("name") == product_name]
+        if len(matches) == 1:
+            matched = matches[0]
+    if matched is not None:
+        matched["status"] = "active"
+        matched["growth_sales_packet"] = rel_packet
+        matched["growth_sales_packet_status"] = packet["packet_status"]
+        matched["updated_at"] = now
+        if not matched.get("current_gate") or matched.get("current_gate") == "company-blueprint":
+            matched["current_gate"] = "offer-validated"
+        matched["next_command"] = f"me solo products next {matched.get('path') or matched.get('name') or ''}".strip()
+        matched["last_note"] = "growth/sales work packet ready; not campaign proof or revenue proof"
+    items = data.get("items", [])
+    data["queued"] = sum(1 for item in items if item.get("status") == "queued")
+    data["active"] = sum(1 for item in items if item.get("status") == "active")
+    data["blocked"] = sum(1 for item in items if item.get("status") == "blocked")
+    data["self_selling"] = sum(1 for item in items if item.get("status") == "self-selling")
+    data["updated_at"] = now
+    with open(queue_path, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+print(f"GrowthSalesWorkPacket: {rel_packet}")
+print("PacketStatus: ready-to-run-draft-not-proof")
+print("Guard: not campaign proof; not revenue proof; Polar.sh not mutated")
+PY
+}
+
+generate_product_campaign_evidence_from_log() {
+  local query="${1:-}"
+  local outreach_log_file="${2:-}"
+  local write_shared="${3:-}"
+  local goal_id="${4:-}"
+  local root queue_file
+  root="$(_gate_artifact_root)"
+  queue_file="$(product_self_selling_queue_file)"
+  [ -n "$query" ] || { echo "ERROR: product query required" >&2; return 1; }
+  [ -n "$outreach_log_file" ] || { echo "ERROR: outreach log JSON required" >&2; return 1; }
+  [ -f "$queue_file" ] || { echo "ERROR: product queue missing: $queue_file" >&2; return 1; }
+  [ -f "$outreach_log_file" ] || { echo "ERROR: outreach log not found: $outreach_log_file" >&2; return 1; }
+  python3 - "$root" "$queue_file" "$query" "$outreach_log_file" "$write_shared" "$goal_id" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+root, queue_path, query, log_path, write_shared, goal_id = sys.argv[1:7]
+query_norm = (query or "").strip().lower()
+with open(queue_path) as f:
+    queue = json.load(f)
+
+matched = None
+for item in queue.get("items", []):
+    if query_norm and item.get("path", "").lower() == query_norm:
+        matched = item
+        break
+if matched is None:
+    exact = [item for item in queue.get("items", []) if query_norm and item.get("name", "").lower() == query_norm]
+    if len(exact) == 1:
+        matched = exact[0]
+if matched is None:
+    contains = [
+        item for item in queue.get("items", [])
+        if query_norm and query_norm in " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    ]
+    if len(contains) == 1:
+        matched = contains[0]
+if matched is None:
+    raise SystemExit(f"ERROR: cannot resolve product for campaign proof: {query}")
+
+packet_rel = matched.get("growth_sales_packet")
+if not packet_rel:
+    raise SystemExit("ERROR: product has no growth_sales_packet; run me solo products work-packet first")
+packet_path = packet_rel if os.path.isabs(packet_rel) else os.path.join(root, packet_rel)
+if not os.path.exists(packet_path):
+    raise SystemExit(f"ERROR: growth_sales_packet missing: {packet_path}")
+with open(packet_path) as f:
+    packet = json.load(f)
+with open(log_path) as f:
+    log_data = json.load(f)
+
+draft = packet.get("growth_marketing_draft", {})
+raw_events = log_data.get("outreach_log", log_data if isinstance(log_data, list) else [])
+if not isinstance(raw_events, list) or not raw_events:
+    raise SystemExit("FAIL campaign proof requires non-empty outreach_log[]")
+
+normalized = []
+qualified = []
+replies = 0
+sent = 0
+for idx, event in enumerate(raw_events, start=1):
+    if not isinstance(event, dict):
+        raise SystemExit(f"FAIL outreach_log[{idx}] must be an object")
+    row = dict(event)
+    row.setdefault("channel", log_data.get("channel") or draft.get("channel") or "manual outbound")
+    row.setdefault("audience_source", log_data.get("audience_source") or event.get("recipient_source") or event.get("source"))
+    if "recipient_source" not in row and row.get("audience_source"):
+        row["recipient_source"] = row["audience_source"]
+    if "opt_out_notice" not in row:
+        row["opt_out_notice"] = log_data.get("opt_out_notice")
+    status = str(row.get("status", "")).lower()
+    if status in {"sent", "delivered", "replied", "reply", "opened", "bounced"}:
+        sent += 1
+    if status in {"replied", "reply"} or row.get("reply_at") or row.get("reply"):
+        replies += 1
+    if row.get("qualified") is True or str(row.get("qualification", "")).lower() in {"qualified", "sales-qualified"}:
+        qualified.append({
+            "recipient": row.get("recipient") or row.get("recipient_id") or row.get("audience_ref"),
+            "source": row.get("recipient_source") or row.get("source") or row.get("audience_source"),
+            "reply": row.get("reply") or row.get("qualification", ""),
+            "next_action": row.get("next_action") or "Sales & Revenue qualify lead and attach Polar checkout path",
+        })
+    normalized.append(row)
+
+if sent <= 0:
+    raise SystemExit("FAIL campaign proof requires at least one sent/delivered/replied/opened/bounced event")
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+campaign = {
+    "schema": "mekongmind.product_repeatable_channel_evidence.v1",
+    "department": "growth-marketing",
+    "gate": "repeatable-channel",
+    "artifact_path": "state/evidence/repeatable-channel.json",
+    "product_name": matched.get("name") or packet.get("product_name"),
+    "product_path": matched.get("path") or packet.get("product_path"),
+    "goal_id": goal_id,
+    "audience": log_data.get("audience") or draft.get("audience"),
+    "positioning": log_data.get("positioning") or draft.get("positioning"),
+    "channel": log_data.get("channel") or draft.get("channel"),
+    "campaign": log_data.get("campaign") or draft.get("campaign"),
+    "campaign_asset": log_data.get("campaign_asset") or draft.get("campaign_asset"),
+    "email_sequence": log_data.get("email_sequence") or draft.get("email_sequence"),
+    "outreach_log": normalized,
+    "cta": log_data.get("cta") or draft.get("cta"),
+    "qualification_rule": log_data.get("qualification_rule") or draft.get("qualification_rule"),
+    "opt_out_compliance": log_data.get("opt_out_compliance") or draft.get("opt_out_compliance"),
+    "leads": {
+        "qualified_count": len(qualified),
+        "reply_count": replies,
+        "items": qualified,
+    },
+    "conversion": {
+        "sent": sent,
+        "replies": replies,
+        "qualified_leads": len(qualified),
+        "rate": 0 if sent == 0 else round(replies / sent, 4),
+    },
+    "learning": log_data.get("learning") or f"Real outreach logged: sent={sent}, replies={replies}, qualified={len(qualified)}. Continue only with compliant follow-up and Sales handoff.",
+    "sales_handoff": log_data.get("sales_handoff") or {
+        "department": "sales-revenue",
+        "qualified_leads": qualified,
+        "next_action": "attach verified Polar checkout URL before any revenue claim",
+    },
+    "source_log": os.path.abspath(log_path),
+    "polar_provider": "Polar.sh canonical; campaign proof does not mutate provider or prove revenue",
+    "updated_at": now,
+}
+
+snapshot_dir = os.path.dirname(packet_path)
+campaign_path = os.path.join(snapshot_dir, "repeatable-channel.json")
+with open(campaign_path, "w") as f:
+    json.dump(campaign, f, indent=2, sort_keys=True)
+    f.write("\n")
+rel_campaign = os.path.relpath(campaign_path, root)
+
+matched["status"] = "active"
+matched["campaign_evidence"] = rel_campaign
+matched["campaign_evidence_status"] = "repeatable-channel-proof-pending-sales"
+matched["current_gate"] = "repeatable-channel"
+matched["next_command"] = f"me solo products next {matched.get('path') or matched.get('name') or ''}".strip()
+matched["last_goal_id"] = goal_id
+matched["last_artifact"] = rel_campaign
+matched["last_note"] = "real outreach log ingested; campaign proof is not revenue proof"
+matched["updated_at"] = now
+items = queue.get("items", [])
+queue["queued"] = sum(1 for item in items if item.get("status") == "queued")
+queue["active"] = sum(1 for item in items if item.get("status") == "active")
+queue["blocked"] = sum(1 for item in items if item.get("status") == "blocked")
+queue["self_selling"] = sum(1 for item in items if item.get("status") == "self-selling")
+queue["updated_at"] = now
+with open(queue_path, "w") as f:
+    json.dump(queue, f, indent=2, sort_keys=True)
+    f.write("\n")
+
+if write_shared.lower() in {"1", "true", "yes", "shared", "--write-shared"}:
+    shared_path = os.path.join(root, "state", "evidence", "repeatable-channel.json")
+    os.makedirs(os.path.dirname(shared_path), exist_ok=True)
+    with open(shared_path, "w") as f:
+        json.dump(campaign, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+print(f"CampaignEvidence: {rel_campaign}")
+print("CampaignStatus: repeatable-channel-proof-pending-sales")
+print("Guard: campaign proof only; not revenue proof; Polar.sh not mutated")
+PY
+  local campaign_rel
+  campaign_rel=$(python3 - "$queue_file" "$query" <<'PY'
+import json, sys
+queue_path, query = sys.argv[1:3]
+query = query.lower()
+data = json.load(open(queue_path))
+for item in data.get("items", []):
+    hay = " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    if query == item.get("path", "").lower() or query == item.get("name", "").lower() or query in hay:
+        print(item.get("campaign_evidence", ""))
+        break
+PY
+)
+  [ -n "$campaign_rel" ] && validate_department_artifact "growth-marketing" "$root/$campaign_rel" || return $?
+}
+
+generate_product_revenue_evidence_from_polar() {
+  local query="${1:-}"
+  local polar_file="${2:-}"
+  local write_shared="${3:-}"
+  local sync_goal="${4:-}"
+  local goal_id="${5:-}"
+  local root queue_file
+  root="$(_gate_artifact_root)"
+  queue_file="$(product_self_selling_queue_file)"
+  [ -n "$query" ] || { echo "ERROR: product query required" >&2; return 1; }
+  [ -n "$polar_file" ] || { echo "ERROR: Polar evidence JSON required" >&2; return 1; }
+  [ -f "$queue_file" ] || { echo "ERROR: product queue missing: $queue_file" >&2; return 1; }
+  [ -f "$polar_file" ] || { echo "ERROR: Polar evidence not found: $polar_file" >&2; return 1; }
+  python3 - "$root" "$queue_file" "$query" "$polar_file" "$write_shared" "$goal_id" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+root, queue_path, query, polar_path, write_shared, goal_id = sys.argv[1:7]
+query_norm = (query or "").strip().lower()
+with open(queue_path) as f:
+    queue = json.load(f)
+
+matched = None
+for item in queue.get("items", []):
+    if query_norm and item.get("path", "").lower() == query_norm:
+        matched = item
+        break
+if matched is None:
+    exact = [item for item in queue.get("items", []) if query_norm and item.get("name", "").lower() == query_norm]
+    if len(exact) == 1:
+        matched = exact[0]
+if matched is None:
+    contains = [
+        item for item in queue.get("items", [])
+        if query_norm and query_norm in " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    ]
+    if len(contains) == 1:
+        matched = contains[0]
+if matched is None:
+    raise SystemExit(f"ERROR: cannot resolve product for revenue proof: {query}")
+
+packet_rel = matched.get("growth_sales_packet")
+packet = {}
+if packet_rel:
+    packet_path = packet_rel if os.path.isabs(packet_rel) else os.path.join(root, packet_rel)
+    if os.path.exists(packet_path):
+        with open(packet_path) as f:
+            packet = json.load(f)
+else:
+    packet_path = ""
+
+campaign_rel = matched.get("campaign_evidence")
+campaign = {}
+if campaign_rel:
+    campaign_path = campaign_rel if os.path.isabs(campaign_rel) else os.path.join(root, campaign_rel)
+    if os.path.exists(campaign_path):
+        with open(campaign_path) as f:
+            campaign = json.load(f)
+else:
+    campaign_path = ""
+
+with open(polar_path) as f:
+    polar = json.load(f)
+
+def first(*values):
+    for value in values:
+        if value not in (None, "", [], {}):
+            return value
+    return ""
+
+def find_subscription(data):
+    if isinstance(data.get("subscription"), dict):
+        return data["subscription"]
+    if isinstance(data.get("subscriptions"), list) and data["subscriptions"]:
+        active = [s for s in data["subscriptions"] if str(s.get("status", "")).lower() in {"active", "paid", "trialing"}]
+        return active[0] if active else data["subscriptions"][0]
+    return {}
+
+subscription = find_subscription(polar)
+sales_draft = packet.get("sales_revenue_draft", {})
+campaign_source = first(
+    polar.get("campaign_source"),
+    campaign.get("campaign"),
+    sales_draft.get("campaign_source"),
+    matched.get("campaign_evidence"),
+)
+provider = first(polar.get("provider"), subscription.get("provider"), "Polar.sh")
+payment_status = first(polar.get("payment_status"), polar.get("status"), subscription.get("status"))
+current_mrr = first(
+    polar.get("current_mrr"),
+    polar.get("mrr"),
+    polar.get("monthly_recurring_revenue"),
+    polar.get("monthlyRecurringRevenue"),
+    subscription.get("mrr"),
+    subscription.get("monthly_recurring_revenue"),
+    subscription.get("amount"),
+)
+try:
+    current_mrr = int(current_mrr)
+except (TypeError, ValueError):
+    current_mrr = 0
+provider_sync_status = first(polar.get("provider_sync_status"), polar.get("sync_status"), "verified from Polar evidence file")
+polar_checkout_url = first(
+    polar.get("polar_checkout_url"),
+    polar.get("checkout_url"),
+    subscription.get("checkout_url"),
+    subscription.get("url"),
+)
+provider_evidence = first(
+    polar.get("provider_evidence"),
+    polar.get("evidence_id"),
+    polar.get("id"),
+    subscription.get("id"),
+    os.path.abspath(polar_path),
+)
+lead = first(polar.get("lead"), polar.get("customer_email"), subscription.get("customer_email"), subscription.get("customer", "provider customer"))
+qualification = first(polar.get("qualification"), "paid or active Polar customer tied to campaign source")
+offer = first(polar.get("offer"), sales_draft.get("offer"), packet.get("product_name"), matched.get("name"))
+price = first(polar.get("price"), sales_draft.get("price"), subscription.get("price"), subscription.get("amount"))
+checkout_url = first(polar.get("checkout_url"), polar_checkout_url)
+
+if not campaign_source:
+    raise SystemExit("FAIL revenue proof requires campaign_source from campaign evidence, work packet, or Polar evidence")
+if "polar" not in str(provider).lower():
+    raise SystemExit("FAIL revenue proof provider must be Polar.sh")
+if current_mrr <= 0:
+    raise SystemExit("FAIL revenue proof current_mrr must be greater than 0")
+if not any(term in str(payment_status).lower() for term in ("paid", "active", "signed", "subscription", "trialing")):
+    raise SystemExit("FAIL revenue proof payment_status must prove paid/active/signed/subscription")
+
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+revenue = {
+    "schema": "mekongmind.product_first_revenue_evidence.v1",
+    "department": "sales-revenue",
+    "gate": "first-revenue",
+    "artifact_path": "state/evidence/first-revenue.json",
+    "product_name": matched.get("name") or packet.get("product_name"),
+    "product_path": matched.get("path") or packet.get("product_path"),
+    "goal_id": goal_id,
+    "lead": lead,
+    "qualification": qualification,
+    "campaign_source": campaign_source,
+    "offer": offer,
+    "price": price,
+    "checkout_url": checkout_url,
+    "polar_checkout_url": polar_checkout_url,
+    "payment_status": payment_status,
+    "provider": provider,
+    "provider_evidence": provider_evidence,
+    "provider_sync_status": provider_sync_status,
+    "current_mrr": current_mrr,
+    "next_action": first(polar.get("next_action"), "onboard customer, prove fulfillment, and keep Polar MRR sync current"),
+    "source_polar_file": os.path.abspath(polar_path),
+    "campaign_evidence": campaign_rel,
+    "polar_provider": "Polar.sh canonical; evidence ingestion does not mutate provider setup",
+    "updated_at": now,
+}
+
+snapshot_dir = os.path.dirname(packet_path) if packet_path else os.path.join(root, "state", "products", "evidence", matched.get("name", "product"))
+os.makedirs(snapshot_dir, exist_ok=True)
+revenue_path = os.path.join(snapshot_dir, "first-revenue.json")
+with open(revenue_path, "w") as f:
+    json.dump(revenue, f, indent=2, sort_keys=True)
+    f.write("\n")
+rel_revenue = os.path.relpath(revenue_path, root)
+
+matched["status"] = "active"
+matched["revenue_evidence"] = rel_revenue
+matched["revenue_evidence_status"] = "first-revenue-proof-pending-fulfillment"
+matched["current_gate"] = "first-revenue"
+matched["current_mrr"] = current_mrr
+matched["next_command"] = f"me solo products next {matched.get('path') or matched.get('name') or ''}".strip()
+matched["last_goal_id"] = goal_id
+matched["last_artifact"] = rel_revenue
+matched["last_note"] = "Polar-backed revenue evidence ingested; fulfillment still required"
+matched["updated_at"] = now
+items = queue.get("items", [])
+queue["queued"] = sum(1 for item in items if item.get("status") == "queued")
+queue["active"] = sum(1 for item in items if item.get("status") == "active")
+queue["blocked"] = sum(1 for item in items if item.get("status") == "blocked")
+queue["self_selling"] = sum(1 for item in items if item.get("status") == "self-selling")
+queue["updated_at"] = now
+with open(queue_path, "w") as f:
+    json.dump(queue, f, indent=2, sort_keys=True)
+    f.write("\n")
+
+if write_shared.lower() in {"1", "true", "yes", "shared", "--write-shared"}:
+    shared_path = os.path.join(root, "state", "evidence", "first-revenue.json")
+    os.makedirs(os.path.dirname(shared_path), exist_ok=True)
+    with open(shared_path, "w") as f:
+        json.dump(revenue, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+print(f"RevenueEvidence: {rel_revenue}")
+print(f"CurrentMRR: {current_mrr}")
+print("RevenueStatus: first-revenue-proof-pending-fulfillment")
+print("Guard: Polar evidence ingested only; provider not mutated; fulfillment still required")
+PY
+  local revenue_rel mrr
+  revenue_rel=$(python3 - "$queue_file" "$query" <<'PY'
+import json, sys
+queue_path, query = sys.argv[1:3]
+query = query.lower()
+data = json.load(open(queue_path))
+for item in data.get("items", []):
+    hay = " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    if query == item.get("path", "").lower() or query == item.get("name", "").lower() or query in hay:
+        print(item.get("revenue_evidence", ""))
+        break
+PY
+)
+  [ -n "$revenue_rel" ] && validate_department_artifact "sales-revenue" "$root/$revenue_rel" || return $?
+  if [ "$sync_goal" = "--sync-goal" ]; then
+    mrr=$(python3 - "$root/$revenue_rel" <<'PY'
+import json, sys
+print(int(json.load(open(sys.argv[1])).get("current_mrr", 0)))
+PY
+)
+    record_revenue_mrr "$(latest_goal_file)" "$mrr" "polar:product-evidence" "$root/$revenue_rel" || return $?
+  fi
+}
+
+generate_product_fulfillment_evidence_from_artifact() {
+  local query="${1:-}"
+  local artifact_file="${2:-}"
+  local write_shared="${3:-}"
+  local goal_id="${4:-}"
+  local root queue_file
+  root="$(_gate_artifact_root)"
+  queue_file="$(product_self_selling_queue_file)"
+  [ -n "$query" ] || { echo "ERROR: product query required" >&2; return 1; }
+  [ -n "$artifact_file" ] || { echo "ERROR: fulfillment artifact JSON required" >&2; return 1; }
+  [ -f "$queue_file" ] || { echo "ERROR: product queue missing: $queue_file" >&2; return 1; }
+  [ -f "$artifact_file" ] || { echo "ERROR: fulfillment artifact not found: $artifact_file" >&2; return 1; }
+  python3 - "$root" "$queue_file" "$query" "$artifact_file" "$write_shared" "$goal_id" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+root, queue_path, query, artifact_path, write_shared, goal_id = sys.argv[1:7]
+query_norm = (query or "").strip().lower()
+with open(queue_path) as f:
+    queue = json.load(f)
+
+def resolve(items):
+    for item in items:
+        if query_norm and item.get("path", "").lower() == query_norm:
+            return item
+    exact = [item for item in items if query_norm and item.get("name", "").lower() == query_norm]
+    if len(exact) == 1:
+        return exact[0]
+    contains = [
+        item for item in items
+        if query_norm and query_norm in " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    ]
+    if len(contains) == 1:
+        return contains[0]
+    return None
+
+matched = resolve(queue.get("items", []))
+if matched is None:
+    raise SystemExit(f"ERROR: cannot resolve product for fulfillment proof: {query}")
+if not matched.get("revenue_evidence"):
+    raise SystemExit("FAIL fulfillment proof requires prior Polar-backed revenue_evidence")
+
+with open(artifact_path) as f:
+    source = json.load(f)
+
+product_name = matched.get("name", "")
+product_path = matched.get("path", "")
+binding_ok = (
+    source.get("product_name") == product_name
+    or source.get("product_path") == product_path
+    or (goal_id and source.get("goal_id") == goal_id)
+)
+if not binding_ok:
+    raise SystemExit("FAIL fulfillment proof must include matching product_name, product_path, or goal_id")
+
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+evidence = dict(source)
+evidence.update({
+    "schema": "mekongmind.product_fulfillment_evidence.v1",
+    "department": "customer-success",
+    "gate": "fulfillment-stable",
+    "artifact_path": "state/evidence/fulfillment-stable.json",
+    "product_name": product_name,
+    "product_path": product_path,
+    "goal_id": goal_id or source.get("goal_id", ""),
+    "source_artifact": os.path.abspath(artifact_path),
+    "revenue_evidence": matched.get("revenue_evidence", ""),
+    "updated_at": now,
+})
+
+revenue_rel = matched.get("revenue_evidence", "")
+snapshot_dir = os.path.dirname(os.path.join(root, revenue_rel)) if revenue_rel else os.path.join(root, "state", "products", "evidence", product_name or "product")
+os.makedirs(snapshot_dir, exist_ok=True)
+fulfillment_path = os.path.join(snapshot_dir, "fulfillment-stable.json")
+with open(fulfillment_path, "w") as f:
+    json.dump(evidence, f, indent=2, sort_keys=True)
+    f.write("\n")
+rel_fulfillment = os.path.relpath(fulfillment_path, root)
+
+matched["status"] = "active"
+matched["fulfillment_evidence"] = rel_fulfillment
+matched["fulfillment_evidence_status"] = "fulfillment-stable-proof-pending-clone-memory"
+matched["current_gate"] = "fulfillment-stable"
+matched["next_command"] = f"me solo products next {matched.get('path') or matched.get('name') or ''}".strip()
+matched["last_goal_id"] = goal_id
+matched["last_artifact"] = rel_fulfillment
+matched["last_note"] = "fulfillment evidence ingested; clone memory and first $1M MRR still required"
+matched["updated_at"] = now
+items = queue.get("items", [])
+queue["queued"] = sum(1 for item in items if item.get("status") == "queued")
+queue["active"] = sum(1 for item in items if item.get("status") == "active")
+queue["blocked"] = sum(1 for item in items if item.get("status") == "blocked")
+queue["self_selling"] = sum(1 for item in items if item.get("status") == "self-selling")
+queue["updated_at"] = now
+with open(queue_path, "w") as f:
+    json.dump(queue, f, indent=2, sort_keys=True)
+    f.write("\n")
+
+if write_shared.lower() in {"1", "true", "yes", "shared", "--write-shared"}:
+    shared_path = os.path.join(root, "state", "evidence", "fulfillment-stable.json")
+    os.makedirs(os.path.dirname(shared_path), exist_ok=True)
+    with open(shared_path, "w") as f:
+        json.dump(evidence, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+print(f"FulfillmentEvidence: {rel_fulfillment}")
+print("FulfillmentStatus: fulfillment-stable-proof-pending-clone-memory")
+print("Guard: fulfillment proof only; not clone memory proof; not first $1M MRR proof")
+PY
+  local fulfillment_rel
+  fulfillment_rel=$(python3 - "$queue_file" "$query" <<'PY'
+import json, sys
+queue_path, query = sys.argv[1:3]
+query = query.lower()
+data = json.load(open(queue_path))
+for item in data.get("items", []):
+    hay = " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    if query == item.get("path", "").lower() or query == item.get("name", "").lower() or query in hay:
+        print(item.get("fulfillment_evidence", ""))
+        break
+PY
+)
+  [ -n "$fulfillment_rel" ] && validate_department_artifact "customer-success" "$root/$fulfillment_rel" || return $?
+}
+
+generate_product_clone_evidence_from_artifact() {
+  local query="${1:-}"
+  local artifact_file="${2:-}"
+  local write_shared="${3:-}"
+  local goal_id="${4:-}"
+  local root queue_file
+  root="$(_gate_artifact_root)"
+  queue_file="$(product_self_selling_queue_file)"
+  [ -n "$query" ] || { echo "ERROR: product query required" >&2; return 1; }
+  [ -n "$artifact_file" ] || { echo "ERROR: clone memory artifact JSON required" >&2; return 1; }
+  [ -f "$queue_file" ] || { echo "ERROR: product queue missing: $queue_file" >&2; return 1; }
+  [ -f "$artifact_file" ] || { echo "ERROR: clone memory artifact not found: $artifact_file" >&2; return 1; }
+  python3 - "$root" "$queue_file" "$query" "$artifact_file" "$write_shared" "$goal_id" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+root, queue_path, query, artifact_path, write_shared, goal_id = sys.argv[1:7]
+query_norm = (query or "").strip().lower()
+with open(queue_path) as f:
+    queue = json.load(f)
+
+def resolve(items):
+    for item in items:
+        if query_norm and item.get("path", "").lower() == query_norm:
+            return item
+    exact = [item for item in items if query_norm and item.get("name", "").lower() == query_norm]
+    if len(exact) == 1:
+        return exact[0]
+    contains = [
+        item for item in items
+        if query_norm and query_norm in " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    ]
+    if len(contains) == 1:
+        return contains[0]
+    return None
+
+matched = resolve(queue.get("items", []))
+if matched is None:
+    raise SystemExit(f"ERROR: cannot resolve product for clone proof: {query}")
+if not matched.get("revenue_evidence"):
+    raise SystemExit("FAIL clone proof requires prior Polar-backed revenue_evidence")
+if not matched.get("fulfillment_evidence"):
+    raise SystemExit("FAIL clone proof requires prior fulfillment_evidence")
+
+with open(artifact_path) as f:
+    source = json.load(f)
+
+product_name = matched.get("name", "")
+product_path = matched.get("path", "")
+binding_ok = (
+    source.get("product_name") == product_name
+    or source.get("product_path") == product_path
+    or (goal_id and source.get("goal_id") == goal_id)
+)
+if not binding_ok:
+    raise SystemExit("FAIL clone proof must include matching product_name, product_path, or goal_id")
+
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+evidence = dict(source)
+evidence.update({
+    "schema": "mekongmind.product_clone_memory_evidence.v1",
+    "department": "knowledge-memory",
+    "gate": "scale-ready",
+    "artifact_path": "state/evidence/scale-ready.json",
+    "product_name": product_name,
+    "product_path": product_path,
+    "goal_id": goal_id or source.get("goal_id", ""),
+    "source_artifact": os.path.abspath(artifact_path),
+    "revenue_evidence": matched.get("revenue_evidence", ""),
+    "fulfillment_evidence": matched.get("fulfillment_evidence", ""),
+    "updated_at": now,
+})
+
+fulfillment_rel = matched.get("fulfillment_evidence", "")
+snapshot_dir = os.path.dirname(os.path.join(root, fulfillment_rel)) if fulfillment_rel else os.path.join(root, "state", "products", "evidence", product_name or "product")
+os.makedirs(snapshot_dir, exist_ok=True)
+clone_path = os.path.join(snapshot_dir, "scale-ready.json")
+with open(clone_path, "w") as f:
+    json.dump(evidence, f, indent=2, sort_keys=True)
+    f.write("\n")
+rel_clone = os.path.relpath(clone_path, root)
+
+current_mrr = int(float(matched.get("current_mrr") or 0))
+target_mrr = int(float(matched.get("target_mrr") or 1000000))
+reached_target = current_mrr >= target_mrr
+matched["clone_memory_evidence"] = rel_clone
+matched["clone_memory_evidence_status"] = "scale-ready-proof"
+matched["current_gate"] = "first-1m-mrr" if reached_target else "scale-ready"
+matched["status"] = "self-selling" if reached_target else "active"
+matched["next_command"] = "me solo products audit --self-selling" if reached_target else "me solo revenue sync polar"
+matched["last_goal_id"] = goal_id
+matched["last_artifact"] = rel_clone
+matched["last_note"] = (
+    "clone memory ingested and first $1M MRR reached"
+    if reached_target
+    else "clone memory ingested; first $1M MRR still required"
+)
+matched["updated_at"] = now
+items = queue.get("items", [])
+queue["queued"] = sum(1 for item in items if item.get("status") == "queued")
+queue["active"] = sum(1 for item in items if item.get("status") == "active")
+queue["blocked"] = sum(1 for item in items if item.get("status") == "blocked")
+queue["self_selling"] = sum(1 for item in items if item.get("status") == "self-selling")
+queue["updated_at"] = now
+with open(queue_path, "w") as f:
+    json.dump(queue, f, indent=2, sort_keys=True)
+    f.write("\n")
+
+if write_shared.lower() in {"1", "true", "yes", "shared", "--write-shared"}:
+    shared_path = os.path.join(root, "state", "evidence", "scale-ready.json")
+    os.makedirs(os.path.dirname(shared_path), exist_ok=True)
+    with open(shared_path, "w") as f:
+        json.dump(evidence, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+print(f"CloneMemoryEvidence: {rel_clone}")
+print(f"CurrentMRR: {current_mrr}")
+print(f"TargetMRR: {target_mrr}")
+print("CloneStatus: self-selling-complete" if reached_target else "CloneStatus: scale-ready-proof-pending-first-1m-mrr")
+print("Guard: clone memory proof only; self-selling requires first $1M MRR")
+PY
+  local clone_rel
+  clone_rel=$(python3 - "$queue_file" "$query" <<'PY'
+import json, sys
+queue_path, query = sys.argv[1:3]
+query = query.lower()
+data = json.load(open(queue_path))
+for item in data.get("items", []):
+    hay = " ".join([item.get("name", ""), item.get("path", "")]).lower()
+    if query == item.get("path", "").lower() or query == item.get("name", "").lower() or query in hay:
+        print(item.get("clone_memory_evidence", ""))
+        break
+PY
+)
+  [ -n "$clone_rel" ] && validate_department_artifact "knowledge-memory" "$root/$clone_rel" || return $?
+}
+
+generate_product_release_readiness_packet() {
+  local goal_id="${1:-}"
+  local root queue_file blueprint offer mvp
+  root="$(_gate_artifact_root)"
+  queue_file="$(product_self_selling_queue_file)"
+  blueprint="$root/state/evidence/company-blueprint.json"
+  offer="$root/state/evidence/offer-validated.json"
+  mvp="$root/state/evidence/mvp-live.json"
+  [ -f "$blueprint" ] || { echo "ERROR: company blueprint missing: $blueprint" >&2; return 1; }
+  [ -f "$offer" ] || { echo "ERROR: offer artifact missing: $offer" >&2; return 1; }
+  [ -f "$mvp" ] || { echo "ERROR: mvp-live artifact missing: $mvp" >&2; return 1; }
+  python3 - "$root" "$queue_file" "$blueprint" "$offer" "$mvp" "$goal_id" <<'PY'
+import hashlib
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+
+root, queue_path, blueprint_path, offer_path, mvp_path, goal_id = sys.argv[1:7]
+blueprint = json.load(open(blueprint_path))
+offer = json.load(open(offer_path))
+mvp = json.load(open(mvp_path))
+product_name = blueprint.get("product_name") or os.path.basename(str(blueprint.get("product_path", "")).rstrip("/")) or "product"
+product_path = blueprint.get("product_path", "")
+safe_base = re.sub(r"[^a-zA-Z0-9._-]+", "-", product_name).strip("-") or "product"
+path_hash = hashlib.sha1(product_path.encode("utf-8")).hexdigest()[:8] if product_path else ""
+safe = f"{safe_base}-{path_hash}" if path_hash else safe_base
+snapshot_dir = os.path.join(root, "state", "products", "evidence", safe)
+os.makedirs(snapshot_dir, exist_ok=True)
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+def nested_value(data, field):
+    if field in data:
+        return data.get(field)
+    evidence = data.get("evidence")
+    if isinstance(evidence, dict):
+        return evidence.get(field)
+    return None
+
+def non_empty(value):
+    return value not in ("", None, [], {})
+
+def text(field):
+    value = nested_value(mvp, field)
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, sort_keys=True)
+    return "" if value is None else str(value)
+
+contracts = {
+    "engineering-factory": [
+        "routes", "apis", "data_model", "integrations", "checkout_path",
+        "build_command", "tests_run", "known_risks",
+    ],
+    "quality-compliance": [
+        "review_scope", "tests_run", "build_status", "security_notes",
+        "blocking_findings", "residual_risks", "release_decision",
+    ],
+    "platform-operations": [
+        "provider", "commit", "build_id", "health_url", "http_status",
+        "version_match", "rollback_plan", "monitoring",
+    ],
+}
+
+def contract_check(department):
+    fields = contracts[department]
+    missing = [field for field in fields if field not in mvp and not (isinstance(mvp.get("evidence"), dict) and field in mvp["evidence"])]
+    empty = [field for field in fields if field not in missing and not non_empty(nested_value(mvp, field))]
+    semantic_failures = []
+    if department == "quality-compliance":
+        decision = text("release_decision").lower()
+        if any(term in decision for term in ("block", "blocked", "not approved", "fail", "failed")):
+            semantic_failures.append("release_decision is blocking, not releasable")
+    if department == "platform-operations":
+        if str(nested_value(mvp, "http_status")).strip() != "200":
+            semantic_failures.append("http_status must be 200")
+        version_match = text("version_match").lower()
+        if version_match not in ("true", "yes", "matched", "match", "verified"):
+            semantic_failures.append("version_match must be verified")
+        provider = text("provider").lower()
+        if any(term in provider for term in ("unknown", "blocked", "missing")):
+            semantic_failures.append("provider must be a real reachable provider")
+    return {
+        "department": department,
+        "required_fields": fields,
+        "missing_fields": missing,
+        "empty_fields": empty,
+        "semantic_failures": semantic_failures,
+        "contract_ready": not missing and not empty and not semantic_failures,
+    }
+
+checks = [contract_check(dept) for dept in ("engineering-factory", "quality-compliance", "platform-operations")]
+ready_departments = [check["department"] for check in checks if check["contract_ready"]]
+blocked_departments = [check["department"] for check in checks if not check["contract_ready"]]
+artifact_goal_id = mvp.get("goal_id") or ""
+artifact_product_name = mvp.get("product_name") or mvp.get("product") or ""
+artifact_product_path = mvp.get("product_path") or ""
+artifact_label = mvp.get("artifact") or mvp.get("name") or ""
+if isinstance(artifact_product_name, dict):
+    artifact_product_name = artifact_product_name.get("name", "")
+goal_match = bool(goal_id and artifact_goal_id and goal_id == artifact_goal_id)
+product_name_match = bool(product_name and artifact_product_name and product_name == artifact_product_name)
+product_path_match = bool(product_path and artifact_product_path and product_path == artifact_product_path)
+artifact_label_match = bool(product_name and artifact_label and product_name.lower() in str(artifact_label).lower())
+artifact_binding_ready = product_name_match or product_path_match or artifact_label_match
+artifact_binding = {
+    "selected_product_name": product_name,
+    "selected_product_path": product_path,
+    "selected_goal_id": goal_id,
+    "artifact_goal_id": artifact_goal_id,
+    "artifact_product_name": artifact_product_name,
+    "artifact_product_path": artifact_product_path,
+    "artifact_label": artifact_label,
+    "goal_match": goal_match,
+    "product_name_match": product_name_match,
+    "product_path_match": product_path_match,
+    "artifact_label_match": artifact_label_match,
+    "contract_ready": artifact_binding_ready,
+    "semantic_failures": [] if artifact_binding_ready else [
+        "mvp-live artifact is not tied to the selected product"
+    ],
+}
+if not artifact_binding_ready:
+    blocked_departments = ["artifact-binding"] + blocked_departments
+
+packet = {
+    "schema": "mekongmind.product_release_readiness_packet.v1",
+    "product_name": product_name,
+    "product_path": product_path,
+    "goal_id": goal_id,
+    "created_at": now,
+    "packet_status": "blocked-release-readiness-not-proof" if blocked_departments else "ready-for-strict-mvp-live-validation",
+    "guard": [
+        "This packet is not mvp-live proof.",
+        "This packet is not production proof.",
+        "This packet is not campaign proof.",
+        "This packet is not revenue proof.",
+        "Do not start real outreach until Quality & Compliance and Platform Operations strict contracts pass.",
+        "Do not mutate Polar.sh configuration from this packet.",
+    ],
+    "polar_provider": "Polar.sh canonical; checkout/subscription evidence is still required for MRR",
+    "source_artifact": "state/evidence/mvp-live.json",
+    "artifact_binding": artifact_binding,
+    "offer": offer.get("offer") or blueprint.get("offer_direction", ""),
+    "checks": checks,
+    "ready_departments": ready_departments,
+    "blocked_departments": blocked_departments,
+    "required_to_unblock": [
+        "Quality & Compliance: release_decision must be approved/ready and blocking findings must be resolved or explicitly accepted by owner.",
+        "Platform Operations: provider must be real and reachable, http_status must be 200, version_match must be verified, rollback and monitoring must be production-grade.",
+        "Revenue path: attach verified Polar checkout URL before Growth/Sales real send or MRR claim.",
+        "Artifact binding: mvp-live evidence must include matching product_name, product_path, or product-specific artifact label before it can be reused for this product.",
+    ],
+    "suggested_next_commands": [
+        "me solo artifact validate quality-compliance state/evidence/mvp-live.json",
+        "me solo artifact validate platform-operations state/evidence/mvp-live.json",
+        "me solo bottlenecks --strict",
+    ],
+}
+
+packet_path = os.path.join(snapshot_dir, "release-readiness-packet.json")
+with open(packet_path, "w") as f:
+    json.dump(packet, f, indent=2, sort_keys=True)
+    f.write("\n")
+
+rel_packet = os.path.relpath(packet_path, root)
+if os.path.exists(queue_path):
+    data = json.load(open(queue_path))
+    matched = None
+    for item in data.get("items", []):
+        if product_path and item.get("path") == product_path:
+            matched = item
+            break
+    if matched is None:
+        matches = [item for item in data.get("items", []) if item.get("name") == product_name]
+        if len(matches) == 1:
+            matched = matches[0]
+    if matched is not None:
+        matched["status"] = "active"
+        matched["current_gate"] = "mvp-live"
+        matched["release_readiness_packet"] = rel_packet
+        matched["release_readiness_packet_status"] = packet["packet_status"]
+        matched["updated_at"] = now
+        matched["next_command"] = f"me solo products next {matched.get('path') or matched.get('name') or ''}".strip()
+        matched["last_note"] = "release readiness packet written; not mvp-live proof"
+    items = data.get("items", [])
+    data["queued"] = sum(1 for item in items if item.get("status") == "queued")
+    data["active"] = sum(1 for item in items if item.get("status") == "active")
+    data["blocked"] = sum(1 for item in items if item.get("status") == "blocked")
+    data["self_selling"] = sum(1 for item in items if item.get("status") == "self-selling")
+    data["updated_at"] = now
+    with open(queue_path, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+print(f"ReleaseReadinessPacket: {rel_packet}")
+print(f"PacketStatus: {packet['packet_status']}")
+print(f"ReadyDepartments: {', '.join(ready_departments) if ready_departments else 'none'}")
+print(f"BlockedDepartments: {', '.join(blocked_departments) if blocked_departments else 'none'}")
+print("Guard: not mvp-live proof; not production proof; not campaign proof; not revenue proof")
+PY
+}
+
+next_product_queue_query() {
+  local query="${1:-}"
+  if [ -n "$query" ]; then
+    echo "$query"
+    return 0
+  fi
+  local root blueprint queue_file
+  root="$(_gate_artifact_root)"
+  blueprint="$root/state/evidence/company-blueprint.json"
+  if [ -f "$blueprint" ]; then
+    query=$(python3 - "$blueprint" <<'PY'
+import json
+import sys
+try:
+    data = json.load(open(sys.argv[1]))
+except Exception:
+    raise SystemExit(1)
+print(data.get("product_path") or data.get("product_name") or "")
+PY
+) || true
+    if [ -n "$query" ]; then
+      echo "$query"
+      return 0
+    fi
+  fi
+  queue_file="$(product_self_selling_queue_file)"
+  [ -f "$queue_file" ] || return 1
+  python3 - "$queue_file" <<'PY'
+import json
+import sys
+data = json.load(open(sys.argv[1]))
+items = data.get("items", [])
+for status in ("active", "queued", "blocked"):
+    for item in items:
+        if item.get("status") == status:
+            print(item.get("path") or item.get("name") or "")
+            raise SystemExit(0)
+raise SystemExit(1)
+PY
+}
+
+next_product_queue_queries() {
+  local limit="${1:-1}"
+  local queue_file
+  queue_file="$(product_self_selling_queue_file)"
+  [ -f "$queue_file" ] || return 1
+  python3 - "$queue_file" "$limit" <<'PY'
+import json
+import sys
+
+queue_path, raw_limit = sys.argv[1:3]
+try:
+    limit = max(1, int(raw_limit))
+except ValueError:
+    limit = 1
+data = json.load(open(queue_path))
+items = data.get("items", [])
+selected = []
+seen = set()
+for status in ("active", "queued", "blocked"):
+    for item in items:
+        key = item.get("path") or item.get("name")
+        if not key or key in seen:
+            continue
+        if item.get("status") == "active" and item.get("current_gate") not in ("", "company-blueprint"):
+            continue
+        if item.get("status") == status and item.get("status") != "self-selling":
+            selected.append(item.get("path") or item.get("name"))
+            seen.add(key)
+            if len(selected) >= limit:
+                print("\n".join(selected))
+                raise SystemExit(0)
+if selected:
+    print("\n".join(selected))
+    raise SystemExit(0)
+raise SystemExit(1)
+PY
+}
+
+next_product_packet_queries() {
+  local limit="${1:-1}"
+  local kind="${2:-both}"
+  local mode="${3:-missing}"
+  local queue_file
+  queue_file="$(product_self_selling_queue_file)"
+  [ -f "$queue_file" ] || return 1
+  python3 - "$queue_file" "$limit" "$kind" "$mode" <<'PY'
+import json
+import sys
+
+queue_path, raw_limit, kind, mode = sys.argv[1:5]
+kind = (kind or "both").lower()
+if kind not in {"release", "work", "growth", "both"}:
+    raise SystemExit(f"unknown packet kind: {kind}")
+force = (mode or "missing").lower() in {"force", "refresh", "all"}
+data = json.load(open(queue_path))
+items = data.get("items", [])
+
+def missing_packet(item):
+    if item.get("status") == "self-selling":
+        return False
+    if force:
+        return True
+    if kind == "release":
+        return not item.get("release_readiness_packet")
+    if kind in {"work", "growth"}:
+        return not item.get("growth_sales_packet")
+    return not item.get("release_readiness_packet") or not item.get("growth_sales_packet")
+
+if (raw_limit or "").lower() in {"all", "*"}:
+    limit = sum(1 for item in items if missing_packet(item))
+else:
+    try:
+        limit = max(1, int(raw_limit))
+    except ValueError:
+        limit = 1
+
+selected = []
+seen = set()
+for status in ("active", "queued", "blocked"):
+    for item in items:
+        key = item.get("path") or item.get("name")
+        if not key or key in seen:
+            continue
+        if item.get("status") != status:
+            continue
+        if not missing_packet(item):
+            continue
+        selected.append(item.get("path") or item.get("name"))
+        seen.add(key)
+        if len(selected) >= limit:
+            print("\n".join(selected))
+            raise SystemExit(0)
+if selected:
+    print("\n".join(selected))
+    raise SystemExit(0)
+raise SystemExit(1)
+PY
+}
+
+product_next_action() {
+  local query="${1:-}"
+  local queue_file
+  queue_file="$(product_self_selling_queue_file)"
+  [ -f "$queue_file" ] || { echo "ERROR: product queue missing: $queue_file" >&2; return 1; }
+  python3 - "$queue_file" "$query" <<'PY'
+import json
+import os
+import sys
+
+queue_path, query = sys.argv[1:3]
+query_norm = (query or "").strip().lower()
+data = json.load(open(queue_path))
+items = data.get("items", [])
+
+def resolve():
+    if query_norm:
+        for item in items:
+            if item.get("path", "").lower() == query_norm:
+                return item
+        exact = [item for item in items if item.get("name", "").lower() == query_norm]
+        if len(exact) == 1:
+            return exact[0]
+        contains = [
+            item for item in items
+            if query_norm in " ".join([item.get("name", ""), item.get("path", "")]).lower()
+        ]
+        if len(contains) == 1:
+            return contains[0]
+        if len(exact) > 1 or len(contains) > 1:
+            raise SystemExit("ERROR: product query is ambiguous; use absolute product path")
+    for status in ("active", "queued", "blocked"):
+        for item in items:
+            if item.get("status") == status:
+                return item
+    return None
+
+item = resolve()
+if not item:
+    raise SystemExit("ERROR: no product found")
+
+path = item.get("path") or item.get("name", "")
+gate = item.get("current_gate", "")
+status = item.get("status", "")
+release_status = item.get("release_readiness_packet_status", "")
+growth_status = item.get("growth_sales_packet_status", "")
+current_mrr = int(float(item.get("current_mrr") or 0))
+target_mrr = int(float(item.get("target_mrr") or 1000000))
+
+if status == "queued" or gate in ("", "company-blueprint"):
+    next_command = f"me solo products loop --once {path}"
+    reason = "needs CEO blueprint and offer snapshot"
+elif not item.get("release_readiness_packet"):
+    next_command = f"me solo products release-packet {path}"
+    reason = "needs Quality/Platform release readiness packet"
+elif release_status != "ready-for-strict-mvp-live-validation":
+    next_command = f"me solo products release-packet {path}"
+    reason = "release readiness is blocked; refresh packet after product-bound mvp-live evidence is fixed"
+elif not item.get("growth_sales_packet"):
+    next_command = f"me solo products work-packet {path}"
+    reason = "needs Growth/Sales execution packet"
+elif not item.get("campaign_evidence"):
+    next_command = f"me solo products campaign-proof {path} --log <real-outreach-log.json>"
+    reason = "needs real bounded outreach log with opt-out evidence"
+elif not item.get("revenue_evidence"):
+    next_command = f"me solo products revenue-proof {path} --polar <polar-evidence.json>"
+    reason = "needs Polar-backed checkout/subscription evidence"
+elif not item.get("fulfillment_evidence"):
+    next_command = f"me solo products fulfillment-proof {path} --artifact <fulfillment-stable.json>"
+    reason = "needs customer outcome evidence"
+elif not item.get("clone_memory_evidence"):
+    next_command = f"me solo products clone-proof {path} --artifact <scale-ready.json>"
+    reason = "needs clone-memory playbook evidence"
+elif current_mrr < target_mrr:
+    next_command = "me solo revenue sync polar"
+    reason = "clone memory exists; first $1M MRR still missing"
+else:
+    next_command = "me solo products audit --self-selling"
+    reason = "all product proof stages are present and target MRR reached"
+
+print(f"Product: {item.get('name','')}")
+print(f"Path: {item.get('path','')}")
+print(f"Status: {status}")
+print(f"CurrentGate: {gate}")
+print(f"CurrentMRR: {current_mrr}")
+print(f"TargetMRR: {target_mrr}")
+print(f"ReleasePacket: {release_status or 'missing'}")
+print(f"GrowthSalesPacket: {growth_status or 'missing'}")
+print(f"NextCommand: {next_command}")
+print(f"Reason: {reason}")
+print("Guard: advisory only; no outreach send, no Polar mutation, no revenue or self-selling claim")
+PY
+}
+
+select_product_for_goal() {
+  local query="${1:-}"
+  local f="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && f="$(ensure_product_portfolio_goal_file)"
+  local inventory
+  inventory="$(product_inventory_file)"
+  [ -f "$inventory" ] || { echo "ERROR: product inventory missing: $inventory" >&2; return 1; }
+  local out
+  out="$(_gate_artifact_root)/state/evidence/company-blueprint.json"
+  mkdir -p "$(dirname "$out")"
+  local result
+  result=$(python3 - "$inventory" "$f" "$query" "$out" <<'PY'
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+
+inventory_path, goal_file, query, out = sys.argv[1:5]
+with open(inventory_path) as f:
+    inventory = json.load(f)
+goal_text = open(goal_file).read()
+
+def field(name, default=""):
+    m = re.search(rf"^#?\s*{re.escape(name)}:\s*(.+)$", goal_text, re.M)
+    return m.group(1).strip() if m else default
+
+goal = field("Goal", "")
+target_mrr = field("RevenueTarget", "1000000")
+products = inventory.get("products", [])
+if not products:
+    raise SystemExit("ERROR: product inventory has no products")
+
+query_norm = (query or "").strip().lower()
+for product in products:
+    if query_norm and product.get("path", "").lower() == query_norm:
+        selected = product
+        break
+else:
+    selected = None
+if selected is None:
+    exact_name_matches = [product for product in products if query_norm and product.get("name", "").lower() == query_norm]
+    if len(exact_name_matches) == 1:
+        selected = exact_name_matches[0]
+
+def score(product):
+    hay = " ".join([product.get("name", ""), product.get("path", ""), goal, query]).lower()
+    product_blob = " ".join([product.get("name", ""), product.get("path", "")]).lower()
+    terms = [term for term in re.split(r"[^a-z0-9]+", (query or goal).lower()) if len(term) >= 3]
+    value = 0
+    for term in terms:
+        if term in product_blob:
+            value += 10
+    if product.get("name", "").lower() in (query or goal).lower():
+        value += 25
+    if product.get("deploy_provider"):
+        value += 3
+    if product.get("polar_signals"):
+        value += 5
+    if "/Downloads/" in product.get("path", ""):
+        value -= 2
+    return value
+
+if selected is None:
+    selected = max(products, key=score)
+name = selected.get("name", "")
+path = selected.get("path", "")
+if "tiktok" in (name + " " + path).lower():
+    target_customer = "TikTok Shop operators, sellers, and automation teams that need reliable API deployment and workflow automation"
+    pain = "manual TikTok Shop API operations, fragile deployment, and unverified production workflow block revenue operations"
+    offer_direction = "production-ready TikTok Shop API automation as a managed RaaS/API workflow with verified deployment, checkout, and support"
+else:
+    target_customer = f"buyer hypothesis for {name}; Market Intelligence must validate reachable buyer and budget"
+    pain = f"workflow pain hypothesis around {name}; Market Intelligence must validate urgency and alternatives"
+    offer_direction = f"package {name} as a sellable RaaS/productized workflow with Polar checkout and fulfillment SOP"
+
+payload = {
+    "department": "ceo-command",
+    "gate": "company-blueprint",
+    "artifact_path": "state/evidence/company-blueprint.json",
+    "idea": goal or f"Self-sell local product {name}",
+    "target_customer": target_customer,
+    "pain": pain,
+    "offer_direction": offer_direction,
+    "target_mrr": int(target_mrr),
+    "current_gate": "company-blueprint",
+    "next_department": "market-intelligence",
+    "kill_criteria": "Kill or pivot if Market Intelligence cannot validate reachable buyer, urgent pain, demand signal, and willingness to pay before build/outreach volume.",
+    "product_name": name,
+    "product_path": path,
+    "inventory_source": inventory_path,
+    "polar_provider": "Polar.sh canonical; do not modify verified Polar setup without explicit approval",
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+}
+with open(out, "w") as f:
+    json.dump(payload, f, indent=2, sort_keys=True)
+    f.write("\n")
+print(out)
+print(name)
+print(path)
+PY
+)
+  local artifact selected_name selected_path owner
+  artifact=$(sed -n '1p' <<<"$result")
+  selected_name=$(sed -n '2p' <<<"$result")
+  selected_path=$(sed -n '3p' <<<"$result")
+  owner=$(registry_department_owner "ceo-command" 2>/dev/null || echo "planner")
+  record_department_run "$f" "ceo-command" "$owner" "company-blueprint" "ready" "$artifact" "selected local product: $selected_name" || return $?
+  local gid
+  gid=$(goal_id_from_file "$f" 2>/dev/null || true)
+  update_product_queue_status "$selected_name" "$selected_path" "active" "company-blueprint" "$gid" "$artifact" "selected local product into active goal" || true
+  echo "SelectedProduct: $selected_name"
+  echo "ProductPath: $selected_path"
+  echo "CompanyBlueprint: $artifact"
+}
+
+generate_offer_artifact_for_goal() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && f="$(ensure_product_portfolio_goal_file)"
+  local root blueprint out
+  root="$(_gate_artifact_root)"
+  blueprint="$root/state/evidence/company-blueprint.json"
+  out="$root/state/evidence/offer-validated.json"
+  [ -f "$blueprint" ] || { echo "ERROR: company blueprint missing: $blueprint" >&2; return 1; }
+  mkdir -p "$(dirname "$out")"
+  python3 - "$blueprint" "$out" <<'PY' >/dev/null
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+
+blueprint_path, out = sys.argv[1:3]
+with open(blueprint_path) as f:
+    blueprint = json.load(f)
+product_path = blueprint.get("product_path", "")
+product_name = blueprint.get("product_name", "local-product")
+
+def read_safe(name):
+    path = os.path.join(product_path, name)
+    if not os.path.exists(path):
+        return ""
+    with open(path, errors="ignore") as f:
+        return f.read()[:20000]
+
+readme = read_safe("README.md")
+status = read_safe("DEPLOYMENT_STATUS.md")
+package_raw = read_safe("package.json")
+package = {}
+if package_raw:
+    try:
+        package = json.loads(package_raw)
+    except Exception:
+        package = {}
+
+text = "\n".join([readme, status, package.get("description", "")])
+
+def clean(value):
+    return re.sub(r"\s+", " ", str(value or "")).strip(" -:*#\t")
+
+def first_heading():
+    for line in readme.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            title = clean(stripped.lstrip("#"))
+            if title:
+                return title
+    return clean(package.get("name") or product_name)
+
+def first_sentence():
+    candidates = [package.get("description", "")]
+    for line in readme.splitlines():
+        stripped = clean(line)
+        if not stripped or stripped.startswith("[") or stripped.lower().startswith(("badge", "install", "usage")):
+            continue
+        if len(stripped) > 24 and not stripped.startswith("#"):
+            candidates.append(stripped)
+            break
+    for candidate in candidates:
+        if clean(candidate):
+            return clean(candidate)[:240]
+    return f"{product_name} local product candidate"
+
+def find_labeled_value(labels):
+    for line in text.splitlines():
+        raw = line.strip("- *")
+        lower = raw.lower()
+        for label in labels:
+            marker = f"{label.lower()}:"
+            if marker in lower:
+                return clean(raw.split(":", 1)[1] if ":" in raw else raw)
+    return ""
+
+title = first_heading()
+summary = first_sentence()
+target_hint = find_labeled_value(["target", "audience", "customer", "icp", "buyer"])
+pain_hint = find_labeled_value(["pain", "problem", "challenge"])
+
+pricing_line = ""
+for line in status.splitlines():
+    if "Pricing:" in line:
+        pricing_line = line.strip("- *")
+        break
+if not pricing_line:
+    pricing_line = "Free tier plus $29/mo Polar subscription target; existing x402/USDC usage paywall is product capability, not canonical MRR provider."
+target = target_hint or blueprint.get("target_customer") or f"operators or teams with recurring workflow pain that {product_name} can solve"
+pain = pain_hint or blueprint.get("pain") or f"manual, fragile, or slow workflow around {title}"
+offer_direction = blueprint.get("offer_direction") or summary or f"package {product_name} as a sellable workflow"
+is_tiktok = "tiktok" in " ".join([product_name, product_path, text, offer_direction]).lower()
+trigger = (
+    "seller/operator needs product, pricing, or competitor intelligence before campaign, sourcing, or listing decisions"
+    if is_tiktok else
+    f"buyer has a repeated operational workflow where {title} can remove manual work, risk, or delay"
+)
+buyer = (
+    "e-commerce seller, TikTok Shop operator, Shopee seller, agency, or automation team with recurring product research need"
+    if is_tiktok else
+    target
+)
+alternatives = (
+    "manual TikTok/Shopee search, spreadsheets, VA scraping, marketplace analytics tools, custom scripts"
+    if is_tiktok else
+    "manual process, spreadsheets, generic SaaS tools, internal scripts, agencies, or delaying the workflow"
+)
+wedge = (
+    "API-first product data workflow with free tier, paid search endpoint, deployment evidence, and automation-ready integration path"
+    if is_tiktok else
+    f"product-specific workflow around {title} with a clear Polar checkout path, support promise, and bounded fulfillment SOP"
+)
+offer_name = f"{title} as a productized workflow"
+promise = f"turn {pain} into a repeatable outcome using {title}: {summary}"
+package_line = f"Starter: Polar subscription target around $29/mo; include a bounded service promise for {title}; replace with verified product-specific Polar price before send"
+mvp_scope = f"product landing/API or workflow entrypoint, health check, checkout path, onboarding path, fulfillment notes, and smoke-test evidence for {title}"
+acceptance = f"buyer can understand {title}, see the value promise, reach a demo or checkout path, and receive the promised workflow outcome after payment"
+sales_angle = f"reduce manual effort, delay, or risk in the buyer workflow with {title}"
+risk = "local evidence is desk-researched; demand, production readiness, checkout, and fulfillment still require strict downstream proof"
+
+payload = {
+    "department": "market-intelligence+product-strategy",
+    "gate": "offer-validated",
+    "artifact_path": "state/evidence/offer-validated.json",
+    "icp": target,
+    "pain": pain,
+    "trigger": trigger,
+    "buyer": buyer,
+    "alternatives": alternatives,
+    "wedge": wedge,
+    "demand_signal": "desk-researched from local product README, deployment status, active $1M MRR goal, and product pricing notes; must be confirmed by outreach before scale",
+    "evidence_source": f"{product_path}/README.md; {product_path}/DEPLOYMENT_STATUS.md; {product_path}/package.json",
+    "confidence": "medium-desk-validation; not yet customer-validated",
+    "offer": offer_name,
+    "promise": promise,
+    "pricing": pricing_line,
+    "package": package_line,
+    "mvp_scope": mvp_scope,
+    "non_goals": "do not scale paid outreach, claim MRR, or modify verified Polar setup before checkout/provider evidence exists",
+    "acceptance_criteria": acceptance,
+    "sales_angle": sales_angle,
+    "risk": risk,
+    "validation_status": "desk-researched hypothesis ready for Growth/Sales outreach validation",
+    "polar_provider": "Polar.sh canonical; do not modify verified setup without explicit approval",
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+}
+with open(out, "w") as f:
+    json.dump(payload, f, indent=2, sort_keys=True)
+    f.write("\n")
+print(out)
+print(product_name)
+PY
+  local result artifact product owner_market owner_product
+  result=$(printf '%s\n%s\n' "$out" "$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("offer",""))' "$out")")
+  artifact=$(sed -n '1p' <<<"$result")
+  product=$(sed -n '2p' <<<"$result")
+  owner_market=$(registry_department_owner "market-intelligence" 2>/dev/null || echo "research-expert")
+  owner_product=$(registry_department_owner "product-strategy" 2>/dev/null || echo "business-analyst")
+  record_department_run "$f" "market-intelligence" "$owner_market" "offer-validated" "ready" "$artifact" "desk research offer terrain generated from local product evidence" || return $?
+  record_department_run "$f" "product-strategy" "$owner_product" "offer-validated" "ready" "$artifact" "offer package generated from local product evidence" || return $?
+  local product_name product_path gid
+  product_name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_name",""))' "$blueprint" 2>/dev/null || true)
+  product_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_path",""))' "$blueprint" 2>/dev/null || true)
+  gid=$(goal_id_from_file "$f" 2>/dev/null || true)
+  update_product_queue_status "$product_name" "$product_path" "active" "offer-validated" "$gid" "$artifact" "market/product offer generated from local evidence" || true
+  echo "OfferArtifact: $artifact"
+  echo "Offer: $product"
+}
+
+render_mekongmind_goal_contract() {
+  python3 - "$REGISTRY_FILE" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1]) as f:
+    registry = json.load(f)
+
+model = registry.get("mekongmind_operating_model", {})
+departments = registry.get("mekongmind_departments", [])
+mesh = registry.get("mekongmind_department_capability_mesh", [])
+doctrine = registry.get("mekongmind_gate_execution_doctrine", [])
+fusion = registry.get("mekongmind_source_fusion_matrix", [])
+ladder = model.get("revenue_ladder", [])
+local_llm = registry.get("mekongmind_local_llm_runtime", {})
+
+print("""## MekongMind Goal Contract
+This goal is not a naked task. It must run through the MekongMind stack:
+
+goal -> CEO Solo Company -> Agentic department -> department room -> SOP cell -> command/agent capability -> evidence contract -> MRR ladder -> clone memory
+
+The old Mekong CLI command surface is treated as business/revenue capability, not the operating model itself.
+The old ClaudeKit command surface is treated as engineering/verification capability, not the revenue engine itself.
+MEKONG_WRAPPER is the harness that binds both into gates, contracts, ledgers, and bottleneck routing.
+""")
+
+print("## Goal Decomposition Layers")
+for layer in model.get("operating_layers", []):
+    layer_id = layer.get("layer", "")
+    name = layer.get("name", "")
+    purpose = layer.get("purpose", "")
+    gate = layer.get("exit_gate", "")
+    departments_text = " -> ".join(layer.get("departments", []))
+    commands_text = ", ".join(layer.get("commands", []))
+    print(f"{layer_id} {name}: {purpose}")
+    print(f"- Departments: {departments_text}")
+    print(f"- Commands: {commands_text}")
+    print(f"- ExitGate: {gate}")
+    print(f"- FailureSignal: {layer.get('failure_signal', '')}")
+print()
+
+print("## Agentic Department Stack")
+for index, dept in enumerate(departments, start=1):
+    print(
+        f"{index}. {dept.get('name', dept.get('id', ''))}: "
+        f"{dept.get('owner_agent', '')} owns {dept.get('mission', '')}"
+    )
+print()
+
+print("## Department SOP Mesh")
+for dept in departments:
+    print(f"{dept.get('name', dept.get('id', ''))}: {' -> '.join(dept.get('sop_chain', []))}")
+print()
+
+print("## Department Capability Cells")
+for item in mesh:
+    department = item.get("department", "")
+    print(f"{department}: {item.get('purpose', '')}")
+    for cell in item.get("cells", []):
+        commands = ", ".join(cell.get("commands", []))
+        agents = ", ".join(cell.get("agents", []))
+        print(
+            f"- {cell.get('sop_stage', '')}: commands={commands}; "
+            f"agents={agents}; gate={cell.get('gate', '')}; proof={cell.get('proof', '')}"
+        )
+print()
+
+print("## Command Chaos Resolution")
+print("- Every command must resolve as command -> agent -> department -> SOP -> gate.")
+for source in fusion:
+    print(
+        f"- {source.get('source', '')}: {source.get('merged_role', '')} "
+        f"MRR contribution: {source.get('mrr_contribution', '')}"
+    )
+print("- If a command has no department, gate, evidence contract, or failure signal, it is not allowed to advance this goal.")
+print()
+
+print("## Evidence Gates")
+for gate in doctrine:
+    departments_text = " -> ".join(gate.get("required_departments", []))
+    commands_text = ", ".join(gate.get("allowed_command_groups", []))
+    print(f"- {gate.get('gate', '')}: {gate.get('purpose', '')}")
+    print(f"  Departments: {departments_text}")
+    print(f"  Commands: {commands_text}")
+    print(f"  Proof: {', '.join(gate.get('proof_artifacts', []))}")
+    print(f"  Blocks: {'; '.join(gate.get('blocked_until_pass', []))}")
+print()
+
+print("## Revenue Ladder")
+for step in ladder:
+    departments_text = " -> ".join(step.get("departments", []))
+    print(
+        f"- {step.get('milestone', '')}: target_mrr={step.get('target_mrr', '')}; "
+        f"gate={step.get('gate', '')}; departments={departments_text}; evidence={step.get('evidence', '')}"
+    )
+print()
+
+print("## Local LLM Runtime")
+print(f"Purpose: {local_llm.get('purpose', '')}")
+print(f"ProviderPriority: {' -> '.join(local_llm.get('provider_priority', []))}")
+print()
+print("Model Policy:")
+for policy in local_llm.get("installed_model_policy", []):
+    print(
+        f"- {policy.get('role', '')}: {policy.get('model', '')} via {policy.get('runtime', '')}; "
+        f"departments={' -> '.join(policy.get('departments', []))}; why={policy.get('why', '')}"
+    )
+print()
+print("SOP Loop Policy:")
+for key, value in local_llm.get("sop_loop_policy", {}).items():
+    print(f"- {key}: {value}")
+print()
+print("No-Gap Invariants:")
+for invariant in local_llm.get("no_gap_invariants", []):
+    print(f"- {invariant}")
+print()
+
+print("""## Required Inspection Commands
+- me solo map
+- me solo journey
+- me solo local-llm
+- me solo rooms
+- me solo mesh
+- me solo doctrine
+- me solo bottlenecks --strict
+- me solo contract <department>
+- me solo artifact template <department>
+- me solo artifact validate <department> <artifact>""")
+PY
+}
+
+create_goal() {
+  local goal_desc="${1:-}"
+  local pattern_label="${2:-orchestrator}"
+  # Validate non-empty goal description
+  if [ -z "$goal_desc" ]; then
+    echo "ERROR: goal description required. Usage: me idea <description>" >&2
+    return 1
+  fi
+  local stamp
+  stamp=$(new_goal_stamp)
+  local f="$STATE_DIR/goal-${stamp}.md"
+  mkdir -p "$STATE_DIR"
+  cat > "$f" << EOF
+# Goal: ${goal_desc}
+Created: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+Pattern: ${pattern_label}
+Status: active
+Steps: []
+Type: goal
+Source: direct-goal
+GoalEngine: mekong goal
+SoloCompanyMode: autonomous
+PlatformDNA: mekongmind-agentic-platform-solo
+FactoryLoop: active
+RevenueTarget: 1000000
+RevenueTargetType: MRR
+CurrentMRR: 0
+RevenueMilestone: first-1m-mrr
+CurrentGate: idea-intake
+CloneStrategy: multi-project-raas
+
+$(render_mekongmind_goal_contract)
+EOF
+  init_revenue_metrics "$f" "local-state" >/dev/null 2>&1 || true
+  init_gate_state "$f" >/dev/null 2>&1 || true
+  echo "$f"
+}
+
+create_idea_goal() {
+  local goal_desc="${1:-}"
+  local pattern_label="${2:-orchestrator}"
+  if [ -z "$goal_desc" ]; then
+    echo "ERROR: idea description required. Usage: me idea <description>" >&2
+    return 1
+  fi
+  local stamp
+  stamp=$(new_goal_stamp)
+  local f="$STATE_DIR/goal-${stamp}.md"
+  mkdir -p "$STATE_DIR"
+  cat > "$f" << EOF
+# Goal: ${goal_desc}
+Created: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+Type: idea
+Source: legacy-25-step-idea
+Pattern: ${pattern_label}
+Status: active
+Steps: []
+TotalSteps: 25
+GoalEngine: mekong goal
+FallbackWhenMekongIdeaMissing: mekong goal create/run
+SoloCompanyMode: autonomous
+PlatformDNA: mekongmind-agentic-platform-solo
+FactoryLoop: active
+RevenueTarget: 1000000
+RevenueTargetType: MRR
+CurrentMRR: 0
+RevenueMilestone: first-1m-mrr
+CurrentGate: idea-intake
+CloneStrategy: multi-project-raas
+
+## Legacy /idea 25-Step Blueprint
+1. Master Framework
+2. Refactor to 2026 Frame
+3. Agentic OS Design
+4. IPO Readiness Score
+5. Gap Report + Roadmap
+6. Business Model Patterns
+7. Customer Psychology + Personas
+8. Brand Positioning
+9. Content Pillars + TOF
+10. Website/Landing Narrative
+11. Performance Ads + Creatives
+12. Advertorial + Storytelling
+13. Email + Lifecycle Sequences
+14. Sales Process + Channels
+15. GTM Experiments + Bullseye
+16. AARRR + Lean Analytics
+17. Fundraising + VC Narrative
+18. Risk + Scenario OS
+19. Talent + Org Design
+20. Industry Patterns + IPO Archetypes
+21. Data Room + Investor Materials
+22. Agentic Execution + OKR
+23. Board Governance
+24. ESG + Impact
+25. Crisis + Reputation OS
+
+## Binh Phap Chain
+Phase 1 Intelligence: /swot, /venture:five-factors, /audit
+Phase 2 Strategy: /plan, /venture:terrain, /brainstorm
+Phase 3 Build: /cook, /test, /deploy
+Phase 4 Revenue: /marketing, /sales, /launch, /pricing
+Phase 5 Scale: /competitive, /growth:experiment, /finance
+
+## CEO Solo Factory Loop
+1. Idea Intake: capture idea, goal, constraints, founder intent
+2. Company Blueprint: define ICP, offer, pricing, GTM, operating model
+3. Validation: prove pain, demand, channel, willingness to pay
+4. MVP Build: implement minimum sellable RaaS product
+5. Production Deploy: ship live product, checkout, analytics, support
+6. Revenue Engine: run content, outbound, ads, partnerships, sales
+7. Fulfillment Engine: deliver customer outcome with agents and SOPs
+8. Metrics Audit: review revenue, activation, retention, CAC, bottlenecks
+9. Growth Experiment: pick next constraint and run focused experiment
+10. Scale Loop: repeat until first \$1M MRR is reached
+
+## SOP Gates
+Gate 0 Idea Accepted: goal state created and owner intent captured
+Gate 1 Blueprint Ready: state/evidence/company-blueprint.json and company blueprint complete
+Gate 2 Offer Validated: ICP, pricing, promise, and demand signal verified
+Gate 3 MVP Live: build, tests, deploy, checkout, and health checks green
+Gate 4 First Revenue: at least one paying customer or signed LOI
+Gate 5 Repeatable Channel: one acquisition channel has measurable repeatability
+Gate 6 Fulfillment Stable: SOPs and agents deliver without founder bottleneck
+Gate 7 Scale Ready: unit economics and operations support growth
+Gate 8 First \$1M MRR: revenue target reached and operating cadence documented
+
+## Multi-Project RaaS DNA
+- Mekongmind starts from idea/goal and mints one Solo Company workspace
+- Each workspace inherits the same CEO Solo Harness, agent registry, gates, and SOP loop
+- Each project owns its ICP, offer, product, metrics, and revenue experiments
+- The platform must be cloneable for thousands of CEO Solos across niches
+- Mekongmind must be able to sell and operate itself using the same factory
+
+$(render_mekongmind_goal_contract)
+
+## Required Outputs
+- state/evidence/company-blueprint.json
+- plans/company-blueprint/plan.md
+- tasks/HIGH_mission_<project>_gtm_strategy.txt
+- tasks/HIGH_mission_<project>_build_mvp.txt
+- tasks/HIGH_mission_<project>_sales_pipeline.txt
+- tasks/HIGH_mission_<project>_marketing_launch.txt
+- tasks/HIGH_mission_<project>_deploy_production.txt
+
+## Handoff Contract
+- Preferred legacy autopilot: mekong idea run "<idea> -- implement per blueprint"
+- Current live fallback: mekong goal create "<idea>" then mekong goal run <goal-id>
+EOF
+  init_revenue_metrics "$f" "local-state" >/dev/null 2>&1 || true
+  init_gate_state "$f" >/dev/null 2>&1 || true
+  echo "$f"
+}
+
+# Append "Step N Output: ..." to goal file
+add_step_output() {
+    local f="${1:-}"
+    local n="${2:-}"
+    local output="${3:-}"
+    [ -z "$f" ] && f="$(latest_goal_file)"
+    [ -z "$f" ] && return 1
+    printf "Step %s Output: %s\n" "$n" "$output" >> "$f"
+    local update_helper
+    update_helper="$(goal_executor_lib_dir)/update-goal-state.py"
+    [ -f "$update_helper" ] && python3 "$update_helper" "$f" "$n" 2>/dev/null || true
+}
+list_completed_steps() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && { echo ""; return; }
+  grep -E "^Step [0-9]+ Output:" "$f" 2>/dev/null | sed "s/^Step \([0-9]\+\) Output:.*/\1/" | tr '\n' ',' | sed 's/,$//'
+}
+
+mark_step_done() {
+  add_step_output "$@"
+}
+
+step_done() {
+  local f="${1:-}"
+  local n="${2:-}"
+  grep -qE "^[[:space:]]*Step ${n} Output:" "$f" 2>/dev/null
+}
+
+# Return next step number after the highest completed step
+goal_next_step() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && { echo "1"; return; }
+  local steps
+  steps=$(goal_field "$f" "Steps")
+  if [ -z "$steps" ] || [ "$steps" = "[]" ]; then
+    echo "1"; return
+  fi
+  echo "$steps" | tr ',' '\n' | sed 's/ //g; s/\[//g; s/\]//g' | awk '{if($1+0>m+0)m=$1} END{print m+1}'
+}

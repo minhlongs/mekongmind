@@ -1,0 +1,35 @@
+{
+  "departments": {
+    "sales-revenue": {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "AURA CAFE T-4 days \u2014 MRR gap 997900",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T17:22:59.020468Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "MRR gap remains 1000000 \u2014 AURA CAFE launch T-4 days",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T17:16:08.823590Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "AURA CAFE T-4 days \u2014 MRR gap 997900",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T17:22:59.020468Z"
+    }
+  ],
+  "goal_id": "goal-20260602-235646",
+  "updated_at": "2026-06-02T17:22:59.020468Z"
+}

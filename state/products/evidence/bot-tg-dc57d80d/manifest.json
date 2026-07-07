@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "bot-tg",
+  "product_path": "/Users/macbook/fnb-local-os/apps/bot-tg",
+  "snapshot_dir": "state/products/evidence/bot-tg-dc57d80d",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/bot-tg-dc57d80d/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/bot-tg-dc57d80d/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:16:25.345662Z"
+}

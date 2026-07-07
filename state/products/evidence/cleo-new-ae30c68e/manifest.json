@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "cleo-new",
+  "product_path": "/Users/macbook/mekong-cli/packages/cleo-new",
+  "snapshot_dir": "state/products/evidence/cleo-new-ae30c68e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/cleo-new-ae30c68e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/cleo-new-ae30c68e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:18:50.464741Z"
+}

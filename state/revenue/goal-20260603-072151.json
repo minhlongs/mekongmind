@@ -1,0 +1,10 @@
+{
+  "currency": "USD",
+  "current_mrr": 0,
+  "events": [],
+  "gate": "no-revenue",
+  "goal_id": "goal-20260603-072151",
+  "source": "local-state",
+  "target_mrr": 1000000,
+  "updated_at": "2026-06-03T00:21:51.416487Z"
+}

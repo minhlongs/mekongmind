@@ -1,0 +1,8 @@
+{
+  "department": "sales-revenue",
+  "gate": "first-revenue",
+  "note": "execute first revenue gate \u2014 step 1 of pipeline",
+  "owner": "business-analyst",
+  "status": "ready",
+  "updated_at": "2026-06-05T03:58:00.919787Z"
+}

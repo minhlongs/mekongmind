@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "release-test-npm-lib",
+  "product_path": "/Users/macbook/cleo-cli/packages/cleo/test/fixtures/release-test-npm-lib",
+  "snapshot_dir": "state/products/evidence/release-test-npm-lib-99574e4a",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/release-test-npm-lib-99574e4a/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/release-test-npm-lib-99574e4a/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:46.433094Z"
+}

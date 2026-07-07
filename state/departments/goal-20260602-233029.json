@@ -1,0 +1,188 @@
+{
+  "departments": {
+    "ceo-command": {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "company blueprint approved",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "market-intelligence": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "ICP and demand proof captured",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "product-strategy": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "offer, pricing, and MVP scope locked",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "engineering-factory": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "minimum sellable product built",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "quality-compliance": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "quality-compliance",
+      "gate": "mvp-live",
+      "note": "release checks approved",
+      "owner": "code-reviewer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "platform-operations": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "platform-operations",
+      "gate": "mvp-live",
+      "note": "production health verified",
+      "owner": "infrastructure-github-actions-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "growth-marketing": {
+      "artifact": "/Users/macbook/state/evidence/repeatable-channel.json",
+      "department": "growth-marketing",
+      "gate": "repeatable-channel",
+      "note": "repeatable demand channel proven",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "sales-revenue": {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "MRR engine operational",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "customer-success": {
+      "artifact": "/Users/macbook/state/evidence/fulfillment-stable.json",
+      "department": "customer-success",
+      "gate": "fulfillment-stable",
+      "note": "fulfillment stability proven",
+      "owner": "project-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    "knowledge-memory": {
+      "artifact": "/Users/macbook/state/evidence/scale-ready.json",
+      "department": "knowledge-memory",
+      "gate": "scale-ready",
+      "note": "cloneable SOP memory extracted",
+      "owner": "docs-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "company blueprint approved",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "ICP and demand proof captured",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "offer, pricing, and MVP scope locked",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "minimum sellable product built",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "quality-compliance",
+      "gate": "mvp-live",
+      "note": "release checks approved",
+      "owner": "code-reviewer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "platform-operations",
+      "gate": "mvp-live",
+      "note": "production health verified",
+      "owner": "infrastructure-github-actions-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/repeatable-channel.json",
+      "department": "growth-marketing",
+      "gate": "repeatable-channel",
+      "note": "repeatable demand channel proven",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "MRR engine operational",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/fulfillment-stable.json",
+      "department": "customer-success",
+      "gate": "fulfillment-stable",
+      "note": "fulfillment stability proven",
+      "owner": "project-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/scale-ready.json",
+      "department": "knowledge-memory",
+      "gate": "scale-ready",
+      "note": "cloneable SOP memory extracted",
+      "owner": "docs-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:44:35.654963+00:00"
+    }
+  ],
+  "goal_id": "goal-20260602-233029",
+  "updated_at": "2026-06-02T16:44:35.654963+00:00"
+}

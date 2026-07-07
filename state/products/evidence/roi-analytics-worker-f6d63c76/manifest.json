@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "roi-analytics-worker",
+  "product_path": "/Users/macbook/mekongmind/apps/well/workers/roi-analytics-worker",
+  "snapshot_dir": "state/products/evidence/roi-analytics-worker-f6d63c76",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/roi-analytics-worker-f6d63c76/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/roi-analytics-worker-f6d63c76/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:22:04.987977Z"
+}

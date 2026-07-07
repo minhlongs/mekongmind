@@ -1,0 +1,6 @@
+{"event_id": "62211fb13b74", "kind": "workflow_started", "timestamp": 1783432409.278427, "workflow_id": "a7e7192730b8", "step_order": null, "data": {"recipe": "test", "steps": 1}}
+{"event_id": "533b965b512e", "kind": "step_scheduled", "timestamp": 1783432409.27866, "workflow_id": "a7e7192730b8", "step_order": 1, "data": {}}
+{"event_id": "0c5c61e1af77", "kind": "self_heal_attempted", "timestamp": 1783432409.27895, "workflow_id": "a7e7192730b8", "step_order": 1, "data": {"error": "No such file"}}
+{"event_id": "4dc3f693b8a5", "kind": "self_heal_succeeded", "timestamp": 1783432409.279104, "workflow_id": "a7e7192730b8", "step_order": 1, "data": {}}
+{"event_id": "bb1732363a00", "kind": "step_completed", "timestamp": 1783432409.279117, "workflow_id": "a7e7192730b8", "step_order": 1, "data": {}}
+{"event_id": "cc8068a1e84f", "kind": "workflow_completed", "timestamp": 1783432409.279239, "workflow_id": "a7e7192730b8", "step_order": null, "data": {"success_rate": 100.0}}

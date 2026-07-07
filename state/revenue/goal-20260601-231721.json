@@ -1,0 +1,32 @@
+{
+  "currency": "USD",
+  "current_mrr": 7777,
+  "events": [
+    {
+      "at": "2026-06-01T16:17:28.998015Z",
+      "gate": "first-revenue",
+      "mrr": 4500,
+      "note": "smoke",
+      "source": "manual"
+    },
+    {
+      "at": "2026-06-01T16:20:29.782282Z",
+      "gate": "first-revenue",
+      "mrr": 7777,
+      "note": "synced from /var/folders/lv/ys8l5k916992ssfpwcpvpcch0000gn/T/tmp.6iSYmexUXa",
+      "source": "file:/var/folders/lv/ys8l5k916992ssfpwcpvpcch0000gn/T/tmp.6iSYmexUXa"
+    },
+    {
+      "at": "2026-06-01T16:20:30.181973Z",
+      "gate": "first-revenue",
+      "mrr": 7777,
+      "note": "synced from /var/folders/lv/ys8l5k916992ssfpwcpvpcch0000gn/T/tmp.6iSYmexUXa",
+      "source": "polar:file"
+    }
+  ],
+  "gate": "first-revenue",
+  "goal_id": "goal-20260601-231721",
+  "source": "polar:file",
+  "target_mrr": 1000000,
+  "updated_at": "2026-06-01T16:20:30.181973Z"
+}

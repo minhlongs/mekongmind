@@ -1,0 +1,18 @@
+{
+  "artifact_path": "state/evidence/company-blueprint.json",
+  "current_gate": "company-blueprint",
+  "department": "ceo-command",
+  "gate": "company-blueprint",
+  "idea": "sell local portfolio to $1M MRR",
+  "inventory_source": "/Users/macbook/Documents/me-deep-wrapper/state/products/local-product-inventory.json",
+  "kill_criteria": "Kill or pivot if Market Intelligence cannot validate reachable buyer, urgent pain, demand signal, and willingness to pay before build/outreach volume.",
+  "next_department": "market-intelligence",
+  "offer_direction": "package migrate-no-unchecked-indexed-access as a sellable RaaS/productized workflow with Polar checkout and fulfillment SOP",
+  "pain": "workflow pain hypothesis around migrate-no-unchecked-indexed-access; Market Intelligence must validate urgency and alternatives",
+  "polar_provider": "Polar.sh canonical; do not modify verified Polar setup without explicit approval",
+  "product_name": "migrate-no-unchecked-indexed-access",
+  "product_path": "/Users/macbook/dify/packages/migrate-no-unchecked-indexed-access",
+  "target_customer": "buyer hypothesis for migrate-no-unchecked-indexed-access; Market Intelligence must validate reachable buyer and budget",
+  "target_mrr": 1000000,
+  "updated_at": "2026-06-03T15:16:08.298375Z"
+}

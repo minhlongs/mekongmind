@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "eslint-plugin-community-nodes",
+  "product_path": "/Users/macbook/mekongmind/apps/well/n8n_codebase/packages/@n8n/eslint-plugin-community-nodes",
+  "snapshot_dir": "state/products/evidence/eslint-plugin-community-nodes-5634fa34",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/eslint-plugin-community-nodes-5634fa34/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/eslint-plugin-community-nodes-5634fa34/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:21:19.179551Z"
+}

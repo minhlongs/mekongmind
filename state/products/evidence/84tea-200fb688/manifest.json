@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "84tea",
+  "product_path": "/Users/macbook/projects/sophia-ai-factory/apps/84tea",
+  "snapshot_dir": "state/products/evidence/84tea-200fb688",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/84tea-200fb688/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/84tea-200fb688/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:25:53.037041Z"
+}

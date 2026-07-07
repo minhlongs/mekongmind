@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "caamp",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/packages/cleo-new/packages/caamp",
+  "snapshot_dir": "state/products/evidence/caamp-bb49d9bd",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/caamp-bb49d9bd/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/caamp-bb49d9bd/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:47.274376Z"
+}

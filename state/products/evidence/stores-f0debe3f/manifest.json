@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "stores",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/apps/well/n8n_codebase/packages/frontend/@n8n/stores",
+  "snapshot_dir": "state/products/evidence/stores-f0debe3f",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/stores-f0debe3f/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/stores-f0debe3f/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:30:54.446709Z"
+}

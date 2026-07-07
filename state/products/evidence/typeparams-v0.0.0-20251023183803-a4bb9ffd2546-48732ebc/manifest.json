@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "typeparams@v0.0.0-20251023183803-a4bb9ffd2546",
+  "product_path": "/Users/macbook/go/pkg/mod/golang.org/x/exp/typeparams@v0.0.0-20251023183803-a4bb9ffd2546",
+  "snapshot_dir": "state/products/evidence/typeparams-v0.0.0-20251023183803-a4bb9ffd2546-48732ebc",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/typeparams-v0.0.0-20251023183803-a4bb9ffd2546-48732ebc/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/typeparams-v0.0.0-20251023183803-a4bb9ffd2546-48732ebc/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:39.013032Z"
+}

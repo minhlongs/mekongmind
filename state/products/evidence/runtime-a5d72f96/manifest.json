@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "runtime",
+  "product_path": "/Users/macbook/mekong-cli/packages/cleo-new/packages/runtime",
+  "snapshot_dir": "state/products/evidence/runtime-a5d72f96",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/runtime-a5d72f96/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/runtime-a5d72f96/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:19:28.972102Z"
+}

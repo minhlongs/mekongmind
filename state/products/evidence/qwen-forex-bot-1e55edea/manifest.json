@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "qwen-forex-bot",
+  "product_path": "/Users/macbook/projects/qwen-forex-bot",
+  "snapshot_dir": "state/products/evidence/qwen-forex-bot-1e55edea",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/qwen-forex-bot-1e55edea/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/qwen-forex-bot-1e55edea/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:25:51.086261Z"
+}

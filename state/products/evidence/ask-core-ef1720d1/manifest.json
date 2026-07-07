@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "ask-core",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/packages/ask-core",
+  "snapshot_dir": "state/products/evidence/ask-core-ef1720d1",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/ask-core-ef1720d1/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/ask-core-ef1720d1/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:23.837588Z"
+}

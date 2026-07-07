@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "web",
+  "product_path": "/Users/macbook/nhipdieuxanh/apps/web",
+  "snapshot_dir": "state/products/evidence/web-6e8a27b5",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/web-6e8a27b5/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/web-6e8a27b5/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:24:22.720261Z"
+}

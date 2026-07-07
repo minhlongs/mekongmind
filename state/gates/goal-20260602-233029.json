@@ -1,0 +1,136 @@
+{
+  "current_gate": "first-1m-mrr",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:37:00.880058Z",
+          "note": "initial gate",
+          "source": "local-state"
+        }
+      ],
+      "id": "idea-intake",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:37:00.912371Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T16:39:55.028475Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "company-blueprint",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:37:00.953950Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T16:39:55.074121Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "offer-validated",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:37:00.997911Z",
+          "note": "/Users/macbook/state/evidence/mvp-live.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T16:39:55.126692Z",
+          "note": "/Users/macbook/state/evidence/mvp-live.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "mvp-live",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:49:42.207028Z",
+          "note": "/Users/macbook/state/evidence/first-revenue.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "first-revenue",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:37:01.042433Z",
+          "note": "/Users/macbook/state/evidence/repeatable-channel.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T16:39:55.176634Z",
+          "note": "/Users/macbook/state/evidence/repeatable-channel.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "repeatable-channel",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:37:01.094499Z",
+          "note": "/Users/macbook/state/evidence/fulfillment-stable.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T16:39:55.222309Z",
+          "note": "/Users/macbook/state/evidence/fulfillment-stable.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "fulfillment-stable",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:37:01.143270Z",
+          "note": "/Users/macbook/state/evidence/scale-ready.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T16:39:55.268310Z",
+          "note": "/Users/macbook/state/evidence/scale-ready.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "scale-ready",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:49:42.207028Z",
+          "note": "MRR target reached",
+          "source": "revenue"
+        }
+      ],
+      "id": "first-1m-mrr",
+      "status": "active"
+    }
+  ],
+  "goal_id": "goal-20260602-233029",
+  "updated_at": "2026-06-02T16:49:42.207028Z"
+}

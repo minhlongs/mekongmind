@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "viper@v1.19.0",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/spf13/viper@v1.19.0",
+  "snapshot_dir": "state/products/evidence/viper-v1.19.0-d501aeca",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/viper-v1.19.0-d501aeca/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/viper-v1.19.0-d501aeca/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:21.595248Z"
+}

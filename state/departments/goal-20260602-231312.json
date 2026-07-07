@@ -1,0 +1,188 @@
+{
+  "departments": {
+    "ceo-command": {
+      "artifact": "/Users/macbook/state/evidence/company-blueprint.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "factory loop advance",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "customer-success": {
+      "artifact": "/Users/macbook/state/evidence/fulfillment-stable.json",
+      "department": "customer-success",
+      "gate": "fulfillment-stable",
+      "note": "factory loop advance",
+      "owner": "project-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "engineering-factory": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "factory loop advance",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "growth-marketing": {
+      "artifact": "/Users/macbook/state/evidence/repeatable-channel.json",
+      "department": "growth-marketing",
+      "gate": "repeatable-channel",
+      "note": "factory loop advance",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "knowledge-memory": {
+      "artifact": "/Users/macbook/state/evidence/scale-ready.json",
+      "department": "knowledge-memory",
+      "gate": "scale-ready",
+      "note": "factory loop advance",
+      "owner": "docs-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "market-intelligence": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "factory loop advance",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "platform-operations": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "platform-operations",
+      "gate": "mvp-live",
+      "note": "factory loop advance",
+      "owner": "infrastructure-github-actions-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "product-strategy": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "factory loop advance",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "quality-compliance": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "quality-compliance",
+      "gate": "mvp-live",
+      "note": "factory loop advance",
+      "owner": "code-reviewer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    "sales-revenue": {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "factory loop advance",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/state/evidence/company-blueprint.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "factory loop advance",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "factory loop advance",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "factory loop advance",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "factory loop advance",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "quality-compliance",
+      "gate": "mvp-live",
+      "note": "factory loop advance",
+      "owner": "code-reviewer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "platform-operations",
+      "gate": "mvp-live",
+      "note": "factory loop advance",
+      "owner": "infrastructure-github-actions-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/repeatable-channel.json",
+      "department": "growth-marketing",
+      "gate": "repeatable-channel",
+      "note": "factory loop advance",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "factory loop advance",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/fulfillment-stable.json",
+      "department": "customer-success",
+      "gate": "fulfillment-stable",
+      "note": "factory loop advance",
+      "owner": "project-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/scale-ready.json",
+      "department": "knowledge-memory",
+      "gate": "scale-ready",
+      "note": "factory loop advance",
+      "owner": "docs-manager",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:33:54.260676Z"
+    }
+  ],
+  "goal_id": "goal-20260602-231312",
+  "updated_at": "2026-06-02T16:33:54.260676Z"
+}

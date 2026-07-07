@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "src-tauri",
+  "product_path": "/Users/macbook/Downloads/mekong-cli-main/apps/tauri-shell/src-tauri",
+  "snapshot_dir": "state/products/evidence/src-tauri-945446eb",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/src-tauri-945446eb/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/src-tauri-945446eb/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T14:08:12.241375Z"
+}

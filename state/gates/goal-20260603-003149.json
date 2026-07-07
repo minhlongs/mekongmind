@@ -1,0 +1,76 @@
+{
+  "current_gate": "fulfillment-stable",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T17:31:49.562608Z",
+          "note": "initial gate",
+          "source": "local-state"
+        }
+      ],
+      "id": "idea-intake",
+      "status": "passed"
+    },
+    {
+      "evidence": [],
+      "id": "company-blueprint",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "offer-validated",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "mvp-live",
+      "status": "pending"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T17:40:24.444075Z",
+          "note": "/Users/macbook/state/evidence/first-revenue.json AURA CAFE payment pipeline ready \u2014 Stripe + local payments (MoMo, ZaloPay)",
+          "source": "artifact"
+        }
+      ],
+      "id": "first-revenue",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T17:41:04.359982Z",
+          "note": "/Users/macbook/state/evidence/repeatable-channel.json AURA CAFE delivery channels configured \u2014 Grab, ShopeeFood, Facebook, Instagram, Zalo OA",
+          "source": "artifact"
+        }
+      ],
+      "id": "repeatable-channel",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T17:41:10.248047Z",
+          "note": "/Users/macbook/state/evidence/fulfillment-stable.json AURA CAFE ops SOP documented \u2014 barista workflow, inventory, customer service, emergency procedures",
+          "source": "artifact"
+        }
+      ],
+      "id": "fulfillment-stable",
+      "status": "active"
+    },
+    {
+      "evidence": [],
+      "id": "scale-ready",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "first-1m-mrr",
+      "status": "pending"
+    }
+  ],
+  "goal_id": "goal-20260603-003149",
+  "updated_at": "2026-06-02T17:41:10.248047Z"
+}

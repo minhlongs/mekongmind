@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "desktop-electron",
+  "product_path": "/Users/macbook/mekongmind/packages/ide/desktop-electron",
+  "snapshot_dir": "state/products/evidence/desktop-electron-a0d80957",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/desktop-electron-a0d80957/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/desktop-electron-a0d80957/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:22:25.877629Z"
+}

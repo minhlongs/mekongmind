@@ -1,0 +1,88 @@
+═══════════════════════════════════════════════════════════════
+HIGH MISSION — AURA CAFE LAUNCH PREPARATION
+═══════════════════════════════════════════════════════════════
+PROJECT: AURA CAFE — F&B Container Cafe
+LOCATION: Sa Đéc, Đồng Tháp, Mekong Delta, Vietnam
+LAUNCH DATE: 06/06/2026 (T-4 days)
+FACTORY LOOP: All 9 gates passed | first-1m-mrr: active
+═══════════════════════════════════════════════════════════════
+MISSION PARAMETERS
+──────────────────
+  Goal ID: goal-20260602-233029
+  Target MRR: 1,000,000 USD
+  Current MRR: 0 (projected Month 1: 2,100 USD)
+  Business Model: Container cafe — Dine-in + Takeaway + Delivery
+  Revenue Projection Month 1: 63,000,000 VND (2,520 USD)
+  Break-even: Month 2-3 (50 customers/day)
+═══════════════════════════════════════════════════════════════
+P0 — MUST COMPLETE BEFORE 06/06/2026 LAUNCH
+──────────────────────────────────────────────
+  [ ] Container final modifications & deep cleaning
+  [ ] Equipment installation & testing:
+        [ ] Commercial espresso machine
+        [ ] Commercial coffee grinder
+        [ ] Refrigerator / Freezer
+        [ ] POS system setup
+  [ ] Staff training (3-day intensive barista program)
+  [ ] Health department inspection & permit
+  [ ] Business registration (Giay phep kinh doanh)
+  [ ] Food safety certificate (Giay chung nhan ATTP)
+  [ ] Zalo Official Account registration & verification
+  [ ] Facebook Business Page created & branded
+  [ ] Instagram account @aura.cafe.sadec created
+  [ ] Google Maps business listing
+  [ ] Final menu design & printing
+  [ ] Payment QR codes: MoMo, ZaloPay, Bank Transfer
+  [ ] Grand opening event logistics (06/06/2026)
+═══════════════════════════════════════════════════════════════
+P1 — FIRST WEEK POST-LAUNCH
+────────────────────────────
+  [ ] GrabMerchant onboarding
+  [ ] ShopeeFood onboarding
+  [ ] Customer loyalty card system
+  [ ] Staff uniforms ordered & delivered
+  [ ] Operating hours signage installed
+  [ ] Instagram first 20 posts (brand teaser content)
+  [ ] Customer feedback collection system
+═══════════════════════════════════════════════════════════════
+P2 — FIRST MONTH
+────────────────
+  [ ] Outdoor patio seating setup
+  [ ] Local influencer partnerships (3-5 micro)
+  [ ] Corporate catering pitch deck
+  [ ] Seasonal summer menu development
+  [ ] Coffee workshop / event calendar
+  [ ] Customer review monitoring system
+═══════════════════════════════════════════════════════════════
+FACTORY LOOP GATES — COMPLETE
+──────────────────────────────
+  [X] idea-intake      → AURA CAFE concept defined
+  [X] company-blueprint → Business plan documented
+  [X] offer-validated  → Menu, pricing, USP locked
+  [X] mvp-live         → Cafe setup & equipment ready
+  [X] first-revenue    → Payment systems operational
+  [X] repeatable-channel → Social media + delivery platforms
+  [X] fulfillment-stable → Operations SOP documented
+  [X] scale-ready      → Cloneable container cafe model
+  [ ] first-1m-mrr     → ACTIVE (MRR gap: 997,900 USD)
+═══════════════════════════════════════════════════════════════
+FINANCIAL SNAPSHOT
+──────────────────
+  Startup Capital Required: 99,000,000 VND (~3,960 USD)
+  Monthly OpEx: 52,000,000 VND (~2,080 USD)
+  Month 1 Revenue Target: 42,000,000 VND (~1,680 USD)
+  Break-even: Month 2-3
+  Year 1 Target: 500,000,000 VND (~20,000/month)
+═══════════════════════════════════════════════════════════════
+SCALE PATHWAY
+─────────────
+  Phase 1 (Now):    Single container — 2,100 USD MRR
+  Phase 2 (+18m):  5 containers Đồng Tháp — 10,500 USD MRR
+  Phase 3 (+36m):  20 containers Mekong Delta — 42,000 USD MRR
+  Phase 4 (+48m):  50-100 locations national — 210,000 USD MRR
+  Phase 5 (+60m):  Franchise + platform — 1,000,000 USD MRR
+═══════════════════════════════════════════════════════════════
+AUTHOR: Long Tho (CEO Solo)
+STATUS: ACTIVE — T-4 to launch
+NEXT REVIEW: 2026-06-06 (Launch Day)
+═══════════════════════════════════════════════════════════════

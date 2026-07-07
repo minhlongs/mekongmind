@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "properties@v1.8.7",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/magiconair/properties@v1.8.7",
+  "snapshot_dir": "state/products/evidence/properties-v1.8.7-58fb4ff7",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/properties-v1.8.7-58fb4ff7/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/properties-v1.8.7-58fb4ff7/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:03.037205Z"
+}

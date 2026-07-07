@@ -1,0 +1,113 @@
+{
+  "apis": {
+    "base_url": "http://localhost:3002",
+    "framework": "Express.js",
+    "node_version": "v20.20.2",
+    "pricing_endpoint": "GET /api/v1/pricing",
+    "protocol": "HTTP/1.1"
+  },
+  "artifact": "tiktok-shop-api-mvp-live",
+  "artifact_path": "state/evidence/mvp-live.json",
+  "blocking_findings": [
+    "GCP project openclaw-raas-hub-1770348928 has billing account 01D7C9-56ED50-B2EDF1 but it is CLOSED (open=false) — billingEnabled=false. Requires manual activation in GCP Console. Public deployment blocked until resolved.",
+    "Real outreach must not start until public deployment, checkout path, opt-out handling, and Polar-backed revenue path are verified.",
+    "Current monetization endpoint is Solana x402/USDC; platform revenue truth still requires Polar.sh checkout/subscription evidence before MRR claim."
+  ],
+  "build_command": "docker build -t tiktok-shop-api . && docker compose up -d",
+  "build_id": "docker-container:198427428c6cef90428da082c1d2c677d53948407576a03d572b8ba949e97374",
+  "build_status": "local Docker image built and container healthy; public GCP deployment blocked by billing",
+  "checkout_path": {
+    "canonical_mrr_provider": "Polar.sh",
+    "current_product_flow": "GET /api/v1/pricing -> Solana x402 USDC transfer -> X-Payment-Tx header -> paid API response",
+    "polar_gap": "Polar checkout/subscription path must be attached before Sales & Revenue can claim MRR",
+    "price": "0.05 USDC/query; target subscription $29/mo via Polar.sh"
+  },
+  "commit": "53dfae0b",
+  "data_model": {
+    "cache": "in-memory cache with Redis fallback",
+    "database": "none yet",
+    "key_patterns": [
+      "search:{keyword}",
+      "pricing",
+      "free-tier:{ip}"
+    ]
+  },
+  "department": "engineering-factory+quality-compliance+platform-operations",
+  "evidence": {
+    "docker_container": "tiktok-shop-api-api-1",
+    "docker_health": "healthy",
+    "health_response": {
+      "checks": {
+        "rateLimiter": true,
+        "scraper": true,
+        "server": true,
+        "solana": "configured"
+      },
+      "env": "production",
+      "status": "ok"
+    },
+    "pricing_response": {
+      "currency": "USDC",
+      "endpoint": "/api/v1/ecommerce-search",
+      "method": "GET",
+      "network": "devnet",
+      "price": "0.05",
+      "scheme": "x402"
+    }
+  },
+  "gate": "mvp-live",
+  "goal_id": "goal-20260603-155338",
+  "health_url": "http://localhost:3002/health",
+  "http_status": 200,
+  "integrations": {
+    "canonical_revenue_provider": "Polar.sh required for MRR evidence",
+    "current_payment_capability": "Solana x402 USDC paywall",
+    "rate_limiter": "in-memory sliding window",
+    "scraper": "Puppeteer/JSDOM fallback",
+    "solana_rpc": "configured by environment"
+  },
+  "known_risks": [
+    "GCP public deployment is blocked by billing.",
+    "No persistent database; cache clears on restart.",
+    "Production Redis is not configured.",
+    "TikTok Shop anti-scraping can require CAPTCHA/proxy handling.",
+    "Polar.sh checkout/subscription evidence is not yet attached to product revenue path."
+  ],
+  "monitoring": "Docker healthcheck plus /health and /metrics endpoint; production monitoring pending public deployment",
+  "owner": "fullstack-developer+code-reviewer+infrastructure-github-actions-expert",
+  "passed_at": "2026-06-03T10:46:47Z",
+  "provider": "local-docker healthy; GCP blocked by billing",
+  "release_decision": "blocked for public production and real outreach until GCP billing/deploy and Polar checkout evidence are verified",
+  "residual_risks": [
+    "Local Docker health is not public production proof.",
+    "Port 3000 conflict caused npm run test:mock to fail with EADDRINUSE.",
+    "Sales evidence must use Polar.sh provider sync, not Solana/manual notes."
+  ],
+  "review_scope": "tiktok-shop-api local Docker runtime, API health/pricing endpoints, package scripts, README, deployment status, and current MekongMind self-selling gate",
+  "rollback_plan": "Stop local container with docker compose down; public rollback plan pending GCP deployment",
+  "routes": {
+    "categories": [
+      "health: GET /health",
+      "pricing: GET /api/v1/pricing",
+      "free-tier-status: GET /api/v1/free-tier-status",
+      "metrics: GET /metrics",
+      "free-search: GET /api/v1/free-search?keyword=<query>",
+      "paid-search: GET /api/v1/ecommerce-search?keyword=<query> with X-Payment-Tx"
+    ],
+    "total": 47
+  },
+  "security_notes": [
+    ".env exists and was not read.",
+    "No Polar credentials were read, changed, rotated, or overwritten.",
+    "Public outreach is blocked until opt-out/compliance and checkout evidence are attached."
+  ],
+  "status": "blocked-for-public-production",
+  "tests_run": {
+    "docker_health": "curl -fsS http://localhost:3002/health passed with status ok",
+    "npm_test": "25 logical checks passed via node --test test/phase3-integration.test.js",
+    "pricing_endpoint": "curl -fsS http://localhost:3002/api/v1/pricing passed",
+    "test_mock": "failed before assertions with EADDRINUSE because port 3000 is already occupied by solo-platform frontend"
+  },
+  "updated_at": "2026-06-03T10:46:47Z",
+  "version_match": "local container verified; public GCP version not verified"
+}

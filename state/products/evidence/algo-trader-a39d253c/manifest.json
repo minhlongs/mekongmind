@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "algo-trader",
+  "product_path": "/Users/macbook/mekongmind/apps/algo-trader",
+  "snapshot_dir": "state/products/evidence/algo-trader-a39d253c",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/algo-trader-a39d253c/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/algo-trader-a39d253c/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:20:32.273681Z"
+}

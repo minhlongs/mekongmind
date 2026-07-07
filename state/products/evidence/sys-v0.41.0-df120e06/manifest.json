@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "sys@v0.41.0",
+  "product_path": "/Users/macbook/go/pkg/mod/golang.org/x/sys@v0.41.0",
+  "snapshot_dir": "state/products/evidence/sys-v0.41.0-df120e06",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/sys-v0.41.0-df120e06/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/sys-v0.41.0-df120e06/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:52.281539Z"
+}

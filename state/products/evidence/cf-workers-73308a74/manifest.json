@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "cf-workers",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/mekong/infra/templates/cf-workers",
+  "snapshot_dir": "state/products/evidence/cf-workers-73308a74",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/cf-workers-73308a74/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/cf-workers-73308a74/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:18.731742Z"
+}

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "agent-forest",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/agent-forest",
+  "snapshot_dir": "state/products/evidence/agent-forest-94e39ea8",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/agent-forest-94e39ea8/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/agent-forest-94e39ea8/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:28:59.454866Z"
+}

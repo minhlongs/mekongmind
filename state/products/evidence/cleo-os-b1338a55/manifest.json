@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "cleo-os",
+  "product_path": "/Users/macbook/cleo-cli/packages/cleo-os",
+  "snapshot_dir": "state/products/evidence/cleo-os-b1338a55",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/cleo-os-b1338a55/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/cleo-os-b1338a55/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:42.798527Z"
+}

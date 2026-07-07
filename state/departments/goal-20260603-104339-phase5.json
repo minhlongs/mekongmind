@@ -1,0 +1,44 @@
+{
+  "departments": {
+    "ceo-command": {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-03T03:44:03.842479Z"
+    },
+    "market-intelligence": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-03T03:48:19.352960Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-03T03:44:03.842479Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-03T03:48:19.352960Z"
+    }
+  ],
+  "goal_id": "goal-20260603-104339-phase5",
+  "updated_at": "2026-06-03T03:48:19.352960Z"
+}

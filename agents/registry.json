@@ -1,0 +1,3667 @@
+{
+  "version": "2.0.0",
+  "schema": "unified-mekongmind",
+  "migration_from": "1.0.0",
+  "migration_notes": "Merged 8 duplicate agents (50 unique total), assigned 99 orphan commands to departments, redistributed business-analyst overload, unified command->agent->department->gate->SOP routing.",
+  "unified_agents": [
+    {
+      "id": "brainstormer",
+      "path": "brainstormer.md",
+      "domain": "ideation,design,thinking",
+      "commands": "ideation design thinking",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "business-analyst",
+      "path": "business-analyst.md",
+      "domain": "business,requirements",
+      "commands": "business requirements",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "code-simplifier",
+      "path": "code-simplifier.md",
+      "domain": "refactor,simplify,cleanup",
+      "commands": "refactor simplify cleanup",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "debugger",
+      "path": "debugger.md",
+      "domain": "debug,troubleshoot,trace",
+      "commands": "debug troubleshoot trace",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "docs-manager",
+      "path": "docs-manager.md",
+      "domain": "docs,writing,documentation",
+      "commands": "docs writing documentation",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "fullstack-developer",
+      "path": "fullstack-developer.md",
+      "domain": "fullstack,web,frontend,backend",
+      "commands": "fullstack web frontend backend",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "gemini-analyzer",
+      "path": "gemini-analyzer.md",
+      "domain": "gemini,google,analyze",
+      "commands": "gemini google analyze",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "git-manager",
+      "path": "git-manager.md",
+      "domain": "git,workflow,branch,merge",
+      "commands": "git workflow branch merge",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "journal-writer",
+      "path": "journal-writer.md",
+      "domain": "journal,logging,notes",
+      "commands": "journal logging notes",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "planner",
+      "path": "planner.md",
+      "domain": "plan,design,architecture",
+      "commands": "plan design architecture",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "project-manager",
+      "path": "project-manager.md",
+      "domain": "pm,schedule,tracking",
+      "commands": "pm schedule tracking",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "researcher",
+      "path": "researcher.md",
+      "domain": "research,analysis,investigate",
+      "commands": "research analysis investigate",
+      "source": "mekong-cli",
+      "deprecated": true,
+      "replaced_by": "research-expert"
+    },
+    {
+      "id": "tester",
+      "path": "tester.md",
+      "domain": "test,qa,verify",
+      "commands": "test qa verify",
+      "source": "mekong-cli",
+      "deprecated": true,
+      "replaced_by": "testing-expert"
+    },
+    {
+      "id": "ui-ux-designer",
+      "path": "ui-ux-designer.md",
+      "domain": "ui,ux,design,figma",
+      "commands": "ui ux design figma",
+      "source": "mekong-cli"
+    },
+    {
+      "id": "build-tools-vite-expert",
+      "path": "build-tools/build-tools-vite-expert.md",
+      "domain": "vite,build,frontend",
+      "commands": "vite build frontend",
+      "source": "claudekit"
+    },
+    {
+      "id": "build-tools-webpack-expert",
+      "path": "build-tools/build-tools-webpack-expert.md",
+      "domain": "webpack,build,frontend",
+      "commands": "webpack build frontend",
+      "source": "claudekit"
+    },
+    {
+      "id": "code-quality-linting-expert",
+      "path": "code-quality/code-quality-linting-expert.md",
+      "domain": "lint,quality,standards",
+      "commands": "lint quality standards",
+      "source": "claudekit"
+    },
+    {
+      "id": "database-expert",
+      "path": "database/database-expert.md",
+      "domain": "database,sql,schema",
+      "commands": "database sql schema",
+      "source": "claudekit"
+    },
+    {
+      "id": "database-mongodb-expert",
+      "path": "database/database-mongodb-expert.md",
+      "domain": "mongodb,mongoose,noSQL",
+      "commands": "mongodb mongoose noSQL",
+      "source": "claudekit"
+    },
+    {
+      "id": "database-postgres-expert",
+      "path": "database/database-postgres-expert.md",
+      "domain": "postgres,pg,sql",
+      "commands": "postgres pg sql",
+      "source": "claudekit"
+    },
+    {
+      "id": "devops-expert",
+      "path": "devops/devops-expert.md",
+      "domain": "devops,ci,cd,deploy",
+      "commands": "devops ci cd deploy",
+      "source": "claudekit"
+    },
+    {
+      "id": "documentation-expert",
+      "path": "documentation/documentation-expert.md",
+      "domain": "docs,writing,documentation",
+      "commands": "docs writing documentation",
+      "source": "claudekit"
+    },
+    {
+      "id": "e2e-playwright-expert",
+      "path": "e2e/e2e-playwright-expert.md",
+      "domain": "e2e,playwright,testing",
+      "commands": "e2e playwright testing",
+      "source": "claudekit"
+    },
+    {
+      "id": "framework-nextjs-expert",
+      "path": "framework/framework-nextjs-expert.md",
+      "domain": "nextjs,react,ssr",
+      "commands": "nextjs react ssr",
+      "source": "claudekit"
+    },
+    {
+      "id": "frontend-accessibility-expert",
+      "path": "frontend/frontend-accessibility-expert.md",
+      "domain": "a11y,accessibility,wcag",
+      "commands": "a11y accessibility wcag",
+      "source": "claudekit"
+    },
+    {
+      "id": "frontend-css-styling-expert",
+      "path": "frontend/frontend-css-styling-expert.md",
+      "domain": "css,styling,tailwind",
+      "commands": "css styling tailwind",
+      "source": "claudekit"
+    },
+    {
+      "id": "git-expert",
+      "path": "git/git-expert.md",
+      "domain": "git,workflow,branch,merge",
+      "commands": "git workflow branch merge",
+      "source": "claudekit"
+    },
+    {
+      "id": "infrastructure-docker-expert",
+      "path": "infrastructure/infrastructure-docker-expert.md",
+      "domain": "docker,container,compose",
+      "commands": "docker container compose",
+      "source": "claudekit"
+    },
+    {
+      "id": "infrastructure-github-actions-expert",
+      "path": "infrastructure/infrastructure-github-actions-expert.md",
+      "domain": "github,actions,ci",
+      "commands": "github actions ci",
+      "source": "claudekit"
+    },
+    {
+      "id": "jest-testing-expert",
+      "path": "testing/jest-testing-expert.md",
+      "domain": "jest,testing,unit",
+      "commands": "jest testing unit",
+      "source": "claudekit"
+    },
+    {
+      "id": "kafka-expert",
+      "path": "kafka/kafka-expert.md",
+      "domain": "kafka,messaging,stream",
+      "commands": "kafka messaging stream",
+      "source": "claudekit"
+    },
+    {
+      "id": "loopback-expert",
+      "path": "loopback/loopback-expert.md",
+      "domain": "loopback,node,api",
+      "commands": "loopback node api",
+      "source": "claudekit"
+    },
+    {
+      "id": "nodejs-expert",
+      "path": "nodejs/nodejs-expert.md",
+      "domain": "nodejs,backend,runtime",
+      "commands": "nodejs backend runtime",
+      "source": "claudekit"
+    },
+    {
+      "id": "react-expert",
+      "path": "react/react-expert.md",
+      "domain": "react,frontend,hooks",
+      "commands": "react frontend hooks",
+      "source": "claudekit"
+    },
+    {
+      "id": "react-performance-expert",
+      "path": "react/react-performance-expert.md",
+      "domain": "react,perf,memo",
+      "commands": "react perf memo",
+      "source": "claudekit"
+    },
+    {
+      "id": "refactoring-expert",
+      "path": "refactoring/refactoring-expert.md",
+      "domain": "refactor,cleanup,pattern",
+      "commands": "refactor cleanup pattern",
+      "source": "claudekit"
+    },
+    {
+      "id": "testing-expert",
+      "path": "testing/testing-expert.md",
+      "domain": "test,qa,verify",
+      "commands": "test qa verify",
+      "source": "claudekit"
+    },
+    {
+      "id": "typescript-build-expert",
+      "path": "typescript/typescript-build-expert.md",
+      "domain": "typescript,build,tsc",
+      "commands": "typescript build tsc",
+      "source": "claudekit"
+    },
+    {
+      "id": "typescript-expert",
+      "path": "typescript/typescript-expert.md",
+      "domain": "typescript,type-system",
+      "commands": "typescript type-system",
+      "source": "claudekit"
+    },
+    {
+      "id": "typescript-type-expert",
+      "path": "typescript/typescript-type-expert.md",
+      "domain": "typescript,types,generics",
+      "commands": "typescript types generics",
+      "source": "claudekit"
+    },
+    {
+      "id": "vitest-testing-expert",
+      "path": "testing/vitest-testing-expert.md",
+      "domain": "vitest,testing,unit",
+      "commands": "vitest testing unit",
+      "source": "claudekit"
+    },
+    {
+      "id": "code-search",
+      "path": "code-search.md",
+      "domain": "search,find,codebase",
+      "commands": "search find codebase",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "code-search.md",
+        "claudekit_path": "code-search.md"
+      }
+    },
+    {
+      "id": "oracle",
+      "path": "oracle.md",
+      "domain": "oracle,database,sql",
+      "commands": "oracle database sql",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "oracle.md",
+        "claudekit_path": "oracle.md"
+      }
+    },
+    {
+      "id": "research-expert",
+      "path": "research-expert.md",
+      "domain": "research,analysis,investigate",
+      "commands": "research analysis investigate",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "research-expert.md",
+        "claudekit_path": "research-expert.md"
+      }
+    },
+    {
+      "id": "code-review-expert",
+      "path": "code-review-expert.md",
+      "domain": "review,quality,standards",
+      "commands": "review quality standards",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "code-review-expert.md",
+        "claudekit_path": "code-review-expert.md"
+      }
+    },
+    {
+      "id": "ai-sdk-expert",
+      "path": "ai-sdk-expert.md",
+      "domain": "ai,sdk,vercel,nextjs",
+      "commands": "ai sdk vercel nextjs",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "ai-sdk-expert.md",
+        "claudekit_path": "ai-sdk-expert.md"
+      }
+    },
+    {
+      "id": "cli-expert",
+      "path": "cli-expert.md",
+      "domain": "cli,command,shell,claudekit",
+      "commands": "cli command shell claudekit",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "cli-expert.md",
+        "claudekit_path": "cli-expert.md"
+      }
+    },
+    {
+      "id": "triage-expert",
+      "path": "triage-expert.md",
+      "domain": "triage,issues,pipeline",
+      "commands": "triage issues pipeline",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "triage-expert.md",
+        "claudekit_path": "triage-expert.md"
+      }
+    },
+    {
+      "id": "nestjs-expert",
+      "path": "nestjs-expert.md",
+      "domain": "nestjs,node,backend,api",
+      "commands": "nestjs node backend api",
+      "source": "mekong-cli+claudekit",
+      "merged_from": {
+        "mekong_path": "nestjs-expert.md",
+        "claudekit_path": "nestjs-expert.md"
+      }
+    },
+    {
+      "id": "pipeline",
+      "domain": "sequential,pipeline,stage",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "fanout-fanin",
+      "domain": "parallel,fanout,aggregate",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "producer-reviewer",
+      "domain": "produce,review,feedback",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "supervisor",
+      "domain": "supervise,coordinate,delegate",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "hierarchical",
+      "domain": "hierarchy,delegate,escalate",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "expert-pool",
+      "domain": "pool,specialist,query",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "iterative-refiner",
+      "domain": "iterate,refine,improve",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "orchestrator",
+      "domain": "orchestrate,team,plan",
+      "source": "me-wrapper"
+    },
+    {
+      "id": "hermes-agent",
+      "path": null,
+      "domain": "tool-calling,file,terminal,browser,web,code-execution",
+      "commands": "coding testing debugging browser web-search code-review",
+      "source": "me-wrapper-integration",
+      "note": "Bridge to Hermes Agent — uses ollama-launch provider via hermes CLI"
+    }
+  ],
+  "mekongmind_operating_model": {
+    "identity": "Agentic Platform Solo Company OS",
+    "target": "first $1M MRR, then cloneable RaaS factory",
+    "source_roles": [
+      {
+        "source": "mekong-cli",
+        "role": "business revenue orchestration",
+        "owns": [
+          "idea",
+          "market",
+          "offer",
+          "gtm",
+          "sales",
+          "revenue",
+          "fulfillment",
+          "multi-project-raas"
+        ]
+      },
+      {
+        "source": "claudekit",
+        "role": "engineering verification factory",
+        "owns": [
+          "full-stack-code",
+          "tests",
+          "review",
+          "infra",
+          "deploy",
+          "runtime-quality"
+        ]
+      },
+      {
+        "source": "me-wrapper",
+        "role": "harness dna and command router",
+        "owns": [
+          "goal-state",
+          "department-routing",
+          "sop-gates",
+          "evidence-contracts",
+          "continuous-loop",
+          "clone-memory"
+        ]
+      }
+    ],
+    "lifecycle": [
+      {
+        "stage": "idea-to-company",
+        "departments": [
+          "ceo-command"
+        ],
+        "gate": "company-blueprint",
+        "outcome": "founder intent becomes one active company goal with constraints, target MRR, and gate map"
+      },
+      {
+        "stage": "terrain-to-offer",
+        "departments": [
+          "market-intelligence",
+          "product-strategy"
+        ],
+        "gate": "offer-validated",
+        "outcome": "ICP, pain, wedge, pricing, and sellable RaaS offer are validated before build"
+      },
+      {
+        "stage": "offer-to-product",
+        "departments": [
+          "engineering-factory",
+          "quality-compliance",
+          "platform-operations"
+        ],
+        "gate": "mvp-live",
+        "outcome": "minimum sellable full-stack product is built, tested, deployed, observed, and recoverable"
+      },
+      {
+        "stage": "product-to-revenue",
+        "departments": [
+          "growth-marketing",
+          "sales-revenue"
+        ],
+        "gate": "first-revenue",
+        "outcome": "repeatable channel evidence and checkout/sales loop produce MRR"
+      },
+      {
+        "stage": "revenue-to-retention",
+        "departments": [
+          "customer-success"
+        ],
+        "gate": "fulfillment-stable",
+        "outcome": "customer outcome is delivered without founder bottleneck"
+      },
+      {
+        "stage": "retention-to-clone",
+        "departments": [
+          "knowledge-memory"
+        ],
+        "gate": "scale-ready",
+        "outcome": "SOPs, decisions, and playbooks are extracted so the next CEO Solo clone can reuse the DNA"
+      }
+    ],
+    "operating_layers": [
+      {
+        "layer": "L0",
+        "name": "Founder Intent Intake",
+        "purpose": "Turn raw idea text into a durable CEO Solo Company goal without losing founder constraints.",
+        "source_mix": [
+          "me-wrapper",
+          "mekong-cli"
+        ],
+        "departments": [
+          "ceo-command"
+        ],
+        "commands": [
+          "idea",
+          "goal",
+          "solo",
+          "chain"
+        ],
+        "sop_focus": [
+          "idea-intake",
+          "target-mrr",
+          "constraint-capture",
+          "kill-criteria"
+        ],
+        "entry_signal": "founder enters idea or goal",
+        "exit_gate": "company-blueprint",
+        "handoff_to": [
+          "market-intelligence",
+          "product-strategy"
+        ],
+        "failure_signal": "goal lacks ICP, pain, target MRR, gate map, or kill criteria"
+      },
+      {
+        "layer": "L1",
+        "name": "Market Terrain And Offer",
+        "purpose": "Convert Mekong CLI business breadth into a narrow sellable RaaS wedge before any full-stack build.",
+        "source_mix": [
+          "mekong-cli"
+        ],
+        "departments": [
+          "market-intelligence",
+          "product-strategy"
+        ],
+        "commands": [
+          "research",
+          "analysis",
+          "business",
+          "requirements",
+          "pricing"
+        ],
+        "sop_focus": [
+          "terrain-scan",
+          "icp-validation",
+          "offer-shape",
+          "pricing-hypothesis",
+          "no-build-without-demand"
+        ],
+        "entry_signal": "company blueprint exists",
+        "exit_gate": "offer-validated",
+        "handoff_to": [
+          "engineering-factory",
+          "quality-compliance",
+          "platform-operations"
+        ],
+        "failure_signal": "offer cannot name buyer, urgent pain, alternative, wedge, price, and demand signal"
+      },
+      {
+        "layer": "L2",
+        "name": "Product Engineering Factory",
+        "purpose": "Use ClaudeKit full-stack specialists only after offer proof, producing a sellable, tested, deployable MVP.",
+        "source_mix": [
+          "claudekit",
+          "mekong-cli"
+        ],
+        "departments": [
+          "engineering-factory",
+          "quality-compliance",
+          "platform-operations"
+        ],
+        "commands": [
+          "nextjs",
+          "react",
+          "api",
+          "database",
+          "test",
+          "review",
+          "deploy",
+          "github-actions"
+        ],
+        "sop_focus": [
+          "architecture-slice",
+          "implementation",
+          "test-review",
+          "deployment",
+          "observability",
+          "rollback"
+        ],
+        "entry_signal": "offer-validated artifact passes strict contract",
+        "exit_gate": "mvp-live",
+        "handoff_to": [
+          "growth-marketing",
+          "sales-revenue"
+        ],
+        "failure_signal": "product is code-complete but lacks tests, deploy proof, version match, health URL, or rollback plan"
+      },
+      {
+        "layer": "L3",
+        "name": "Revenue Capture Loop",
+        "purpose": "Join Mekong GTM/revenue commands with live checkout evidence so the product becomes MRR instead of a demo.",
+        "source_mix": [
+          "mekong-cli",
+          "me-wrapper"
+        ],
+        "departments": [
+          "growth-marketing",
+          "sales-revenue"
+        ],
+        "commands": [
+          "marketing",
+          "content",
+          "growth",
+          "sales",
+          "revenue",
+          "checkout",
+          "billing"
+        ],
+        "sop_focus": [
+          "channel-experiment",
+          "lead-qualification",
+          "sales-script",
+          "checkout",
+          "close",
+          "mrr-review"
+        ],
+        "entry_signal": "mvp-live artifact passes strict contract",
+        "exit_gate": "first-revenue",
+        "handoff_to": [
+          "customer-success"
+        ],
+        "failure_signal": "traffic exists but no qualified lead, checkout URL, payment status, provider, or current MRR evidence"
+      },
+      {
+        "layer": "L4",
+        "name": "Fulfillment And Retention",
+        "purpose": "Prove customer outcome delivery so revenue is retained and founder does not become the bottleneck.",
+        "source_mix": [
+          "mekong-cli",
+          "claudekit"
+        ],
+        "departments": [
+          "customer-success"
+        ],
+        "commands": [
+          "support",
+          "triage",
+          "tracking",
+          "onboarding",
+          "fulfillment"
+        ],
+        "sop_focus": [
+          "onboarding",
+          "delivery-tracking",
+          "customer-feedback",
+          "support-loop",
+          "retention-risk"
+        ],
+        "entry_signal": "first-revenue artifact or revenue metric is present",
+        "exit_gate": "fulfillment-stable",
+        "handoff_to": [
+          "knowledge-memory",
+          "sales-revenue"
+        ],
+        "failure_signal": "customer paid but outcome, SLA, owner, escalation, or retention signal is missing"
+      },
+      {
+        "layer": "L5",
+        "name": "Clone Memory And Scale",
+        "purpose": "Extract decisions, SOP changes, and reusable playbooks so Mekongmind can mint the next Solo CEO/RaaS clone.",
+        "source_mix": [
+          "me-wrapper",
+          "mekong-cli"
+        ],
+        "departments": [
+          "knowledge-memory"
+        ],
+        "commands": [
+          "docs",
+          "journal",
+          "memory",
+          "notes",
+          "sop"
+        ],
+        "sop_focus": [
+          "decision-log",
+          "playbook-extraction",
+          "sop-update",
+          "clone-readiness",
+          "next-bottleneck"
+        ],
+        "entry_signal": "fulfillment-stable artifact passes strict contract",
+        "exit_gate": "scale-ready",
+        "handoff_to": [
+          "ceo-command"
+        ],
+        "failure_signal": "system works once but has no reusable playbook, SOP delta, open-question log, or clone readiness proof"
+      }
+    ],
+    "revenue_ladder": [
+      {
+        "milestone": "first-paid-customer",
+        "target_mrr": 1,
+        "gate": "first-revenue",
+        "departments": [
+          "growth-marketing",
+          "sales-revenue"
+        ],
+        "evidence": "provider-backed payment or signed paid commitment tied to lead, checkout URL, payment status, and current MRR",
+        "sop_focus": [
+          "qualified lead",
+          "checkout",
+          "close",
+          "provider sync"
+        ],
+        "next_bottleneck": "prove the first customer pays for the RaaS promise"
+      },
+      {
+        "milestone": "10k-mrr",
+        "target_mrr": 10000,
+        "gate": "repeatable-channel",
+        "departments": [
+          "growth-marketing",
+          "sales-revenue",
+          "customer-success"
+        ],
+        "evidence": "repeatable channel with qualified pipeline, close loop, active customers, and low manual delivery drag",
+        "sop_focus": [
+          "channel experiment",
+          "sales script",
+          "onboarding",
+          "retention signal"
+        ],
+        "next_bottleneck": "turn first revenue into repeatable acquisition and delivery"
+      },
+      {
+        "milestone": "100k-mrr",
+        "target_mrr": 100000,
+        "gate": "fulfillment-stable",
+        "departments": [
+          "sales-revenue",
+          "customer-success",
+          "platform-operations"
+        ],
+        "evidence": "MRR, fulfillment, support, uptime, and retention evidence show the company can grow without founder-only work",
+        "sop_focus": [
+          "sales ops",
+          "fulfillment SOP",
+          "support loop",
+          "production reliability"
+        ],
+        "next_bottleneck": "remove founder bottlenecks from sales fulfillment and operations"
+      },
+      {
+        "milestone": "300k-mrr",
+        "target_mrr": 300000,
+        "gate": "scale-ready",
+        "departments": [
+          "customer-success",
+          "knowledge-memory",
+          "platform-operations"
+        ],
+        "evidence": "playbooks, runbooks, metrics, and escalation rules are reusable across multiple RaaS projects",
+        "sop_focus": [
+          "playbook extraction",
+          "ops review",
+          "team handoff",
+          "clone readiness"
+        ],
+        "next_bottleneck": "make the operating system cloneable across niches"
+      },
+      {
+        "milestone": "first-1m-mrr",
+        "target_mrr": 1000000,
+        "gate": "first-1m-mrr",
+        "departments": [
+          "sales-revenue",
+          "customer-success",
+          "knowledge-memory",
+          "ceo-command"
+        ],
+        "evidence": "provider-backed MRR reaches 1000000 and the operating cadence can preserve, expand, and clone the revenue engine",
+        "sop_focus": [
+          "MRR audit",
+          "retention review",
+          "expansion loop",
+          "clone launch"
+        ],
+        "next_bottleneck": "preserve the $1M MRR system and mint the next Solo CEO clone"
+      }
+    ],
+    "invariants": [
+      "No command is naked: command -> agent -> department -> SOP -> gate.",
+      "No engineering before offer validation unless CEO Command explicitly records exception evidence.",
+      "No deploy is done until Quality & Compliance and Platform Operations can prove green release and health evidence.",
+      "No $1M MRR claim is done until Sales & Revenue writes provider-backed MRR evidence.",
+      "No clone is allowed until Knowledge & Memory records reusable SOP and decision evidence."
+    ],
+    "departments": [
+      {
+        "id": "hermes-integration",
+        "name": "Hermes Integration",
+        "description": "Manages Hermes Agent toolsets (file, terminal, browser, web)",
+        "sop_file": "sops/departments/hermes-integration.md",
+        "owns": [
+          "tool-calling",
+          "file-editing",
+          "terminal-ops"
+        ],
+        "harness_source": "me-wrapper-integration"
+      }
+    ]
+  },
+  "mekongmind_departments": [
+    {
+      "id": "ceo-command",
+      "name": "CEO Command",
+      "mission": "Own founder intent, capital allocation, priority, gate approval, and first $1M MRR target.",
+      "owner_agent": "planner",
+      "support_agents": [
+        "project-manager",
+        "business-analyst"
+      ],
+      "owns_commands": [
+        "idea",
+        "goal",
+        "plan",
+        "chain",
+        "solo",
+        "cli",
+        "command",
+        "ideation",
+        "mekong",
+        "pattern",
+        "planner",
+        "registry",
+        "resolve",
+        "shell",
+        "step",
+        "thinking",
+        "agents",
+        "architecture",
+        "claudekit",
+        "harness",
+        "sop"
+      ],
+      "sop_chain": [
+        "idea-intake",
+        "company-blueprint",
+        "gate-review",
+        "capital-allocation"
+      ],
+      "gate_artifact": "company-blueprint",
+      "sop_file": "sops/departments/ceo-command.md",
+      "metric": "one active company goal with clear gate, target, and next constraint",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "founder idea",
+          "constraints",
+          "target market guess",
+          "capital/time limits"
+        ],
+        "decision_rights": [
+          "approve company goal",
+          "set target MRR",
+          "kill or continue gate",
+          "resolve department conflict"
+        ],
+        "output_artifacts": [
+          "state/evidence/company-blueprint.json",
+          "state/goal-*.md",
+          "gate approval notes"
+        ],
+        "handoff_targets": [
+          "market-intelligence",
+          "product-strategy"
+        ],
+        "automation_cadence": "every new idea and every blocked gate",
+        "escalation_triggers": [
+          "unclear ICP",
+          "conflicting priorities",
+          "missing kill criteria",
+          "MRR target absent"
+        ],
+        "success_definition": "one active company blueprint with target, next department, current gate, and kill criteria"
+      }
+    },
+    {
+      "id": "market-intelligence",
+      "name": "Market Intelligence",
+      "mission": "Convert raw idea into terrain, ICP, pain, competitor, demand, and wedge evidence.",
+      "owner_agent": "research-expert",
+      "support_agents": [
+        "researcher",
+        "brainstormer"
+      ],
+      "owns_commands": [
+        "research",
+        "analysis",
+        "investigate",
+        "brainstorm",
+        "find",
+        "gemini",
+        "google",
+        "search",
+        "analyze",
+        "oracle"
+      ],
+      "sop_chain": [
+        "market-map",
+        "customer-discovery",
+        "competitor-scan",
+        "demand-proof"
+      ],
+      "gate_artifact": "offer-validated",
+      "sop_file": "sops/departments/market-intelligence.md",
+      "metric": "validated ICP and demand signal before build",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "company blueprint",
+          "founder hypothesis",
+          "target customer guess",
+          "constraints"
+        ],
+        "decision_rights": [
+          "accept or reject terrain",
+          "rank ICP",
+          "flag no-demand",
+          "request founder clarification"
+        ],
+        "output_artifacts": [
+          "state/evidence/offer-validated.json",
+          "ICP notes",
+          "competitor map",
+          "demand signal log"
+        ],
+        "handoff_targets": [
+          "product-strategy",
+          "ceo-command"
+        ],
+        "automation_cadence": "before offer design and whenever demand signal is weak",
+        "escalation_triggers": [
+          "no reachable buyer",
+          "pain not urgent",
+          "competitor wedge unclear",
+          "confidence too low"
+        ],
+        "success_definition": "validated terrain with ICP, buyer, pain, alternatives, wedge, and evidence source"
+      }
+    },
+    {
+      "id": "product-strategy",
+      "name": "Product Strategy",
+      "mission": "Shape the RaaS offer, pricing, promise, roadmap, packaging, and company blueprint.",
+      "owner_agent": "business-analyst",
+      "support_agents": [
+        "project-manager",
+        "ui-ux-designer"
+      ],
+      "owns_commands": [
+        "business",
+        "requirements",
+        "product",
+        "solo products offer",
+        "design",
+        "figma",
+        "ui",
+        "ui-ux",
+        "ux"
+      ],
+      "sop_chain": [
+        "offer-design",
+        "pricing-model",
+        "raas-blueprint",
+        "roadmap"
+      ],
+      "gate_artifact": "offer-validated",
+      "sop_file": "sops/departments/product-strategy.md",
+      "metric": "sellable offer with pricing and MVP scope",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "market evidence",
+          "ICP",
+          "pain wedge",
+          "competitor alternatives",
+          "founder constraints"
+        ],
+        "decision_rights": [
+          "shape offer promise",
+          "set pricing hypothesis",
+          "scope MVP",
+          "block engineering if offer is weak"
+        ],
+        "output_artifacts": [
+          "state/evidence/offer-validated.json",
+          "offer brief",
+          "pricing model",
+          "MVP acceptance criteria"
+        ],
+        "handoff_targets": [
+          "engineering-factory",
+          "quality-compliance",
+          "platform-operations"
+        ],
+        "automation_cadence": "after market terrain proof and before every build sprint",
+        "escalation_triggers": [
+          "scope creep",
+          "pricing unsupported",
+          "promise cannot be fulfilled",
+          "acceptance criteria unclear"
+        ],
+        "success_definition": "sellable RaaS offer with price, promise, MVP scope, acceptance criteria, and roadmap"
+      }
+    },
+    {
+      "id": "engineering-factory",
+      "name": "Engineering Factory",
+      "mission": "Build the minimum sellable full-stack product, integrations, automations, and agent surfaces.",
+      "owner_agent": "fullstack-developer",
+      "support_agents": [
+        "framework-nextjs-expert",
+        "nestjs-expert",
+        "database-postgres-expert",
+        "ai-sdk-expert"
+      ],
+      "owns_commands": [
+        "web",
+        "frontend",
+        "backend",
+        "api",
+        "database",
+        "ai",
+        "build",
+        "codebase",
+        "css",
+        "debug",
+        "fullstack",
+        "generics",
+        "hooks",
+        "issues",
+        "kafka",
+        "loopback",
+        "memo",
+        "messaging",
+        "mongodb",
+        "mongoose",
+        "nest",
+        "nestjs",
+        "next",
+        "nextjs",
+        "node",
+        "nodejs",
+        "nosql",
+        "oracledb",
+        "perf",
+        "pipeline",
+        "postgres",
+        "postgresql",
+        "react",
+        "refactor",
+        "schema",
+        "sdk",
+        "simplify",
+        "sql",
+        "ssr",
+        "stream",
+        "styling",
+        "tailwind",
+        "trace",
+        "troubleshoot",
+        "type-system",
+        "types",
+        "typescript",
+        "vite",
+        "webpack",
+        "cleanup"
+      ],
+      "sop_chain": [
+        "technical-design",
+        "mvp-build",
+        "integration",
+        "production-hardening"
+      ],
+      "gate_artifact": "mvp-live",
+      "sop_file": "sops/departments/engineering-factory.md",
+      "metric": "production-ready product artifact",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "offer brief",
+          "MVP acceptance criteria",
+          "pricing/checkout requirement",
+          "platform constraints"
+        ],
+        "decision_rights": [
+          "choose implementation slice",
+          "select stack-specific agents",
+          "reject mock-only success path",
+          "record technical risk"
+        ],
+        "output_artifacts": [
+          "state/evidence/mvp-live.json",
+          "changed routes/APIs",
+          "data model",
+          "integration notes"
+        ],
+        "handoff_targets": [
+          "quality-compliance",
+          "platform-operations"
+        ],
+        "automation_cadence": "every MVP build pass and every checkout/product change",
+        "escalation_triggers": [
+          "build cannot run",
+          "checkout omitted",
+          "fake data path only",
+          "acceptance criteria mismatch"
+        ],
+        "success_definition": "sellable full-stack product path with routes, APIs, integrations, checkout path, build command, and tests run"
+      }
+    },
+    {
+      "id": "quality-compliance",
+      "name": "Quality & Compliance",
+      "mission": "Protect delivery with review, tests, audit evidence, security, and release gates.",
+      "owner_agent": "code-review-expert",
+      "support_agents": [
+        "testing-expert",
+        "code-quality-linting-expert",
+        "e2e-playwright-expert"
+      ],
+      "owns_commands": [
+        "review",
+        "test",
+        "lint",
+        "audit",
+        "sox",
+        "verify",
+        "a11y",
+        "accessibility",
+        "code-quality",
+        "code-review",
+        "code-reviewer",
+        "compliance",
+        "e2e",
+        "itgc",
+        "jest",
+        "playwright",
+        "quality",
+        "solo products release-packet",
+        "sop",
+        "standards",
+        "testing",
+        "tsc",
+        "unit",
+        "vitest",
+        "wcag"
+      ],
+      "sop_chain": [
+        "review",
+        "test",
+        "security-scan",
+        "audit-trail",
+        "release-approval"
+      ],
+      "gate_artifact": "mvp-live",
+      "sop_file": "sops/departments/quality-compliance.md",
+      "metric": "green tests and no unresolved critical findings",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "engineering artifact",
+          "changed files",
+          "test plan",
+          "risk notes",
+          "release candidate"
+        ],
+        "decision_rights": [
+          "approve or reject release",
+          "require fixes",
+          "define test coverage",
+          "open compliance finding"
+        ],
+        "output_artifacts": [
+          "state/evidence/mvp-live.json",
+          "test results",
+          "review findings",
+          "security/compliance notes"
+        ],
+        "handoff_targets": [
+          "platform-operations",
+          "engineering-factory",
+          "ceo-command"
+        ],
+        "automation_cadence": "before deploy and after every material code change",
+        "escalation_triggers": [
+          "critical bug",
+          "security risk",
+          "failed build",
+          "unreviewed checkout/revenue path"
+        ],
+        "success_definition": "green release candidate with tests, review summary, unresolved findings, and approval decision"
+      }
+    },
+    {
+      "id": "platform-operations",
+      "name": "Platform Operations",
+      "mission": "Deploy, observe, recover, and operate the live RaaS factory across projects.",
+      "owner_agent": "infrastructure-github-actions-expert",
+      "support_agents": [
+        "devops-expert",
+        "infrastructure-docker-expert",
+        "git-manager"
+      ],
+      "owns_commands": [
+        "deploy",
+        "devops",
+        "github",
+        "docker",
+        "git",
+        "actions",
+        "compose",
+        "container",
+        "infrastructure",
+        "logging",
+        "merge",
+        "runtime",
+        "vercel",
+        "workflow",
+        "branch"
+      ],
+      "sop_chain": [
+        "ci",
+        "deploy",
+        "health-check",
+        "rollback",
+        "ops-review"
+      ],
+      "gate_artifact": "mvp-live",
+      "sop_file": "sops/departments/platform-operations.md",
+      "metric": "live service healthy and current with shipped commit",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "approved release candidate",
+          "build command",
+          "deploy target",
+          "health endpoint",
+          "rollback plan"
+        ],
+        "decision_rights": [
+          "deploy or hold",
+          "choose runtime path",
+          "declare production healthy",
+          "initiate rollback"
+        ],
+        "output_artifacts": [
+          "state/evidence/mvp-live.json",
+          "deploy log",
+          "health check",
+          "version match proof",
+          "rollback notes"
+        ],
+        "handoff_targets": [
+          "growth-marketing",
+          "sales-revenue",
+          "quality-compliance"
+        ],
+        "automation_cadence": "every release, every production incident, and every health regression",
+        "escalation_triggers": [
+          "HTTP not 200",
+          "version mismatch",
+          "CI failure",
+          "missing monitoring",
+          "rollback unavailable"
+        ],
+        "success_definition": "live product at current commit with provider, build ID, health URL, HTTP status, version match, and rollback plan"
+      }
+    },
+    {
+      "id": "growth-marketing",
+      "name": "Growth Marketing",
+      "mission": "Create positioning, content, campaigns, SEO, ads, and experiments that feed pipeline.",
+      "owner_agent": "brainstormer",
+      "support_agents": [
+        "docs-manager",
+        "research-expert",
+        "business-analyst"
+      ],
+      "owns_commands": [
+        "marketing",
+        "content",
+        "launch",
+        "growth",
+        "experiment",
+        "solo products campaign-proof",
+        "solo products work-packet"
+      ],
+      "sop_chain": [
+        "positioning",
+        "content-engine",
+        "campaign",
+        "launch",
+        "growth-experiment"
+      ],
+      "gate_artifact": "repeatable-channel",
+      "sop_file": "sops/departments/growth-marketing.md",
+      "metric": "qualified pipeline and measurable channel learning",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "live MVP",
+          "offer brief",
+          "ICP",
+          "pricing",
+          "customer proof"
+        ],
+        "decision_rights": [
+          "choose channel",
+          "set experiment hypothesis",
+          "stop weak campaign",
+          "route qualified demand"
+        ],
+        "output_artifacts": [
+          "state/evidence/repeatable-channel.json",
+          "campaign brief",
+          "channel metrics",
+          "qualified lead list"
+        ],
+        "handoff_targets": [
+          "sales-revenue",
+          "product-strategy"
+        ],
+        "automation_cadence": "weekly channel experiments and after every launch message change",
+        "escalation_triggers": [
+          "no qualified demand",
+          "message mismatch",
+          "channel CAC unknown",
+          "conversion data missing"
+        ],
+        "success_definition": "repeatable channel evidence with ICP, message, channel, experiment, metric, learning, and next campaign"
+      }
+    },
+    {
+      "id": "sales-revenue",
+      "name": "Sales & Revenue",
+      "mission": "Turn demand into customers through pricing, checkout, pipeline, sales scripts, and close loops.",
+      "owner_agent": "business-analyst",
+      "support_agents": [
+        "project-manager",
+        "docs-manager",
+        "fullstack-developer"
+      ],
+      "owns_commands": [
+        "sales",
+        "revenue",
+        "finance",
+        "pricing",
+        "mrr",
+        "checkout",
+        "billing",
+        "solo products revenue-proof"
+      ],
+      "sop_chain": [
+        "lead-qualification",
+        "sales-script",
+        "checkout",
+        "close",
+        "revenue-review"
+      ],
+      "gate_artifact": "first-revenue",
+      "sop_file": "sops/departments/sales-revenue.md",
+      "metric": "MRR growth toward first $1M MRR",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "qualified lead",
+          "offer",
+          "price",
+          "checkout path",
+          "campaign source"
+        ],
+        "decision_rights": [
+          "qualify or reject lead",
+          "choose close path",
+          "request checkout fix",
+          "record MRR evidence"
+        ],
+        "output_artifacts": [
+          "state/evidence/first-revenue.json",
+          "state/revenue/<goal-id>.json",
+          "sales notes",
+          "provider evidence"
+        ],
+        "handoff_targets": [
+          "customer-success",
+          "product-strategy",
+          "engineering-factory"
+        ],
+        "automation_cadence": "after every qualified lead, close, refund, upgrade, churn, or provider sync",
+        "escalation_triggers": [
+          "checkout broken",
+          "payment not provider-backed",
+          "objection repeats",
+          "promise/product mismatch"
+        ],
+        "success_definition": "provider-backed revenue evidence with lead, qualification, offer, price, checkout URL, payment status, current MRR, and next action"
+      }
+    },
+    {
+      "id": "customer-success",
+      "name": "Customer Success & Fulfillment",
+      "mission": "Deliver the promised outcome with onboarding, support, fulfillment SOPs, retention, and expansion.",
+      "owner_agent": "project-manager",
+      "support_agents": [
+        "docs-manager",
+        "triage-expert",
+        "business-analyst"
+      ],
+      "owns_commands": [
+        "docs",
+        "support",
+        "tracking",
+        "triage",
+        "schedule",
+        "solo products fulfillment-proof"
+      ],
+      "sop_chain": [
+        "onboarding",
+        "fulfillment",
+        "support",
+        "retention",
+        "expansion"
+      ],
+      "gate_artifact": "fulfillment-stable",
+      "sop_file": "sops/departments/customer-success.md",
+      "metric": "customer outcome delivered without founder bottleneck",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "paid customer",
+          "customer promise",
+          "onboarding need",
+          "success metric",
+          "delivery deadline"
+        ],
+        "decision_rights": [
+          "start onboarding",
+          "accept fulfillment complete",
+          "escalate support risk",
+          "request product fix"
+        ],
+        "output_artifacts": [
+          "state/evidence/fulfillment-stable.json",
+          "onboarding record",
+          "support log",
+          "retention risk notes"
+        ],
+        "handoff_targets": [
+          "knowledge-memory",
+          "sales-revenue",
+          "engineering-factory"
+        ],
+        "automation_cadence": "after every new customer, support event, delivery milestone, renewal, or churn risk",
+        "escalation_triggers": [
+          "promise not delivered",
+          "SLA missed",
+          "support owner missing",
+          "customer outcome unclear"
+        ],
+        "success_definition": "customer outcome delivered with onboarding, promise, delivery state, support owner, escalation path, retention signal, and next milestone"
+      }
+    },
+    {
+      "id": "knowledge-memory",
+      "name": "Knowledge & Memory",
+      "mission": "Keep SOPs, decisions, lessons, audits, and reusable playbooks current across all cloned companies.",
+      "owner_agent": "docs-manager",
+      "support_agents": [
+        "journal-writer",
+        "documentation-expert",
+        "planner"
+      ],
+      "owns_commands": [
+        "docs",
+        "journal",
+        "notes",
+        "documentation",
+        "writing",
+        "solo products clone-proof"
+      ],
+      "sop_chain": [
+        "decision-log",
+        "sop-update",
+        "playbook-extract",
+        "clone-sync"
+      ],
+      "gate_artifact": "scale-ready",
+      "sop_file": "sops/departments/knowledge-memory.md",
+      "metric": "operating knowledge reusable by the next CEO Solo clone",
+      "operating_blueprint": {
+        "upstream_inputs": [
+          "passed gates",
+          "department artifacts",
+          "customer outcomes",
+          "open questions",
+          "SOP deltas"
+        ],
+        "decision_rights": [
+          "publish playbook",
+          "mark clone-ready",
+          "require missing evidence",
+          "archive project-specific notes"
+        ],
+        "output_artifacts": [
+          "state/evidence/scale-ready.json",
+          "decision log",
+          "SOP changes",
+          "reusable playbook",
+          "clone notes"
+        ],
+        "handoff_targets": [
+          "ceo-command",
+          "market-intelligence"
+        ],
+        "automation_cadence": "after every gate pass, major incident, customer learning, or clone handoff",
+        "escalation_triggers": [
+          "decision undocumented",
+          "SOP changed but not recorded",
+          "playbook not reusable",
+          "clone readiness unsupported"
+        ],
+        "success_definition": "reusable operating memory with decision log, SOP changes, playbook, project notes, open questions, clone readiness, and next bottleneck"
+      }
+    }
+  ],
+  "command_to_agent": {
+    "a11y": "frontend-accessibility-expert",
+    "accessibility": "frontend-accessibility-expert",
+    "actions": "infrastructure-github-actions-expert",
+    "agents": "cli-expert",
+    "analysis": "research-expert",
+    "analyze": "gemini-analyzer",
+    "api": "nestjs-expert",
+    "architecture": "planner",
+    "audit": "code-review-expert",
+    "backend": "nodejs-expert",
+    "brainstorm": "brainstormer",
+    "branch": "git-expert",
+    "build": "build-tools-vite-expert",
+    "business": "business-analyst",
+    "chain": "planner",
+    "claudekit": "cli-expert",
+    "cleanup": "refactoring-expert",
+    "cli": "cli-expert",
+    "code-quality": "code-quality-linting-expert",
+    "code-review": "code-review-expert",
+    "code-reviewer": "code-review-expert",
+    "codebase": "code-search",
+    "command": "cli-expert",
+    "compliance": "code-review-expert",
+    "compose": "infrastructure-docker-expert",
+    "container": "infrastructure-docker-expert",
+    "content": "docs-manager",
+    "css": "frontend-css-styling-expert",
+    "database": "oracle",
+    "debug": "debugger",
+    "deploy": "infrastructure-github-actions-expert",
+    "design": "ui-ux-designer",
+    "devops": "devops-expert",
+    "docker": "infrastructure-docker-expert",
+    "docs": "docs-manager",
+    "documentation": "documentation-expert",
+    "e2e": "e2e-playwright-expert",
+    "experiment": "business-analyst",
+    "figma": "ui-ux-designer",
+    "finance": "business-analyst",
+    "find": "code-search",
+    "frontend": "react-expert",
+    "fullstack": "fullstack-developer",
+    "gemini": "gemini-analyzer",
+    "generics": "typescript-type-expert",
+    "git": "git-manager",
+    "github": "infrastructure-github-actions-expert",
+    "github-actions": "infrastructure-github-actions-expert",
+    "goal": "planner",
+    "google": "gemini-analyzer",
+    "growth": "business-analyst",
+    "harness": "planner",
+    "hooks": "react-expert",
+    "idea": "planner",
+    "ideation": "brainstormer",
+    "infrastructure": "infrastructure-github-actions-expert",
+    "investigate": "research-expert",
+    "issues": "triage-expert",
+    "itgc": "code-review-expert",
+    "jest": "jest-testing-expert",
+    "journal": "journal-writer",
+    "kafka": "kafka-expert",
+    "launch": "business-analyst",
+    "lint": "code-quality-linting-expert",
+    "linting": "code-quality-linting-expert",
+    "logging": "journal-writer",
+    "loopback": "loopback-expert",
+    "marketing": "business-analyst",
+    "mekong": "cli-expert",
+    "memo": "react-performance-expert",
+    "merge": "git-expert",
+    "messaging": "kafka-expert",
+    "mongodb": "database-mongodb-expert",
+    "mongoose": "database-mongodb-expert",
+    "mrr": "business-analyst",
+    "nest": "nestjs-expert",
+    "nestjs": "nestjs-expert",
+    "next": "framework-nextjs-expert",
+    "nextjs": "framework-nextjs-expert",
+    "node": "nestjs-expert",
+    "nodejs": "nodejs-expert",
+    "nosql": "database-mongodb-expert",
+    "notes": "journal-writer",
+    "oracle": "oracle",
+    "oracledb": "oracle",
+    "pattern": "planner",
+    "perf": "react-performance-expert",
+    "pipeline": "triage-expert",
+    "plan": "planner",
+    "planner": "planner",
+    "playwright": "e2e-playwright-expert",
+    "postgres": "database-postgres-expert",
+    "postgresql": "database-postgres-expert",
+    "pricing": "business-analyst",
+    "product": "project-manager",
+    "quality": "code-review-expert",
+    "react": "framework-nextjs-expert",
+    "refactor": "refactoring-expert",
+    "registry": "cli-expert",
+    "requirements": "business-analyst",
+    "research": "research-expert",
+    "resolve": "cli-expert",
+    "revenue": "business-analyst",
+    "review": "code-review-expert",
+    "runtime": "nodejs-expert",
+    "sales": "business-analyst",
+    "schedule": "project-manager",
+    "schema": "database-expert",
+    "sdk": "ai-sdk-expert",
+    "search": "code-search",
+    "shell": "cli-expert",
+    "simplify": "code-simplifier",
+    "sop": "code-review-expert",
+    "solo products audit": "planner",
+    "solo products batch": "planner",
+    "solo products campaign-proof": "brainstormer",
+    "solo products clone-proof": "docs-manager",
+    "solo products fulfillment-proof": "project-manager",
+    "solo products list": "planner",
+    "solo products loop": "planner",
+    "solo products next": "planner",
+    "solo products offer": "business-analyst",
+    "solo products packet-batch": "planner",
+    "solo products queue": "planner",
+    "solo products release-packet": "code-review-expert",
+    "solo products revenue-proof": "business-analyst",
+    "solo products scan": "planner",
+    "solo products select": "planner",
+    "solo products work-packet": "brainstormer",
+    "sox": "code-review-expert",
+    "sql": "oracle",
+    "ssr": "framework-nextjs-expert",
+    "standards": "code-review-expert",
+    "step": "planner",
+    "stream": "kafka-expert",
+    "styling": "frontend-css-styling-expert",
+    "support": "project-manager",
+    "tailwind": "frontend-css-styling-expert",
+    "test": "testing-expert",
+    "testing": "hermes-agent",
+    "thinking": "brainstormer",
+    "trace": "debugger",
+    "tracking": "project-manager",
+    "triage": "triage-expert",
+    "troubleshoot": "debugger",
+    "tsc": "typescript-build-expert",
+    "type-system": "typescript-expert",
+    "types": "typescript-type-expert",
+    "typescript": "typescript-expert",
+    "ui": "ui-ux-designer",
+    "ui-ux": "ui-ux-designer",
+    "unit": "vitest-testing-expert",
+    "ux": "ui-ux-designer",
+    "vercel": "ai-sdk-expert",
+    "verify": "testing-expert",
+    "vite": "build-tools-vite-expert",
+    "vitest": "vitest-testing-expert",
+    "wcag": "frontend-accessibility-expert",
+    "web": "fullstack-developer",
+    "webpack": "build-tools-webpack-expert",
+    "workflow": "git-expert",
+    "writing": "documentation-expert",
+    "ai": "ai-sdk-expert",
+    "solo": "planner",
+    "billing": "business-analyst",
+    "checkout": "business-analyst",
+    "coding": "hermes-agent",
+    "debugging": "hermes-agent",
+    "browser": "hermes-agent",
+    "web-search": "hermes-agent",
+    "ai-sdk": "ai-sdk-expert",
+    "typescript-expert": "typescript-expert",
+    "code-search": "research-expert"
+  },
+  "mekongmind_evidence_contracts": [
+    {
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "artifact_path": "state/evidence/company-blueprint.json",
+      "required_fields": [
+        "idea",
+        "target_customer",
+        "pain",
+        "offer_direction",
+        "target_mrr",
+        "current_gate",
+        "next_department",
+        "kill_criteria"
+      ],
+      "proof_rule": "one active company goal with target, current gate, next department, and kill criteria"
+    },
+    {
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "artifact_path": "state/evidence/offer-validated.json",
+      "required_fields": [
+        "icp",
+        "pain",
+        "trigger",
+        "buyer",
+        "alternatives",
+        "wedge",
+        "demand_signal",
+        "evidence_source",
+        "confidence"
+      ],
+      "proof_rule": "validated terrain with reachable buyer, urgent pain, alternatives, wedge, and concrete demand signal"
+    },
+    {
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "artifact_path": "state/evidence/offer-validated.json",
+      "required_fields": [
+        "offer",
+        "promise",
+        "pricing",
+        "package",
+        "mvp_scope",
+        "non_goals",
+        "acceptance_criteria",
+        "sales_angle",
+        "risk"
+      ],
+      "proof_rule": "sellable offer with price, package, MVP scope, non-goals, and acceptance criteria"
+    },
+    {
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "artifact_path": "state/evidence/mvp-live.json",
+      "required_fields": [
+        "routes",
+        "apis",
+        "data_model",
+        "integrations",
+        "checkout_path",
+        "build_command",
+        "tests_run",
+        "known_risks"
+      ],
+      "proof_rule": "minimum sellable product path built with real or explicit sandbox integrations and recorded build/test evidence"
+    },
+    {
+      "department": "quality-compliance",
+      "gate": "mvp-live",
+      "artifact_path": "state/evidence/mvp-live.json",
+      "required_fields": [
+        "review_scope",
+        "tests_run",
+        "build_status",
+        "security_notes",
+        "blocking_findings",
+        "residual_risks",
+        "release_decision"
+      ],
+      "proof_rule": "release decision backed by review, build/test/security evidence, and explicit residual risks"
+    },
+    {
+      "department": "platform-operations",
+      "gate": "mvp-live",
+      "artifact_path": "state/evidence/mvp-live.json",
+      "required_fields": [
+        "provider",
+        "commit",
+        "build_id",
+        "health_url",
+        "http_status",
+        "version_match",
+        "rollback_plan",
+        "monitoring"
+      ],
+      "proof_rule": "live deployment health tied to provider, commit/version, rollback, and monitoring evidence"
+    },
+    {
+      "department": "growth-marketing",
+      "gate": "repeatable-channel",
+      "artifact_path": "state/evidence/repeatable-channel.json",
+      "required_fields": [
+        "audience",
+        "positioning",
+        "channel",
+        "campaign",
+        "campaign_asset",
+        "email_sequence",
+        "outreach_log",
+        "cta",
+        "qualification_rule",
+        "opt_out_compliance",
+        "leads",
+        "conversion",
+        "learning",
+        "sales_handoff"
+      ],
+      "proof_rule": "bounded real campaign/email/outreach experiment with audience, channel, asset, send/reply log, CTA, qualification rule, opt-out compliance, conversion, learning, and Sales handoff"
+    },
+    {
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "artifact_path": "state/evidence/first-revenue.json",
+      "required_fields": [
+        "lead",
+        "qualification",
+        "campaign_source",
+        "offer",
+        "price",
+        "checkout_url",
+        "polar_checkout_url",
+        "payment_status",
+        "provider",
+        "provider_evidence",
+        "provider_sync_status",
+        "current_mrr",
+        "next_action"
+      ],
+      "proof_rule": "paid or signed revenue evidence must be tied to Polar.sh checkout/subscription, provider evidence, provider sync status, campaign source, and current MRR; manual/local notes cannot prove revenue gates alone"
+    },
+    {
+      "department": "customer-success",
+      "gate": "fulfillment-stable",
+      "artifact_path": "state/evidence/fulfillment-stable.json",
+      "required_fields": [
+        "customer",
+        "promise",
+        "onboarding_plan",
+        "success_metric",
+        "delivery_status",
+        "support_open_items",
+        "renewal_risk",
+        "expansion_signal"
+      ],
+      "proof_rule": "customer outcome delivery can be repeated without undocumented founder-only work"
+    },
+    {
+      "department": "knowledge-memory",
+      "gate": "scale-ready",
+      "artifact_path": "state/evidence/scale-ready.json",
+      "required_fields": [
+        "decision_log",
+        "sop_changes",
+        "reusable_playbook",
+        "project_specific_notes",
+        "open_questions",
+        "clone_readiness",
+        "next_bottleneck"
+      ],
+      "proof_rule": "decisions, SOP deltas, reusable playbook, open questions, and clone readiness are recorded"
+    },
+    {
+      "gate": "first-1m-mrr",
+      "department": "sales-revenue",
+      "artifact_path": "state/evidence/first-1m-mrr.json",
+      "required_fields": [
+        "mrr_current",
+        "mrr_target",
+        "revenue_provider",
+        "provider_evidence",
+        "customer_count",
+        "churn_rate",
+        "expansion_revenue",
+        "mrr_growth_trajectory",
+        "target_date",
+        "gap_analysis",
+        "remediation_plan"
+      ],
+      "proof_rule": "MRR must be verified by revenue provider (Polar.sh) showing actual subscription revenue at or above $1,000/month; manual/local notes insufficient; must show growth trajectory from $0 to $1M MRR"
+    }
+  ],
+  "mekongmind_department_capability_mesh": [
+    {
+      "department": "ceo-command",
+      "purpose": "Turn founder intent into one active company command room before any department spends cycles.",
+      "cells": [
+        {
+          "sop_stage": "idea-intake",
+          "commands": [
+            "idea",
+            "goal"
+          ],
+          "agents": [
+            "planner",
+            "brainstormer"
+          ],
+          "proof": "raw idea captured with buyer, pain, target, constraints, and desired outcome",
+          "gate": "company-blueprint",
+          "handoff": [
+            "company-blueprint"
+          ],
+          "failure_signal": "idea remains inspirational text without ICP, pain, target MRR, or kill criteria"
+        },
+        {
+          "sop_stage": "company-blueprint",
+          "commands": [
+            "plan",
+            "solo"
+          ],
+          "agents": [
+            "planner",
+            "project-manager"
+          ],
+          "proof": "state/evidence/company-blueprint.json and state/goal-*.md name the next department and current gate",
+          "gate": "company-blueprint",
+          "handoff": [
+            "market-intelligence",
+            "product-strategy"
+          ],
+          "failure_signal": "multiple active goals or unclear next bottleneck"
+        },
+        {
+          "sop_stage": "gate-review",
+          "commands": [
+            "chain"
+          ],
+          "agents": [
+            "planner",
+            "code-review-expert"
+          ],
+          "proof": "CEO approval, exception, or kill note links to the gate evidence being reviewed",
+          "gate": "company-blueprint",
+          "handoff": [
+            "market-intelligence",
+            "quality-compliance"
+          ],
+          "failure_signal": "department claims ready without artifact contract"
+        },
+        {
+          "sop_stage": "capital-allocation",
+          "commands": [
+            "plan"
+          ],
+          "agents": [
+            "planner",
+            "business-analyst"
+          ],
+          "proof": "time, budget, model, and constraint allocation recorded before build or launch",
+          "gate": "company-blueprint",
+          "handoff": [
+            "product-strategy",
+            "engineering-factory"
+          ],
+          "failure_signal": "engineering begins before offer validation or budget boundary"
+        }
+      ]
+    },
+    {
+      "department": "market-intelligence",
+      "purpose": "Convert Mekong research breadth into a narrow ICP and demand terrain.",
+      "cells": [
+        {
+          "sop_stage": "market-map",
+          "commands": [
+            "research",
+            "analysis"
+          ],
+          "agents": [
+            "research-expert"
+          ],
+          "proof": "market map names buyer group, alternatives, spend pattern, and reachable channels",
+          "gate": "offer-validated",
+          "handoff": [
+            "customer-discovery"
+          ],
+          "failure_signal": "market is broad category, not a reachable buyer segment"
+        },
+        {
+          "sop_stage": "customer-discovery",
+          "commands": [
+            "investigate"
+          ],
+          "agents": [
+            "research-expert"
+          ],
+          "proof": "customer pain, trigger, urgency, authority, and workflow context are recorded",
+          "gate": "offer-validated",
+          "handoff": [
+            "competitor-scan"
+          ],
+          "failure_signal": "pain is nice-to-have or not tied to budget"
+        },
+        {
+          "sop_stage": "competitor-scan",
+          "commands": [
+            "research",
+            "analysis"
+          ],
+          "agents": [
+            "research-expert",
+            "business-analyst"
+          ],
+          "proof": "competitors, substitutes, and wedge are explicit",
+          "gate": "offer-validated",
+          "handoff": [
+            "demand-proof"
+          ],
+          "failure_signal": "no differentiated reason to buy Mekongmind RaaS"
+        },
+        {
+          "sop_stage": "demand-proof",
+          "commands": [
+            "brainstorm",
+            "analysis"
+          ],
+          "agents": [
+            "brainstormer",
+            "research-expert"
+          ],
+          "proof": "demand signal, evidence source, and confidence level pass contract",
+          "gate": "offer-validated",
+          "handoff": [
+            "product-strategy"
+          ],
+          "failure_signal": "research exists but no demand signal strong enough to build"
+        }
+      ]
+    },
+    {
+      "department": "product-strategy",
+      "purpose": "Turn validated terrain into a sellable RaaS package and build boundary.",
+      "cells": [
+        {
+          "sop_stage": "offer-design",
+          "commands": [
+            "business",
+            "requirements"
+          ],
+          "agents": [
+            "business-analyst",
+            "project-manager"
+          ],
+          "proof": "offer, promise, buyer, outcome, and non-goals are written",
+          "gate": "offer-validated",
+          "handoff": [
+            "pricing-model"
+          ],
+          "failure_signal": "promise is vague or not tied to buyer pain"
+        },
+        {
+          "sop_stage": "pricing-model",
+          "commands": [
+            "pricing",
+            "finance"
+          ],
+          "agents": [
+            "business-analyst"
+          ],
+          "proof": "price, package, margin assumption, and checkout model are recorded",
+          "gate": "offer-validated",
+          "handoff": [
+            "raas-blueprint"
+          ],
+          "failure_signal": "free/demo path replaces paid intent"
+        },
+        {
+          "sop_stage": "raas-blueprint",
+          "commands": [
+            "product",
+            "design"
+          ],
+          "agents": [
+            "project-manager",
+            "ui-ux-designer"
+          ],
+          "proof": "RaaS blueprint links product surface to sales promise and fulfillment path",
+          "gate": "offer-validated",
+          "handoff": [
+            "roadmap",
+            "engineering-factory"
+          ],
+          "failure_signal": "product scope cannot fulfill the promise"
+        },
+        {
+          "sop_stage": "roadmap",
+          "commands": [
+            "plan",
+            "requirements"
+          ],
+          "agents": [
+            "planner",
+            "business-analyst"
+          ],
+          "proof": "MVP acceptance criteria and roadmap are bounded by revenue milestone",
+          "gate": "offer-validated",
+          "handoff": [
+            "engineering-factory",
+            "quality-compliance"
+          ],
+          "failure_signal": "scope creep outruns first revenue proof"
+        }
+      ]
+    },
+    {
+      "department": "engineering-factory",
+      "purpose": "Use ClaudeKit specialists as a product factory only after the offer can sell.",
+      "cells": [
+        {
+          "sop_stage": "technical-design",
+          "commands": [
+            "web",
+            "api",
+            "database",
+            "ai"
+          ],
+          "agents": [
+            "fullstack-developer",
+            "nestjs-expert",
+            "database-postgres-expert",
+            "ai-sdk-expert"
+          ],
+          "proof": "routes, APIs, data model, integrations, and checkout path are planned",
+          "gate": "mvp-live",
+          "handoff": [
+            "mvp-build"
+          ],
+          "failure_signal": "architecture lacks checkout, data, or delivery path"
+        },
+        {
+          "sop_stage": "mvp-build",
+          "commands": [
+            "frontend",
+            "backend",
+            "nextjs",
+            "react"
+          ],
+          "agents": [
+            "framework-nextjs-expert",
+            "react-expert",
+            "nodejs-expert"
+          ],
+          "proof": "minimum sellable workflow is implemented against acceptance criteria",
+          "gate": "mvp-live",
+          "handoff": [
+            "integration"
+          ],
+          "failure_signal": "code works as demo but not as sellable workflow"
+        },
+        {
+          "sop_stage": "integration",
+          "commands": [
+            "api",
+            "database",
+            "kafka"
+          ],
+          "agents": [
+            "nestjs-expert",
+            "database-postgres-expert",
+            "kafka-expert"
+          ],
+          "proof": "external services, persistence, and checkout/provider paths are connected or explicitly sandboxed",
+          "gate": "mvp-live",
+          "handoff": [
+            "production-hardening"
+          ],
+          "failure_signal": "mock integration is treated as production proof"
+        },
+        {
+          "sop_stage": "production-hardening",
+          "commands": [
+            "test",
+            "build",
+            "typescript"
+          ],
+          "agents": [
+            "testing-expert",
+            "typescript-build-expert"
+          ],
+          "proof": "build command, tests run, known risks, and handoff notes are recorded",
+          "gate": "mvp-live",
+          "handoff": [
+            "quality-compliance",
+            "platform-operations"
+          ],
+          "failure_signal": "engineering says done without build/test/version evidence"
+        }
+      ]
+    },
+    {
+      "department": "quality-compliance",
+      "purpose": "Prevent code completion from masquerading as a releasable revenue asset.",
+      "cells": [
+        {
+          "sop_stage": "review",
+          "commands": [
+            "review",
+            "audit"
+          ],
+          "agents": [
+            "code-review-expert",
+            "code-review-expert"
+          ],
+          "proof": "review scope, blocking findings, residual risks, and release decision are explicit",
+          "gate": "mvp-live",
+          "handoff": [
+            "test"
+          ],
+          "failure_signal": "review is summary-only without actionable findings or release decision"
+        },
+        {
+          "sop_stage": "test",
+          "commands": [
+            "test",
+            "jest",
+            "vitest",
+            "playwright"
+          ],
+          "agents": [
+            "testing-expert",
+            "jest-testing-expert",
+            "vitest-testing-expert",
+            "e2e-playwright-expert"
+          ],
+          "proof": "unit, integration, and buyer-flow tests map to MVP acceptance criteria",
+          "gate": "mvp-live",
+          "handoff": [
+            "security-scan"
+          ],
+          "failure_signal": "green tests do not cover checkout, revenue, or fulfillment path"
+        },
+        {
+          "sop_stage": "security-scan",
+          "commands": [
+            "lint",
+            "sox",
+            "verify"
+          ],
+          "agents": [
+            "code-quality-linting-expert",
+            "code-review-expert"
+          ],
+          "proof": "security notes, compliance notes, and no-secret evidence are recorded",
+          "gate": "mvp-live",
+          "handoff": [
+            "audit-trail"
+          ],
+          "failure_signal": "secret, auth, or policy risks are waived without CEO evidence"
+        },
+        {
+          "sop_stage": "audit-trail",
+          "commands": [
+            "audit"
+          ],
+          "agents": [
+            "code-review-expert",
+            "docs-manager"
+          ],
+          "proof": "decision trail links tests, review, risks, and deployment readiness",
+          "gate": "mvp-live",
+          "handoff": [
+            "release-approval"
+          ],
+          "failure_signal": "future clone cannot explain why release was allowed"
+        },
+        {
+          "sop_stage": "release-approval",
+          "commands": [
+            "verify"
+          ],
+          "agents": [
+            "testing-expert",
+            "code-review-expert"
+          ],
+          "proof": "release decision is pass/block with residual risk and owner",
+          "gate": "mvp-live",
+          "handoff": [
+            "platform-operations"
+          ],
+          "failure_signal": "deploy starts without explicit quality gate"
+        }
+      ]
+    },
+    {
+      "department": "platform-operations",
+      "purpose": "Make the product actually live, observable, rollbackable, and tied to the shipped commit.",
+      "cells": [
+        {
+          "sop_stage": "ci",
+          "commands": [
+            "github",
+            "build"
+          ],
+          "agents": [
+            "infrastructure-github-actions-expert",
+            "devops-expert"
+          ],
+          "proof": "CI job, commit, build ID, and build status are recorded",
+          "gate": "mvp-live",
+          "handoff": [
+            "deploy"
+          ],
+          "failure_signal": "local build pass is treated as deploy proof"
+        },
+        {
+          "sop_stage": "deploy",
+          "commands": [
+            "deploy",
+            "devops",
+            "docker"
+          ],
+          "agents": [
+            "infrastructure-github-actions-expert",
+            "devops-expert",
+            "infrastructure-docker-expert"
+          ],
+          "proof": "provider, environment, URL, and deployment method are explicit",
+          "gate": "mvp-live",
+          "handoff": [
+            "health-check"
+          ],
+          "failure_signal": "provider is assumed or fabricated"
+        },
+        {
+          "sop_stage": "health-check",
+          "commands": [
+            "verify",
+            "tracking"
+          ],
+          "agents": [
+            "testing-expert",
+            "project-manager"
+          ],
+          "proof": "health URL, HTTP status, version match, and smoke path are recorded",
+          "gate": "mvp-live",
+          "handoff": [
+            "rollback"
+          ],
+          "failure_signal": "HTTP 200 alone replaces version and buyer-flow proof"
+        },
+        {
+          "sop_stage": "rollback",
+          "commands": [
+            "git",
+            "deploy"
+          ],
+          "agents": [
+            "git-manager",
+            "infrastructure-github-actions-expert"
+          ],
+          "proof": "rollback plan and owner are attached to release evidence",
+          "gate": "mvp-live",
+          "handoff": [
+            "ops-review"
+          ],
+          "failure_signal": "no recovery path if checkout or production breaks"
+        },
+        {
+          "sop_stage": "ops-review",
+          "commands": [
+            "devops",
+            "tracking"
+          ],
+          "agents": [
+            "devops-expert",
+            "project-manager"
+          ],
+          "proof": "monitoring, alert, cost, and operational bottleneck are recorded",
+          "gate": "mvp-live",
+          "handoff": [
+            "growth-marketing",
+            "sales-revenue"
+          ],
+          "failure_signal": "live product cannot be operated during sales push"
+        }
+      ]
+    },
+    {
+      "department": "growth-marketing",
+      "purpose": "Turn live product and offer into qualified pipeline, not vanity traffic.",
+      "cells": [
+        {
+          "sop_stage": "positioning",
+          "commands": [
+            "marketing",
+            "content"
+          ],
+          "agents": [
+            "business-analyst",
+            "docs-manager"
+          ],
+          "proof": "audience, positioning, CTA, and promise match offer evidence",
+          "gate": "repeatable-channel",
+          "handoff": [
+            "content-engine"
+          ],
+          "failure_signal": "messaging attracts broad interest instead of qualified buyers"
+        },
+        {
+          "sop_stage": "content-engine",
+          "commands": [
+            "content",
+            "docs"
+          ],
+          "agents": [
+            "docs-manager",
+            "documentation-expert"
+          ],
+          "proof": "content assets tie pain, outcome, proof, and CTA together",
+          "gate": "repeatable-channel",
+          "handoff": [
+            "campaign"
+          ],
+          "failure_signal": "content educates but does not move buyer to checkout or call"
+        },
+        {
+          "sop_stage": "campaign",
+          "commands": [
+            "launch",
+            "marketing"
+          ],
+          "agents": [
+            "business-analyst"
+          ],
+          "proof": "campaign, channel, audience, CTA, spend/timebox, and expected conversion are recorded",
+          "gate": "repeatable-channel",
+          "handoff": [
+            "launch"
+          ],
+          "failure_signal": "campaign is not bounded enough to learn"
+        },
+        {
+          "sop_stage": "launch",
+          "commands": [
+            "launch"
+          ],
+          "agents": [
+            "business-analyst",
+            "project-manager"
+          ],
+          "proof": "launch result includes leads, conversion, objections, and next experiment",
+          "gate": "repeatable-channel",
+          "handoff": [
+            "growth-experiment"
+          ],
+          "failure_signal": "launch output is traffic without qualification"
+        },
+        {
+          "sop_stage": "growth-experiment",
+          "commands": [
+            "growth",
+            "experiment"
+          ],
+          "agents": [
+            "business-analyst"
+          ],
+          "proof": "experiment learning improves channel, CTA, price, or ICP",
+          "gate": "repeatable-channel",
+          "handoff": [
+            "sales-revenue"
+          ],
+          "failure_signal": "learning does not improve repeatability"
+        }
+      ]
+    },
+    {
+      "department": "sales-revenue",
+      "purpose": "Convert pipeline into provider-backed revenue and MRR ladder movement.",
+      "cells": [
+        {
+          "sop_stage": "lead-qualification",
+          "commands": [
+            "sales"
+          ],
+          "agents": [
+            "business-analyst"
+          ],
+          "proof": "lead qualifies on pain, authority, urgency, budget, and fit",
+          "gate": "first-revenue",
+          "handoff": [
+            "sales-script"
+          ],
+          "failure_signal": "sales time spent on unqualified curiosity"
+        },
+        {
+          "sop_stage": "sales-script",
+          "commands": [
+            "sales",
+            "pricing"
+          ],
+          "agents": [
+            "business-analyst"
+          ],
+          "proof": "script, objection log, offer, and price reaction are recorded",
+          "gate": "first-revenue",
+          "handoff": [
+            "checkout"
+          ],
+          "failure_signal": "objections expose product/offer mismatch without product-strategy loop"
+        },
+        {
+          "sop_stage": "checkout",
+          "commands": [
+            "revenue",
+            "pricing"
+          ],
+          "agents": [
+            "business-analyst",
+            "fullstack-developer"
+          ],
+          "proof": "checkout URL, invoice/subscription, provider, and payment status are captured",
+          "gate": "first-revenue",
+          "handoff": [
+            "close"
+          ],
+          "failure_signal": "buyer wants to pay but checkout or provider path fails"
+        },
+        {
+          "sop_stage": "close",
+          "commands": [
+            "sales",
+            "finance"
+          ],
+          "agents": [
+            "business-analyst"
+          ],
+          "proof": "close reason, payment evidence, customer promise, and next action are recorded",
+          "gate": "first-revenue",
+          "handoff": [
+            "revenue-review"
+          ],
+          "failure_signal": "verbal yes replaces paid/signed/provider-backed evidence"
+        },
+        {
+          "sop_stage": "revenue-review",
+          "commands": [
+            "revenue"
+          ],
+          "agents": [
+            "business-analyst"
+          ],
+          "proof": "state/revenue/<goal-id>.json and first-revenue artifact agree on current MRR",
+          "gate": "first-revenue",
+          "handoff": [
+            "customer-success",
+            "growth-marketing"
+          ],
+          "failure_signal": "MRR metric drifts from provider evidence"
+        }
+      ]
+    },
+    {
+      "department": "customer-success",
+      "purpose": "Protect revenue by delivering the promised customer outcome without founder-only delivery.",
+      "cells": [
+        {
+          "sop_stage": "onboarding",
+          "commands": [
+            "support",
+            "docs"
+          ],
+          "agents": [
+            "project-manager",
+            "docs-manager"
+          ],
+          "proof": "customer, promise, onboarding plan, owner, and due date are recorded",
+          "gate": "fulfillment-stable",
+          "handoff": [
+            "fulfillment"
+          ],
+          "failure_signal": "paid customer has no explicit success path"
+        },
+        {
+          "sop_stage": "fulfillment",
+          "commands": [
+            "tracking",
+            "support"
+          ],
+          "agents": [
+            "project-manager"
+          ],
+          "proof": "delivery status, success metric, and evidence of outcome are updated",
+          "gate": "fulfillment-stable",
+          "handoff": [
+            "support"
+          ],
+          "failure_signal": "delivery depends on undocumented founder work"
+        },
+        {
+          "sop_stage": "support",
+          "commands": [
+            "triage",
+            "support"
+          ],
+          "agents": [
+            "triage-expert",
+            "project-manager"
+          ],
+          "proof": "support open items, severity, owner, and escalation path are recorded",
+          "gate": "fulfillment-stable",
+          "handoff": [
+            "retention"
+          ],
+          "failure_signal": "support queue hides churn risk"
+        },
+        {
+          "sop_stage": "retention",
+          "commands": [
+            "tracking"
+          ],
+          "agents": [
+            "project-manager",
+            "business-analyst"
+          ],
+          "proof": "renewal risk, usage, satisfaction, and retention signal are recorded",
+          "gate": "fulfillment-stable",
+          "handoff": [
+            "expansion"
+          ],
+          "failure_signal": "MRR exists but retention risk is unknown"
+        },
+        {
+          "sop_stage": "expansion",
+          "commands": [
+            "sales",
+            "revenue"
+          ],
+          "agents": [
+            "business-analyst",
+            "project-manager"
+          ],
+          "proof": "expansion signal and next offer loop are recorded",
+          "gate": "fulfillment-stable",
+          "handoff": [
+            "knowledge-memory",
+            "sales-revenue"
+          ],
+          "failure_signal": "customer success produces no expansion or product learning"
+        }
+      ]
+    },
+    {
+      "department": "knowledge-memory",
+      "purpose": "Turn one successful company loop into reusable Mekongmind DNA for more RaaS clones.",
+      "cells": [
+        {
+          "sop_stage": "decision-log",
+          "commands": [
+            "journal",
+            "notes"
+          ],
+          "agents": [
+            "journal-writer",
+            "docs-manager"
+          ],
+          "proof": "decision log captures why gates passed, failed, or changed",
+          "gate": "scale-ready",
+          "handoff": [
+            "sop-update"
+          ],
+          "failure_signal": "future clone cannot explain decisions"
+        },
+        {
+          "sop_stage": "sop-update",
+          "commands": [
+            "docs",
+            "documentation"
+          ],
+          "agents": [
+            "docs-manager",
+            "documentation-expert"
+          ],
+          "proof": "SOP deltas are linked to actual evidence and bottlenecks",
+          "gate": "scale-ready",
+          "handoff": [
+            "playbook-extract"
+          ],
+          "failure_signal": "SOPs drift from real execution"
+        },
+        {
+          "sop_stage": "playbook-extract",
+          "commands": [
+            "docs",
+            "journal"
+          ],
+          "agents": [
+            "docs-manager",
+            "journal-writer"
+          ],
+          "proof": "reusable playbook separates generic Mekongmind DNA from project-specific notes",
+          "gate": "scale-ready",
+          "handoff": [
+            "clone-sync"
+          ],
+          "failure_signal": "playbook is project anecdote, not reusable operating system"
+        },
+        {
+          "sop_stage": "clone-sync",
+          "commands": [
+            "goal",
+            "solo"
+          ],
+          "agents": [
+            "planner",
+            "docs-manager"
+          ],
+          "proof": "clone readiness, open questions, next bottleneck, and next CEO Solo target are recorded",
+          "gate": "scale-ready",
+          "handoff": [
+            "ceo-command"
+          ],
+          "failure_signal": "system cannot mint next niche/company from prior proof"
+        }
+      ]
+    }
+  ],
+  "mekongmind_department_room_system": [
+    {
+      "department": "ceo-command",
+      "room_type": "strategic command room",
+      "queue_policy": "only one active company goal may own the factory at a time",
+      "wip_limit": "1 active goal, 1 active gate exception, 1 current bottleneck",
+      "intake_contract": "idea must name buyer hypothesis, pain, target outcome, constraints, and first $1M MRR intent",
+      "operating_cadence": "open on every new idea, blocked gate, exception request, or MRR milestone",
+      "checkpoint_stack": [
+        "intake",
+        "blueprint",
+        "gate-review",
+        "capital-allocation",
+        "handoff"
+      ],
+      "decision_loop": "accept idea -> freeze company blueprint -> approve gate or kill -> assign next room -> record exception if doctrine is bypassed",
+      "escalation_policy": "if ICP, target, budget, or kill criteria are missing, block downstream rooms until CEO evidence is written",
+      "anti_chaos_rules": [
+        "no parallel company goals",
+        "no build before gate decision",
+        "no vague objective without MRR target"
+      ],
+      "done_when": "company-blueprint evidence names target customer, pain, current gate, next room, target MRR, and kill criteria; evidence artifact: state/evidence/company-blueprint.json"
+    },
+    {
+      "department": "market-intelligence",
+      "room_type": "terrain and demand room",
+      "queue_policy": "research only the active company goal and only questions that can change offer/build/sales decisions",
+      "wip_limit": "2 active ICP hypotheses, 1 competitor map, 1 demand proof path",
+      "intake_contract": "requires company blueprint, founder hypothesis, target customer guess, and constraints",
+      "operating_cadence": "run before product strategy and whenever sales objections or channel data contradict the ICP",
+      "checkpoint_stack": [
+        "market-map",
+        "customer-discovery",
+        "competitor-scan",
+        "demand-proof",
+        "offer-handoff"
+      ],
+      "decision_loop": "narrow ICP -> test pain urgency -> compare alternatives -> score demand -> hand off or reject terrain",
+      "escalation_policy": "if pain is weak, buyer unreachable, or wedge unclear, return to CEO Command with no-build recommendation",
+      "anti_chaos_rules": [
+        "no broad market essays",
+        "no research without buyer decision",
+        "no build signal from vanity TAM"
+      ],
+      "done_when": "offer-validated evidence contains ICP, pain, competitor wedge, demand signal, confidence, and next action; evidence artifact: state/evidence/offer-validated.json"
+    },
+    {
+      "department": "product-strategy",
+      "room_type": "offer and RaaS blueprint room",
+      "queue_policy": "accept only validated terrain or CEO exception; reject product scope that does not serve the sales promise",
+      "wip_limit": "1 active offer, 1 pricing model, 1 MVP boundary",
+      "intake_contract": "requires ICP, pain, wedge, demand proof, and known constraints",
+      "operating_cadence": "run after market intelligence and whenever sales or fulfillment evidence invalidates the offer",
+      "checkpoint_stack": [
+        "offer-design",
+        "pricing-model",
+        "raas-blueprint",
+        "roadmap",
+        "engineering-handoff"
+      ],
+      "decision_loop": "shape promise -> price package -> define RaaS surface -> bound MVP -> hand off acceptance criteria",
+      "escalation_policy": "if promise cannot be fulfilled or priced, send correction to Market Intelligence or CEO Command",
+      "anti_chaos_rules": [
+        "no feature roadmap without paid promise",
+        "no free-demo default",
+        "no MVP scope beyond first revenue proof"
+      ],
+      "done_when": "offer-validated evidence contains sellable offer, price, package, MVP acceptance criteria, and fulfillment path; evidence artifact: state/evidence/offer-validated.json"
+    },
+    {
+      "department": "engineering-factory",
+      "room_type": "validated-offer product factory",
+      "queue_policy": "only build against offer-validated acceptance criteria or explicit CEO exception",
+      "wip_limit": "1 MVP workflow, 1 integration risk, 1 production hardening queue",
+      "intake_contract": "requires offer brief, MVP acceptance criteria, checkout/provider expectation, and fulfillment boundary",
+      "operating_cadence": "run after offer validation and re-open only for revenue, fulfillment, or production blockers",
+      "checkpoint_stack": [
+        "technical-design",
+        "mvp-build",
+        "integration",
+        "production-hardening",
+        "quality-handoff"
+      ],
+      "decision_loop": "design sellable workflow -> implement minimum path -> connect real integrations -> prove build/test -> hand off quality evidence",
+      "escalation_policy": "if checkout, data, or delivery path is missing, block build and request product-strategy correction",
+      "anti_chaos_rules": [
+        "no coding from raw idea",
+        "no demo-only product proof",
+        "no mock integration as production evidence"
+      ],
+      "done_when": "mvp-live engineering evidence proves sellable workflow, integration status, build/test command, risks, and handoff notes; evidence artifact: state/evidence/mvp-live.json"
+    },
+    {
+      "department": "quality-compliance",
+      "room_type": "release proof and risk room",
+      "queue_policy": "review only code or artifacts tied to active gate proof and buyer/revenue flows",
+      "wip_limit": "1 release candidate, 1 blocker list, 1 residual-risk register",
+      "intake_contract": "requires MVP artifact, acceptance criteria, changed files, test scope, and risk notes",
+      "operating_cadence": "run after engineering changes and before every deploy, checkout change, or provider integration change",
+      "checkpoint_stack": [
+        "review",
+        "test",
+        "security-scan",
+        "audit-trail",
+        "release-approval"
+      ],
+      "decision_loop": "review diff -> map tests to buyer flow -> scan risk -> record audit trail -> pass/block release",
+      "escalation_policy": "if tests miss checkout, auth, provider, or fulfillment flow, block release and return to Engineering Factory",
+      "anti_chaos_rules": [
+        "no summary-only review",
+        "no green tests without coverage of revenue path",
+        "no security waiver without owner"
+      ],
+      "done_when": "mvp-live quality evidence records release decision, tests, review findings, security notes, residual risks, and owner; evidence artifact: state/evidence/mvp-live.json"
+    },
+    {
+      "department": "platform-operations",
+      "room_type": "live service and operations room",
+      "queue_policy": "deploy only release-approved artifacts with provider, commit, health URL, rollback, and monitoring plan",
+      "wip_limit": "1 active deploy, 1 incident, 1 rollback path",
+      "intake_contract": "requires release approval, commit, deployment target, build command, smoke path, and rollback owner",
+      "operating_cadence": "run on every deploy, health regression, incident, or version mismatch",
+      "checkpoint_stack": [
+        "ci",
+        "deploy",
+        "health-check",
+        "rollback",
+        "ops-review"
+      ],
+      "decision_loop": "verify CI -> deploy current commit -> smoke health/version -> attach rollback -> publish operations review",
+      "escalation_policy": "if production is not current, observable, or rollbackable, block Growth and Sales rooms",
+      "anti_chaos_rules": [
+        "no fabricated provider",
+        "no HTTP 200 as sole proof",
+        "no launch without rollback path"
+      ],
+      "done_when": "mvp-live operations evidence proves provider, commit, build ID, health URL, HTTP status, version match, rollback, and monitoring; evidence artifact: state/evidence/mvp-live.json"
+    },
+    {
+      "department": "growth-marketing",
+      "room_type": "qualified demand generation room",
+      "queue_policy": "launch only against live MVP, validated offer, ICP, CTA, and measurable qualification rule",
+      "wip_limit": "2 active channels, 3 campaign assets, 1 experiment learning loop",
+      "intake_contract": "requires live MVP, offer brief, ICP, pricing, customer proof or CEO-approved launch exception",
+      "operating_cadence": "weekly experiments and after every material positioning, price, or ICP change",
+      "checkpoint_stack": [
+        "positioning",
+        "content-engine",
+        "campaign",
+        "launch",
+        "growth-experiment"
+      ],
+      "decision_loop": "position promise -> build CTA assets -> timebox campaign -> collect leads/conversion -> update next experiment",
+      "escalation_policy": "if traffic does not qualify or objections repeat, return learning to Product Strategy and Market Intelligence",
+      "anti_chaos_rules": [
+        "no vanity traffic",
+        "no unbounded campaign",
+        "no content without CTA and qualification"
+      ],
+      "done_when": "repeatable-channel evidence records audience, positioning, channel, campaign, CTA, qualified leads, conversion, and learning; evidence artifact: state/evidence/repeatable-channel.json"
+    },
+    {
+      "department": "sales-revenue",
+      "room_type": "checkout and MRR truth room",
+      "queue_policy": "work only qualified demand, paid exceptions, or provider-backed revenue reconciliation",
+      "wip_limit": "3 active revenue motions, 1 checkout blocker, 1 provider sync discrepancy",
+      "intake_contract": "requires qualified lead, offer, price, checkout path, campaign source, and current provider expectation",
+      "operating_cadence": "after every qualified lead, close, payment, refund, upgrade, churn, or provider sync",
+      "checkpoint_stack": [
+        "lead-qualification",
+        "sales-script",
+        "checkout",
+        "close",
+        "revenue-review"
+      ],
+      "decision_loop": "qualify buyer -> run script/objections -> verify checkout/provider -> close or route fix -> reconcile MRR evidence",
+      "escalation_policy": "if buyer wants to pay but checkout/provider fails, block revenue claim and return to Engineering Factory plus Platform Operations",
+      "anti_chaos_rules": [
+        "no verbal yes as revenue",
+        "no MRR without provider-backed evidence",
+        "no scale claim before fulfillment proof"
+      ],
+      "done_when": "first-revenue evidence and revenue state agree on lead, offer, price, checkout URL, payment status, provider, current MRR, and next action; evidence artifact: state/evidence/first-revenue.json"
+    },
+    {
+      "department": "customer-success",
+      "room_type": "fulfillment and retention room",
+      "queue_policy": "accept only paid/signed customers or CEO-approved fulfillment probes with explicit promise and success metric",
+      "wip_limit": "5 active onboardings, 5 support items, 2 retention risks",
+      "intake_contract": "requires paid customer, customer promise, onboarding need, success metric, and delivery deadline",
+      "operating_cadence": "after every new customer, support event, delivery milestone, renewal, expansion, or churn risk",
+      "checkpoint_stack": [
+        "onboarding",
+        "fulfillment",
+        "support",
+        "retention",
+        "expansion"
+      ],
+      "decision_loop": "start onboarding -> deliver promised outcome -> manage support -> assess retention -> route expansion/product learning",
+      "escalation_policy": "if promise cannot be delivered repeatably, block scale-ready and return to Product Strategy or Engineering Factory",
+      "anti_chaos_rules": [
+        "no customer without owner",
+        "no undocumented founder-only fulfillment",
+        "no retention claim without signal"
+      ],
+      "done_when": "fulfillment-stable evidence proves onboarding, promise, delivery status, support owner, retention risk, and expansion signal; evidence artifact: state/evidence/fulfillment-stable.json"
+    },
+    {
+      "department": "knowledge-memory",
+      "room_type": "clone memory and SOP refinery room",
+      "queue_policy": "record only decisions, SOP deltas, evidence learnings, and clone rules tied to passed/failed gates",
+      "wip_limit": "1 decision log, 1 SOP delta batch, 1 clone-readiness packet",
+      "intake_contract": "requires passed gates, department artifacts, customer outcomes, open questions, and SOP deltas",
+      "operating_cadence": "after every gate pass, material failure, customer learning, incident, or clone handoff",
+      "checkpoint_stack": [
+        "decision-log",
+        "sop-update",
+        "playbook-extract",
+        "clone-sync"
+      ],
+      "decision_loop": "capture decision -> update SOP delta -> extract reusable playbook -> mark clone readiness or next bottleneck",
+      "escalation_policy": "if evidence is thin or project-specific, block clone claim and request missing department proof",
+      "anti_chaos_rules": [
+        "no playbook from anecdotes",
+        "no clone without reusable SOP",
+        "no memory update detached from evidence"
+      ],
+      "done_when": "scale-ready evidence proves decision log, SOP changes, reusable playbook, project notes, open questions, clone readiness, and next bottleneck; evidence artifact: state/evidence/scale-ready.json"
+    }
+  ],
+  "mekongmind_gate_execution_doctrine": [
+    {
+      "gate": "company-blueprint",
+      "purpose": "Freeze one CEO Solo Company objective before market, product, or engineering work begins.",
+      "entry_signal": "founder submits idea or goal",
+      "exit_signal": "state/evidence/company-blueprint.json and state/goal-*.md contain target customer, pain, target MRR, current gate, next department, and kill criteria",
+      "required_departments": [
+        "ceo-command"
+      ],
+      "required_sop_stages": [
+        "idea-intake",
+        "company-blueprint",
+        "gate-review",
+        "capital-allocation"
+      ],
+      "allowed_command_groups": [
+        "idea",
+        "goal",
+        "plan",
+        "chain",
+        "solo"
+      ],
+      "blocked_until_pass": [
+        "market research without target customer",
+        "product scope",
+        "engineering build",
+        "launch campaign"
+      ],
+      "proof_artifacts": [
+        "state/evidence/company-blueprint.json",
+        "state/goal-*.md",
+        "state/gates/<goal-id>.json"
+      ],
+      "next_gate": "offer-validated",
+      "failure_signal": "multiple active ideas, unclear ICP, no kill criteria, or no target MRR"
+    },
+    {
+      "gate": "offer-validated",
+      "purpose": "Prove a narrow ICP, painful wedge, sellable package, price, and MVP boundary before ClaudeKit builds.",
+      "entry_signal": "company-blueprint passes",
+      "exit_signal": "market-intelligence and product-strategy contracts both validate against state/evidence/offer-validated.json",
+      "required_departments": [
+        "market-intelligence",
+        "product-strategy"
+      ],
+      "required_sop_stages": [
+        "market-map",
+        "customer-discovery",
+        "competitor-scan",
+        "demand-proof",
+        "offer-design",
+        "pricing-model",
+        "raas-blueprint",
+        "roadmap"
+      ],
+      "allowed_command_groups": [
+        "research",
+        "analysis",
+        "investigate",
+        "brainstorm",
+        "business",
+        "requirements",
+        "product",
+        "design",
+        "pricing",
+        "finance"
+      ],
+      "blocked_until_pass": [
+        "MVP build",
+        "deploy",
+        "sales script",
+        "paid launch"
+      ],
+      "proof_artifacts": [
+        "state/evidence/offer-validated.json"
+      ],
+      "next_gate": "mvp-live",
+      "failure_signal": "research exists but offer cannot name buyer, urgent pain, price, wedge, and acceptance criteria"
+    },
+    {
+      "gate": "mvp-live",
+      "purpose": "Prove the product is sellable, tested, deployed, observable, rollbackable, and tied to a commit.",
+      "entry_signal": "offer-validated passes strict contract",
+      "exit_signal": "engineering-factory, quality-compliance, and platform-operations contracts validate against state/evidence/mvp-live.json",
+      "required_departments": [
+        "engineering-factory",
+        "quality-compliance",
+        "platform-operations"
+      ],
+      "required_sop_stages": [
+        "technical-design",
+        "mvp-build",
+        "integration",
+        "production-hardening",
+        "review",
+        "test",
+        "security-scan",
+        "audit-trail",
+        "release-approval",
+        "ci",
+        "deploy",
+        "health-check",
+        "rollback",
+        "ops-review"
+      ],
+      "allowed_command_groups": [
+        "web",
+        "frontend",
+        "backend",
+        "api",
+        "database",
+        "ai",
+        "nextjs",
+        "react",
+        "test",
+        "build",
+        "typescript",
+        "review",
+        "audit",
+        "lint",
+        "verify",
+        "github",
+        "deploy",
+        "devops",
+        "docker",
+        "git",
+        "tracking"
+      ],
+      "blocked_until_pass": [
+        "growth campaign",
+        "sales checkout push",
+        "customer onboarding"
+      ],
+      "proof_artifacts": [
+        "state/evidence/mvp-live.json",
+        "production health URL",
+        "build/test output"
+      ],
+      "next_gate": "repeatable-channel",
+      "failure_signal": "code is done but lacks tests, health URL, provider, version match, rollback, or monitoring"
+    },
+    {
+      "gate": "repeatable-channel",
+      "purpose": "Prove a bounded acquisition loop that produces qualified demand instead of vanity traffic.",
+      "entry_signal": "mvp-live passes strict contract",
+      "exit_signal": "growth-marketing contract validates against state/evidence/repeatable-channel.json",
+      "required_departments": [
+        "growth-marketing"
+      ],
+      "required_sop_stages": [
+        "positioning",
+        "content-engine",
+        "campaign",
+        "launch",
+        "growth-experiment"
+      ],
+      "allowed_command_groups": [
+        "marketing",
+        "content",
+        "docs",
+        "launch",
+        "growth",
+        "experiment"
+      ],
+      "blocked_until_pass": [
+        "scaling spend",
+        "claiming repeatability",
+        "delegating sales volume"
+      ],
+      "proof_artifacts": [
+        "state/evidence/repeatable-channel.json"
+      ],
+      "next_gate": "first-revenue",
+      "failure_signal": "traffic or content exists but qualified lead, CTA, conversion, and learning are missing"
+    },
+    {
+      "gate": "first-revenue",
+      "purpose": "Convert qualified demand into paid, signed, or provider-backed revenue and update MRR truth.",
+      "entry_signal": "repeatable-channel produces qualified leads or CEO records paid exception",
+      "exit_signal": "sales-revenue contract validates and state/revenue/<goal-id>.json records current MRR source",
+      "required_departments": [
+        "sales-revenue"
+      ],
+      "required_sop_stages": [
+        "lead-qualification",
+        "sales-script",
+        "checkout",
+        "close",
+        "revenue-review"
+      ],
+      "allowed_command_groups": [
+        "sales",
+        "pricing",
+        "revenue",
+        "finance"
+      ],
+      "blocked_until_pass": [
+        "customer success completion claim",
+        "MRR ladder progress beyond first customer",
+        "clone readiness"
+      ],
+      "proof_artifacts": [
+        "state/evidence/first-revenue.json",
+        "state/revenue/<goal-id>.json",
+        "provider checkout/subscription evidence"
+      ],
+      "next_gate": "fulfillment-stable",
+      "failure_signal": "lead says yes but checkout URL, provider, payment status, current MRR, or next action is missing"
+    },
+    {
+      "gate": "fulfillment-stable",
+      "purpose": "Prove customer outcome delivery and retention path so revenue is durable, not founder-only hero work.",
+      "entry_signal": "first-revenue passes or provider-backed MRR exists",
+      "exit_signal": "customer-success contract validates against state/evidence/fulfillment-stable.json",
+      "required_departments": [
+        "customer-success"
+      ],
+      "required_sop_stages": [
+        "onboarding",
+        "fulfillment",
+        "support",
+        "retention",
+        "expansion"
+      ],
+      "allowed_command_groups": [
+        "support",
+        "docs",
+        "tracking",
+        "triage",
+        "sales",
+        "revenue"
+      ],
+      "blocked_until_pass": [
+        "scale-ready",
+        "clone launch",
+        "repeatable delivery claim"
+      ],
+      "proof_artifacts": [
+        "state/evidence/fulfillment-stable.json"
+      ],
+      "next_gate": "scale-ready",
+      "failure_signal": "paid customer exists but promise, owner, SLA, delivery status, support, or retention risk is unknown"
+    },
+    {
+      "gate": "scale-ready",
+      "purpose": "Extract reusable SOPs, decisions, playbooks, open questions, and clone readiness from the proven company loop.",
+      "entry_signal": "fulfillment-stable passes",
+      "exit_signal": "knowledge-memory contract validates against state/evidence/scale-ready.json",
+      "required_departments": [
+        "knowledge-memory"
+      ],
+      "required_sop_stages": [
+        "decision-log",
+        "sop-update",
+        "playbook-extract",
+        "clone-sync"
+      ],
+      "allowed_command_groups": [
+        "journal",
+        "notes",
+        "docs",
+        "documentation",
+        "goal",
+        "solo"
+      ],
+      "blocked_until_pass": [
+        "next CEO Solo clone",
+        "multi-project replication",
+        "first-1m-mrr operating claim"
+      ],
+      "proof_artifacts": [
+        "state/evidence/scale-ready.json",
+        "docs/playbooks or SOP deltas"
+      ],
+      "next_gate": "first-1m-mrr",
+      "failure_signal": "system worked once but has no reusable playbook, SOP delta, decision log, or clone bottleneck"
+    },
+    {
+      "gate": "first-1m-mrr",
+      "purpose": "Prove provider-backed $1M MRR and preserve the operating cadence that can retain, expand, and clone it.",
+      "entry_signal": "scale-ready passes and revenue ladder reaches first-1m-mrr",
+      "exit_signal": "provider-backed MRR reaches 1000000 with retention, fulfillment, memory, and CEO review evidence",
+      "required_departments": [
+        "sales-revenue",
+        "customer-success",
+        "knowledge-memory",
+        "ceo-command"
+      ],
+      "required_sop_stages": [
+        "revenue-review",
+        "retention",
+        "playbook-extract",
+        "gate-review"
+      ],
+      "allowed_command_groups": [
+        "revenue",
+        "sales",
+        "tracking",
+        "docs",
+        "journal",
+        "goal",
+        "solo"
+      ],
+      "blocked_until_pass": [
+        "claiming objective complete",
+        "selling Mekongmind as proven clone factory"
+      ],
+      "proof_artifacts": [
+        "state/revenue/<goal-id>.json",
+        "provider MRR export",
+        "state/evidence/first-revenue.json",
+        "state/evidence/fulfillment-stable.json",
+        "state/evidence/scale-ready.json",
+        "state/evidence/company-blueprint.json"
+      ],
+      "next_gate": "clone-launch",
+      "failure_signal": "MRR claim lacks provider export, retention proof, fulfillment proof, or reusable operating DNA"
+    }
+  ],
+  "mekongmind_source_fusion_matrix": [
+    {
+      "source": "mekong-cli",
+      "legacy_strength": "Broad business, GTM, orchestration, revenue, fulfillment, audit, and multi-project RaaS command surface.",
+      "legacy_failure_if_alone": "Too many commands without department ownership, gate order, evidence contracts, or command allow/block policy; business motion can become noisy activity instead of MRR.",
+      "merged_role": "Own the revenue-facing operating rooms: CEO intent, market terrain, offer, GTM, sales, revenue, fulfillment, memory, and multi-project replication.",
+      "primary_departments": [
+        "ceo-command",
+        "market-intelligence",
+        "product-strategy",
+        "growth-marketing",
+        "sales-revenue",
+        "customer-success",
+        "knowledge-memory"
+      ],
+      "command_groups": [
+        "idea",
+        "goal",
+        "plan",
+        "research",
+        "analysis",
+        "business",
+        "requirements",
+        "marketing",
+        "content",
+        "launch",
+        "growth",
+        "sales",
+        "revenue",
+        "finance",
+        "pricing",
+        "support",
+        "tracking",
+        "journal",
+        "docs"
+      ],
+      "control_layers": [
+        "operating_layers",
+        "department_capability_mesh",
+        "gate_execution_doctrine",
+        "command_gate_policy",
+        "evidence_contracts"
+      ],
+      "mrr_contribution": "Turns idea and market signal into offer, demand, checkout, revenue evidence, fulfillment, retention, and cloneable playbooks.",
+      "anti_pattern": "Running business commands as a loose menu without proof gates or current bottleneck."
+    },
+    {
+      "source": "claudekit",
+      "legacy_strength": "Strong full-stack, framework, database, testing, review, infrastructure, deployment, and runtime quality specialists.",
+      "legacy_failure_if_alone": "Can ship code, tests, and infrastructure without proving ICP, paid demand, checkout, retention, or $1M MRR economics.",
+      "merged_role": "Own the sellable product factory only after offer validation: MVP build, integrations, quality review, release approval, deployment, health, rollback, and monitoring.",
+      "primary_departments": [
+        "engineering-factory",
+        "quality-compliance",
+        "platform-operations"
+      ],
+      "command_groups": [
+        "web",
+        "frontend",
+        "backend",
+        "api",
+        "database",
+        "ai",
+        "nextjs",
+        "react",
+        "test",
+        "jest",
+        "vitest",
+        "playwright",
+        "review",
+        "lint",
+        "verify",
+        "github",
+        "deploy",
+        "devops",
+        "docker",
+        "git",
+        "typescript",
+        "build"
+      ],
+      "control_layers": [
+        "offer-validated gate",
+        "mvp-live doctrine",
+        "strict artifact validation",
+        "command_gate_policy",
+        "production evidence"
+      ],
+      "mrr_contribution": "Converts validated offer into a live, tested, observable, rollbackable product that Sales can safely sell and Customer Success can fulfill.",
+      "anti_pattern": "Letting engineering start before offer proof or treating green code as revenue proof."
+    },
+    {
+      "source": "me-wrapper",
+      "legacy_strength": "Harness layer that can normalize command routing, state, gates, daemon loops, service contracts, evidence validation, and clone memory.",
+      "legacy_failure_if_alone": "A wrapper without Mekong business motion and ClaudeKit engineering capacity only coordinates empty state; it cannot create demand, product, revenue, or fulfillment proof by itself.",
+      "merged_role": "Act as the Mekongmind OS kernel: route command -> agent -> department -> SOP -> gate, enforce doctrine, keep state, run loops, verify evidence, and expose bottlenecks.",
+      "primary_departments": [
+        "ceo-command",
+        "quality-compliance",
+        "platform-operations",
+        "knowledge-memory"
+      ],
+      "command_groups": [
+        "solo",
+        "chain",
+        "commands",
+        "capabilities",
+        "mesh",
+        "doctrine",
+        "allow",
+        "contract",
+        "artifact",
+        "gates",
+        "loop",
+        "daemon",
+        "service",
+        "ladder"
+      ],
+      "control_layers": [
+        "goal_state",
+        "department_ledger",
+        "gate_state",
+        "revenue_metrics",
+        "strict_contracts",
+        "continuous_loop",
+        "launchagent_service"
+      ],
+      "mrr_contribution": "Keeps the whole factory from drifting: every action has owner, gate, proof, blocker, and next bottleneck until first $1M MRR evidence exists.",
+      "anti_pattern": "Building more wrapper commands without enforcing proof, revenue, fulfillment, or clone outcomes."
+    }
+  ],
+  "mekongmind_local_llm_runtime": {
+    "purpose": "Run the CEO Solo Company loop local-first on Apple Silicon so me idea can coordinate SOPs without cloud dependency or data gaps, while still escalating high-risk Max-tier decisions when needed.",
+    "hardware_profiles": [
+      {
+        "id": "m1-max-64gb",
+        "machine": "Apple M1 Max, 64GB unified memory",
+        "detected_on": "2026-06-03",
+        "primary_runtime": "ollama",
+        "secondary_runtimes": [
+          "mlx-lm",
+          "llama.cpp Metal"
+        ],
+        "safe_model_band": "7B-32B Q4/Q5 for continuous autonomous loops",
+        "burst_model_band": "34B-70B quantized only for short planning/review if memory pressure is acceptable",
+        "notes": "Prefer one loaded 32B model plus small coder fallback; avoid multiple large resident models during daemon loops."
+      },
+      {
+        "id": "m1-16gb",
+        "machine": "Apple M1, 16GB unified memory",
+        "primary_runtime": "ollama",
+        "secondary_runtimes": [
+          "llama.cpp Metal"
+        ],
+        "safe_model_band": "3B-14B Q4 for continuous loops",
+        "burst_model_band": "14B Q4 only with low context and no parallel browsers",
+        "notes": "Use small models for classify/route/summarize; escalate coding/revenue strategy to M1 Max or cloud."
+      }
+    ],
+    "installed_model_policy": [
+      {
+        "role": "default-reasoning",
+        "model": "qwen3.6:35b-cc-65k",
+        "runtime": "ollama",
+        "why": "Qwen3 35B context-compressed 65k — main reasoning engine on M1 Max 64GB.",
+        "departments": [
+          "ceo-command",
+          "market-intelligence",
+          "product-strategy",
+          "knowledge-memory"
+        ],
+        "commands": [
+          "idea",
+          "goal",
+          "solo",
+          "plan",
+          "research",
+          "docs"
+        ],
+        "context_policy": "Use concise retrieved state; persist evidence to files instead of relying on long chat context."
+      },
+      {
+        "role": "local-critic",
+        "model": "qwen3:1.7b",
+        "runtime": "ollama",
+        "why": "Small fast model for quick reviews, linting, and lightweight validation passes.",
+        "departments": [
+          "quality-compliance",
+          "platform-operations"
+        ],
+        "commands": [
+          "review",
+          "audit",
+          "lint",
+          "test"
+        ]
+      },
+      {
+        "role": "coder-fast",
+        "model": "qwen3.6:35b-cc-65k",
+        "runtime": "ollama",
+        "why": "Full 35B model for complex code generation tasks.",
+        "departments": [
+          "engineering"
+        ],
+        "commands": [
+          "code",
+          "build",
+          "implement",
+          "refactor"
+        ]
+      },
+      {
+        "role": "coder-lite",
+        "model": "qwen3:1.7b",
+        "runtime": "ollama",
+        "why": "Lightweight model for quick edits, scaffolding, and boilerplate.",
+        "departments": [
+          "engineering"
+        ],
+        "commands": [
+          "scaffold",
+          "edit",
+          "format"
+        ]
+      }
+    ],
+    "provider_priority": [
+      "ollama-local",
+      "mlx-lm-local",
+      "llama.cpp-metal-local",
+      "cloud-max-explicit"
+    ],
+    "sop_loop_policy": {
+      "intake": "me idea creates goal contract, local model summarizes founder intent into company blueprint fields.",
+      "routing": "local model may propose next department, but next_department_for_goal and strict artifact validation are authoritative.",
+      "execution": "each department prompt must include goal file path, department contract, allowed commands, required evidence fields, proof rule, blocker, and handoff target.",
+      "verification": "no local model output can pass a gate without artifact JSON and tests/commands required by the evidence contract.",
+      "memory": "every loop writes files under state/, plans/reports/, docs/, or sops/ so context gaps do not break continuity.",
+      "sales_self_use": "MekongMind must use the same local LLM SOP loop to market, sell, close, fulfill, and document itself before claiming repeatability."
+    },
+    "no_gap_invariants": [
+      "No LLM response is evidence unless written to an artifact contract.",
+      "No department handoff without artifact path, required fields, proof rule, and next bottleneck.",
+      "No cloud escalation without recording why local model was insufficient.",
+      "No $1M MRR claim without provider-backed revenue evidence and fulfillment/clone-memory proof.",
+      "No autonomous loop may run more than one large local model concurrently on M1/M1 Max without explicit memory budget."
+    ],
+    "failure_modes": [
+      {
+        "signal": "ollama unavailable",
+        "fallback": "use mlx-lm/llama.cpp if configured; otherwise pause autonomous execution and report local runtime down"
+      },
+      {
+        "signal": "model hallucinated evidence",
+        "fallback": "discard output, require artifact validation and source file links"
+      },
+      {
+        "signal": "context too large",
+        "fallback": "summarize to state files and rehydrate only required contract fields"
+      },
+      {
+        "signal": "memory pressure",
+        "fallback": "switch to coder-lite or reduce context; do not open browser subagents"
+      },
+      {
+        "signal": "sales loop has no buyer/payment proof",
+        "fallback": "route to growth-marketing or sales-revenue, not engineering"
+      }
+    ],
+    "inspection_commands": [
+      "ollama --version",
+      "curl -s http://localhost:11434/api/tags",
+      "me solo local-llm",
+      "me solo bottlenecks --strict",
+      "me solo artifact validate <department> <artifact>"
+    ],
+    "sources": [
+      {
+        "name": "Ollama",
+        "url": "https://ollama.com"
+      },
+      {
+        "name": "MLX LM",
+        "url": "https://github.com/ml-explore/mlx-lm"
+      },
+      {
+        "name": "llama.cpp Metal",
+        "url": "https://github.com/ggml-org/llama.cpp"
+      }
+    ]
+  },
+  "installed_model_policy": [
+    {
+      "role": "primary-reasoning",
+      "model": "qwen3.6:35b-cc",
+      "runtime": "ollama",
+      "quantization": "Q4_K_M ~20GB",
+      "why": "Main reasoning engine for SOP routing, code, synthesis, autonomous coordination. ~6s first token, 215 tok/s steady on M1 Max MLX.",
+      "departments": [
+        "ceo-command",
+        "market-intelligence",
+        "product-strategy",
+        "knowledge-memory",
+        "engineering-factory",
+        "quality-compliance",
+        "platform-operations",
+        "growth-marketing",
+        "sales-revenue",
+        "customer-success-fulfillment"
+      ],
+      "commands": [
+        "idea",
+        "goal",
+        "solo",
+        "plan",
+        "research",
+        "docs",
+        "code",
+        "fix",
+        "review",
+        "bottlenecks",
+        "doctrine",
+        "predict"
+      ],
+      "context_policy": "Use concise retrieved state; persist evidence to files instead of relying on long chat context."
+    },
+    {
+      "role": "fast-classifier",
+      "model": "qwen3.5:2b",
+      "runtime": "ollama",
+      "quantization": "Q4_K_M ~2.6GB",
+      "why": "Fast classifier, route resolver, small patch generator, and fallback under memory pressure. <1s latency.",
+      "departments": [
+        "ceo-command",
+        "knowledge-memory"
+      ],
+      "commands": [
+        "route",
+        "commands",
+        "capabilities",
+        "artifact",
+        "intent-classify",
+        "quick-answer"
+      ],
+      "context_policy": "Use for short deterministic transforms, not strategic commitments."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "git-shim",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/packages/cleo-new/packages/git-shim",
+  "snapshot_dir": "state/products/evidence/git-shim-84188025",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/git-shim-84188025/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/git-shim-84188025/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:59.492471Z"
+}

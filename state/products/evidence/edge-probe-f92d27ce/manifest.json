@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "edge-probe",
+  "product_path": "/Users/macbook/sophia-ai-factory.backup-260517-20260601-2125/apps/sophia-ai-factory/tests/load/edge-probe",
+  "snapshot_dir": "state/products/evidence/edge-probe-f92d27ce",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/edge-probe-f92d27ce/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/edge-probe-f92d27ce/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:26:32.495268Z"
+}

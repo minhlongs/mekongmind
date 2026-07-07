@@ -1,0 +1,58 @@
+{
+  "current_gate": "idea-intake",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "at": "2026-06-04T18:17:04.505182Z",
+          "note": "initial gate",
+          "source": "local-state"
+        }
+      ],
+      "id": "idea-intake",
+      "status": "active"
+    },
+    {
+      "evidence": [],
+      "id": "company-blueprint",
+      "status": "collected"
+    },
+    {
+      "evidence": [],
+      "id": "offer-validated",
+      "status": "collected"
+    },
+    {
+      "evidence": [],
+      "id": "mvp-live",
+      "status": "blocked-for-public-production"
+    },
+    {
+      "evidence": [],
+      "id": "first-revenue",
+      "status": "active"
+    },
+    {
+      "evidence": [],
+      "id": "repeatable-channel",
+      "status": "active"
+    },
+    {
+      "evidence": [],
+      "id": "fulfillment-stable",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "scale-ready",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "first-1m-mrr",
+      "status": "pending"
+    }
+  ],
+  "goal_id": "goal-20260605-011704",
+  "updated_at": "2026-06-04T18:17:04.505182Z"
+}

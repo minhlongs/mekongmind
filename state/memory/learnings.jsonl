@@ -1,0 +1,5 @@
+{"ts": "2026-06-05T07:43:27.109144", "category": "phase4-complete", "insight": "7 hooks enhanced, Phase 3 done", "applicable_to": "validation"}
+{"ts": "2026-06-05T07:43:27.313147", "category": "error", "insight": "Error E_CONTEXT from test_tool: context overflow error", "applicable_to": "post-tool-use"}
+{"ts": "2026-06-05T09:46:42.275434", "category": "failure", "insight": "Step test-real-dispatch failed after 3 retries", "applicable_to": "Plan"}
+{"ts": "2026-06-05T09:48:46.763856", "category": "failure", "insight": "Step test-real-dispatch failed after 3 retries", "applicable_to": "Plan"}
+{"ts": "2026-06-05T09:58:16.196350", "category": "failure", "insight": "Step test-dispatch-2 failed after 3 retries", "applicable_to": "Plan"}

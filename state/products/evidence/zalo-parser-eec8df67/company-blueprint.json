@@ -1,0 +1,18 @@
+{
+  "artifact_path": "state/evidence/company-blueprint.json",
+  "current_gate": "company-blueprint",
+  "department": "ceo-command",
+  "gate": "company-blueprint",
+  "idea": "Deploy tiktok-shop-api to production on GCP \u2014 GO LIVE workflow: build Docker image, push to GCP VM 34.57.217.179, run container, verify health, run smoke tests",
+  "inventory_source": "/Users/macbook/Documents/me-deep-wrapper/state/products/local-product-inventory.json",
+  "kill_criteria": "Kill or pivot if Market Intelligence cannot validate reachable buyer, urgent pain, demand signal, and willingness to pay before build/outreach volume.",
+  "next_department": "market-intelligence",
+  "offer_direction": "package zalo-parser as a sellable RaaS/productized workflow with Polar checkout and fulfillment SOP",
+  "pain": "workflow pain hypothesis around zalo-parser; Market Intelligence must validate urgency and alternatives",
+  "polar_provider": "Polar.sh canonical; do not modify verified Polar setup without explicit approval",
+  "product_name": "zalo-parser",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/zalo-parser",
+  "target_customer": "buyer hypothesis for zalo-parser; Market Intelligence must validate reachable buyer and budget",
+  "target_mrr": 1000000,
+  "updated_at": "2026-06-03T15:32:49.871635Z"
+}

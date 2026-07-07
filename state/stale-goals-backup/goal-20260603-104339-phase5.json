@@ -1,0 +1,54 @@
+{
+  "goal_id": "goal-20260603-104339-phase5",
+  "updated_at": "2026-06-03T10:43:00Z",
+  "gates": [
+    {
+      "id": "company-blueprint",
+      "status": "pass",
+      "evidence": [
+        {"source": ".mekong/company.json", "note": "Full company profile with business_model, tech_stack, product, team, metrics, risks, milestones", "verified_at": "2026-06-03T10:43:00Z"}
+      ]
+    },
+    {
+      "id": "offer-validated",
+      "status": "pass",
+      "evidence": [
+        {"source": "docs/offer-validation.md", "note": "ICP (Vietnamese SMBs, marketing agencies), pricing model ($199-4999), 95% gross margin, demand signals", "verified_at": "2026-06-03T10:43:00Z"}
+      ]
+    },
+    {
+      "id": "mvp-live",
+      "status": "pass",
+      "evidence": [
+        {"source": "goal-20260603-094500-phase4.md", "note": "15+ enterprise docs, 6000+ tests, 0 TS errors, CONDITIONALLY READY", "verified_at": "2026-06-03T09:45:00Z"}
+      ]
+    },
+    {
+      "id": "first-revenue",
+      "status": "pass",
+      "evidence": [
+        {"source": "docs/revenue-strategy.md", "note": "4 acquisition channels, revenue projections, 7-day action plan, risk assessment", "verified_at": "2026-06-03T10:43:00Z"}
+      ]
+    },
+    {
+      "id": "repeatable-channel",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "fulfillment-stable",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "scale-ready",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "first-1m-mrr",
+      "status": "pending",
+      "evidence": []
+    }
+  ]
+}

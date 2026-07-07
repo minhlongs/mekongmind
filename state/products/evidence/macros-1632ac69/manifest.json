@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "macros",
+  "product_path": "/Users/macbook/solo-platform/gateway/venv/lib/python3.14/site-packages/temporalio/bridge/sdk-core/crates/macros",
+  "snapshot_dir": "state/products/evidence/macros-1632ac69",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/macros-1632ac69/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/macros-1632ac69/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:26:22.614254Z"
+}

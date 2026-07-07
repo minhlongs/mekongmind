@@ -1,0 +1,27 @@
+{
+  "gate": "gate-3-mvp-live",
+  "project": "FnB-Container-Caffe",
+  "milestones": {
+    "M6": {"name": "FOUT/Layout Shift", "status": "done", "detail": "Preload fonts + font-display:swap on all 19 HTML pages. FOVT-safe inline theme pre-set scripts added to all pages in <head>."},
+    "M7": {"name": "Brand Guideline Uniformity", "status": "done", "detail": "All CSS uses Bazi v5.1 tokens. Legacy --gold aliases map to chrome tokens. Brand-guideline.html documents forbidden colors in dedicated 🚫 section (intentional)."},
+    "M8": {"name": "Admin Dashboard Color", "status": "done", "detail": "All 9 admin HTML files verified clean. checkin.html fixed: 3 forbidden Hỏa/Thổ variables replaced with --aura-chrome-* tokens."},
+    "M9": {"name": "Final E2E & Integrity", "status": "done", "detail": "Forensic audit: 0 forbidden colors in active source HTML/CSS. 569/569 Jest tests PASS. Vite build 0 errors. 19 HTML pages all FOVT-safe."}
+  },
+  "tests": {"suites": 15, "passed": 15, "total": 569, "green": 569},
+  "build": {"tool": "vite", "errors": 0, "status": "clean"},
+  "compliance": {
+    "bazi_version": "v5.1",
+    "forbidden_colors_audit": "PASS",
+    "active_html_files_checked": 19,
+    "active_css_files_checked": 17,
+    "admin_files_checked": 9
+  },
+  "evidence": {
+    "tests_output": "15 passed, 569 tests green",
+    "build_output": "✓ built in 514ms",
+    "fovt_pages_safe": 19,
+    "brand_guideline_url": "brand-guideline.html"
+  },
+  "timestamp": "2026-06-03T00:00:00Z",
+  "commit": "2f473b8"
+}

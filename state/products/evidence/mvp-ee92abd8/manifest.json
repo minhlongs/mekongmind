@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-test-products-packet-batch",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "mvp",
+  "product_path": "/Users/macbook/Documents/me-deep-wrapper/mvp",
+  "snapshot_dir": "state/products/evidence/mvp-ee92abd8",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/mvp-ee92abd8/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/mvp-ee92abd8/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T14:08:00.343731Z"
+}

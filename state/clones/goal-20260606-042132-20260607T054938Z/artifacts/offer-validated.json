@@ -1,0 +1,67 @@
+{
+  "department": "product-strategy",
+  "gate": "offer-validated",
+  "artifact_path": "state/evidence/offer-validated.json",
+  "owner": "business-analyst",
+  "status": "ready",
+  "updated_at": "2026-06-05T19:09:05.638161Z",
+  "note": "Step",
+  "icp": "TikTok Shop Indonesian sellers managing 10+ products, $5K+/month GMV, actively tracking competitor pricing",
+  "pain": "Manual competitor intelligence workflow: 3-5 hours/week copying prices from competitors, no real-time alerts, missing competitor promotions",
+  "trigger": "Competitor underprices on same product \u2192 seller loses sale without knowing why",
+  "buyer": "Store owner or ops manager with budget authority for $29-99/mo tools",
+  "alternatives": [
+    "Manual spreadsheet tracking (current state)",
+    "Jungle Scout / Helium 10 (Western-focused, no TikTok Shop data)",
+    "Custom Puppeteer scraper (requires technical skill)"
+  ],
+  "wedge": "API-first competitor intelligence specifically for TikTok Shop Indonesia \u2014 first mover in niche",
+  "demand_signal": "desk-research-complete \u2014 ICP pain validated via seller community discussions; no paid interviews yet",
+  "evidence_source": "market-intelligence desk research + TikTok Shop seller forums",
+  "confidence": "medium \u2014 awaiting first customer interview for high-confidence validation",
+  "offer": "tiktok-shop-api: REST API returning competitor price history, stock levels, and promotion alerts for any TikTok Shop product",
+  "promise": "Never miss a competitor price drop or promotion \u2014 API delivers alerts within 15 minutes of competitor change",
+  "pricing": {
+    "starter": {
+      "price_usd": 29,
+      "billing": "monthly",
+      "api_calls": "1000/month",
+      "products": "up to 50"
+    },
+    "growth": {
+      "price_usd": 79,
+      "billing": "monthly",
+      "api_calls": "10000/month",
+      "products": "up to 500"
+    },
+    "enterprise": {
+      "price_usd": 199,
+      "billing": "monthly",
+      "api_calls": "unlimited",
+      "products": "unlimited"
+    }
+  },
+  "package": "API product with Polar.sh checkout, webhook delivery, dashboard for non-technical users",
+  "mvp_scope": [
+    "Product lookup by TikTok Shop URL \u2192 competitor price history JSON",
+    "Promotion alert webhook (Polar subscription triggers)",
+    "Dashboard: top 10 competitors by price displacement"
+  ],
+  "non_goals": [
+    "Full TikTok Shop scraping (only price + stock + promotion signals)",
+    "Seller account integration (API is read-only)",
+    "Multi-language support (Indonesia only for MVP)"
+  ],
+  "acceptance_criteria": [
+    "API returns data for any public TikTok Shop product URL within 5 seconds",
+    "Polar checkout flow completes and triggers webhook delivery",
+    "Dashboard loads competitor data without page refresh",
+    "99% uptime SLA via Cloudflare Workers"
+  ],
+  "sales_angle": "Stop losing sales to competitors who price lower \u2014 API tells you exactly when and by how much",
+  "risk": [
+    "TikTok Shop anti-scraping may block Puppeteer at scale",
+    "Polar.sh not yet deployed \u2014 checkout untested",
+    "Zero paying customers \u2014 demand signal is desk research only"
+  ]
+}

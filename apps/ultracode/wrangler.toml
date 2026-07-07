@@ -1,0 +1,8 @@
+name = "ultracode"
+main = "out"
+compatibility_date = "2025-07-01"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "rm -rf out && node node_modules/next/dist/bin/next build"
+output_directory = "out"

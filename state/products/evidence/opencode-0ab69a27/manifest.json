@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "opencode",
+  "product_path": "/Users/macbook/mekong-ide/packages/opencode",
+  "snapshot_dir": "state/products/evidence/opencode-0ab69a27",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/opencode-0ab69a27/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/opencode-0ab69a27/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:20:16.984097Z"
+}

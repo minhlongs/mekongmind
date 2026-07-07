@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "ide-ui",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/ide/ide-ui",
+  "snapshot_dir": "state/products/evidence/ide-ui-66a1952b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/ide-ui-66a1952b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/ide-ui-66a1952b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:26:54.180183Z"
+}

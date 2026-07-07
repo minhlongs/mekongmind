@@ -1,0 +1,15 @@
+{
+  "packs": [
+    {
+      "archive": "test-cafe-20260607.tar.gz",
+      "archive_bytes": 668,
+      "archive_sha256": "f1f137f30ebc4a09da10e7d847746f523272491d98ac5bbab90766fac07b4da7",
+      "manifest": "test-cafe-20260607.manifest.json",
+      "pack_date": "20260607",
+      "packed_at": "2026-06-07T05:51:54.846872Z",
+      "slug": "test-cafe",
+      "total_files": 3
+    }
+  ],
+  "updated_at": "2026-06-07T05:51:54.846872Z"
+}

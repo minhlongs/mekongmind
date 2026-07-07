@@ -1,0 +1,2264 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "brainstormer",
+      "description": "Commands: ideation design thinking | Domain: ideation,design,thinking",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "business-analyst",
+      "description": "Commands: business requirements | Domain: business,requirements",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "code-reviewer",
+      "description": "Commands: review audit ITGC compliance | Domain: review,audit,ITGC,compliance",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "code-simplifier",
+      "description": "Commands: refactor simplify cleanup | Domain: refactor,simplify,cleanup",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "debugger",
+      "description": "Commands: debug troubleshoot trace | Domain: debug,troubleshoot,trace",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "docs-manager",
+      "description": "Commands: docs writing documentation | Domain: docs,writing,documentation",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "fullstack-developer",
+      "description": "Commands: fullstack web frontend backend | Domain: fullstack,web,frontend,backend",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "gemini-analyzer",
+      "description": "Commands: gemini google analyze | Domain: gemini,google,analyze",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "git-manager",
+      "description": "Commands: git workflow branch merge | Domain: git,workflow,branch,merge",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "journal-writer",
+      "description": "Commands: journal logging notes | Domain: journal,logging,notes",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "planner",
+      "description": "Commands: plan design architecture | Domain: plan,design,architecture",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "project-manager",
+      "description": "Commands: pm schedule tracking | Domain: pm,schedule,tracking",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "researcher",
+      "description": "Commands: research analysis investigate | Domain: research,analysis,investigate",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "tester",
+      "description": "Commands: test qa verify | Domain: test,qa,verify",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ui-ux-designer",
+      "description": "Commands: ui ux design figma | Domain: ui,ux,design,figma",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "build-tools-vite-expert",
+      "description": "Commands: vite build frontend | Domain: vite,build,frontend",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "build-tools-webpack-expert",
+      "description": "Commands: webpack build frontend | Domain: webpack,build,frontend",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "code-quality-linting-expert",
+      "description": "Commands: lint quality standards | Domain: lint,quality,standards",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "database-expert",
+      "description": "Commands: database sql schema | Domain: database,sql,schema",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "database-mongodb-expert",
+      "description": "Commands: mongodb mongoose noSQL | Domain: mongodb,mongoose,noSQL",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "database-postgres-expert",
+      "description": "Commands: postgres pg sql | Domain: postgres,pg,sql",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "devops-expert",
+      "description": "Commands: devops ci cd deploy | Domain: devops,ci,cd,deploy",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "documentation-expert",
+      "description": "Commands: docs writing documentation | Domain: docs,writing,documentation",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "e2e-playwright-expert",
+      "description": "Commands: e2e playwright testing | Domain: e2e,playwright,testing",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "framework-nextjs-expert",
+      "description": "Commands: nextjs react ssr | Domain: nextjs,react,ssr",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "frontend-accessibility-expert",
+      "description": "Commands: a11y accessibility wcag | Domain: a11y,accessibility,wcag",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "frontend-css-styling-expert",
+      "description": "Commands: css styling tailwind | Domain: css,styling,tailwind",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "git-expert",
+      "description": "Commands: git workflow branch merge | Domain: git,workflow,branch,merge",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "infrastructure-docker-expert",
+      "description": "Commands: docker container compose | Domain: docker,container,compose",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "infrastructure-github-actions-expert",
+      "description": "Commands: github actions ci | Domain: github,actions,ci",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "jest-testing-expert",
+      "description": "Commands: jest testing unit | Domain: jest,testing,unit",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "kafka-expert",
+      "description": "Commands: kafka messaging stream | Domain: kafka,messaging,stream",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "loopback-expert",
+      "description": "Commands: loopback node api | Domain: loopback,node,api",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "nodejs-expert",
+      "description": "Commands: nodejs backend runtime | Domain: nodejs,backend,runtime",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "react-expert",
+      "description": "Commands: react frontend hooks | Domain: react,frontend,hooks",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "react-performance-expert",
+      "description": "Commands: react perf memo | Domain: react,perf,memo",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "refactoring-expert",
+      "description": "Commands: refactor cleanup pattern | Domain: refactor,cleanup,pattern",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "testing-expert",
+      "description": "Commands: test qa verify | Domain: test,qa,verify",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "typescript-build-expert",
+      "description": "Commands: typescript build tsc | Domain: typescript,build,tsc",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "typescript-expert",
+      "description": "Commands: typescript type-system | Domain: typescript,type-system",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "typescript-type-expert",
+      "description": "Commands: typescript types generics | Domain: typescript,types,generics",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "vitest-testing-expert",
+      "description": "Commands: vitest testing unit | Domain: vitest,testing,unit",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "code-search",
+      "description": "Commands: search find codebase | Domain: search,find,codebase",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "oracle",
+      "description": "Commands: oracle database sql | Domain: oracle,database,sql",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "research-expert",
+      "description": "Commands: research analysis investigate | Domain: research,analysis,investigate",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "code-review-expert",
+      "description": "Commands: review quality standards | Domain: review,quality,standards",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ai-sdk-expert",
+      "description": "Commands: ai sdk vercel nextjs | Domain: ai,sdk,vercel,nextjs",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "cli-expert",
+      "description": "Commands: cli command shell claudekit | Domain: cli,command,shell,claudekit",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "triage-expert",
+      "description": "Commands: triage issues pipeline | Domain: triage,issues,pipeline",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "nestjs-expert",
+      "description": "Commands: nestjs node backend api | Domain: nestjs,node,backend,api",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "pipeline",
+      "description": "Domain: sequential,pipeline,stage",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "fanout-fanin",
+      "description": "Domain: parallel,fanout,aggregate",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "producer-reviewer",
+      "description": "Domain: produce,review,feedback",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "supervisor",
+      "description": "Domain: supervise,coordinate,delegate",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "hierarchical",
+      "description": "Domain: hierarchy,delegate,escalate",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "expert-pool",
+      "description": "Domain: pool,specialist,query",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "iterative-refiner",
+      "description": "Domain: iterate,refine,improve",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "orchestrator",
+      "description": "Domain: orchestrate,team,plan",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "description": "The specific task or question for this agent"
+          },
+          "context": {
+            "type": "string",
+            "description": "Goal description, current gate, prior step outputs"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Hard constraints: budget, timeline, compliance, non-goals"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Expected output: markdown report, JSON evidence, plan"
+          },
+          "goal_file": {
+            "type": "string",
+            "description": "Path to the goal markdown file being executed"
+          },
+          "step_number": {
+            "type": "integer",
+            "description": "Current step number in the goal sequence"
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    }
+  }
+]

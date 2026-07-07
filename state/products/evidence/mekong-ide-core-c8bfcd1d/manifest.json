@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "mekong-ide-core",
+  "product_path": "/Users/macbook/mekong-ide-core",
+  "snapshot_dir": "state/products/evidence/mekong-ide-core-c8bfcd1d",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/mekong-ide-core-c8bfcd1d/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/mekong-ide-core-c8bfcd1d/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:19:54.355076Z"
+}

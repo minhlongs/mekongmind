@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "reflect2@v1.0.2",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/modern-go/reflect2@v1.0.2",
+  "snapshot_dir": "state/products/evidence/reflect2-v1.0.2-564496af",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/reflect2-v1.0.2-564496af/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/reflect2-v1.0.2-564496af/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:07.633529Z"
+}

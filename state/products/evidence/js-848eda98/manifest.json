@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "js",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/mekong-ide/packages/sdk/js",
+  "snapshot_dir": "state/products/evidence/js-848eda98",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/js-848eda98/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/js-848eda98/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:27:20.748692Z"
+}

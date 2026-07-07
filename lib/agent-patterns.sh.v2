@@ -1,0 +1,214 @@
+#!/bin/bash
+# agent-patterns.sh — Routing patterns for MEKONG_WRAPPER deep wrapper
+# Maps CLI + command → specialized agent
+# Registry source: agents/registry.json (canonical)
+#
+# Functions:
+#   resolve_agent <cli> <command> → echo agent_id or empty
+#   list_agents [--all|--mekong|--ck|--harness]
+#   agent_info <id> → echo "domain|source|path"
+#   route_idea <keyword> → echo agent_id based on idea keyword
+
+REGISTRY="$(dirname "$(dirname "$(readlink -f "$0" || echo "$0")")")/agents/registry.json"
+
+resolve_agent() {
+  local cli="${1:-mekong}"
+  local cmd="${2:-}"
+
+  # 1) Harness-Engineering pattern shortcuts (override default cli mapping)
+  case "$cli" in
+    idea|goal)
+      case "$cmd" in
+        pipeline)       echo "orchestrator"; return ;;
+        fanout|fanin)   echo "orchestrator"; return ;;
+        review)         echo "code-reviewer"; return ;;
+        audit|itgc|sox) echo "audit-expert"; return ;;
+        deploy|raas)    echo "devops-expert"; return ;;
+        plan)           echo "planner"; return ;;
+      esac
+      ;;
+  esac
+
+  # 2) Fallback: grep registry (handles when python not available)
+  local agent=""
+  if [ -f "$REGISTRY" ]; then
+    case "$cli" in
+      mekong|mk)
+        agent=$(grep -A3 '"id":' "$REGISTRY" | grep -B1 -A2 '"source": "mekong"' 2>/dev/null | \
+                python3 -c "
+import json,sys
+with open(sys.argv[1]) as f: data=json.load(f)
+cmds=['${cmd}','${cmd/-/_}','${cmd/_/-}']
+for a in data.get('mekong_agents',[]):
+    did=a['id'].lower().replace('-','').replace('_','')
+    for c in cmds:
+        cc=c.lower().replace('-','').replace('_','')
+        if did==cc or cc in did:
+            print(a['id']); sys.exit(0)
+" "$REGISTRY" 2>/dev/null)
+        ;;
+      ck|claudekit)
+        agent=$(python3 -c "
+import json,sys
+with open(sys.argv[1]) as f: data=json.load(f)
+cmds=['${cmd}','${cmd/-/_}','${cmd/_/-}']
+for a in data.get('claudekit_agents',[]):
+    did=a['id'].lower().replace('-','').replace('_','')
+    for c in cmds:
+        cc=c.lower().replace('-','').replace('_','')
+        if did==cc or cc in did:
+            print(a['id']); sys.exit(0)
+" "$REGISTRY" 2>/dev/null)
+        ;;
+      me)
+        # Try both; prefer mekong match
+        agent=$(python3 -c "
+import json,sys
+with open(sys.argv[1]) as f: data=json.load(f)
+cmds=['${cmd}','${cmd/-/_}','${cmd/_/-}']
+for a in data.get('mekong_agents',[])+data.get('claudekit_agents',[]):
+    did=a['id'].lower().replace('-','').replace('_','')
+    for c in cmds:
+        cc=c.lower().replace('-','').replace('_','')
+        if did==cc or cc in did:
+            print(a['id']); sys.exit(0)
+" "$REGISTRY" 2>/dev/null)
+        ;;
+    esac
+  fi
+  echo "${agent:-}"
+}
+
+# List agents by source
+list_agents() {
+  local src="${1:---all}"
+  python3 -c "
+import json,sys
+with open(sys.argv[1]) as f: data=json.load(f)
+src=sys.argv[2]
+if src in ('--all',''):
+    for a in data.get('mekong_agents',[])+data.get('claudekit_agents',[])+data.get('harness_engineering_patterns',[]):
+        print(a['id'])
+elif src=='--mekong':
+    for a in data.get('mekong_agents',[]): print(a['id'])
+elif src in ('--ck','--claudekit'):
+    for a in data.get('claudekit_agents',[]): print(a['id'])
+elif src=='--harness':
+    for a in data.get('harness_engineering_patterns',[]): print(a['id'])
+" "$REGISTRY" "$src" 2>/dev/null
+}
+
+# Return "domain|source|path" for a given agent id
+agent_info() {
+  local id="${1:-}"
+  python3 -c "
+import json,sys
+with open(sys.argv[1]) as f: data=json.load(f)
+id=sys.argv[2]
+for src_name, src_key in [('mekong','mekong_agents'),('claudekit','claudekit_agents'),('harness','harness_engineering_patterns')]:
+    for a in data.get(src_key,[]):
+        if a['id']==id:
+            print(f\"{a.get('domain','')}|{src_name}|{a.get('path','')}\")
+            sys.exit(0)
+print('||')
+" "$REGISTRY" "$id" 2>/dev/null
+}
+
+# Route an idea/goal to an agent based on keyword
+route_idea() {
+  local keyword="${1:-}"
+  python3 -c "
+import json,sys
+with open(sys.argv[1]) as f: data=json.load(f)
+kw=sys.argv[2].lower()
+for a in data.get('mekong_agents',[])+data.get('claudekit_agents',[]):
+    if kw in a.get('domain','').lower() or kw in a['id'].lower():
+        print(a['id']); sys.exit(0)
+print('orchestrator')
+" "$REGISTRY" "$keyword" 2>/dev/null
+}
+
+# Harness Engineering pattern selection: map pattern id → routing function
+apply_harness_pattern() {
+ local pattern="${1:-}"
+ local task="${2:-}"
+ local ltask matched=""
+ ltask=$(printf '%s' "$task" | tr '[:upper:]' '[:lower:]')
+ # ── Auto-detect when pattern is "auto" or empty ──────────────────
+ if [ "$pattern" = "auto" ]; then
+  if printf '%s' "$ltask" | grep -Eq 'deploy|release|build|ship|cd|deploying'; then
+   matched="pipeline"
+  elif printf '%s' "$ltask" | grep -Eq 'iterate|refine|polish|vòng|lặp|sửa lại'; then
+   matched="iterative-refiner"
+  elif printf '%s' "$ltask" | grep -Eq 'plan|strategy|roadmap|overview|chiến lược|lộ trình'; then
+   matched="orchestrator"
+  elif printf '%s' "$ltask" | grep -Eq 'expert|special|complex|chuyên sâu|phức tạp|nhiều khía cạnh'; then
+   matched="expert-pool"
+  elif printf '%s' "$ltask" | grep -Eq 'review|đánh giá|kiểm tra|qa|audit'; then
+   matched="producer-reviewer"
+  elif printf '%s' "$ltask" | grep -Eq 'fanout|fan-in|song song|đồng thời|phân tán'; then
+   matched="fanout-fanin"
+  elif printf '%s' "$ltask" | grep -Eq 'supervisor|quản lý|phê duyệt|approve|giam sat'; then
+   matched="supervisor"
+  elif printf '%s' "$ltask" | grep -Eq 'hierarch|lần lượt|tầng|tier|layer|cấp'; then
+   matched="hierarchical"
+  fi
+  # Fallback: default to orchestrator so pattern_label is never empty
+  [ -z "$matched" ] && matched="orchestrator"
+  echo "$matched"
+  return 0
+ fi
+ # ── Explicit pattern — whitelist to allow only known patterns, else empty
+case "$pattern" in
+  pipeline|iterative-refiner|orchestrator|expert-pool|producer-reviewer|fanout-fanin|supervisor|hierarchical)
+    echo "$pattern" ;;
+  *) echo "" ;;
+esac
+}
+# ── Registry command catalog helpers ───────────────────────
+# Uses the same jq -> python3 fallback as bin/me.
+# shellcheck disable=SC2317
+_registry_json() { cat "$REGISTRY" 2>/dev/null || echo "{}"; }
+# shellcheck disable=SC2317
+_jq() {
+  if command -v jq >/dev/null 2>&1; then jq "$@"; else
+    python3 -c "import sys,json; d=json.load(sys.stdin); print($*)"
+  fi
+}
+
+# list_commands [prefix] — prints "command -> agent_id"
+list_commands() {
+  local prefix="${1:-}"
+  if [ -n "$prefix" ]; then
+    _registry_json | _jq -r --arg q "$prefix" '(.command_to_agent // {}) | to_entries[] | select(.key|test($q;"i")) | "\(.key) -> \(.value)"'
+  else
+    _registry_json | _jq -r '(.command_to_agent // {}) | to_entries[] | "\(.key) -> \(.value)"'
+  fi
+}
+
+# command_to_agent <cmd> — echo agent_id for the most specific agent
+command_to_agent() {
+  local cmd="$1"
+  # exact
+  local agent
+  agent=$(_registry_json | _jq -r '(.command_to_agent // {})["$cmd"] // empty')
+  if [ -n "$agent" ]; then echo "$agent"; return; fi
+  # case-insensitive
+  agent=$(_registry_json | _jq -r '(.command_to_agent // {}) | to_entries[] | select(.key|ascii_downcase=="'"$(printf '%s' "$cmd" | tr '[:upper:]' '[:lower:]')"'") | .value' | head -1)
+  echo "${agent:-}"
+}
+
+# registry_count — echo "<cli> <count>" for mekong and claudekit
+registry_count() {
+  local mekong claudekit
+  mekong=$(_registry_json | _jq '.mekong_agents | length // 0')
+  claudekit=$(_registry_json | _jq '.claudekit_agents | length // 0')
+  echo "mekong $mekong"
+  echo "claudekit $claudekit"
+}
+
+# registry_list <cli> — TSV: agent_id commands path
+registry_list() {
+  local cli="$1"
+  _registry_json | _jq -r --arg c "$cli" '.[$c][] | [.id, (.commands // .domain // ""), (.path // "")] | @tsv'
+}

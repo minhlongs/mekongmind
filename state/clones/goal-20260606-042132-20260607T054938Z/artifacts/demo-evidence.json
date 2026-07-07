@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "name": "mekongmind-demo-skill",
+  "description": "Demo skill for MEKONG + Hermes integration using the Nhip Song Xanh concept",
+  "author": "hermes-agent integration",
+  "tags": [
+    "demo",
+    "integration",
+    "green-living"
+  ],
+  "commands": [
+    {
+      "name": "create-green-task",
+      "description": "Create a new task for building sustainable living features",
+      "parameters": {
+        "task_description": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "number"
+        }
+      }
+    },
+    {
+      "name": "validate-evidence",
+      "description": "Validate evidence contract for a specific department",
+      "parameters": {
+        "department_id": {
+          "type": "string"
+        },
+        "evidence_file": {
+          "type": "string"
+        }
+      }
+    }
+  ],
+  "status": "collected"
+}

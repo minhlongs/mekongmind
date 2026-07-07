@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "fnb-local-os",
+  "product_path": "/Users/macbook/fnb-local-os",
+  "snapshot_dir": "state/products/evidence/fnb-local-os-0d53602d",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/fnb-local-os-0d53602d/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/fnb-local-os-0d53602d/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:16:23.414672Z"
+}

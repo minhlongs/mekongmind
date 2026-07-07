@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "vnstock-mcp",
+  "product_path": "/Users/macbook/Downloads/mekong-cli-main/ide-core/tools/vnstock-mcp",
+  "snapshot_dir": "state/products/evidence/vnstock-mcp-a1f4719f",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/vnstock-mcp-a1f4719f/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/vnstock-mcp-a1f4719f/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T14:08:17.722546Z"
+}

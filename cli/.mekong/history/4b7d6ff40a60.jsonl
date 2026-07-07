@@ -1,0 +1,2 @@
+{"event_id": "e00c4f8e00ec", "kind": "workflow_started", "timestamp": 1783432387.696482, "workflow_id": "4b7d6ff40a60", "step_order": null, "data": {"recipe": "empty-recipe", "steps": 0}}
+{"event_id": "1b77e941dc80", "kind": "workflow_completed", "timestamp": 1783432387.696747, "workflow_id": "4b7d6ff40a60", "step_order": null, "data": {"success_rate": 0.0}}

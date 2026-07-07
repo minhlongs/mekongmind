@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "raas",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/docs/raas",
+  "snapshot_dir": "state/products/evidence/raas-d584a8a7",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/raas-d584a8a7/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/raas-d584a8a7/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:13.669485Z"
+}

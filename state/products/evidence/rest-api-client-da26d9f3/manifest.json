@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "rest-api-client",
+  "product_path": "/Users/macbook/mekongmind/apps/well/n8n_codebase/packages/frontend/@n8n/rest-api-client",
+  "snapshot_dir": "state/products/evidence/rest-api-client-da26d9f3",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/rest-api-client-da26d9f3/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/rest-api-client-da26d9f3/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:21:47.945765Z"
+}

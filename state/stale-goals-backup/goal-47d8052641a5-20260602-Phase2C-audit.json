@@ -1,0 +1,80 @@
+{
+  "goalId": "goal_47d8052641a5",
+  "gate": "Phase2-C",
+  "commits": [
+    "828cb15",
+    "eb87a08"
+  ],
+  "viteBuild": {
+    "status": "pass",
+    "errors": 0,
+    "warnings": 59,
+    "ts": "2026-06-02T08:13:39Z"
+  },
+  "jest": {
+    "status": "pass",
+    "total": 569,
+    "passed": 569,
+    "failed": 0
+  },
+  "playwrightUiAudit": {
+    "status": "pass",
+    "passed": 128,
+    "failed": 0,
+    "suites": [
+      "Desktop Chrome",
+      "Mobile Safari"
+    ],
+    "checks": [
+      "loads without console errors per page",
+      "no FOVT \u2014 theme applied at load per page",
+      "no raw emoji in body text",
+      "viewpoint meta on all pages",
+      "brand-tokens.css linked on all pages"
+    ]
+  },
+  "cssSyntaxAudit": {
+    "status": "pass",
+    "files": [
+      "css/about-m3.css",
+      "css/kds-m3.css",
+      "css/menu-m3.css"
+    ],
+    "notes": "About-m3.css and kds-m3.css :root + dark blocks re-patched and verified clean"
+  },
+  "status": "satisfied",
+  "updatedAt": "2026-06-02T08:33:37Z",
+  "phase2CFixes": {
+    "checkin.html-brand-tokens-css-added": {
+      "status": "applied",
+      "detail": "Added brand-tokens.css?v=2.2.1 link (stylesheet) to checkin.html; deduplicated index.html and checkin.html from having both preload+stylesheet pair \u2192 1 stylesheet per page"
+    },
+    "brand-tokens-css-current-state": {
+      "status": "pass",
+      "note": "All 14 PAGES-list pages now carry exactly 1 brand-tokens.css link; checkin.html was the last missing page"
+    }
+  },
+  "ciWiring": {
+    "status": "done",
+    "workflow": ".github/workflows/ci-phase2c.yml",
+    "trigger": "push + PR to main",
+    "steps": [
+      "Use Node.js 22.x with npm cache",
+      "npm ci",
+      "npm run build (Vite, 0 errors gate)",
+      "npm run test:ci (Jest, 569 assertions, coverage)",
+      "npx playwright install chromium --with-deps",
+      "npx playwright test tests/playwright/ui-audit.spec.ts --reporter=line (timeout 20 min)",
+      "python3 scripts/phase2c_evidence.py (persist JSON evidence, if: always())"
+    ],
+    "timeouts": {
+      "total": "25 min",
+      "playwright": "20 min"
+    },
+    "commits": [
+      "2fbc5c9"
+    ],
+    "evidenceScript": "scripts/phase2c_evidence.py",
+    "updatedAt": "2026-06-02T08:52:21Z"
+  }
+}

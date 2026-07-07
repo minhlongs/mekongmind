@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "themes",
+  "product_path": "/Users/macbook/mekongmind/packages/ide/ui/src/theme/themes",
+  "snapshot_dir": "state/products/evidence/themes-bc2a788f",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/themes-bc2a788f/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/themes-bc2a788f/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:22:39.153883Z"
+}

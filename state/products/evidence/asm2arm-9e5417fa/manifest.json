@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "asm2arm",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/bytedance/sonic@v1.15.0/tools/asm2arm",
+  "snapshot_dir": "state/products/evidence/asm2arm-9e5417fa",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/asm2arm-9e5417fa/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/asm2arm-9e5417fa/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:16:32.100947Z"
+}

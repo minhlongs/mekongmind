@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "mekong-foundation",
+  "product_path": "/Users/macbook/mekong-foundation",
+  "snapshot_dir": "state/products/evidence/mekong-foundation-91f7e1b3",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/mekong-foundation-91f7e1b3/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/mekong-foundation-91f7e1b3/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:19:53.423451Z"
+}

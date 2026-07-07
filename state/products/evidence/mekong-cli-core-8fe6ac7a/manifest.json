@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "mekong-cli-core",
+  "product_path": "/Users/macbook/Downloads/mekong-cli-main/packages/mekong-cli-core",
+  "snapshot_dir": "state/products/evidence/mekong-cli-core-8fe6ac7a",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/mekong-cli-core-8fe6ac7a/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/mekong-cli-core-8fe6ac7a/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T14:08:32.160345Z"
+}

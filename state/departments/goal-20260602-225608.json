@@ -1,0 +1,62 @@
+{
+  "departments": {
+    "engineering-factory": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:07:42.416316Z"
+    },
+    "market-intelligence": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:01:37.064777Z"
+    },
+    "product-strategy": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:06:33.435089Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:01:37.064777Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:06:33.435089Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T16:07:42.416316Z"
+    }
+  ],
+  "goal_id": "goal-20260602-225608",
+  "updated_at": "2026-06-02T16:07:42.416316Z"
+}

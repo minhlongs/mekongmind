@@ -1,0 +1,43 @@
+{
+  "artifact_path": "state/evidence/company-blueprint.json",
+  "current_gate": "company-blueprint",
+  "department": "ceo-command",
+  "gate": "company-blueprint",
+  "idea": "Deploy tiktok-shop-api to production on Cloudflare Workers — GO LIVE workflow: build Docker image, push to Cloudflare Workers VM , run container, verify health, run smoke tests",
+  "inventory_source": "/Users/macbook/Documents/me-deep-wrapper/state/products/local-product-inventory.json",
+  "kill_criteria": "Kill or pivot if Market Intelligence cannot validate reachable buyer, urgent pain, demand signal, and willingness to pay before build/outreach volume.",
+  "next_department": "market-intelligence",
+  "offer_direction": "package tiktok-shop-api as a sellable RaaS/productized workflow with Polar checkout and fulfillment SOP",
+  "pain": "workflow pain hypothesis around tiktok-shop-api; Market Intelligence must validate urgency and alternatives",
+  "polar_provider": "Polar.sh canonical; do not modify verified Polar setup without explicit approval",
+  "product_name": "tiktok-shop-api",
+  "product_path": "/Users/macbook/Documents/me-deep-wrapper/tiktok-shop-api",
+  "target_customer": "buyer hypothesis for tiktok-shop-api; Market Intelligence must validate reachable buyer and budget",
+  "target_mrr": 1000000,
+  "updated_at": "2026-06-04T00:00:00.000000Z",
+  "status": "collected",
+  "agentcore_integration": {
+    "services": [
+      "runtime",
+      "gateway",
+      "identity",
+      "memory",
+      "policy",
+      "registry",
+      "observability",
+      "evaluations",
+      "payments",
+      "code-interpreter",
+      "browser",
+      "harness"
+    ],
+    "migration_strategy": "additive-wrap",
+    "dual_homed": true,
+    "compute": "Cloudflare Workers Workers",
+    "orchestration": "AWS Bedrock AgentCore",
+    "bridge": "agentcore-gateway-bridge.py",
+    "policy_file": "subscription-policy.cedar",
+    "setup_script": "agentcore-cli-setup.sh"
+  }
+}
+

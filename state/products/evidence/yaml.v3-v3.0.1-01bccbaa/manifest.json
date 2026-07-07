@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "yaml.v3@v3.0.1",
+  "product_path": "/Users/macbook/go/pkg/mod/gopkg.in/yaml.v3@v3.0.1",
+  "snapshot_dir": "state/products/evidence/yaml.v3-v3.0.1-01bccbaa",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/yaml.v3-v3.0.1-01bccbaa/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/yaml.v3-v3.0.1-01bccbaa/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:18:11.140599Z"
+}

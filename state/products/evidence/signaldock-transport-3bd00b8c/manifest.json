@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "signaldock-transport",
+  "product_path": "/Users/macbook/cleo-cli/crates/signaldock-transport",
+  "snapshot_dir": "state/products/evidence/signaldock-transport-3bd00b8c",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/signaldock-transport-3bd00b8c/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/signaldock-transport-3bd00b8c/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:34.602086Z"
+}

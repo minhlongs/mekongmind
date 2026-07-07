@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "crewai",
+  "product_path": "/Users/macbook/EstateWise-Chapel-Hill-Chatbot/agentic-ai/crewai",
+  "snapshot_dir": "state/products/evidence/crewai-d8888fcc",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/crewai-d8888fcc/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/crewai-d8888fcc/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:11:34.895210Z"
+}

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "micracode-web",
+  "product_path": "/Users/macbook/mekong-ide/apps/micracode-web",
+  "snapshot_dir": "state/products/evidence/micracode-web-a063940f",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/micracode-web-a063940f/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/micracode-web-a063940f/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:20:01.019930Z"
+}

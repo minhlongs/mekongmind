@@ -1,0 +1,20 @@
+name = "apex-os"
+main = ".open-next/worker.js"
+compatibility_date = "2024-04-10"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database — run: wrangler d1 create apex-os-db
+# Then replace PLACEHOLDER with actual database_id from output
+[[d1_databases]]
+binding = "DB"
+database_name = "apex-os-db"
+database_id = "3436aa7d-3065-4103-96e1-ddbd8b372246"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "5628adf57f1548b5af615de4e9021893"
+
+# R2 Bucket — run: wrangler r2 bucket create apex-os-uploads
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "apex-os-uploads"

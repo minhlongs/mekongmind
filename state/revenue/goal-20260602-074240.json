@@ -1,0 +1,39 @@
+{
+  "currency": "USD",
+  "current_mrr": 42000,
+  "events": [
+    {
+      "at": "2026-06-02T00:51:43.203470Z",
+      "gate": "first-revenue",
+      "mrr": 2500,
+      "note": "first paid plan",
+      "source": "manual"
+    },
+    {
+      "at": "2026-06-02T00:51:43.617031Z",
+      "gate": "first-1m-mrr",
+      "mrr": 1000000,
+      "note": "target reached",
+      "source": "manual"
+    },
+    {
+      "at": "2026-06-02T00:51:44.010792Z",
+      "gate": "first-revenue",
+      "mrr": 42000,
+      "note": "synced from /var/folders/lv/ys8l5k916992ssfpwcpvpcch0000gn/T/tmp.m4qhe5RGme/provider-revenue.json",
+      "source": "file:/var/folders/lv/ys8l5k916992ssfpwcpvpcch0000gn/T/tmp.m4qhe5RGme/provider-revenue.json"
+    },
+    {
+      "at": "2026-06-02T00:51:44.452718Z",
+      "gate": "first-revenue",
+      "mrr": 42000,
+      "note": "synced from /var/folders/lv/ys8l5k916992ssfpwcpvpcch0000gn/T/tmp.m4qhe5RGme/provider-revenue.json",
+      "source": "polar:file"
+    }
+  ],
+  "gate": "first-revenue",
+  "goal_id": "goal-20260602-074240",
+  "source": "polar:file",
+  "target_mrr": 1000000,
+  "updated_at": "2026-06-02T00:51:44.452718Z"
+}

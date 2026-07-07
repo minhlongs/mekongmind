@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "roi-digest-worker",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/well/workers/roi-digest-worker",
+  "snapshot_dir": "state/products/evidence/roi-digest-worker-b23521c6",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/roi-digest-worker-b23521c6/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/roi-digest-worker-b23521c6/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:28:52.408191Z"
+}

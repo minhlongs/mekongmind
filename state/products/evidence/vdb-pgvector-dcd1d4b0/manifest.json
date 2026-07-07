@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "vdb-pgvector",
+  "product_path": "/Users/macbook/dify/api/providers/vdb/vdb-pgvector",
+  "snapshot_dir": "state/products/evidence/vdb-pgvector-dcd1d4b0",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/vdb-pgvector-dcd1d4b0/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/vdb-pgvector-dcd1d4b0/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:13:27.021660Z"
+}

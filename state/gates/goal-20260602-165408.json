@@ -1,0 +1,152 @@
+{
+  "current_gate": "repeatable-channel",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T09:54:08.809216Z",
+          "note": "initial gate",
+          "source": "local-state"
+        }
+      ],
+      "id": "idea-intake",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T09:54:30.697104Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:55:14.741548Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:56:09.497216Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:56:43.225228Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:57:34.634928Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:57:59.977401Z",
+          "note": "/Users/macbook/.mekong/company.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "company-blueprint",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T09:55:14.793294Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:56:09.583098Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:56:43.292031Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:57:34.707070Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:58:00.082032Z",
+          "note": "/Users/macbook/state/evidence/offer-validated.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "offer-validated",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T09:56:09.641190Z",
+          "note": "/Users/macbook/state/evidence/mvp-live.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:56:43.367341Z",
+          "note": "/Users/macbook/state/evidence/mvp-live.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:57:34.793985Z",
+          "note": "/Users/macbook/state/evidence/mvp-live.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:58:00.188109Z",
+          "note": "/Users/macbook/state/evidence/mvp-live.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "mvp-live",
+      "status": "passed"
+    },
+    {
+      "evidence": [],
+      "id": "first-revenue",
+      "status": "pending"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T09:56:43.449537Z",
+          "note": "/Users/macbook/state/evidence/repeatable-channel.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:57:34.895588Z",
+          "note": "/Users/macbook/state/evidence/repeatable-channel.json",
+          "source": "artifact"
+        },
+        {
+          "at": "2026-06-02T09:58:00.265225Z",
+          "note": "/Users/macbook/state/evidence/repeatable-channel.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "repeatable-channel",
+      "status": "active"
+    },
+    {
+      "evidence": [],
+      "id": "fulfillment-stable",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "scale-ready",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "first-1m-mrr",
+      "status": "pending"
+    }
+  ],
+  "goal_id": "goal-20260602-165408",
+  "updated_at": "2026-06-02T09:58:00.265225Z"
+}

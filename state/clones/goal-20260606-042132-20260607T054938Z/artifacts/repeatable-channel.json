@@ -1,0 +1,23 @@
+{
+  "department": "growth-marketing",
+  "gate": "repeatable-channel",
+  "artifact_path": "state/evidence/repeatable-channel.json",
+  "owner": "brainstormer",
+  "status": "ready",
+  "updated_at": "2026-06-05T19:09:05.638161Z",
+  "note": "Step",
+  "audience": "TikTok Shop Indonesian sellers (est. 500K+ active sellers on platform)",
+  "positioning": "API-first competitor intelligence \u2014 never miss a competitor price drop",
+  "channel": "organic-outreach-tiktok-shop-sellers",
+  "campaign": "tiktok-shop-seller-community-outreach",
+  "campaign_asset": "state/marketing/tiktok-shop-api-outreach-plan.md",
+  "email_sequence": "not-yet-built",
+  "outreach_log": [],
+  "cta": "Free 7-day trial \u2014 1000 API calls, no credit card required",
+  "qualification_rule": "Seller manages 10+ products, $5K+/month GMV, actively tracks competitors manually",
+  "opt_out_compliance": "Respect seller community rules \u2014 no spam, value-first outreach",
+  "leads": 0,
+  "conversion": "not-yet-measured",
+  "learning": "Channel validated at concept level via seller forum research; first outreach needed to confirm repeatability",
+  "sales_handoff": "business-analyst (sales-revenue) receives qualified leads from outreach"
+}

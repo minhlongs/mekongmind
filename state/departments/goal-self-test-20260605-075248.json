@@ -1,0 +1,206 @@
+{
+  "departments": {
+    "ceo-command": {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:38:50.304564Z"
+    },
+    "market-intelligence": {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "ICP and demand proof not captured",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:42:27.243918Z"
+    },
+    "sales-revenue": {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "execute first revenue gate \u2014 step 1 of pipeline",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:58:04.679845Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test dispatch",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T02:50:53.394894Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:06:59.936223Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:12:12.608508Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:14:08.561566Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:14:53.512009Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:15:02.662914Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "test",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:38:50.304564Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "ICP and demand proof not captured",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:42:27.243918Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:45:11.076522Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:45:19.517047Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:45:27.858908Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:45:36.328413Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:46:01.874251Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:46:10.209832Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:46:18.685776Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "Step",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:46:27.010113Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "MRR is still zero",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:46:35.790097Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "MRR is still zero",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:57:10.019207Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "execute first revenue gate \u2014 step 1 of pipeline",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-05T03:58:04.679845Z"
+    }
+  ],
+  "goal_id": "goal-self-test-20260605-075248",
+  "updated_at": "2026-06-05T03:58:04.679845Z"
+}

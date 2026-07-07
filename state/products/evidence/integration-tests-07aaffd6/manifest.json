@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "integration-tests",
+  "product_path": "/Users/macbook/mekong-cli/packages/cleo-new/crates/integration-tests",
+  "snapshot_dir": "state/products/evidence/integration-tests-07aaffd6",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/integration-tests-07aaffd6/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/integration-tests-07aaffd6/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:18:57.934542Z"
+}

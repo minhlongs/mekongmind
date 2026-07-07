@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "real-estate-marketplace",
+  "product_path": "/Users/macbook/nhipdieuxanh-analysis/real-estate-marketplace",
+  "snapshot_dir": "state/products/evidence/real-estate-marketplace-236a7c34",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/real-estate-marketplace-236a7c34/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/real-estate-marketplace-236a7c34/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:24:13.878512Z"
+}

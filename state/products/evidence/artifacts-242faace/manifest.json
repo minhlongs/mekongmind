@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "artifacts",
+  "product_path": "/Users/macbook/nhipdieuxanh-agent/services/backend-api/app/ai/mlruns/1/models/m-288af87ff3d84a7492b52bdb60f9869a/artifacts",
+  "snapshot_dir": "state/products/evidence/artifacts-242faace",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/artifacts-242faace/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/artifacts-242faace/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:23:22.973713Z"
+}

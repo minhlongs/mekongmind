@@ -8,12 +8,12 @@
 | `LLM_BASE_URL` | Base URL for local provider (Ollama/MLX) | `http://localhost:11434` | Yes for local-only |
 | `LLM_API_KEY` | API key for cloud fallback (Anthropic/OpenRouter) | — | Yes for cloud fallback |
 | `LLM_MODEL` | Default model id | `claude-sonnet-4-6-20250514` | No (fallback chain) |
-| `LLM_PROVIDER` | Provider hint: `local-llm` \| `anthropic` \| `openai` \| `ollama` \| `mlx` | `local-llm` | No |
-| `LLM_LOCAL_MODEL` | Model id for local provider | `qwen2.5-coder:32b` (Ollama) \| user-chosen (MLX) | No |
-| `LLM_CLOUD_MODEL` | Model id for cloud fallback | `claude-sonnet-4-6-20250514` | No |
-| `LLM_THINKING_MODEL` | Model id for planning/reasoning intents | `claude-opus-4-7` | No |
-| `LLM_MAX_TOKENS` | Max output tokens | `16384` | No |
-| `LLM_TEMPERATURE` | Default temperature | `0.3` (coding) \| `0.1` (thinking) | No |
+
+
+
+
+
+
 | `ANTHROPIC_TIMEOUT_MS` | HTTP timeout for Anthropic cloud calls (ms) | `60000` (60s) | No |
 | `LLM_TIMEOUT_MS` | Generic HTTP timeout fallback (ms) | `60000` (60s) | No |
 | `LLM_AUDIT_LOG` | Path to JSONL audit log for cloud LLM calls | `.mekong/llm-cloud-audit.jsonl` | No |
@@ -24,7 +24,7 @@
 intent -> classifier -> [planning|reasoning|coding|chat]
          |
          v
-     planning/reasoning -> THINKING_MODEL (cloud-first, local fallback)
+     planning/reasoning -> THINKING_MODEL (cloud-only, Anthropic)
      coding             -> LOCAL_MODEL (local-first, cloud fallback)
      chat               -> LOCAL_MODEL (local-first, cloud fallback)
 ```
@@ -33,20 +33,20 @@ intent -> classifier -> [planning|reasoning|coding|chat]
 
 | Intent | Provider | Model | Temperature | Max Tokens |
 |---|---|---|---|---|
-| `planning` / `reasoning` | `anthropic` (cloud) | `claude-opus-4-7` | 0.1 | 32768 |
-| `coding` | `local-llm` (Ollama/MLX) | `qwen2.5-coder:32b` | 0.3 | 16384 |
-| `chat` | `local-llm` (Ollama/MLX) | `qwen2.5-coder:32b` | 0.3 | 8192 |
+| `planning` / `reasoning` | `anthropic` (cloud) | `claude-opus-4-7` | 0.1 | 16384 |
+| `coding` | `local-llm` (Ollama/MLX) | `qwen3.6-35b` | 0.3 | 16384 |
+| `chat` | `local-llm` (Ollama/MLX) | `qwen3.6-35b` | 0.3 | 8192 |
 
 ### Cloud Escalation Triggers
 
 Escalate from local to cloud **only** when:
 
 1. **Long context**: input messages exceed local model context window (fallback via `catch` block in MetaRouter).
-2. **Planning / reasoning intent**: classifier returns `planning` or `reasoning` → route to `LLM_THINKING_MODEL` by default.
+2. **Planning / reasoning intent**: classifier returns `planning` or `reasoning` → route to cloud `claude-opus-4-7` only. No local fallback for reasoning intents.
 3. **Local provider failure**: Ollama/MLX returns non-200 or timeout → fallback to `LLM_CLOUD_MODEL`.
 4. **Explicit override**: caller passes `provider: 'anthropic'` or `provider: 'openai'` in request.
 
-**Never escalate silently.** Every cloud call must be traceable via `LLM_PROVIDER` override or fallback path.
+**Never escalate silently.** Every cloud call must be traceable via explicit provider override or fallback path.
 
 ## Cost / Metering
 
@@ -106,7 +106,7 @@ ollama pull qwen2.5-coder:32b
 
 # 3. Run TS router smoke test (no secrets required)
 cd /Users/macbook/mekongmind
-LLM_BASE_URL=http://localhost:11434 LLM_PROVIDER=local-llm LLM_LOCAL_MODEL=qwen2.5-coder:32b \
+LLM_BASE_URL=http://localhost:11434 LLM_MODEL=qwen3.6-35b \
   pnpm --filter mekong-cli-core exec tsx -e "
     import { MetaRouter } from './packages/mekong-cli-core/src/llm/meta-router.ts';
     import { LlmRouter } from './packages/mekong-cli-core/src/llm/router.ts';
@@ -118,7 +118,7 @@ LLM_BASE_URL=http://localhost:11434 LLM_PROVIDER=local-llm LLM_LOCAL_MODEL=qwen2
   "
 
 # 4. Verify cloud escalation path (requires LLM_API_KEY)
-LLM_API_KEY=$ANTHROPIC_KEY LLM_PROVIDER=anthropic LLM_MODEL=claude-sonnet-4-6-20250514 \
+LLM_API_KEY=$ANTHROPIC_KEY LLM_MODEL=claude-opus-4-6 \
   pnpm --filter mekong-cli-core exec tsx -e "
     import { MetaRouter } from './packages/mekong-cli-core/src/llm/meta-router.ts';
     import { LlmRouter } from './packages/mekong-cli-core/src/llm/router.ts';
@@ -134,7 +134,7 @@ LLM_API_KEY=$ANTHROPIC_KEY LLM_PROVIDER=anthropic LLM_MODEL=claude-sonnet-4-6-20
 
 ```bash
 cd /Users/macbook/mekongmind/cli
-LLM_BASE_URL=http://localhost:11434 LLM_PROVIDER=local-llm LLM_LOCAL_MODEL=qwen2.5-coder:32b \
+LLM_BASE_URL=http://localhost:11434 LLM_MODEL=qwen3.6-35b \
   python -m pytest tests/test_llm_client.py -x -q 2>/dev/null || echo "No pytest suite yet — add in next phase"
 ```
 

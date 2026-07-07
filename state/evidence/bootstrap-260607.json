@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-06-07T06:00:00Z",
+  "project": "mekongmind",
+  "phase": "bootstrap",
+  "gates": {
+    "mvp-live": {
+      "status": "passed",
+      "routes": ["/(landing)/templates", "/(shop)/checkout/[plan]", "/(shop)/checkout/success", "/(shop)/templates/[slug]/download"],
+      "apis": ["functions/api/webhook/polar.js"],
+      "data_model": {"templates": "static array in page.tsx", "checkouts": "polar_cl_* hosted links"},
+      "integrations": ["polar-sh-checkout", "cloudflare-pages"],
+      "checkout_path": "/templates → /checkout/[plan] → /checkout/success → /templates/[slug]/download",
+      "build_command": "npm run build",
+      "tests_run": false,
+      "known_risks": ["no server-side webhook processing (static export)", "no real template files in public/ (stubs only)"]
+    },
+    "first-revenue": {
+      "status": "pending",
+      "evidence": "polar_cl_* links verified, checkout redirect 307 confirmed"
+    },
+    "fulfillment-stable": {
+      "status": "pending",
+      "evidence": "download page created, evidence artifact written"
+    }
+  },
+  "components": {
+    "shell_core": {
+      "state_lock_wired": true,
+      "go_executor_wired": true,
+      "bin_me_wired": true
+    },
+    "raas_scripts": {
+      "raas_pack": "lib/raas-pack.sh (406 lines, 4 commands: pack/manifest/verify/list)",
+      "clone_memory": "lib/clone-memory.sh (838 lines, 4 commands: clone/replay/list/diff)"
+    },
+    "post_purchase": {
+      "download_page": "/(shop)/templates/[slug]/download/page.tsx",
+      "success_page_updated": "/(shop)/checkout/success/page.tsx (links to download)",
+      "evidence_artifact": "state/evidence/bootstrap-260607.json"
+    }
+  }
+}

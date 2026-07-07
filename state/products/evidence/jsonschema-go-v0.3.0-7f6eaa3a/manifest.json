@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "jsonschema-go@v0.3.0",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/google/jsonschema-go@v0.3.0",
+  "snapshot_dir": "state/products/evidence/jsonschema-go-v0.3.0-7f6eaa3a",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/jsonschema-go-v0.3.0-7f6eaa3a/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/jsonschema-go-v0.3.0-7f6eaa3a/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:16:49.463805Z"
+}

@@ -1,0 +1,38 @@
+{
+  "goalId": "goal_47d8052641a5",
+  "gate": "Phase2-C",
+  "commits": [
+    "828cb15",
+    "eb87a08"
+  ],
+  "tests": {
+    "total": 569,
+    "passed": 569,
+    "failed": 0
+  },
+  "viteBuild": {
+    "status": "pass",
+    "errors": 0,
+    "warnings": 59
+  },
+  "fovtMitigation": "inline pre-theme set before first paint + theme.js loaded as defer on 13 pages",
+  "filesChanged": 17,
+  "themePages": [
+    "index.html",
+    "menu.html",
+    "checkout.html",
+    "contact.html",
+    "about-us.html",
+    "track-order.html",
+    "loyalty.html",
+    "loyalty-calculator.html",
+    "kds.html",
+    "promotions.html",
+    "dang-ky-thanh-vien.html",
+    "hero-demo.html",
+    "table-reservation.html",
+    "checkin.html"
+  ],
+  "status": "satisfied",
+  "updatedAt": "2026-06-02T07:55:12Z"
+}

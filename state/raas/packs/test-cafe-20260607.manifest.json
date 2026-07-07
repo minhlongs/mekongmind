@@ -1,0 +1,32 @@
+{
+  "archive": {
+    "filename": "test-cafe-20260607.tar.gz",
+    "format": "tar.gz",
+    "total_bytes": 127,
+    "total_files": 3
+  },
+  "files": [
+    {
+      "bytes": 15,
+      "path": "index.html",
+      "sha256": "320a24004f649a98b65535e7c06bd8df344e10a3d006316ac63dbbacb1db0203"
+    },
+    {
+      "bytes": 31,
+      "path": "index.json",
+      "sha256": "63714fdd3208d1a2a9973e00717584b6e2eac813a74082e47066bbdc37e3c9f9"
+    },
+    {
+      "bytes": 81,
+      "path": "meta.json",
+      "sha256": "8a23284a6ad6deaddaaf4b424e93a65110e71529887f49e351eead48575fe516"
+    }
+  ],
+  "template": {
+    "name": "test-cafe",
+    "pack_date": "20260607",
+    "packed_at": "2026-06-07T05:51:54Z",
+    "slug": "test-cafe",
+    "version": "1.0.0"
+  }
+}

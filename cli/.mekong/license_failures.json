@@ -1,0 +1,102 @@
+{
+  "failures": [
+    {
+      "error_code": "invalid_format",
+      "timestamp": 1783432371.860105,
+      "retry_count": 0,
+      "key_id": null,
+      "command": "cook",
+      "error_message": "Invalid license: Invalid format: must start with 'raas-'"
+    },
+    {
+      "error_code": "invalid_or_revoked",
+      "timestamp": 1783432371.8729012,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "Invalid or revoked license key"
+    },
+    {
+      "error_code": "revoked",
+      "timestamp": 1783432371.876301,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "License has been revoked"
+    },
+    {
+      "error_code": "expired",
+      "timestamp": 1783432373.929155,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "License has expired"
+    },
+    {
+      "error_code": "access_denied",
+      "timestamp": 1783432375.98077,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "Access denied"
+    },
+    {
+      "error_code": "rate_limit",
+      "timestamp": 1783432378.038975,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "Rate limit exceeded"
+    },
+    {
+      "error_code": "invalid_or_revoked",
+      "timestamp": 1783432395.6100202,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "Invalid or revoked license key"
+    },
+    {
+      "error_code": "rate_limit",
+      "timestamp": 1783432397.6572459,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "Rate limit exceeded"
+    },
+    {
+      "error_code": "invalid_format",
+      "timestamp": 1783432399.714319,
+      "retry_count": 0,
+      "key_id": null,
+      "command": "cook",
+      "error_message": "Invalid license: Invalid format: must start with 'raas-'"
+    },
+    {
+      "error_code": "validation_failed",
+      "timestamp": 1783432401.759836,
+      "retry_count": 0,
+      "key_id": null,
+      "command": "cook",
+      "error_message": "License validation failed: Invalid key"
+    },
+    {
+      "error_code": "invalid_or_revoked",
+      "timestamp": 1783432403.948467,
+      "retry_count": 0,
+      "key_id": null,
+      "command": null,
+      "error_message": "Invalid or revoked license key"
+    },
+    {
+      "error_code": "validation_failed",
+      "timestamp": 1783432405.9903219,
+      "retry_count": 0,
+      "key_id": null,
+      "command": "cook",
+      "error_message": "License validation failed: Invalid or revoked license key"
+    }
+  ],
+  "installation_time": null,
+  "updated_at": 1783432405.990359
+}

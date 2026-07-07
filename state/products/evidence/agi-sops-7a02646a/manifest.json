@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "agi-sops",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/well/agi-sops",
+  "snapshot_dir": "state/products/evidence/agi-sops-7a02646a",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/agi-sops-7a02646a/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/agi-sops-7a02646a/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:27:37.723656Z"
+}

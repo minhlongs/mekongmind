@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "cli",
+  "product_path": "/Users/macbook/mekongmind/scripts/mekong-cli/legacy/apps/cli",
+  "snapshot_dir": "state/products/evidence/cli-f1849c84",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/cli-f1849c84/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/cli-f1849c84/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:22:57.170149Z"
+}

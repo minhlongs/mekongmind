@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "cli",
+  "product_path": "/Users/macbook/dify/cli",
+  "snapshot_dir": "state/products/evidence/cli-08e0f05b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/cli-08e0f05b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/cli-08e0f05b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:13:37.053509Z"
+}

@@ -1,0 +1,1173 @@
+# Portable sed -i (GNU and BSD/macOS)
+portable_sed() {
+local pattern="$1"; shift
+local file="$1"
+if sed --version >/dev/null 2>&1; then
+ # GNU sed — -i without backup suffix
+ sed -i "$pattern" "$file"
+else
+ # BSD/macOS sed — -i requires empty backup suffix
+ sed -i '' "$pattern" "$file"
+fi
+}
+
+#!/bin/bash
+# goal-executor.sh — Goal state manipulation for me-deep-wrapper
+# Provides: latest_goal_file, goal_field, set_goal_field,
+# list_completed_steps, mark_step_done, step_done,
+# goal_next_step, add_step_output, create_goal
+
+STATE_DIR="/Users/macbook/Documents/me-deep-wrapper/state"
+REVENUE_DIR="$STATE_DIR/revenue"
+GATES_DIR="$STATE_DIR/gates"
+DEPARTMENTS_DIR="$STATE_DIR/departments"
+REGISTRY_FILE="/Users/macbook/Documents/me-deep-wrapper/agents/registry.json"
+
+latest_goal_file() {
+ # Strategy: pick goal with highest gate progress (.json > .md)
+ # Exclude .json.json artifacts, skip corrupt JSON
+ local best_json="" best_score=0
+ for jf in "$GATES_DIR"/goal-*.json; do
+   # Skip .json.json duplicates
+   case "$jf" in *.json.json) continue ;; esac
+   [ -f "$jf" ] || continue
+   # Skip if not valid JSON
+   python3 -c "import json;json.load(open('$jf'))" 2>/dev/null || continue
+   local s
+   s=$(python3 -c 'import json,sys;gf=sys.argv[1];d=json.load(open(gf));g=d.get("gates",[]);sc=sum(1 for x in g if isinstance(x,dict) and x.get("status")=="passed") if isinstance(g,list) else 0;print(sc)' "$jf" 2>/dev/null) || s=0
+   if [ "$s" -gt "$best_score" ]; then
+     best_score="$s"
+     best_json="$jf"
+   fi
+ done
+ if [ -n "$best_json" ] && [ "$best_score" -gt 0 ]; then
+ # If matching .md goal file exists with Steps, prefer it over .json
+ jid=$(basename "$best_json" .json)
+ md_match="$STATE_DIR/goal-${jid#goal-}.md"
+ if [ -f "$md_match" ] && grep -q '^Steps:' "$md_match" 2>/dev/null; then
+   echo "$md_match"
+   return
+ fi
+ # No matching .md — fall through to fallback logic below
+ fi
+ # Fallback: active/running .md goal > in_progress > newest by filename timestamp
+local goal _gf _t
+for _gf in "$STATE_DIR"/goal-*.md; do
+  [ -f "$_gf" ] || continue
+  grep -q '^Status: \(active\|running\)$' "$_gf" 2>/dev/null || continue
+  _t=$(grep '^# Goal:' "$_gf" 2>/dev/null | head -1 | sed 's/^# Goal: *//')
+  case "$_t" in
+    --help|"") continue ;;
+  esac
+  goal="$_gf"
+done
+[ -n "$goal" ] && goal=$(printf '%s\n' "$goal" | sort | tail -1)
+if [ -z "$goal" ]; then
+  goal=$(grep -l '^Status: in_progress$' "$STATE_DIR"/goal-*.md 2>/dev/null | sort | tail -1)
+fi
+ if [ -z "$goal" ]; then
+   # Sort by filename timestamp (goal-YYYYMMDD-HHMMSS pattern)
+   goal=$(ls "$STATE_DIR"/goal-*.md 2>/dev/null | sort | tail -1)
+ fi
+ echo "$goal"
+}
+
+# Usage: goal_field [<file>] <field_name>
+goal_field() {
+  local f="${1:-}"
+  local field="${2:-}"
+  if [ -n "$f" ] && [ -f "$f" ]; then :; else f="$(latest_goal_file)"; fi
+  [ -z "$f" ] && { echo ""; return; }
+  grep -E "^#? *${field}:" "$f" 2>/dev/null | head -1 | sed -E "s/^#? *${field}: *//"
+}
+
+set_goal_field() {
+  local f="${1:-}"
+  local k="${2:-}"
+  local v="${3:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  if grep -qE "^${k}:" "$f" 2>/dev/null; then
+    portable_sed "s|^${k}:.*|${k}: ${v}|" "$f"
+  else
+    echo "${k}: ${v}" >> "$f"
+  fi
+}
+
+goal_id_from_file() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  basename "$f" .md
+}
+
+new_goal_stamp() {
+  local stamp f attempts=0
+  while :; do
+    stamp=$(date +%Y%m%d-%H%M%S)
+    f="$STATE_DIR/goal-${stamp}.md"
+    [ ! -e "$f" ] && { echo "$stamp"; return 0; }
+    attempts=$((attempts+1))
+    [ "$attempts" -gt 3 ] && { echo "$stamp"; return 0; }
+    sleep 1
+  done
+}
+
+revenue_metrics_file() {
+  local f="${1:-}"
+  local gid
+  gid=$(goal_id_from_file "$f") || return 1
+  echo "$REVENUE_DIR/${gid}.json"
+}
+
+gate_state_file() {
+  local f="${1:-}"
+  local gid
+  gid=$(goal_id_from_file "$f") || return 1
+  echo "$GATES_DIR/${gid}.json"
+}
+
+
+# gate_passed <goal-file> <gate-id>
+# Returns 0 if the gate exists and has status "passed", else 1
+# Optimized: jq replaces python3 spawn (~50ms -> ~1ms)
+gate_passed() {
+	local f="${1:-}" gate="${2:-}"
+	[ -z "$f" ] || [ -z "$gate" ] && return 1
+	local gsf
+	gsf=$(gate_state_file "$f") || return 1
+	[ -f "$gsf" ] || return 1
+	jq -e --arg gid "$gate" '.gates[] | select(.id == $gid and .status == "passed")' "$gsf" >/dev/null 2>&1
+}
+
+department_state_file() {
+  local f="${1:-}"
+  local gid
+  gid=$(goal_id_from_file "$f") || return 1
+  echo "$DEPARTMENTS_DIR/${gid}.json"
+}
+
+init_gate_state() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local gate_file gid current_gate
+  gate_file=$(gate_state_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  current_gate=$(goal_field "$f" "CurrentGate")
+  [ -z "$current_gate" ] && current_gate="idea-intake"
+  mkdir -p "$GATES_DIR"
+  python3 - "$gate_file" "$gid" "$current_gate" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, goal_id, current_gate = sys.argv[1:4]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+gates = [
+    "idea-intake",
+    "company-blueprint",
+    "offer-validated",
+    "mvp-live",
+    "first-revenue",
+    "repeatable-channel",
+    "fulfillment-stable",
+    "scale-ready",
+    "first-1m-mrr",
+]
+data = {
+    "goal_id": goal_id,
+    "current_gate": current_gate,
+    "updated_at": now,
+    "gates": [{"id": gate, "status": "pending", "evidence": []} for gate in gates],
+}
+for gate in data["gates"]:
+    if gate["id"] == current_gate:
+        gate["status"] = "active"
+        gate["evidence"].append({"at": now, "source": "local-state", "note": "initial gate"})
+        break
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "GateEvidence" "$gate_file"
+}
+
+record_gate_evidence() {
+  local f="${1:-}"
+  local gate="${2:-}"
+  local source="${3:-manual}"
+  local note="${4:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$gate" ] && { echo "ERROR: gate required" >&2; return 1; }
+  local gate_file gid
+  gate_file=$(gate_state_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  [ -f "$gate_file" ] || init_gate_state "$f" >/dev/null 2>&1 || return 1
+  python3 - "$gate_file" "$gid" "$gate" "$source" "$note" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, goal_id, gate_id, source, note = sys.argv[1:6]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+with open(path) as f:
+    data = json.load(f)
+gates = data.setdefault("gates", [])
+known = {gate.get("id"): gate for gate in gates}
+if gate_id not in known:
+    raise SystemExit(f"unknown gate: {gate_id}")
+for gate in gates:
+    if gate.get("status") == "active":
+        gate["status"] = "passed"
+for gate in gates:
+    if gate.get("id") == gate_id:
+        gate["status"] = "active"
+        gate.setdefault("evidence", []).append({"at": now, "source": source, "note": note})
+        break
+data["goal_id"] = goal_id
+data["current_gate"] = gate_id
+data["updated_at"] = now
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "CurrentGate" "$gate"
+  set_goal_field "$f" "GateEvidence" "$gate_file"
+}
+
+gate_state_summary() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local gate_file
+  gate_file=$(gate_state_file "$f") || return 1
+  [ -f "$gate_file" ] || init_gate_state "$f" >/dev/null 2>&1 || return 1
+  python3 - "$gate_file" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+print(f"CurrentGate: {data.get('current_gate','')}")
+print(f"Evidence: {sys.argv[1]}")
+for gate in data.get("gates", []):
+    evidence = gate.get("evidence", [])
+    last = evidence[-1]["note"] if evidence else ""
+    print(f"- {gate.get('id')}: {gate.get('status')} {last}")
+PY
+}
+
+_gate_artifact_root() {
+  echo "${PROJECT_ROOT:-$(pwd)}"
+}
+
+_has_any_artifact() {
+  local root="$1"; shift
+  local rel
+  for rel in "$@"; do
+    [ -e "$root/$rel" ] && { echo "$root/$rel"; return 0; }
+  done
+  return 1
+}
+
+artifact_path_for_gate() {
+  local gate="${1:-}"
+  case "$gate" in
+    company-blueprint) echo ".mekong/company.json" ;;
+    offer-validated) echo "state/evidence/offer-validated.json" ;;
+    mvp-live) echo "state/evidence/mvp-live.json" ;;
+    repeatable-channel) echo "state/evidence/repeatable-channel.json" ;;
+    fulfillment-stable) echo "state/evidence/fulfillment-stable.json" ;;
+    scale-ready) echo "state/evidence/scale-ready.json" ;;
+    first-revenue) echo "state/evidence/first-revenue.json" ;;
+    first-1m-mrr) echo "state/evidence/first-1m-mrr.json" ;;
+    *) return 1 ;;
+  esac
+}
+
+write_gate_artifact() {
+  local gate="${1:-}"
+  local owner="${2:-unknown}"
+  local status="${3:-ready}"
+  local note="${4:-}"
+  local department="${5:-}"
+  [ -z "$gate" ] && { echo "ERROR: gate required" >&2; return 1; }
+  local root rel out
+  root=$(_gate_artifact_root)
+  rel=$(artifact_path_for_gate "$gate") || { echo "ERROR: unknown artifact gate: $gate" >&2; return 1; }
+  out="$root/$rel"
+  mkdir -p "$(dirname "$out")"
+  python3 - "$out" "$gate" "$owner" "$status" "$note" "$department" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, gate, owner, status, note, department = sys.argv[1:7]
+data = {
+    "gate": gate,
+    "owner": owner,
+    "status": status,
+    "note": note,
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+}
+if department:
+    data["department"] = department
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  echo "$out"
+}
+
+validate_department_artifact() {
+  local department="${1:-}"
+  local artifact="${2:-}"
+  [ -z "$department" ] && { echo "ERROR: department required" >&2; return 1; }
+  local root
+  root=$(_gate_artifact_root)
+  python3 - "$REGISTRY_FILE" "$department" "$root" "$artifact" <<'PY'
+import json, os, sys
+registry_path, department, root, artifact = sys.argv[1:5]
+with open(registry_path) as f:
+    registry = json.load(f)
+contracts = registry.get("mekongmind_evidence_contracts", [])
+contract = next((c for c in contracts if c.get("department") == department), None)
+if not contract:
+    raise SystemExit(f"ERROR: unknown evidence contract department: {department}")
+artifact_path = artifact or os.path.join(root, contract["artifact_path"])
+if not os.path.isabs(artifact_path):
+    artifact_path = os.path.join(root, artifact_path)
+if not os.path.exists(artifact_path):
+    raise SystemExit(f"MISS {department} artifact not found: {artifact_path}")
+try:
+    with open(artifact_path) as f:
+        data = json.load(f)
+except Exception as exc:
+    raise SystemExit(f"FAIL {department} artifact is not valid JSON: {artifact_path} ({exc})")
+missing = []
+empty = []
+for field in contract.get("required_fields", []):
+    if field not in data:
+        missing.append(field)
+        continue
+    value = data[field]
+    if value in ("", None, [], {}):
+        empty.append(field)
+if missing or empty:
+    if missing:
+        print(f"MISS {department} missing fields: {', '.join(missing)}")
+    if empty:
+        print(f"MISS {department} empty fields: {', '.join(empty)}")
+    print(f"Artifact: {artifact_path}")
+    print(f"ProofRule: {contract.get('proof_rule','')}")
+    raise SystemExit(1)
+print(f"PASS {department} artifact contract")
+print(f"Artifact: {artifact_path}")
+print(f"Gate: {contract.get('gate','')}")
+print(f"RequiredFields: {', '.join(contract.get('required_fields', []))}")
+PY
+}
+
+render_department_artifact_template() {
+  local department="${1:-}"
+  local out="${2:-}"
+  [ -z "$department" ] && { echo "ERROR: department required" >&2; return 1; }
+  local root
+  root=$(_gate_artifact_root)
+  python3 - "$REGISTRY_FILE" "$department" "$root" "$out" <<'PY'
+import json, os, sys
+from datetime import datetime, timezone
+
+registry_path, department, root, out = sys.argv[1:5]
+with open(registry_path) as f:
+    registry = json.load(f)
+contract = next((c for c in registry.get("mekongmind_evidence_contracts", []) if c.get("department") == department), None)
+if not contract:
+    raise SystemExit(f"ERROR: unknown evidence contract department: {department}")
+data = {
+    "department": department,
+    "gate": contract.get("gate", ""),
+    "artifact_path": contract.get("artifact_path", ""),
+    "proof_rule": contract.get("proof_rule", ""),
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+}
+for field in contract.get("required_fields", []):
+    data.setdefault(field, "")
+payload = json.dumps(data, indent=2, sort_keys=True) + "\n"
+if out:
+    path = out
+    if not os.path.isabs(path):
+        path = os.path.join(root, path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        f.write(payload)
+    print(path)
+else:
+    sys.stdout.write(payload)
+PY
+}
+
+record_department_run() {
+  local f="${1:-}"
+  local department="${2:-}"
+  local owner="${3:-}"
+  local gate="${4:-}"
+  local status="${5:-ready}"
+  local artifact="${6:-}"
+  local note="${7:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && { echo "ERROR: department required" >&2; return 1; }
+  local dept_file gid
+  dept_file=$(department_state_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  mkdir -p "$DEPARTMENTS_DIR"
+  python3 - "$dept_file" "$gid" "$department" "$owner" "$gate" "$status" "$artifact" "$note" <<'PY'
+import json, os, sys
+from datetime import datetime, timezone
+path, goal_id, department, owner, gate, status, artifact, note = sys.argv[1:9]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+if os.path.exists(path):
+    with open(path) as f:
+        data = json.load(f)
+else:
+    data = {"goal_id": goal_id, "departments": {}, "events": []}
+run = {
+    "department": department,
+    "owner": owner,
+    "gate": gate,
+    "status": status,
+    "artifact": artifact,
+    "note": note,
+    "updated_at": now,
+}
+data["goal_id"] = goal_id
+data.setdefault("departments", {})[department] = run
+data.setdefault("events", []).append(run)
+data["updated_at"] = now
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "DepartmentEvidence" "$dept_file"
+}
+
+department_ready() {
+  local f="${1:-}"
+  local department="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && return 1
+  local dept_file
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || return 1
+  python3 - "$dept_file" "$department" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+run = data.get("departments", {}).get(sys.argv[2], {})
+raise SystemExit(0 if run.get("status") == "ready" else 1)
+PY
+}
+
+department_ready_strict() {
+  local f="${1:-}"
+  local department="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && return 1
+  local dept_file artifact
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || return 1
+  artifact=$(python3 - "$dept_file" "$department" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+run = data.get("departments", {}).get(sys.argv[2], {})
+if run.get("status") != "ready":
+    raise SystemExit(1)
+print(run.get("artifact", ""))
+PY
+) || return 1
+  [ -n "$artifact" ] || return 1
+  validate_department_artifact "$department" "$artifact" >/dev/null 2>&1
+}
+
+department_state_summary() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local dept_file
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || { echo "DepartmentEvidence: $dept_file"; echo "- none"; return 0; }
+  python3 - "$dept_file" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+print(f"DepartmentEvidence: {sys.argv[1]}")
+for dept, run in data.get("departments", {}).items():
+    print(f"- {dept}: {run.get('status','')} gate={run.get('gate','')} owner={run.get('owner','')}")
+PY
+}
+
+department_run_artifact() {
+  local f="${1:-}"
+  local department="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$department" ] && return 1
+  local dept_file
+  dept_file=$(department_state_file "$f") || return 1
+  [ -f "$dept_file" ] || return 1
+  python3 - "$dept_file" "$department" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+run = data.get("departments", {}).get(sys.argv[2], {})
+artifact = run.get("artifact", "")
+if not artifact:
+    raise SystemExit(1)
+print(artifact)
+PY
+}
+
+next_department_for_goal() {
+	local f="${1:-}" strict="${2:-}"
+	[ -z "$f" ] && f="$(latest_goal_file)"
+	[ -z "$f" ] && return 1
+	local current target dept gate reason ready_cmd
+	ready_cmd="department_ready"
+	[ "$strict" = "strict" ] && ready_cmd="department_ready_strict"
+	current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+	target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+	[ -z "$current" ] && current=0
+	[ -z "$target" ] && target=1000000
+
+	# PERFORMANCE: Single jq reads replace up to 20 python3 spawns
+	local dept_file gsf dept_statuses gate_statuses
+	dept_file=$(department_state_file "$f") || return 1
+	gsf=$(gate_state_file "$f") || return 1
+
+	# Cache all dept/gate statuses into bash variables (~7ms vs ~500ms)
+	dept_statuses=""
+	[ -f "$dept_file" ] && dept_statuses=$(jq -r '.departments | to_entries[] | "\(.key)=\(.value.status // "ns")"' "$dept_file" 2>/dev/null)
+	gate_statuses=""
+	[ -f "$gsf" ] && gate_statuses=$(jq -r '.gates[] | "\(.id)=\(.status)"' "$gsf" 2>/dev/null)
+
+	_dept_status() {
+		local dep="${1:-}"
+		[ -z "$dept_statuses" ] && return 1
+		echo "$dept_statuses" | grep -q "^${dep}=ready" 2>/dev/null
+	}
+	_gate_status() {
+		local gid="${1:-}"
+		[ -z "$gate_statuses" ] && return 1
+		echo "$gate_statuses" | grep -q "^${gid}=passed" 2>/dev/null
+	}
+
+	if ! _dept_status "ceo-command" && ! _gate_status "company-blueprint"; then
+		dept="ceo-command"; gate="company-blueprint"; reason="company blueprint not approved"
+	elif ! _dept_status "market-intelligence" && ! _gate_status "offer-validated"; then
+		dept="market-intelligence"; gate="offer-validated"; reason="ICP and demand proof not captured"
+	elif ! _dept_status "product-strategy" && ! _gate_status "offer-validated"; then
+		dept="product-strategy"; gate="offer-validated"; reason="offer, pricing, and MVP scope not locked"
+	elif ! _dept_status "engineering-factory" && ! _gate_status "mvp-live"; then
+		dept="engineering-factory"; gate="mvp-live"; reason="minimum sellable product not built"
+	elif ! _dept_status "quality-compliance" && ! _gate_status "mvp-live"; then
+		dept="quality-compliance"; gate="mvp-live"; reason="release checks not approved"
+	elif ! _dept_status "platform-operations" && ! _gate_status "mvp-live"; then
+		dept="platform-operations"; gate="mvp-live"; reason="production health not verified"
+	elif ! _dept_status "growth-marketing" && ! _gate_status "repeatable-channel"; then
+		dept="growth-marketing"; gate="repeatable-channel"; reason="repeatable demand channel not proven"
+	elif [ "$current" -le 0 ] && ! _gate_status "first-revenue"; then
+		dept="sales-revenue"; gate="first-revenue"; reason="MRR is still zero"
+	elif ! _dept_status "customer-success" && ! _gate_status "fulfillment-stable"; then
+		dept="customer-success"; gate="fulfillment-stable"; reason="fulfillment stability not proven"
+	elif ! _dept_status "knowledge-memory" && ! _gate_status "scale-ready"; then
+		dept="knowledge-memory"; gate="scale-ready"; reason="cloneable SOP memory not extracted"
+	elif [ "$current" -lt "$target" ] && ! _gate_status "first-1m-mrr"; then
+		dept="sales-revenue"; gate="first-1m-mrr"; reason="MRR gap remains $((target-current))"
+	else
+		dept="knowledge-memory"; gate="first-1m-mrr"; reason="target reached; preserve operating cadence"
+	fi
+
+	echo "Department: $dept"
+	echo "GateArtifact: $gate"
+	echo "Reason: $reason"
+	echo "Command: me solo run $dept ready "$reason""
+}
+
+goal_readiness_matrix() {
+  local f="${1:-}"
+  local strict="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local current target gap mode ready_cmd
+  mode="compat"
+  ready_cmd="department_ready"
+  if [ "$strict" = "strict" ]; then
+    mode="strict"
+    ready_cmd="department_ready_strict"
+  fi
+  current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+  target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+  [ -z "$current" ] && current=0
+  [ -z "$target" ] && target=1000000
+  gap=$((target-current))
+  [ "$gap" -lt 0 ] && gap=0
+  echo "Goal: $(goal_field "$f" "Goal")"
+  echo "Mode: $mode"
+  echo "CurrentMRR: $current"
+  echo "TargetMRR: $target"
+  echo "MRRGap: $gap"
+  echo "NextBottleneck:"
+  next_department_for_goal "$f" "$strict" | sed 's/^/  /'
+  echo "ReadinessMatrix:"
+  python3 - "$REGISTRY_FILE" <<'PY' | while IFS=$'\t' read -r dept owner gate contract_artifact proof; do
+import json, sys
+with open(sys.argv[1]) as f:
+    registry = json.load(f)
+contracts = {c["department"]: c for c in registry.get("mekongmind_evidence_contracts", [])}
+for dept in registry.get("mekongmind_departments", []):
+    contract = contracts.get(dept["id"], {})
+    print("\t".join([
+        dept["id"],
+        dept.get("owner_agent", ""),
+        dept.get("gate_artifact", ""),
+        contract.get("artifact_path", ""),
+        contract.get("proof_rule", ""),
+    ]))
+PY
+    local status blocker artifact
+    artifact=$(department_run_artifact "$f" "$dept" 2>/dev/null || true)
+    status="BLOCKED"
+    blocker="department not marked ready"
+    if [ "$dept" = "sales-revenue" ]; then
+      if [ "$current" -gt 0 ]; then
+        status="READY"
+        blocker="first revenue proven; MRR gap $gap"
+      else
+        blocker="MRR is still zero"
+      fi
+    elif "$ready_cmd" "$f" "$dept"; then
+      status="READY"
+      blocker="proof accepted"
+    elif [ "$strict" = "strict" ] && [ -n "$artifact" ]; then
+      blocker="artifact present but strict contract fails"
+    elif [ -z "$artifact" ]; then
+      blocker="missing department artifact"
+    fi
+    printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\n" "$dept" "$status" "$gate" "$owner" "${artifact:-$contract_artifact}" "$blocker" "$proof"
+  done
+}
+
+list_gate_artifact_contract() {
+  cat <<'EOF'
+company-blueprint -> .mekong/company.json
+offer-validated -> state/evidence/offer-validated.json
+mvp-live -> state/evidence/mvp-live.json
+repeatable-channel -> state/evidence/repeatable-channel.json
+fulfillment-stable -> state/evidence/fulfillment-stable.json
+scale-ready -> state/evidence/scale-ready.json
+first-revenue -> state/evidence/first-revenue.json
+first-1m-mrr -> state/evidence/first-1m-mrr.json
+EOF
+}
+
+verify_gate_artifacts() {
+  local f="${1:-}"
+  local strict="${2:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local root
+  root=$(_gate_artifact_root)
+  local current target path
+  current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+  target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+  [ -z "$current" ] && current=0
+  [ -z "$target" ] && target=1000000
+
+  echo "ArtifactRoot: $root"
+
+  path=$(_has_any_artifact "$root" ".mekong/company.json" "plans/company-blueprint/plan.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "ceo-command" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "company-blueprint" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS company-blueprint $path"
+      else
+        echo "MISS company-blueprint strict-contract ceo-command $path"
+      fi
+    else
+      record_gate_evidence "$f" "company-blueprint" "artifact" "$path" >/dev/null || return 1
+      echo "PASS company-blueprint $path"
+    fi
+  else
+    echo "MISS company-blueprint .mekong/company.json|plans/company-blueprint/plan.md"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/offer-validated.json" "plans/company-blueprint/offer.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "market-intelligence" "$path" >/dev/null 2>&1 && validate_department_artifact "product-strategy" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "offer-validated" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS offer-validated $path"
+      else
+        echo "MISS offer-validated strict-contract market-intelligence+product-strategy $path"
+      fi
+    else
+      record_gate_evidence "$f" "offer-validated" "artifact" "$path" >/dev/null || return 1
+      echo "PASS offer-validated $path"
+    fi
+  else
+    echo "MISS offer-validated state/evidence/offer-validated.json|plans/company-blueprint/offer.md"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/mvp-live.json" "state/deploy/health.json" "dist" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "engineering-factory" "$path" >/dev/null 2>&1 && validate_department_artifact "quality-compliance" "$path" >/dev/null 2>&1 && validate_department_artifact "platform-operations" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "mvp-live" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS mvp-live $path"
+      else
+        echo "MISS mvp-live strict-contract engineering-factory+quality-compliance+platform-operations $path"
+      fi
+    else
+      record_gate_evidence "$f" "mvp-live" "artifact" "$path" >/dev/null || return 1
+      echo "PASS mvp-live $path"
+    fi
+  else
+    echo "MISS mvp-live state/evidence/mvp-live.json|state/deploy/health.json|dist"
+  fi
+
+  if [ "$current" -gt 0 ]; then
+    record_gate_evidence "$f" "first-revenue" "revenue" "CurrentMRR=$current" >/dev/null || return 1
+    echo "PASS first-revenue CurrentMRR=$current"
+  else
+    echo "MISS first-revenue CurrentMRR=0"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/repeatable-channel.json" "plans/company-blueprint/channel.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "growth-marketing" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "repeatable-channel" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS repeatable-channel $path"
+      else
+        echo "MISS repeatable-channel strict-contract growth-marketing $path"
+      fi
+    else
+      record_gate_evidence "$f" "repeatable-channel" "artifact" "$path" >/dev/null || return 1
+      echo "PASS repeatable-channel $path"
+    fi
+  else
+    echo "MISS repeatable-channel state/evidence/repeatable-channel.json|plans/company-blueprint/channel.md"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/fulfillment-stable.json" "sops/fulfillment.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "customer-success" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "fulfillment-stable" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS fulfillment-stable $path"
+      else
+        echo "MISS fulfillment-stable strict-contract customer-success $path"
+      fi
+    else
+      record_gate_evidence "$f" "fulfillment-stable" "artifact" "$path" >/dev/null || return 1
+      echo "PASS fulfillment-stable $path"
+    fi
+  else
+    echo "MISS fulfillment-stable state/evidence/fulfillment-stable.json|sops/fulfillment.md"
+  fi
+
+  path=$(_has_any_artifact "$root" "state/evidence/scale-ready.json" "plans/company-blueprint/scale.md" 2>/dev/null || true)
+  if [ -n "$path" ]; then
+    if [ "$strict" = "strict" ]; then
+      if validate_department_artifact "knowledge-memory" "$path" >/dev/null 2>&1; then
+        record_gate_evidence "$f" "scale-ready" "artifact:strict" "$path" >/dev/null || return 1
+        echo "PASS scale-ready $path"
+      else
+        echo "MISS scale-ready strict-contract knowledge-memory $path"
+      fi
+    else
+      record_gate_evidence "$f" "scale-ready" "artifact" "$path" >/dev/null || return 1
+      echo "PASS scale-ready $path"
+    fi
+  else
+    echo "MISS scale-ready state/evidence/scale-ready.json|plans/company-blueprint/scale.md"
+  fi
+
+  if [ "$current" -ge "$target" ]; then
+    record_gate_evidence "$f" "first-1m-mrr" "revenue" "CurrentMRR=$current TargetMRR=$target" >/dev/null || return 1
+    echo "PASS first-1m-mrr CurrentMRR=$current"
+  else
+    echo "MISS first-1m-mrr CurrentMRR=$current TargetMRR=$target"
+  fi
+}
+
+init_revenue_metrics() {
+  local f="${1:-}"
+  local source="${2:-local-state}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local metrics_file gid target current
+  metrics_file=$(revenue_metrics_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  target=$(goal_field "$f" "RevenueTarget")
+  current=$(goal_field "$f" "CurrentMRR")
+  [ -z "$target" ] && target=1000000
+  [ -z "$current" ] && current=0
+  mkdir -p "$REVENUE_DIR"
+  python3 - "$metrics_file" "$gid" "$current" "$target" "$source" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, goal_id, current, target, source = sys.argv[1:6]
+data = {
+    "goal_id": goal_id,
+    "source": source,
+    "current_mrr": int(current),
+    "target_mrr": int(target),
+    "currency": "USD",
+    "gate": "no-revenue" if int(current) <= 0 else ("first-1m-mrr" if int(current) >= int(target) else "first-revenue"),
+    "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    "events": []
+}
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "RevenueMetricSource" "$source"
+  set_goal_field "$f" "RevenueEvidence" "$metrics_file"
+}
+
+record_revenue_mrr() {
+  local f="${1:-}"
+  local mrr="${2:-}"
+  local source="${3:-manual}"
+  local note="${4:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  if ! printf '%s' "$mrr" | grep -qE '^[0-9]+$'; then
+    echo "ERROR: MRR must be a non-negative integer" >&2
+    return 1
+  fi
+  local metrics_file gid target gate
+  metrics_file=$(revenue_metrics_file "$f") || return 1
+  gid=$(goal_id_from_file "$f") || return 1
+  target=$(goal_field "$f" "RevenueTarget")
+  [ -z "$target" ] && target=1000000
+  if [ "$mrr" -ge "$target" ]; then
+    gate="first-1m-mrr"
+  elif [ "$mrr" -gt 0 ]; then
+    gate="first-revenue"
+  else
+    gate="no-revenue"
+  fi
+  mkdir -p "$REVENUE_DIR"
+  python3 - "$metrics_file" "$gid" "$mrr" "$target" "$source" "$note" "$gate" <<'PY'
+import json, os, sys
+from datetime import datetime, timezone
+path, goal_id, mrr, target, source, note, gate = sys.argv[1:8]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+if os.path.exists(path):
+    with open(path) as f:
+        data = json.load(f)
+else:
+    data = {"goal_id": goal_id, "events": []}
+data.update({
+    "goal_id": goal_id,
+    "source": source,
+    "current_mrr": int(mrr),
+    "target_mrr": int(target),
+    "currency": "USD",
+    "gate": gate,
+    "updated_at": now,
+})
+data.setdefault("events", []).append({
+    "at": now,
+    "mrr": int(mrr),
+    "source": source,
+    "note": note,
+    "gate": gate,
+})
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+  set_goal_field "$f" "CurrentMRR" "$mrr"
+  set_goal_field "$f" "RevenueMetricSource" "$source"
+  set_goal_field "$f" "RevenueEvidence" "$metrics_file"
+  set_goal_field "$f" "RevenueGate" "$gate"
+  if [ "$gate" = "first-revenue" ]; then
+    record_gate_evidence "$f" "first-revenue" "$source" "MRR reached $mrr" >/dev/null 2>&1 || true
+  fi
+  if [ "$gate" = "first-1m-mrr" ]; then
+    record_gate_evidence "$f" "first-1m-mrr" "$source" "MRR reached $mrr" >/dev/null 2>&1 || true
+  fi
+}
+
+revenue_metric_value() {
+  local f="${1:-}"
+  local key="${2:-current_mrr}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  local metrics_file
+  metrics_file=$(revenue_metrics_file "$f") || return 1
+  [ -f "$metrics_file" ] || return 1
+  python3 - "$metrics_file" "$key" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+value = data.get(sys.argv[2], "")
+print(value)
+PY
+}
+
+extract_mrr_from_revenue_json() {
+  local input_file="${1:-}"
+  [ -z "$input_file" ] && return 1
+  [ -f "$input_file" ] || return 1
+  python3 - "$input_file" <<'PY'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+for key in ("current_mrr", "mrr", "monthly_recurring_revenue", "monthlyRecurringRevenue"):
+    if key in data:
+        print(int(data[key]))
+        raise SystemExit(0)
+subscriptions = data.get("subscriptions")
+if isinstance(subscriptions, list):
+    total = 0
+    for sub in subscriptions:
+        status = str(sub.get("status", "")).lower()
+        if status and status not in {"active", "trialing"}:
+            continue
+        amount = sub.get("mrr", sub.get("monthly_recurring_revenue", sub.get("amount", 0)))
+        total += int(amount)
+    print(total)
+    raise SystemExit(0)
+raise SystemExit("missing current_mrr/mrr/monthly_recurring_revenue/subscriptions")
+PY
+}
+
+sync_revenue_from_file() {
+  local f="${1:-}"
+  local input_file="${2:-}"
+  local source="${3:-file}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  [ -z "$input_file" ] && { echo "ERROR: revenue sync file required" >&2; return 1; }
+  local mrr
+  mrr=$(extract_mrr_from_revenue_json "$input_file") || return $?
+  record_revenue_mrr "$f" "$mrr" "$source" "synced from $input_file"
+}
+
+create_goal() {
+  local goal_desc="${1:-}"
+  local pattern_label="${2:-orchestrator}"
+  # Validate non-empty goal description
+  if [ -z "$goal_desc" ]; then
+    echo "ERROR: goal description required. Usage: me idea <description>" >&2
+    return 1
+  fi
+  local stamp
+  stamp=$(new_goal_stamp)
+  local f="$STATE_DIR/goal-${stamp}.md"
+  mkdir -p "$STATE_DIR"
+  cat > "$f" << EOF
+# Goal: ${goal_desc}
+Created: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+Pattern: ${pattern_label}
+Status: active
+Steps: []
+EOF
+  init_revenue_metrics "$f" "local-state" >/dev/null 2>&1 || true
+  init_gate_state "$f" >/dev/null 2>&1 || true
+  echo "$f"
+}
+
+create_idea_goal() {
+  local goal_desc="${1:-}"
+  local pattern_label="${2:-orchestrator}"
+  if [ -z "$goal_desc" ]; then
+    echo "ERROR: idea description required. Usage: me idea <description>" >&2
+    return 1
+  fi
+  local stamp
+  stamp=$(new_goal_stamp)
+  local f="$STATE_DIR/goal-${stamp}.md"
+  mkdir -p "$STATE_DIR"
+  cat > "$f" << EOF
+# Goal: ${goal_desc}
+Created: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+Type: idea
+Source: legacy-25-step-idea
+Pattern: ${pattern_label}
+Status: active
+Steps: []
+TotalSteps: 25
+GoalEngine: mekong goal
+FallbackWhenMekongIdeaMissing: mekong goal create/run
+SoloCompanyMode: autonomous
+PlatformDNA: mekongmind-agentic-platform-solo
+FactoryLoop: active
+RevenueTarget: 1000000
+RevenueTargetType: MRR
+CurrentMRR: 0
+RevenueMilestone: first-1m-mrr
+CurrentGate: idea-intake
+CloneStrategy: multi-project-raas
+
+## Legacy /idea 25-Step Blueprint
+1. Master Framework
+2. Refactor to 2026 Frame
+3. Agentic OS Design
+4. IPO Readiness Score
+5. Gap Report + Roadmap
+6. Business Model Patterns
+7. Customer Psychology + Personas
+8. Brand Positioning
+9. Content Pillars + TOF
+10. Website/Landing Narrative
+11. Performance Ads + Creatives
+12. Advertorial + Storytelling
+13. Email + Lifecycle Sequences
+14. Sales Process + Channels
+15. GTM Experiments + Bullseye
+16. AARRR + Lean Analytics
+17. Fundraising + VC Narrative
+18. Risk + Scenario OS
+19. Talent + Org Design
+20. Industry Patterns + IPO Archetypes
+21. Data Room + Investor Materials
+22. Agentic Execution + OKR
+23. Board Governance
+24. ESG + Impact
+25. Crisis + Reputation OS
+
+## Binh Phap Chain
+Phase 1 Intelligence: /swot, /venture:five-factors, /audit
+Phase 2 Strategy: /plan, /venture:terrain, /brainstorm
+Phase 3 Build: /cook, /test, /deploy
+Phase 4 Revenue: /marketing, /sales, /launch, /pricing
+Phase 5 Scale: /competitive, /growth:experiment, /finance
+
+## CEO Solo Factory Loop
+1. Idea Intake: capture idea, goal, constraints, founder intent
+2. Company Blueprint: define ICP, offer, pricing, GTM, operating model
+3. Validation: prove pain, demand, channel, willingness to pay
+4. MVP Build: implement minimum sellable RaaS product
+5. Production Deploy: ship live product, checkout, analytics, support
+6. Revenue Engine: run content, outbound, ads, partnerships, sales
+7. Fulfillment Engine: deliver customer outcome with agents and SOPs
+8. Metrics Audit: review revenue, activation, retention, CAC, bottlenecks
+9. Growth Experiment: pick next constraint and run focused experiment
+10. Scale Loop: repeat until first \$1M MRR is reached
+
+## SOP Gates
+Gate 0 Idea Accepted: goal state created and owner intent captured
+Gate 1 Blueprint Ready: .mekong/company.json and company blueprint complete
+Gate 2 Offer Validated: ICP, pricing, promise, and demand signal verified
+Gate 3 MVP Live: build, tests, deploy, checkout, and health checks green
+Gate 4 First Revenue: at least one paying customer or signed LOI
+Gate 5 Repeatable Channel: one acquisition channel has measurable repeatability
+Gate 6 Fulfillment Stable: SOPs and agents deliver without founder bottleneck
+Gate 7 Scale Ready: unit economics and operations support growth
+Gate 8 First \$1M MRR: revenue target reached and operating cadence documented
+
+## Multi-Project RaaS DNA
+- Mekongmind starts from idea/goal and mints one Solo Company workspace
+- Each workspace inherits the same CEO Solo Harness, agent registry, gates, and SOP loop
+- Each project owns its ICP, offer, product, metrics, and revenue experiments
+- The platform must be cloneable for thousands of CEO Solos across niches
+- Mekongmind must be able to sell and operate itself using the same factory
+
+## Agentic Department Stack
+1. CEO Command: planner owns intent, priority, gates, and capital allocation
+2. Market Intelligence: research-expert owns terrain, ICP, pain, competitor, demand proof
+3. Product Strategy: business-analyst owns offer, pricing, promise, and RaaS blueprint
+4. Engineering Factory: fullstack-developer owns MVP, integrations, automations, product surface
+5. Quality & Compliance: code-reviewer owns review, tests, audit evidence, release approval
+6. Platform Operations: infrastructure-github-actions-expert owns deploy, health, rollback, ops
+7. Growth Marketing: business-analyst owns positioning, content, campaign, channel experiments
+8. Sales & Revenue: business-analyst owns pipeline, checkout, close loops, MRR review
+9. Customer Success: project-manager owns onboarding, fulfillment, support, retention, expansion
+10. Knowledge & Memory: docs-manager owns SOP updates, decision logs, reusable playbooks
+
+## Department SOP Mesh
+CEO Command: idea-intake -> company-blueprint -> gate-review -> capital-allocation
+Market Intelligence: market-map -> customer-discovery -> competitor-scan -> demand-proof
+Product Strategy: offer-design -> pricing-model -> raas-blueprint -> roadmap
+Engineering Factory: technical-design -> mvp-build -> integration -> production-hardening
+Quality & Compliance: review -> test -> security-scan -> audit-trail -> release-approval
+Platform Operations: ci -> deploy -> health-check -> rollback -> ops-review
+Growth Marketing: positioning -> content-engine -> campaign -> launch -> growth-experiment
+Sales & Revenue: lead-qualification -> sales-script -> checkout -> close -> revenue-review
+Customer Success: onboarding -> fulfillment -> support -> retention -> expansion
+Knowledge & Memory: decision-log -> sop-update -> playbook-extract -> clone-sync
+
+## Required Outputs
+- .mekong/company.json
+- plans/company-blueprint/plan.md
+- tasks/HIGH_mission_<project>_gtm_strategy.txt
+- tasks/HIGH_mission_<project>_build_mvp.txt
+- tasks/HIGH_mission_<project>_sales_pipeline.txt
+- tasks/HIGH_mission_<project>_marketing_launch.txt
+- tasks/HIGH_mission_<project>_deploy_production.txt
+
+## Handoff Contract
+- Preferred legacy autopilot: mekong idea run "<idea> -- implement per blueprint"
+- Current live fallback: mekong goal create "<idea>" then mekong goal run <goal-id>
+EOF
+  init_revenue_metrics "$f" "local-state" >/dev/null 2>&1 || true
+  init_gate_state "$f" >/dev/null 2>&1 || true
+  echo "$f"
+}
+
+# Append "Step N Output: ..." to goal file
+add_step_output() {
+    local f="${1:-}"
+    local n="${2:-}"
+    local output="${3:-}"
+    [ -z "$f" ] && f="$(latest_goal_file)"
+    [ -z "$f" ] && return 1
+    cat >> "$f" << ENDSTEP
+Step ${n} Output: ${output}
+ENDSTEP
+    # Update Steps: [] to include this step
+    local steps
+    steps=$(grep -E "^Steps: " "$f" 2>/dev/null | sed "s/^Steps: *//" || echo "")
+    if [ -z "$steps" ] || [ "$steps" = "[]" ]; then
+        portable_sed "s|^Steps: .*|Steps: [${n}]|" "$f"
+    else
+        clean=$(echo "$steps" | sed 's/\[//g; s/\]//g; s/ //g')
+        if ! echo "$clean" | grep -qE "^${n}$|^${n},|,${n}$|,${n},"; then
+            portable_sed "s|^Steps: .*|Steps: [${clean},${n}]|" "$f"
+        fi
+    fi
+}
+
+list_completed_steps() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && { echo ""; return; }
+  grep -E "^Step [0-9]+ Output:" "$f" 2>/dev/null | sed "s/^Step \([0-9]\+\) Output:.*/\1/" | tr '\n' ',' | sed 's/,$//'
+}
+
+mark_step_done() {
+  add_step_output "$@"
+}
+
+step_done() {
+  local f="${1:-}"
+  local n="${2:-}"
+  grep -qE "^[[:space:]]*Step ${n} Output:" "$f" 2>/dev/null
+}
+
+# Return next step number after the highest completed step
+goal_next_step() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && { echo "1"; return; }
+  local steps
+  steps=$(goal_field "$f" "Steps")
+  if [ -z "$steps" ] || [ "$steps" = "[]" ]; then
+    echo "1"; return
+  fi
+  echo "$steps" | tr ',' '\n' | sed 's/ //g; s/\[//g; s/\]//g' | awk '{if($1+0>m+0)m=$1} END{print m+1}'
+}

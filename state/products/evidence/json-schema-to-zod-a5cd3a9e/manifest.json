@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "json-schema-to-zod",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/apps/well/n8n_codebase/packages/@n8n/json-schema-to-zod",
+  "snapshot_dir": "state/products/evidence/json-schema-to-zod-a5cd3a9e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/json-schema-to-zod-a5cd3a9e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/json-schema-to-zod-a5cd3a9e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:30:27.024925Z"
+}

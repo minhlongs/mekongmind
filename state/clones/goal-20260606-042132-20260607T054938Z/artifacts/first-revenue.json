@@ -1,0 +1,33 @@
+{
+  "department": "sales-revenue",
+  "gate": "first-revenue",
+  "artifact_path": "state/evidence/first-revenue.json",
+  "owner": "business-analyst",
+  "status": "ready",
+  "updated_at": "2026-06-05T19:09:05.638161Z",
+  "lead": "TikTok Shop Indonesian sellers \u2014 ICP defined via market-intelligence research",
+  "qualification": "ICP validated: seller actively managing 10+ products, $5K+/month GMV, pain with competitor intelligence workflow",
+  "campaign_source": "organic-outreach-tiktok-shop-sellers",
+  "offer": "tiktok-shop-api \u2014 API-first competitor intelligence RaaS, $29/mo starter tier",
+  "price": 29,
+  "price_currency": "USD",
+  "price_billing": "monthly",
+  "checkout_url": "pending-deployment",
+  "polar_checkout_url": "pending-polar-setup",
+  "payment_status": "no-customers-yet",
+  "provider": "Polar.sh",
+  "provider_evidence": {
+    "status": "code-complete",
+    "polar_sync": false,
+    "polar_account_id": "",
+    "blocker": "Cloudflare Workers billing must be activated before Polar webhook can receive events",
+    "artifacts": [
+      "tiktok-shop-api/src/routes/polar.js (checkout + webhook + subscription)",
+      "tiktok-shop-api/src/middleware/subscription.js (Polar + x402 dual payment)"
+    ]
+  },
+  "provider_sync_status": "pending-deployment",
+  "current_mrr": 0,
+  "next_action": "Activate Cloudflare Workers billing \u2192 deploy \u2192 run outreach \u2192 first customer \u2192 $1K MRR",
+  "polar_provider": "Polar.sh canonical"
+}

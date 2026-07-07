@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "stylelint-config",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/well/n8n_codebase/packages/@n8n/stylelint-config",
+  "snapshot_dir": "state/products/evidence/stylelint-config-f5973910",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/stylelint-config-f5973910/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/stylelint-config-f5973910/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:28:19.391152Z"
+}

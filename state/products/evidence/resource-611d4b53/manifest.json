@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "resource",
+  "product_path": "/Users/macbook/mekong-ide/packages/console/resource",
+  "snapshot_dir": "state/products/evidence/resource-611d4b53",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/resource-611d4b53/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/resource-611d4b53/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:20:08.509515Z"
+}

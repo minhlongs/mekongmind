@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "widget-sdk",
+  "product_path": "/Users/macbook/winhouse-platform/packages/widget-sdk",
+  "snapshot_dir": "state/products/evidence/widget-sdk-b9c161b8",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/widget-sdk-b9c161b8/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/widget-sdk-b9c161b8/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:33:05.014177Z"
+}

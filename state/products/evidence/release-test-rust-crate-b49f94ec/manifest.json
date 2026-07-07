@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "release-test-rust-crate",
+  "product_path": "/Users/macbook/cleo-cli/packages/cleo/test/fixtures/release-test-rust-crate",
+  "snapshot_dir": "state/products/evidence/release-test-rust-crate-b49f94ec",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/release-test-rust-crate-b49f94ec/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/release-test-rust-crate-b49f94ec/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:48.255378Z"
+}

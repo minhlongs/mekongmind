@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-test-products-packet-batch",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "dify-ui",
+  "product_path": "/Users/macbook/dify/packages/dify-ui",
+  "snapshot_dir": "state/products/evidence/dify-ui-b50cb786",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/dify-ui-b50cb786/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/dify-ui-b50cb786/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:16:07.007126Z"
+}

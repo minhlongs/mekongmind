@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "studio",
+  "product_path": "/Users/macbook/cleo-cli/packages/studio",
+  "snapshot_dir": "state/products/evidence/studio-70c57b1b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/studio-70c57b1b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/studio-70c57b1b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:58.237420Z"
+}

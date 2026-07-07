@@ -1,0 +1,44 @@
+{
+  "departments": {
+    "engineering-factory": {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "department mvp evidence",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T00:51:40.727458Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "department mvp evidence",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T00:45:01.031089Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "department mvp evidence",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T00:49:19.974980Z"
+    },
+    {
+      "artifact": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "department mvp evidence",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T00:51:40.727458Z"
+    }
+  ],
+  "goal_id": "goal-20260602-074240",
+  "updated_at": "2026-06-02T00:51:40.727458Z"
+}

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "sdk",
+  "product_path": "/Users/macbook/hyperforest_ai_fund/venv/lib/python3.11/site-packages/temporalio/bridge/sdk-core/crates/sdk",
+  "snapshot_dir": "state/products/evidence/sdk-9bcc8a1e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/sdk-9bcc8a1e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/sdk-9bcc8a1e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:18:30.340179Z"
+}

@@ -1,0 +1,158 @@
+{
+  "gate": "first-1m-mrr",
+  "status": "active",
+  "department": "sales-revenue",
+  "owner": "ceo-commander",
+  "artifact_path": "state/evidence/first-1m-mrr.json",
+  "updated_at": "2026-06-04T00:00:00.000000Z",
+  "mrr_current": {
+    "amount_usd": 0,
+    "currency": "USD",
+    "customers": 0,
+    "as_of": "2026-06-04T06:30:00.000000Z"
+  },
+  "mrr_target": {
+    "amount_usd": 1000000,
+    "currency": "USD",
+    "target_date": "2027-06-03",
+    "months_remaining": 12
+  },
+  "revenue_provider": {
+    "canonical": "Polar.sh",
+    "current": "ready-not-deployed",
+    "blocker": "Cloudflare Workers billing inactive — code complete, awaiting deployment"
+  },
+  "provider_evidence": {
+    "status": "code-complete",
+    "polar_sync": false,
+    "polar_account_id": "",
+    "blocker": "Cloudflare Workers billing must be activated before Polar webhook can receive events",
+    "artifacts": [
+      "tiktok-shop-api/src/routes/polar.js (checkout + webhook + subscription)",
+      "tiktok-shop-api/src/middleware/subscription.js (Polar + x402 dual payment)",
+      "tiktok-shop-api/.env.polar.example (config template)",
+      "mvp/deploy-Cloudflare Workers.sh (Cloudflare Workers Workers deployment)",
+      "state/products/tiktok-shop-api/polar-integration-plan.md"
+    ]
+  },
+  "customer_count": {
+    "total": 0,
+    "paying": 0,
+    "free": 0
+  },
+  "mrr_growth_trajectory": {
+    "status": "assets-ready",
+    "milestones": [
+      {
+        "target": "$0 → $1K MRR",
+        "eta": "Month 1-2",
+        "customers_needed": 35,
+        "blockers": [
+          "Cloudflare Workers billing activation",
+          "First beta users"
+        ]
+      },
+      {
+        "target": "$1K → $10K MRR",
+        "eta": "Month 3-5",
+        "customers_needed": 345,
+        "blockers": [
+          "Content marketing launch",
+          "Referral loop"
+        ]
+      },
+      {
+        "target": "$10K → $100K MRR",
+        "eta": "Month 6-8",
+        "customers_needed": 3100,
+        "blockers": [
+          "Team expansion",
+          "Enterprise tier"
+        ]
+      },
+      {
+        "target": "$100K → $1M MRR",
+        "eta": "Month 9-12",
+        "customers_needed": 31000,
+        "blockers": [
+          "International expansion",
+          "Series A"
+        ]
+      }
+    ]
+  },
+  "remediation_plan": {
+    "phase_1": {
+      "months": "1-2",
+      "goal": "$1K MRR",
+      "customers": 35,
+      "actions": [
+        "Activate Cloudflare Workers billing (human action required)",
+        "Deploy via mvp/deploy-Cloudflare Workers.sh",
+        "Run outreach scripts in mvp/sales/outreach/scripts.md",
+        "Onboard 35 beta users via free tier",
+        "Convert 10 beta users to $29/mo paid"
+      ],
+      "assets_ready": true
+    },
+    "phase_2": {
+      "months": "3-5",
+      "goal": "$10K MRR",
+      "customers": 345,
+      "actions": [
+        "Optimize funnel",
+        "Launch content marketing",
+        "Build referral incentives"
+      ]
+    },
+    "phase_3": {
+      "months": "6-8",
+      "goal": "$100K MRR",
+      "customers": 3100,
+      "actions": [
+        "Hire sales rep",
+        "Add enterprise tier $99/mo",
+        "Build partner channel"
+      ]
+    },
+    "phase_4": {
+      "months": "9-12",
+      "goal": "$1M MRR",
+      "customers": 31000,
+      "actions": [
+        "Scale team 5-10",
+        "Expand to Thai/VN market",
+        "Series A preparation"
+      ]
+    }
+  },
+  "gap_analysis": {
+    "current_gap_usd": 1000000,
+    "critical_gaps": [
+      "Cloudflare Workers billing activation (human action)",
+      "Polar.sh account setup (human action)",
+      "First 10 paying customers (outreach)",
+      "Repeatable outreach channel (content + community)"
+    ]
+  },
+  "blocking_findings": [
+    "Cloudflare Workers billing inactive — deployment blocked",
+    "Polar.sh account not created — payment blocked",
+    "Zero customers — revenue at $0",
+    "All upstream gates require deployment to progress"
+  ],
+  "next_action": "Activate Cloudflare Workers billing → deploy → run outreach → first customer → $1K MRR",
+  "agentcore_plan": {
+    "status": "researched",
+    "architecture_file": "state/integrations/agentcore-architecture.md",
+    "migration_guide": "state/integrations/agentcore/agentcore-migration-guide.md",
+    "bridge_code": "state/integrations/agentcore/gateway-bridge.py",
+    "policy_file": "state/integrations/agentcore/subscription-policy.cedar",
+    "setup_script": "state/integrations/agentcore/agentcore-cli-setup.sh",
+    "mcp_server": "lib/mcp-agentcore.sh",
+    "estimated_cost_monthly": "$100-315",
+    "deferred_until": "after-Cloudflare Workers-billing-activated",
+    "notes": "AgentCore research complete. Integration deferred until Cloudflare Workers container is live. All artifacts are additive — zero impact on existing system."
+  }
+}
+

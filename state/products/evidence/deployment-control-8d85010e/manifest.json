@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "deployment-control",
+  "product_path": "/Users/macbook/EstateWise-Chapel-Hill-Chatbot/deployment-control",
+  "snapshot_dir": "state/products/evidence/deployment-control-8d85010e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/deployment-control-8d85010e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/deployment-control-8d85010e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:11:38.465198Z"
+}

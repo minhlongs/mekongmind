@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "dashboard",
+  "product_path": "/Users/macbook/algo-trader/dashboard",
+  "snapshot_dir": "state/products/evidence/dashboard",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/dashboard/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/dashboard/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T11:01:03.789610Z"
+}

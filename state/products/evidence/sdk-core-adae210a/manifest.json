@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "sdk-core",
+  "product_path": "/Users/macbook/solo-platform/gateway/venv/lib/python3.14/site-packages/temporalio/bridge/sdk-core/crates/sdk-core",
+  "snapshot_dir": "state/products/evidence/sdk-core-adae210a",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/sdk-core-adae210a/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/sdk-core-adae210a/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:26:24.645000Z"
+}

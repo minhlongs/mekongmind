@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "qpack@v0.6.0",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/quic-go/qpack@v0.6.0",
+  "snapshot_dir": "state/products/evidence/qpack-v0.6.0-98a6a87b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/qpack-v0.6.0-98a6a87b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/qpack-v0.6.0-98a6a87b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:11.767961Z"
+}

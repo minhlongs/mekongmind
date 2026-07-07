@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "golang-asm@v0.15.1",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/twitchyliquid64/golang-asm@v0.15.1",
+  "snapshot_dir": "state/products/evidence/golang-asm-v0.15.1-a6443a6b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/golang-asm-v0.15.1-a6443a6b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/golang-asm-v0.15.1-a6443a6b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:24.965590Z"
+}

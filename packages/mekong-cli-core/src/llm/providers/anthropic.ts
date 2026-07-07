@@ -61,7 +61,9 @@ export class AnthropicProvider implements LlmProvider {
       headers: {
         'Content-Type': 'application/json',
         'Accept': shouldStream ? 'text/event-stream' : 'application/json',
+        'Accept-Encoding': 'gzip, br',
         'Connection': 'keep-alive',
+        'Keep-Alive': 'timeout=300, max=100',
         'x-api-key': this.apiKey,
         'anthropic-version': this.apiVersion,
         ...anthropicCustomHeaders(this.baseUrl),

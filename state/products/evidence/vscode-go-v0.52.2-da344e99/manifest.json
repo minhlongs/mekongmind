@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "vscode-go@v0.52.2",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/golang/vscode-go@v0.52.2",
+  "snapshot_dir": "state/products/evidence/vscode-go-v0.52.2-da344e99",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/vscode-go-v0.52.2-da344e99/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/vscode-go-v0.52.2-da344e99/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:16:47.544588Z"
+}

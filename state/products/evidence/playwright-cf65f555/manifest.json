@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "playwright",
+  "product_path": "/Users/macbook/chatwoot/tests/playwright",
+  "snapshot_dir": "state/products/evidence/playwright-cf65f555",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/playwright-cf65f555/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/playwright-cf65f555/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:18.256909Z"
+}

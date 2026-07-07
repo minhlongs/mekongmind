@@ -1,0 +1,68 @@
+{
+  "version": "2.0.0",
+  "mode": "autonomous",
+  "permissions": {
+    "allow": [
+      "Read(mvp/**)",
+      "Read(state/evidence/*.json)",
+      "Read(state/gates/*.json)",
+      "Read(agents/registry.json)",
+      "Read(.claude/rules/*.md)",
+      "Read(.claude/skills/*.md)",
+      "Write(mvp/**)",
+      "Write(state/evidence/*.json)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build)",
+      "Bash(npm test)",
+      "Bash(me *)",
+      "WebSearch"
+    ],
+    "ask": [],
+    "deny": [
+      "Read(state/revenue/*)",
+      "Write(state/gates/*)",
+      "Write(state/departments/*)",
+      "Bash(rm -rf *)",
+      "Bash(git push --force)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "description": "Load MEKONG orchestration context",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-intel.sh 2>/dev/null || echo '[hook] session-intel.sh not found'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write(mvp/**/*.ts)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/macbook/Documents/me-deep-wrapper && bash .claude/hooks/post-write-check.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git push *)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/macbook/Documents/me-deep-wrapper && bash .claude/hooks/pre-push-check.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  },
+  "modelPreference": {
+    "default": "claude-sonnet-4-6",
+    "complex_tasks": "claude-opus-4-0-20250514"
+  }
+}

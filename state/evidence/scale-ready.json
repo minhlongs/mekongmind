@@ -1,0 +1,155 @@
+{
+  "gate": "scale-ready",
+  "status": "pending",
+  "department": "knowledge-memory",
+  "artifact_path": "state/evidence/scale-ready.json",
+  "owner": "knowledge-memory",
+  "created_at": "2026-06-04T04:39:38.049590Z",
+  "updated_at": "2026-06-04T04:39:38.049590Z",
+  "decision_log": {
+    "total_decisions": 5,
+    "entries": [
+      {
+        "at": "2026-06-03T08:00:00Z",
+        "decision": "Use Express.js v20.20.2 for API framework",
+        "owner": "engineering-factory",
+        "outcome": "API functional with 47 routes"
+      },
+      {
+        "at": "2026-06-03T08:00:00Z",
+        "decision": "Puppeteer/JSDOM for TikTok Shop scraping",
+        "owner": "engineering-factory",
+        "outcome": "Scraper functional with fallback"
+      },
+      {
+        "at": "2026-06-03T08:00:00Z",
+        "decision": "Polar.sh as canonical MRR provider",
+        "owner": "ceo-command",
+        "outcome": "Polar.sh selected; integration pending"
+      },
+      {
+        "at": "2026-06-03T08:00:00Z",
+        "decision": "Solana x402 for micropayments",
+        "owner": "engineering-factory",
+        "outcome": "Implemented as product capability, not canonical MRR"
+      },
+      {
+        "at": "2026-06-03T08:00:00Z",
+        "decision": "TikTok Shop Indonesian sellers as ICP",
+        "owner": "market-intelligence",
+        "outcome": "ICP defined; not yet validated"
+      }
+    ]
+  },
+  "sop_changes": {
+    "total_changes": 3,
+    "entries": [
+      {
+        "at": "2026-06-03T10:46:47Z",
+        "sop": "MVP Live SOP",
+        "change": "Created evidence contract audit process",
+        "owner": "engineering-factory"
+      },
+      {
+        "at": "2026-06-03T14:02:53Z",
+        "sop": "Offer Validation SOP",
+        "change": "Updated ICP and pricing based on desk research",
+        "owner": "market-intelligence"
+      },
+      {
+        "at": "2026-06-03T16:10:00Z",
+        "sop": "Repeatable Channel SOP",
+        "change": "Created outreach plan with blocking state documented",
+        "owner": "growth-marketing"
+      }
+    ]
+  },
+  "reusable_playbook": {
+    "status": "drafted",
+    "playbooks": [
+      {
+        "name": "Gate Advancement Playbook",
+        "steps": [
+          "Verify evidence contract",
+          "Create artifact",
+          "Audit completeness",
+          "Advance gate"
+        ],
+        "used": true
+      },
+      {
+        "name": "Outreach Playbook",
+        "steps": [
+          "Identify channel",
+          "Draft message",
+          "Send",
+          "Track replies",
+          "Qualify",
+          "Handoff to sales"
+        ],
+        "used": false
+      },
+      {
+        "name": "Deployment Playbook",
+        "steps": [
+          "Enable billing",
+          "Build Docker",
+          "Push to GCR",
+          "Deploy Cloud Run",
+          "Verify health"
+        ],
+        "used": "blocked"
+      }
+    ]
+  },
+  "project_specific_notes": {
+    "blockers": [
+      "GCP billing not enabled",
+      "Polar.sh not integrated",
+      "Zero customers"
+    ],
+    "decisions_pending": [
+      "Public deployment strategy (GCP vs alternatives)",
+      "Polar.sh vs LemonSqueezy for checkout"
+    ],
+    "context": "MekongMind solo company framework; tiktok-shop-api as first product to reach $1M MRR"
+  },
+  "open_questions": [
+    "How to enable GCP billing? Who has access to the GCP project?",
+    "When will Polar.sh checkout be integrated?",
+    "What is the exact Polar.sh product setup for $29/mo subscription?",
+    "Which outreach channel has highest conversion for Indonesian TikTok Shop sellers?",
+    "How to handle TikTok Shop anti-scraping at scale?"
+  ],
+  "clone_readiness": {
+    "status": "not-ready",
+    "reasons": [
+      "No documented runbook for end-to-end deployment",
+      "Polar.sh integration not yet implemented",
+      "No customer success process to replicate",
+      "No measured funnel metrics to benchmark"
+    ],
+    "required_before_clone": [
+      "Document full deployment runbook",
+      "Implement and test Polar.sh checkout",
+      "Run and document at least one full sales cycle",
+      "Measure and document funnel metrics"
+    ]
+  },
+  "next_bottleneck": {
+    "bottleneck": "GCP billing enablement + Polar.sh integration",
+    "reason": "No public deployment = no signup = no customers = no revenue = all downstream gates blocked",
+    "unblock_requires": [
+      "GCP billing enabled",
+      "Public deployment verified",
+      "Polar.sh checkout integrated",
+      "First customer acquired"
+    ]
+  },
+  "blocking_findings": [
+    "Clone readiness: NOT ready — core integrations not implemented",
+    "Decision log: minimal — only 5 decisions recorded",
+    "Playbooks: drafted but not executed or validated",
+    "Open questions: 5 critical blockers unresolved"
+  ]
+}

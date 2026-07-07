@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "pkg-b",
+  "product_path": "/Users/macbook/mekong-cli/packages/cleo-new/packages/cleo/test/fixtures/release-test-monorepo/packages/pkg-b",
+  "snapshot_dir": "state/products/evidence/pkg-b-c2f4b16b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/pkg-b-c2f4b16b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/pkg-b-c2f4b16b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:19:17.598786Z"
+}

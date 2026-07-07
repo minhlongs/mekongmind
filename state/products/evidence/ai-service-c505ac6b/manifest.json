@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "ai-service",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/apps/nhipdieuxanh-orchestrator/mock-services/ai-service",
+  "snapshot_dir": "state/products/evidence/ai-service-c505ac6b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/ai-service-c505ac6b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/ai-service-c505ac6b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:29:49.792929Z"
+}

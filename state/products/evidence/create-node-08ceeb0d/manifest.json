@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "create-node",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/well/n8n_codebase/packages/@n8n/create-node",
+  "snapshot_dir": "state/products/evidence/create-node-08ceeb0d",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/create-node-08ceeb0d/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/create-node-08ceeb0d/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:27:57.538756Z"
+}

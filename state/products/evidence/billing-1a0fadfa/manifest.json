@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "billing",
+  "product_path": "/Users/macbook/mekongmind/apps/well/packages/billing",
+  "snapshot_dir": "state/products/evidence/billing-1a0fadfa",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/billing-1a0fadfa/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/billing-1a0fadfa/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:21:58.326448Z"
+}

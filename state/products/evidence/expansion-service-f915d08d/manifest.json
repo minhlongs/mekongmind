@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "expansion-service",
+  "product_path": "/Users/macbook/nhipdieuxanh/services/expansion-service",
+  "snapshot_dir": "state/products/evidence/expansion-service-f915d08d",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/expansion-service-f915d08d/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/expansion-service-f915d08d/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:25:26.778905Z"
+}

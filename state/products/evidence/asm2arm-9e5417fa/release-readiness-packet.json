@@ -1,0 +1,112 @@
+{
+  "artifact_binding": {
+    "artifact_goal_id": "goal-20260603-155338",
+    "artifact_label": "tiktok-shop-api-mvp-live",
+    "artifact_label_match": false,
+    "artifact_product_name": "",
+    "artifact_product_path": "",
+    "contract_ready": false,
+    "goal_match": true,
+    "product_name_match": false,
+    "product_path_match": false,
+    "selected_goal_id": "goal-20260603-155338",
+    "selected_product_name": "asm2arm",
+    "selected_product_path": "/Users/macbook/go/pkg/mod/github.com/bytedance/sonic@v1.15.0/tools/asm2arm",
+    "semantic_failures": [
+      "mvp-live artifact is not tied to the selected product"
+    ]
+  },
+  "blocked_departments": [
+    "artifact-binding",
+    "quality-compliance",
+    "platform-operations"
+  ],
+  "checks": [
+    {
+      "contract_ready": true,
+      "department": "engineering-factory",
+      "empty_fields": [],
+      "missing_fields": [],
+      "required_fields": [
+        "routes",
+        "apis",
+        "data_model",
+        "integrations",
+        "checkout_path",
+        "build_command",
+        "tests_run",
+        "known_risks"
+      ],
+      "semantic_failures": []
+    },
+    {
+      "contract_ready": false,
+      "department": "quality-compliance",
+      "empty_fields": [],
+      "missing_fields": [],
+      "required_fields": [
+        "review_scope",
+        "tests_run",
+        "build_status",
+        "security_notes",
+        "blocking_findings",
+        "residual_risks",
+        "release_decision"
+      ],
+      "semantic_failures": [
+        "release_decision is blocking, not releasable"
+      ]
+    },
+    {
+      "contract_ready": false,
+      "department": "platform-operations",
+      "empty_fields": [],
+      "missing_fields": [],
+      "required_fields": [
+        "provider",
+        "commit",
+        "build_id",
+        "health_url",
+        "http_status",
+        "version_match",
+        "rollback_plan",
+        "monitoring"
+      ],
+      "semantic_failures": [
+        "version_match must be verified",
+        "provider must be a real reachable provider"
+      ]
+    }
+  ],
+  "created_at": "2026-06-03T15:16:32.165457Z",
+  "goal_id": "goal-20260603-155338",
+  "guard": [
+    "This packet is not mvp-live proof.",
+    "This packet is not production proof.",
+    "This packet is not campaign proof.",
+    "This packet is not revenue proof.",
+    "Do not start real outreach until Quality & Compliance and Platform Operations strict contracts pass.",
+    "Do not mutate Polar.sh configuration from this packet."
+  ],
+  "offer": "asm2arm as a productized workflow",
+  "packet_status": "blocked-release-readiness-not-proof",
+  "polar_provider": "Polar.sh canonical; checkout/subscription evidence is still required for MRR",
+  "product_name": "asm2arm",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/bytedance/sonic@v1.15.0/tools/asm2arm",
+  "ready_departments": [
+    "engineering-factory"
+  ],
+  "required_to_unblock": [
+    "Quality & Compliance: release_decision must be approved/ready and blocking findings must be resolved or explicitly accepted by owner.",
+    "Platform Operations: provider must be real and reachable, http_status must be 200, version_match must be verified, rollback and monitoring must be production-grade.",
+    "Revenue path: attach verified Polar checkout URL before Growth/Sales real send or MRR claim.",
+    "Artifact binding: mvp-live evidence must include matching product_name, product_path, or product-specific artifact label before it can be reused for this product."
+  ],
+  "schema": "mekongmind.product_release_readiness_packet.v1",
+  "source_artifact": "state/evidence/mvp-live.json",
+  "suggested_next_commands": [
+    "me solo artifact validate quality-compliance state/evidence/mvp-live.json",
+    "me solo artifact validate platform-operations state/evidence/mvp-live.json",
+    "me solo bottlenecks --strict"
+  ]
+}

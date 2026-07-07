@@ -1,0 +1,24 @@
+{
+    "instructions": [
+        ".claude/CLAUDE.md",
+        ".claude/rules/*.md"
+    ],
+    "agents": {
+        "engineering-factory": {
+            "description": "Builds features, implements integrations in mvp/",
+            "model": "claude-sonnet-4-6",
+            "tools": ["Read", "Write", "Bash"],
+            "skill_file": ".claude/skills/engineering-factory.md"
+        },
+        "quality-compliance": {
+            "description": "Audits code quality, reviews changes against SOPs",
+            "model": "claude-sonnet-4-6",
+            "tools": ["Read", "Bash"],
+            "skill_file": ".claude/skills/quality-compliance.md"
+        }
+    },
+    "settings": {
+        "max_turns_default": 10,
+        "allowed_parallel_tasks": 3
+    }
+}

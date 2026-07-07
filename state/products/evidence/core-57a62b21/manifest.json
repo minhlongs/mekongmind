@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "core",
+  "product_path": "/Users/macbook/mekong-ide/packages/console/core",
+  "snapshot_dir": "state/products/evidence/core-57a62b21",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/core-57a62b21/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/core-57a62b21/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:20:05.665694Z"
+}

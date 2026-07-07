@@ -1,0 +1,33 @@
+{
+  "department": "hermes-integration",
+  "goal_id": "demo-integration",
+  "status": "active",
+  "created_at": "2026-06-04T12:30:00Z",
+  "last_updated": "2026-06-04T12:35:00Z",
+  "evidence": [
+    {
+      "type": "bridge_script_created",
+      "path": "lib/hermes-bridge.sh",
+      "verified_at": "2026-06-04T12:31:00Z",
+      "verification_result": "script_exists_and_executable"
+    },
+    {
+      "type": "mcp_config_written",
+      "path": "../.hermes/mcp-config.json",
+      "verified_at": "2026-06-04T12:32:00Z", 
+      "verification_result": "valid_json_with_all_tools"
+    },
+    {
+      "type": "skill_file_created",
+      "path": "../../../.hermes/skills/mekongmind/SKILL.md",
+      "verified_at": "2026-06-04T12:33:00Z",
+      "verification_result": "file_present_with_sop_content"
+    }
+  ],
+  "handoff_to": "engineering-factory",
+  "next_steps": [
+    "Build React landing page for Nhip Song Xanh concept",
+    "Run integration test to verify all components work",
+    "Update department ledger with final evidence"
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "current_gate": "scale-ready",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:42:40.941720Z",
+          "note": "initial gate",
+          "source": "local-state"
+        }
+      ],
+      "id": "idea-intake",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:42.971404Z",
+          "note": "blueprint ready",
+          "source": "manual"
+        },
+        {
+          "at": "2026-06-02T00:51:45.342840Z",
+          "note": "/Users/macbook/Documents/me-deep-wrapper/.mekong/company.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "company-blueprint",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:45.410073Z",
+          "note": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/offer-validated.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "offer-validated",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:45.475639Z",
+          "note": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/mvp-live.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "mvp-live",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:43.289997Z",
+          "note": "MRR reached 2500",
+          "source": "manual"
+        },
+        {
+          "at": "2026-06-02T00:51:44.098755Z",
+          "note": "MRR reached 42000",
+          "source": "file:/var/folders/lv/ys8l5k916992ssfpwcpvpcch0000gn/T/tmp.m4qhe5RGme/provider-revenue.json"
+        },
+        {
+          "at": "2026-06-02T00:51:44.537395Z",
+          "note": "MRR reached 42000",
+          "source": "polar:file"
+        },
+        {
+          "at": "2026-06-02T00:51:45.538896Z",
+          "note": "CurrentMRR=42000",
+          "source": "revenue"
+        }
+      ],
+      "id": "first-revenue",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:45.609173Z",
+          "note": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/repeatable-channel.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "repeatable-channel",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:45.682427Z",
+          "note": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/fulfillment-stable.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "fulfillment-stable",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:45.753921Z",
+          "note": "/Users/macbook/Documents/me-deep-wrapper/state/evidence/scale-ready.json",
+          "source": "artifact"
+        }
+      ],
+      "id": "scale-ready",
+      "status": "active"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T00:51:43.700627Z",
+          "note": "MRR reached 1000000",
+          "source": "manual"
+        }
+      ],
+      "id": "first-1m-mrr",
+      "status": "passed"
+    }
+  ],
+  "goal_id": "goal-20260602-074240",
+  "updated_at": "2026-06-02T00:51:45.753921Z"
+}

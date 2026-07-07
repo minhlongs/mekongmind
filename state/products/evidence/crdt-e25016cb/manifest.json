@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "crdt",
+  "product_path": "/Users/macbook/mekongmind/apps/well/n8n_codebase/packages/@n8n/crdt",
+  "snapshot_dir": "state/products/evidence/crdt-e25016cb",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/crdt-e25016cb/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/crdt-e25016cb/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:21:12.358076Z"
+}

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "cleo-llm-native",
+  "product_path": "/Users/macbook/mekong-cli/packages/cleo-new/crates/cleo-llm-native",
+  "snapshot_dir": "state/products/evidence/cleo-llm-native-1cf571fa",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/cleo-llm-native-1cf571fa/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/cleo-llm-native-1cf571fa/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:18:56.078235Z"
+}

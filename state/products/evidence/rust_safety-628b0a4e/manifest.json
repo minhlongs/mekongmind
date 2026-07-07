@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "rust_safety",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/engine/rust_safety",
+  "snapshot_dir": "state/products/evidence/rust_safety-628b0a4e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/rust_safety-628b0a4e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/rust_safety-628b0a4e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:28:57.408688Z"
+}

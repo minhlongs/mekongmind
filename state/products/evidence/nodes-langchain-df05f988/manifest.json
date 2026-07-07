@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "nodes-langchain",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/apps/well/n8n_codebase/packages/@n8n/nodes-langchain",
+  "snapshot_dir": "state/products/evidence/nodes-langchain-df05f988",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/nodes-langchain-df05f988/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/nodes-langchain-df05f988/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:30:36.202640Z"
+}

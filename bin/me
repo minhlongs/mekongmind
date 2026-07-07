@@ -1,0 +1,3322 @@
+#!/bin/bash
+# ── me-deep-wrapper v1.0.0 — CEO Solo Company Orchestrator ─
+# Wraps: mekong-cli + claudekit + claude
+# Paradigm: /command + /idea (Harness Engineering)
+# ─────────────────────────────────────────────────────────────
+# me-deep-wrapper v1.0.0 — CEO Solo Company Orchestrator
+# Wraps: mekong-cli + claudekit + claude
+# Paradigm: /command + /idea (Harness Engineering)
+# Source: walkinglabs/awesome-harness-engineering + Solo-Platform
+# ─────────────────────────────────────────────────────────────
+set -uo pipefail
+set +u  # nounset breaks array access in run_idea
+# Bust bash hash table so PATH changes (e.g. removing competing wrappers) take effect
+hash -r 2>/dev/null || true
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
+BLUE='\033[0;34m'; CYAN='\033[0;36m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'
+# Resolve WRAPPER_DIR from env, BASH_SOURCE, $0, or command -v.
+# Priority:
+#   1. Pre-set env vars (shell snapshot sets these to bypass $0 issues when sourced)
+#   2. $0 when it is an absolute symlink path (direct execution)
+#   3. command -v for this script on PATH (resolves symlinks)
+WRAPPER_DIR="${WRAPPER_DIR:-}"
+# 1) Shell snapshot / external wrapper pre-sets these
+[ -n "${WRAPPER_DIR:-}" ] && [ -d "$WRAPPER_DIR" ] && { readonly WRAPPER_DIR; LIB_DIR="${LIB_DIR:-$WRAPPER_DIR/../lib}"; REGISTRY="${REGISTRY:-/Users/macbook/Documents/me-deep-wrapper/agents/registry.json}"; PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$WRAPPER_DIR/.." 2>/dev/null && pwd)}"; }
+# If we got WRAPPER_DIR from env, skip the rest
+if [ -z "$WRAPPER_DIR" ]; then
+    # 2) Direct execution: $0 is the script (possibly via symlink)
+    if [ -L "$0" ]; then
+        _target="$(readlink "$0")"
+        if [ "$_target" != "${_target#/}" ]; then
+            WRAPPER_DIR="$(cd "$(dirname "$_target")" && pwd)"
+        else
+            WRAPPER_DIR="$(cd "$(dirname "$(dirname "$0")/${_target}")" && pwd)"
+        fi
+        unset _target
+    # 3) $0 points directly to the script
+    elif [[ "$0" == */* ]] && [ -f "$0" ]; then
+        WRAPPER_DIR="$(cd "$(dirname "$0")" && pwd)"
+    # 4) $0 is a bare name on PATH - resolve via command -v
+    elif command -v me-deep-wrapper-bin >/dev/null 2>&1; then
+        WRAPPER_DIR="$(cd "$(dirname "$(command -v me-deep-wrapper-bin)")" && pwd)"
+    elif command -v me >/dev/null 2>&1; then
+        # command -v me may return a function definition ("me is a shell function from...")
+        # Only accept it if the output looks like an actual filesystem path
+        _me_raw="$(command -v me 2>/dev/null || true)"
+        case "$_me_raw" in
+            /*)  # absolute path - could be binary or symlink
+                _me_path="$_me_raw"
+                # Follow symlink chain to find the real file location
+                while [ -n "$_me_path" ] && [ -L "$_me_path" ]; do
+                    _link="$(readlink "$_me_path")"
+                    if [ "$_link" != "${_link#/}" ]; then
+                        _me_path="$_link"
+                    else
+                        _me_path="$(cd "$(dirname "$_me_path")" && pwd)/$_link"
+                    fi
+                    unset _link
+                done
+                [ -n "$_me_path" ] && WRAPPER_DIR="$(cd "$(dirname "$_me_path")" && pwd)"
+                ;;
+            *is\ a\ shell\ function*) ;;  # skip - it's a function, not a binary
+            *)  # relative path or other
+                _me_path="$(command -v me 2>/dev/null || true)"
+                [ -n "$_me_path" ] && WRAPPER_DIR="$(cd "$(dirname "$_me_path")" && pwd)"
+                ;;
+        esac
+        unset _me_path _me_raw
+    # Hard fallback
+    else
+        WRAPPER_DIR="/Users/macbook/Documents/me-deep-wrapper/bin"
+    fi
+fi
+LIB_DIR="$WRAPPER_DIR/../lib"
+REGISTRY="${REGISTRY:-/Users/macbook/Documents/me-deep-wrapper/agents/registry.json}"
+PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$WRAPPER_DIR/.." 2>/dev/null && pwd)}"
+SOLO_PDF="/Users/macbook/Documents/DeepSeek - Solo-Platform.pdf"
+
+log_info()  { echo -e "${BLUE}[me-deep]${RESET} $*"; }
+log_warn()  { echo -e "${YELLOW}[me-deep]⚠${RESET} $*" >&2; }
+log_error() { echo -e "${RED}[me-deep]✗${RESET} $*" >&2; }
+log_ok()    { echo -e "${GREEN}[me-deep]✓${RESET} $*"; }
+
+# ── Agent resolution ─────────────────────────────────────────
+source "$LIB_DIR/agent-patterns.sh" 2>/dev/null || true
+source "$LIB_DIR/goal-executor.sh" 2>/dev/null || true
+source "$LIB_DIR/hermes-tools.sh" 2>/dev/null || true
+source "$LIB_DIR/model-router.sh" 2>/dev/null || true
+source "$LIB_DIR/business-workflow.sh" 2>/dev/null || true
+
+
+build_agent_context() {
+  local agent="$1" cli="$2"
+  [ -z "$agent" ] && return 0
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo -e "${BOLD}🤖 Agent Mode: ${CYAN}$agent${RESET} via ${BOLD}$cli${RESET}"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  if [ "$cli" = "mekong" ]; then
+    local f; f=$(find "/Users/macbook/mekong-cli/.claude/agents" -name "*${agent}*" -type f 2>/dev/null | head -1)
+    [ -n "$f" ] && echo -e "  ${BLUE}Def:${RESET} $f"
+  elif [ "$cli" = "claudekit" ] || [ "$cli" = "ck" ]; then
+    local f; f=$(find "/Users/macbook/projects/claudekit/src/agents" -name "*${agent}*" -type f 2>/dev/null | head -1)
+    [ -n "$f" ] && echo -e "  ${BLUE}Def:${RESET} $f"
+  fi
+  echo -e "  ${YELLOW}💡 Tip:${RESET} /agent $agent  |  /idea <goal>"
+  echo ""
+}
+
+show_goal() {
+  local watch_flag=""
+  local _args=("$@")
+  local _i=0
+  while [ $_i -lt ${#_args[@]} ]; do
+    case "${_args[$_i]:-}" in
+      --watch) watch_flag="1"; _i=$((_i+1)) ;;
+      *) _i=$((_i+1)) ;;
+    esac
+  done
+ local last
+ # Priority: active/running > in_progress > newest completed
+ local _gf _t
+ for _gf in /Users/macbook/Documents/me-deep-wrapper/state/goal-*.md; do
+   [ -f "$_gf" ] || continue
+   grep -q "^Status: \(active\|running\)$" "$_gf" 2>/dev/null || continue
+   _t=$(grep "^# Goal:" "$_gf" 2>/dev/null | head -1 | sed "s/^# Goal: *//")
+   case "$_t" in --help|"") continue ;; esac
+   last="$_gf"
+ done
+ if [ -z "$last" ]; then
+   last=$(grep -l '^Status: in_progress$' "/Users/macbook/Documents/me-deep-wrapper/state/goal-"*.md 2>/dev/null | sort | tail -1)
+ fi
+ if [ -z "$last" ]; then
+   last=$(ls -t /Users/macbook/Documents/me-deep-wrapper/state/goal-*.md 2>/dev/null | head -1)
+ fi
+ if [ -z "$last" ]; then
+    log_warn "No active goal. Use: me goal <description>"
+    return 1
+  fi
+
+  _render_goal() {
+    clear 2>/dev/null || true
+    echo -e "${BOLD}╔══════════════════════════════════════════════════════════════╗${RESET}"
+    echo -e "${BOLD}║${RESET}  ${GREEN}Active Goal${RESET} — live view $(date '+%H:%M:%S')$(printf '%*s' $((34 - ${#last})) '')${RESET}"
+    echo -e "${BOLD}╚══════════════════════════════════════════════════════════════╝${RESET}"
+    echo ""
+    cat "$last"
+    echo ""
+    echo -e "${BOLD}──────────────────────────────────────────────────────────────${RESET}"
+    echo -e "File: ${CYAN}${last}${RESET}  |  Refresh: every 3s  |  Ctrl-C to exit"
+  }
+
+  _render_goal
+
+  if [ "$watch_flag" = "1" ]; then
+    local prev_mtime
+    prev_mtime=$(stat -f '%m' "$last" 2>/dev/null || stat -c '%Y' "$last" 2>/dev/null || echo 0)
+    trap 'echo ""; log_info "watch stopped"; exit 0' INT TERM
+    while true; do
+      sleep 3
+      local cur_mtime
+      cur_mtime=$(stat -f '%m' "$last" 2>/dev/null || stat -c '%Y' "$last" 2>/dev/null || echo 0)
+      if [ "$cur_mtime" != "$prev_mtime" ]; then
+        prev_mtime="$cur_mtime"
+        _render_goal
+      fi
+    done
+  fi
+}
+
+# ── /idea: Goal → Step plan → Agent dispatch ─────────────────
+run_idea() {
+# Parse --pattern <id> --chain <file> --auto --deep from args; rest = goal description
+local pattern="${MEKONG_WRAPPER_PATTERN:-}"
+local chain_file=""
+local auto_flag=""
+local deep_flag=""
+local parallel_flag=""
+local model_override=""
+local positional=()
+ local _args=("$@")
+ local _i=0
+ while [ $_i -lt ${#_args[@]} ]; do
+ case "${_args[$_i]:-}" in
+ --pattern)
+ if [ $((_i+1)) -lt ${#_args[@]} ]; then
+ pattern="${_args[$((_i+1))]:-}"; _i=$((_i+2))
+ else _i=$((_i+1)); fi
+ ;;
+ --chain)
+ if [ $((_i+1)) -lt ${#_args[@]} ]; then
+ chain_file="${_args[$((_i+1))]:-}"; _i=$((_i+2))
+ else _i=$((_i+1)); fi
+ ;;
+ --model)
+if [ $((_i+1)) -lt ${#_args[@]} ]; then
+  model_override="${_args[$((_i+1))]:-}"; _i=$((_i+2))
+else
+  _i=$((_i+1))
+fi
+;;
+ --auto) auto_flag="1"; _i=$((_i+1)) ;;
+--parallel) parallel_flag="1"; _i=$((_i+1)) ;;
+ --deep) deep_flag="1"; _i=$((_i+1)) ;;
+ --) _i=$((_i+1)); break ;;
+  *) positional+=("${_args[$_i]:-}"); _i=$((_i+1)) ;;
+ esac
+ done
+[ -n "$parallel_flag" ] && {
+    MEKONG_PARALLEL="1"
+    export MEKONG_PARALLEL
+    log_info "parallel mode: ENABLED — all spawns will use parallel_exec"
+}
+# Reconstruct goal description from positional args
+goal_desc=$(printf '%s ' "${positional[@]}")
+goal_desc=$(echo "$goal_desc" | sed 's/ *$//')
+if [ -z "$goal_desc" ]; then
+log_error "Usage: me idea <description>"; return 1
+fi
+# pattern_label from --pattern flag/env, or auto-detect from the idea text
+pattern_label="$(apply_harness_pattern "${pattern:-auto}" "$goal_desc")"
+[ -z "$pattern_label" ] && pattern_label="orchestrator"
+
+local goal_file
+goal_file=$(create_idea_goal "$goal_desc" "$pattern_label") || return $?
+log_ok "Idea goal saved: $goal_file"
+
+# Per-call model override (lighter model for subagents / auto mode)
+if [ -n "$model_override" ]; then
+export MEKONG_MODEL="$model_override"
+fi
+
+# --auto: dispatch step 1 immediately
+if [ -n "$auto_flag" ]; then
+# Auto-resolve task type from pattern for model routing
+local auto_task_type
+auto_task_type=$(agent_to_task_type "$pattern") 2>/dev/null || auto_task_type="code-generation"
+export MEKONG_TASK_TYPE="$auto_task_type"
+log_info "[auto] pattern=[$pattern] → task_type=[$auto_task_type] → model=[$(route_model "$auto_task_type" 2>/dev/null | awk '{print $2}')]"
+echo -e " ${CYAN}[auto]${RESET} Dispatching through legacy /idea or Mekong /goal..."
+if mekong_has_command "idea"; then
+  run_mekong idea run "$goal_desc — implement per blueprint"
+  return $?
+fi
+local created goal_id
+created=$(mekong goal create "$goal_desc" --json 2>/dev/null) || {
+  log_error "mekong goal create failed; local idea goal remains at $goal_file"
+  return 1
+}
+goal_id=$(printf '%s' "$created" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))' 2>/dev/null)
+[ -z "$goal_id" ] && { log_error "Could not parse Mekong goal id"; return 1; }
+set_goal_field "$goal_file" "MekongGoalID" "$goal_id"
+mekong goal run "$goal_id" --profile none
+return $?
+fi
+
+echo ""
+echo " 1. me goal show → xem local idea/goal state"
+echo " 2. me goal create \"$goal_desc\" → create Mekong GoalEngine task graph"
+echo " 3. me goal run <goal-id> --profile none → execute/verify via Mekong /goal"
+echo " 4. me step 1 → compatibility step runner"
+
+# --chain: read sub-goals from file and queue them
+if [ -n "$chain_file" ]; then
+if [ ! -f "$chain_file" ]; then
+log_error "Chain file not found: $chain_file"; return 1
+fi
+local idx=0
+while IFS= read -r line; do
+line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+[ -z "$line" ] && continue
+[[ "$line" =~ ^# ]] && continue
+idx=$((idx+1))
+create_goal "[chain-$idx] $line" "$pattern_label" >/dev/null 2>&1
+done < "$chain_file"
+echo -e " ${GREEN}[chain]${RESET} Loaded $idx sub-goals from $chain_file"
+echo "Run: me step 1 (to start first sub-goal)"
+fi
+
+[ "${MEKONG_WRAPPER_VERBOSE:-0}" = "1" ] && \
+log_info "Idea dispatch: agent=${resolved_agent} pattern=${pattern:-auto}"
+  return 0
+}
+
+mekong_has_command() {
+  local needle="${1:-}"
+  [ -z "$needle" ] && return 1
+  COLUMNS=220 mekong --help 2>/dev/null | grep -qE "^│ ${needle}[[:space:]]"
+}
+
+# ── /command: raw CLI dispatch ──────────────────────────────
+run_mekong() {
+  local cmd="${1:-help}"; shift || true
+  local agent
+  agent=$(resolve_agent "mekong" "$cmd")
+  [ "${MEKONG_WRAPPER_VERBOSE:-0}" = "1" ] && \
+    log_info "CLI: mekong | Command: $cmd | Agent: ${agent:-auto}"
+  build_agent_context "$agent" "mekong"
+  local bin; bin=$(command -v mekong 2>/dev/null || echo "/opt/homebrew/bin/mekong")
+  local mekong_root="${MEKONG_ROOT:-/Users/macbook/mekong-cli}"
+  export PYTHONPATH="${mekong_root}${PYTHONPATH:+:$PYTHONPATH}"
+  cd "$PROJECT_ROOT"
+  exec "$bin" "$cmd" "$@"
+}
+
+run_claudekit() {
+  local cmd="${1:-help}"; shift || true
+  local agent
+  agent=$(resolve_agent "claudekit" "$cmd")
+  [ "${MEKONG_WRAPPER_VERBOSE:-0}" = "1" ] && \
+    log_info "CLI: claudekit | Command: $cmd | Agent: ${agent:-auto}"
+  build_agent_context "$agent" "claudekit"
+  local bin; bin=$(which claudekit 2>/dev/null || echo "/opt/homebrew/bin/claudekit")
+  cd "$PROJECT_ROOT"
+  exec "$bin" "$cmd" "$@"
+}
+
+
+# Build MEKONG goal context for Claude session injection
+build_claude_context() {
+    # Build MEKONG goal context summary for injection into Claude sessions
+    local goal_file
+    goal_file=$(latest_goal_file 2>/dev/null) || return 0
+    [ -z "$goal_file" ] && return 0
+
+    local goal_id goal_name current_gate passed=0 total=9
+    goal_id=$(basename "$goal_file" .json .md)
+    goal_name=$(goal_field "$goal_file" "GoalName" 2>/dev/null || echo "$goal_id")
+    current_gate=$(goal_field "$goal_file" "CurrentGate" 2>/dev/null || echo "unknown")
+
+    # Count passed gates from JSON
+    if [ -f "$GATES_DIR/${goal_id}.json" ]; then
+        passed=$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));gs=d.get("gates",[]);sc=sum(1 for g in gs if isinstance(g,dict) and g.get("status")=="passed") if isinstance(gs,list) else 0;print(sc)' "$GATES_DIR/${goal_id}.json" 2>/dev/null || echo 0)
+    fi
+
+    # Evidence summary
+    local evidence_summary="" ev_count=0
+    if [ -d "$STATE_DIR/evidence" ]; then
+        ev_count=$(find "$STATE_DIR/evidence" -name "*.json" -newer "$goal_file" 2>/dev/null | wc -l | tr -d " ")
+        [ "$ev_count" -gt 0 ] && evidence_summary=" | Evidence: $ev_count artifacts"
+    fi
+
+    printf "[MEKONG Context]\nGoal: %s (%s)\nProgress: %s/%s gates passed\nCurrent Gate: %s\nActive Project: %s%s\n[End Context]\n\n" \
+        "$goal_name" "$goal_id" "$passed" "$total" "$current_gate" "$(basename "$PROJECT_ROOT")" "$evidence_summary"
+}
+run_claude() {
+  local model="${MEKONG_MODEL:-${MEKONG_MODEL_ROUTED:-claude-sonnet-4-6}}"
+
+  # If Hermes is available, use it with model routing
+  if [ "${HERMES_ENABLED:-auto}" != "disable" ] && hermes_available 2>/dev/null; then
+    local task_type="${MEKONG_TASK_TYPE:-code-generation}"
+    local route
+    route=$(route_model "$task_type" 2>/dev/null) || route="anthropic claude-sonnet-4-6 3 medium"
+    local _r="$route"
+    local provider="${_r%% *}"
+    _r="${_r#* }"
+    local hmodel="${_r%% *}"
+    _r="${_r#* }"
+    local priority="${_r%% *}"
+    log_info "CLI: hermes[$priority] | $task_type → $provider:$hmodel"
+    cd "$PROJECT_ROOT"
+    # Pass through extra args (--agent, --allowedTools, etc.) plus hermes model
+       local ctx=""
+    ctx=$(build_claude_context 2>/dev/null) || ctx=""
+    if [ -n "$ctx" ]; then
+        exec "$HERMES_BIN" -m "${provider}:${hmodel}" --append-system-prompt "$ctx" "$@"
+    else
+        exec "$HERMES_BIN" -m "${provider}:${hmodel}" "$@"
+    fi
+  fi
+
+  # Fallback: direct claude CLI
+  log_info "CLI: claude | Model: $model"
+  cd "$PROJECT_ROOT"
+     local ctx=""
+    ctx=$(build_claude_context 2>/dev/null) || ctx=""
+    if [ -n "$ctx" ]; then
+        exec claude --model "$model" --append-system-prompt "$ctx" "$@"
+    else
+        exec claude --model "$model" "$@"
+    fi
+}
+
+# ── agents subcommand ───────────────────────────────────────
+cmd_agents() {
+  local sub="${1:-list}"; shift || true
+  case "$sub" in
+  list)
+    echo -e "${BOLD}Available Agents${RESET}"
+    echo ""
+    local n_mekong=0 n_ck=0
+    echo -e "${CYAN}── Mekong-CLI Agents${RESET}"
+    if command -v registry_list >/dev/null 2>&1; then
+      while IFS=$'	' read -r aid cmds path; do
+        [ -z "$aid" ] && continue
+        printf "  ${GREEN}%-25s${RESET} %s\n" "$aid" "[$cmds]"
+        n_mekong=$((n_mekong+1))
+      done < <(registry_list "mekong")
+    else
+      for a in "${MEKONG_AGENTS[@]}"; do
+        [ -z "$a" ] && continue
+        printf "  ${GREEN}%-25s${RESET} %s\n" "$a" "[registry.json]"
+        n_mekong=$((n_mekong+1))
+      done
+    fi
+    echo ""
+    echo -e "${CYAN}── ClaudeKit Agents${RESET}"
+    if command -v registry_list >/dev/null 2>&1; then
+      while IFS=$'	' read -r aid cmds path; do
+        [ -z "$aid" ] && continue
+        printf "  ${GREEN}%-25s${RESET} %s\n" "$aid" "[$cmds]"
+        n_ck=$((n_ck+1))
+      done < <(registry_list "claudekit")
+    else
+      for a in "${CLAUDEKIT_AGENTS[@]}"; do
+        [ -z "$a" ] && continue
+        printf "  ${GREEN}%-25s${RESET} %s\n" "$a" "[registry.json]"
+        n_ck=$((n_ck+1))
+      done
+    fi
+    echo ""
+    echo -e "Total: Mekong ${BOLD}$n_mekong${RESET} · ClaudeKit ${BOLD}$n_ck${RESET} · source: ${YELLOW}agents/registry.json${RESET}"
+    ;;
+  show)
+    local agent="${1:-}"
+    [ -z "$agent" ] && { log_error "Agent id required"; exit 1; }
+    echo "Agent: $agent"
+    echo "---"
+    local meta=""
+    if command -v _registry_get_meta >/dev/null 2>&1; then
+      meta=$(_registry_get_meta "$agent" "mekong" 2>/dev/null || true)
+      [ -z "$meta" ] && meta=$(_registry_get_meta "$agent" "claudekit" 2>/dev/null || true)
+    else
+      meta=$(get_agent_meta "$agent" "mekong" 2>/dev/null || true)
+      [ -z "$meta" ] && meta=$(get_agent_meta "$agent" "claudekit" 2>/dev/null || true)
+    fi
+    [ -n "$meta" ] && echo "$meta" || echo "Not found in registry"
+    ;;
+  commands)
+    local q="${1:-}"
+    echo -e "${BOLD}Command → Agent map${RESET}"
+    echo ""
+    if command -v list_commands >/dev/null 2>&1; then
+      if [ -n "$q" ]; then list_commands "$q"; else list_commands; fi
+    else
+      echo "(command catalog not available — requires agent-patterns.sh >= 2026-06-01)"
+    fi
+    echo ""
+    echo "Tip: me agents commands [keyword]  → filter;  me agents commands → all"
+    ;;
+  routes|route-map)
+    local q="${1:-}"
+    echo -e "${BOLD}Command → Agent → Department → Gate map${RESET}"
+    echo ""
+    if command -v list_command_routes >/dev/null 2>&1; then
+      list_command_routes "$q"
+    else
+      echo "(command route catalog not available — requires agent-patterns.sh >= 2026-06-02)"
+    fi
+    echo ""
+    echo "Tip: me agents routes [keyword]  → filter command taxonomy"
+    ;;
+  help)
+    echo "Usage: me agents <sub> [args]"
+    echo "  agents list              List registered agents from registry.json"
+    echo "  agents show <id>         Show agent metadata (path + domain)"
+    echo "  agents commands [q]      Show command→agent mapping (filter by keyword)"
+    echo "  agents routes [q]        Show command→agent→department→gate mapping"
+    echo "  agents help              This help"
+    ;;
+  *)
+    log_error "Unknown: me agents $sub"; exit 1 ;;
+  esac
+}
+
+# ── model subcommand — Model Router visibility ─────────────────────────
+cmd_model() {
+local sub="${1:-report}"; shift || true
+case "$sub" in
+report|matrix|costs)
+model_report
+;;
+route)
+local task_type="${1:-code-generation}"
+local route
+route=$(route_model "$task_type" 2>/dev/null) || route="anthropic claude-sonnet-4-6 3 medium"
+echo "$route"
+;;
+*)
+echo "Usage: me model <sub>"
+echo " model report   Show cost/quality matrix"
+echo " model route    Route a specific task type"
+;;
+esac
+}
+# ── project subcommand ─────────────────────────────────────
+cmd_project() {
+  local scope="${1:-}"; shift || true
+  [ -z "$scope" ] && { log_error "Scope required: me project <scope> <cmd>"; exit 1; }
+  local cmd="${1:-help}"; shift || true
+  local full=""
+  case "$scope" in
+    audit)   full="mekong audit $cmd $*" ;;
+    bridge)  full="mekong bridge $cmd $*" ;;
+    cook)    full="mekong cook $cmd $*" ;;
+    repo)    full="mekong $cmd $*" ;;
+    crm)     full="mekong $cmd $*" ;;
+    finance) full="mekong finance $cmd $*" ;;
+    mekong)  full="mekong $cmd $*" ;;
+    ck)      full="claudekit $cmd $*" ;;
+    lint)    full="claudekit lint-commands $cmd $*" ;;
+    *)       log_error "Unknown scope: $scope"; exit 1 ;;
+  esac
+  log_info "Project scope: $scope → $full"
+  cd "$PROJECT_ROOT"
+  eval "$full"
+}
+
+# ── chain subcommand ───────────────────────────────────────
+cmd_chain() {
+  local chain="$*"
+  [ -z "$chain" ] && { log_error "Usage: me chain '<cmd1> && <cmd2>'"; exit 1; }
+  echo -e "${BOLD}⛓️  Command Chain${RESET}"
+  echo ""
+  local IFS='&&'; local cmds=($chain)
+  for c in "${cmds[@]}"; do
+    c=$(echo "$c" | sed 's/^ *//;s/ *$//')
+    [ -z "$c" ] && continue
+    echo -e "  ${GREEN}▶${RESET} $c"
+  done
+  echo ""
+  for c in "${cmds[@]}"; do
+    c=$(echo "$c" | sed 's/^ *//;s/ *$//')
+    [ -z "$c" ] && continue
+    echo -e "${CYAN}Executing:${RESET} $c"
+    cd "$PROJECT_ROOT"
+    eval "$c"
+    local s=$?
+    if [ $s -ne 0 ]; then log_error "Chain failed: $c (exit $s)"; exit $s; fi
+    echo ""
+  done
+  log_ok "Chain complete"
+}
+
+solo_loop_pass() {
+  local f="${1:-}"
+  [ -z "$f" ] && f=$(latest_goal_file 2>/dev/null || true)
+  [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; return 1; }
+  echo "Coordinator pass:"
+  if [ -n "${SOLO_REVENUE_FILE:-}" ]; then
+    sync_revenue_from_file "$f" "$SOLO_REVENUE_FILE" "solo:file" || return $?
+    echo "  RevenueSync: $SOLO_REVENUE_FILE"
+  elif [ -n "${POLAR_MRR_FILE:-}" ]; then
+    sync_revenue_from_file "$f" "$POLAR_MRR_FILE" "polar:file" || return $?
+    echo "  RevenueSync: $POLAR_MRR_FILE"
+  fi
+  local route dept reason owner gate path
+  route=$(next_department_for_goal "$f")
+  dept=$(printf '%s\n' "$route" | sed -n 's/^Department: //p' | head -1)
+  reason=$(printf '%s\n' "$route" | sed -n 's/^Reason: //p' | head -1)
+  owner=$(registry_department_owner "$dept" 2>/dev/null || true)
+  gate=$(registry_department_gate "$dept" 2>/dev/null || true)
+  if [ -z "$dept" ] || [ -z "$owner" ] || [ -z "$gate" ]; then
+    log_error "Coordinator could not resolve next department"
+    return 1
+  fi
+  path=$(write_gate_artifact "$gate" "$owner" "ready" "$reason" "$dept") || return $?
+  record_department_run "$f" "$dept" "$owner" "$gate" "ready" "$path" "$reason" || return $?
+  echo "  RanDepartment: $dept"
+  echo "  Owner:         $owner"
+  echo "  GateArtifact:  $gate"
+  echo "  Artifact:      $path"
+  echo ""
+  echo "Gate verification:"
+  verify_gate_artifacts "$f" | sed 's/^/  /' || return $?
+  echo ""
+}
+
+solo_daemon_paths() {
+  local base="/Users/macbook/Documents/me-deep-wrapper/state/loops"
+  mkdir -p "$base"
+  echo "$base"
+}
+
+solo_loop_status_write() {
+  local status_file="${1:-}"
+  local state="${2:-unknown}"
+  local pass="${3:-0}"
+  local failures="${4:-0}"
+  local max_failures="${5:-0}"
+  local goal="${6:-}"
+  local message="${7:-}"
+  [ -z "$status_file" ] && return 1
+  python3 - "$status_file" "$state" "$pass" "$failures" "$max_failures" "$goal" "$message" <<'PY'
+import json, os, sys
+from datetime import datetime, timezone
+path, state, pass_no, failures, max_failures, goal, message = sys.argv[1:8]
+now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+if os.path.exists(path):
+    with open(path) as f:
+        data = json.load(f)
+else:
+    data = {"events": []}
+event = {
+    "at": now,
+    "state": state,
+    "pass": int(pass_no),
+    "consecutive_failures": int(failures),
+    "max_failures": int(max_failures),
+    "goal": goal,
+    "message": message,
+}
+data.update(event)
+data.setdefault("events", []).append(event)
+data["events"] = data["events"][-50:]
+with open(path, "w") as f:
+    json.dump(data, f, indent=2, sort_keys=True)
+    f.write("\n")
+PY
+}
+
+solo_launchd_plist() {
+  local interval="${1:-300}"
+  local max_failures="${2:-3}"
+  local retries="${3:-0}"
+  local label="${4:-com.mekongmind.solo-loop}"
+  local stdout_log="${5:-/Users/macbook/Documents/me-deep-wrapper/state/loops/launchd.out.log}"
+  local stderr_log="${6:-/Users/macbook/Documents/me-deep-wrapper/state/loops/launchd.err.log}"
+  local me_bin="$WRAPPER_DIR/me"
+  python3 - "$label" "$me_bin" "$PROJECT_ROOT" "$interval" "$max_failures" "$retries" "$stdout_log" "$stderr_log" <<'PY'
+import plistlib, sys
+label, me_bin, project_root, interval, max_failures, retries, stdout_log, stderr_log = sys.argv[1:9]
+plist = {
+    "Label": label,
+    "ProgramArguments": [
+        me_bin,
+        "solo",
+        "daemon",
+        "run",
+        "--forever",
+        "--interval",
+        str(interval),
+        "--max-failures",
+        str(max_failures),
+        "--retries",
+        str(retries),
+    ],
+    "WorkingDirectory": project_root,
+    "EnvironmentVariables": {
+        "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "PROJECT_ROOT": project_root,
+    },
+    "RunAtLoad": False,
+    "KeepAlive": False,
+    "StandardOutPath": stdout_log,
+    "StandardErrorPath": stderr_log,
+}
+sys.stdout.buffer.write(plistlib.dumps(plist, fmt=plistlib.FMT_XML, sort_keys=False))
+PY
+}
+
+# ── solo subcommand: Solo Company orchestration ─────────────
+cmd_solo() {
+  local action="${1:-status}"; shift || true
+  case "$action" in
+    status)
+      echo -e "${BOLD}🏢 Solo Company Status${RESET}"
+      echo "  PDF Spec: $SOLO_PDF"
+      [ -f "$SOLO_PDF" ] && echo -e "  ${GREEN}✓${RESET} Solo-Platform.pdf loaded" || echo -e "  ${RED}✗${RESET} PDF missing"
+      echo "  Agents:   $(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print("%d unified agents" % len(d.get("unified_agents", [])))' "$REGISTRY" 2>/dev/null || echo "?")"
+      echo "  CLIs:     mekong ✓ | claudekit ✓ | claude ✓"
+      local f
+      f=$(latest_goal_file 2>/dev/null || true)
+      if [ -n "$f" ]; then
+        local current_mrr
+        current_mrr=$(goal_field "$f" "CurrentMRR")
+        [ -z "$current_mrr" ] && current_mrr=0
+        local target_mrr
+        target_mrr=$(goal_field "$f" "RevenueTarget")
+        [ -z "$target_mrr" ] && target_mrr=1000000
+        echo "  Goal:     $(goal_field "$f" "Goal")"
+        echo "  Mode:     $(goal_field "$f" "SoloCompanyMode")"
+        echo "  DNA:      $(goal_field "$f" "PlatformDNA")"
+        echo "  Target:   \$$target_mrr"
+        echo "  MRR:      \$$current_mrr"
+        echo "  Gate:     $(goal_field "$f" "CurrentGate")"
+        echo "  Loop:     $(goal_field "$f" "FactoryLoop")"
+      fi
+      ;;
+    products|portfolio)
+      local product_action="${1:-list}"
+      shift || true
+      local scan_root="${MEKONG_PRODUCT_SCAN_ROOT:-/Users/macbook}"
+      local inventory_path=""
+      while [ $# -gt 0 ]; do
+        case "${1:-}" in
+          --root) scan_root="${2:-$scan_root}"; shift 2 || true ;;
+          --write|--out) inventory_path="${2:-}"; shift 2 || true ;;
+          *) break ;;
+        esac
+      done
+      case "$product_action" in
+        scan|discover)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          echo -e "${BOLD}🧭 Mekongmind Local Product Inventory${RESET}"
+          local written
+          written=$(scan_local_products "$scan_root" "$inventory_path") || exit $?
+          log_ok "Product inventory written: $written"
+          product_inventory_summary "$written"
+          ;;
+        list|show|status)
+          product_inventory_summary "$inventory_path" || exit $?
+          ;;
+        queue|enqueue)
+          local queue_path="${PRODUCT_SELF_SELLING_QUEUE_FILE:-}"
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          [ -z "$queue_path" ] && queue_path="$(product_self_selling_queue_file)"
+          echo -e "${BOLD}📦 Mekongmind Product Self-Selling Queue${RESET}"
+          local queued
+          queued=$(build_product_self_selling_queue "$inventory_path" "$queue_path") || exit $?
+          log_ok "Product self-selling queue written: $queued"
+          product_self_selling_queue_summary "$queued"
+          ;;
+        audit|verify-queue)
+          local audit_mode="coverage"
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --strict) audit_mode="strict"; shift || true ;;
+              --self-selling|--completion) audit_mode="self-selling"; shift || true ;;
+              *) break ;;
+            esac
+          done
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          echo -e "${BOLD}🔎 Mekongmind Product Queue Coverage${RESET}"
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "$audit_mode" || exit $?
+          ;;
+        loop|run|pass)
+          local loop_once=""
+          if [ "${1:-}" = "--once" ]; then
+            loop_once="1"
+            shift || true
+          fi
+          [ -z "$loop_once" ] && { log_error "Usage: me solo products loop --once [product-query]"; exit 1; }
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local query
+          query=$(next_product_queue_query "${1:-}") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}🔁 Mekongmind Product Self-Selling Pass${RESET}"
+          echo "  ProductQuery: $query"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" || exit $?
+          echo ""
+          select_product_for_goal "$query" || exit $?
+          echo ""
+          validate_department_artifact "ceo-command" || exit $?
+          echo ""
+          generate_offer_artifact_for_goal || exit $?
+          echo ""
+          validate_department_artifact "market-intelligence" || exit $?
+          validate_department_artifact "product-strategy" || exit $?
+          local snap_product_name snap_product_path snap_goal_id
+          snap_product_name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_name",""))' "$PROJECT_ROOT/state/evidence/company-blueprint.json" 2>/dev/null || true)
+          snap_product_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_path",""))' "$PROJECT_ROOT/state/evidence/company-blueprint.json" 2>/dev/null || true)
+          snap_goal_id=$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)
+          snapshot_product_artifacts "$snap_product_name" "$snap_product_path" "$snap_goal_id" >/dev/null 2>&1 || true
+          echo ""
+          echo -e "${CYAN}Next strict bottleneck${RESET}"
+          goal_readiness_matrix "$(latest_goal_file)" "strict" | sed 's/^/  /'
+          ;;
+        next|next-action|todo)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local query
+          query=$(next_product_queue_query "${1:-}") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}🧭 Mekongmind Product Next Action${RESET}"
+          echo "  ProductQuery: $query"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          product_next_action "$query" || exit $?
+          ;;
+        work-packet|growth-sales-packet|outreach-packet)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local query
+          query=$(next_product_queue_query "${1:-}") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}📨 Mekongmind Product Growth/Sales Work Packet${RESET}"
+          echo "  ProductQuery: $query"
+          echo "  Guard: draft only; no outreach send, no Polar mutation, no revenue claim"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          select_product_for_goal "$query" || exit $?
+          echo ""
+          validate_department_artifact "ceo-command" || exit $?
+          echo ""
+          generate_offer_artifact_for_goal || exit $?
+          echo ""
+          validate_department_artifact "market-intelligence" || exit $?
+          validate_department_artifact "product-strategy" || exit $?
+          echo ""
+          local packet_product_name packet_product_path packet_goal_id
+          packet_product_name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_name",""))' "$PROJECT_ROOT/state/evidence/company-blueprint.json" 2>/dev/null || true)
+          packet_product_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_path",""))' "$PROJECT_ROOT/state/evidence/company-blueprint.json" 2>/dev/null || true)
+          packet_goal_id=$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)
+          snapshot_product_artifacts "$packet_product_name" "$packet_product_path" "$packet_goal_id" >/dev/null 2>&1 || true
+          generate_product_growth_sales_work_packet "$packet_goal_id" || exit $?
+          ;;
+        campaign-proof|campaign-evidence|outreach-proof)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local raw_query="${1:-}"
+          local outreach_log_file=""
+          local write_shared=""
+          [ -n "$raw_query" ] && shift || true
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --log|--outreach-log) outreach_log_file="${2:-}"; shift 2 || true ;;
+              --write-shared) write_shared="--write-shared"; shift || true ;;
+              *) break ;;
+            esac
+          done
+          [ -n "$outreach_log_file" ] || { log_error "Usage: me solo products campaign-proof <product> --log <outreach-log.json> [--write-shared]"; exit 1; }
+          local query
+          query=$(next_product_queue_query "$raw_query") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}📣 Mekongmind Product Campaign Evidence${RESET}"
+          echo "  ProductQuery: $query"
+          echo "  OutreachLog:  $outreach_log_file"
+          echo "  Guard: ingest/validate real outreach log only; no email send, no Polar mutation, no revenue claim"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          generate_product_campaign_evidence_from_log "$query" "$outreach_log_file" "$write_shared" "$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)" || exit $?
+          ;;
+        revenue-proof|revenue-evidence|polar-proof)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local raw_query="${1:-}"
+          local polar_file=""
+          local write_shared=""
+          local sync_goal=""
+          [ -n "$raw_query" ] && shift || true
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --polar|--polar-file|--provider-file) polar_file="${2:-}"; shift 2 || true ;;
+              --write-shared) write_shared="--write-shared"; shift || true ;;
+              --sync-goal) sync_goal="--sync-goal"; shift || true ;;
+              *) break ;;
+            esac
+          done
+          [ -n "$polar_file" ] || { log_error "Usage: me solo products revenue-proof <product> --polar <polar-evidence.json> [--write-shared] [--sync-goal]"; exit 1; }
+          local query
+          query=$(next_product_queue_query "$raw_query") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}💵 Mekongmind Product Polar Revenue Evidence${RESET}"
+          echo "  ProductQuery: $query"
+          echo "  PolarEvidence: $polar_file"
+          echo "  Guard: ingest/validate Polar evidence only; no provider mutation; no fulfillment claim"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          generate_product_revenue_evidence_from_polar "$query" "$polar_file" "$write_shared" "$sync_goal" "$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)" || exit $?
+          ;;
+        fulfillment-proof|fulfillment-evidence|customer-proof)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local raw_query="${1:-}"
+          local fulfillment_file=""
+          local write_shared=""
+          [ -n "$raw_query" ] && shift || true
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --artifact|--proof|--fulfillment|--file) fulfillment_file="${2:-}"; shift 2 || true ;;
+              --write-shared) write_shared="--write-shared"; shift || true ;;
+              *) break ;;
+            esac
+          done
+          [ -n "$fulfillment_file" ] || { log_error "Usage: me solo products fulfillment-proof <product> --artifact <fulfillment-stable.json> [--write-shared]"; exit 1; }
+          local query
+          query=$(next_product_queue_query "$raw_query") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}🤝 Mekongmind Product Fulfillment Evidence${RESET}"
+          echo "  ProductQuery: $query"
+          echo "  FulfillmentArtifact: $fulfillment_file"
+          echo "  Guard: ingest/validate customer outcome evidence only; no Polar mutation; no clone/self-selling claim"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          generate_product_fulfillment_evidence_from_artifact "$query" "$fulfillment_file" "$write_shared" "$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)" || exit $?
+          ;;
+        clone-proof|clone-memory-proof|scale-proof)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local raw_query="${1:-}"
+          local clone_file=""
+          local write_shared=""
+          [ -n "$raw_query" ] && shift || true
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --artifact|--proof|--clone|--file) clone_file="${2:-}"; shift 2 || true ;;
+              --write-shared) write_shared="--write-shared"; shift || true ;;
+              *) break ;;
+            esac
+          done
+          [ -n "$clone_file" ] || { log_error "Usage: me solo products clone-proof <product> --artifact <scale-ready.json> [--write-shared]"; exit 1; }
+          local query
+          query=$(next_product_queue_query "$raw_query") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}🧠 Mekongmind Product Clone Memory Evidence${RESET}"
+          echo "  ProductQuery: $query"
+          echo "  CloneArtifact: $clone_file"
+          echo "  Guard: ingest/validate clone memory only; self-selling requires first \$1M MRR"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          generate_product_clone_evidence_from_artifact "$query" "$clone_file" "$write_shared" "$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)" || exit $?
+          ;;
+        release-packet|mvp-packet|release-readiness)
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          local query
+          query=$(next_product_queue_query "${1:-}") || { log_error "No queued product found"; exit 1; }
+          echo -e "${BOLD}🚦 Mekongmind Product Release Readiness Packet${RESET}"
+          echo "  ProductQuery: $query"
+          echo "  Guard: readiness packet only; no production proof, no campaign send, no revenue claim"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          select_product_for_goal "$query" || exit $?
+          echo ""
+          validate_department_artifact "ceo-command" || exit $?
+          echo ""
+          generate_offer_artifact_for_goal || exit $?
+          echo ""
+          validate_department_artifact "market-intelligence" || exit $?
+          validate_department_artifact "product-strategy" || exit $?
+          echo ""
+          local release_product_name release_product_path release_goal_id
+          release_product_name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_name",""))' "$PROJECT_ROOT/state/evidence/company-blueprint.json" 2>/dev/null || true)
+          release_product_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_path",""))' "$PROJECT_ROOT/state/evidence/company-blueprint.json" 2>/dev/null || true)
+          release_goal_id=$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)
+          snapshot_product_artifacts "$release_product_name" "$release_product_path" "$release_goal_id" >/dev/null 2>&1 || true
+          generate_product_release_readiness_packet "$release_goal_id" || exit $?
+          ;;
+        packet-batch|packets-batch|batch-packets)
+          local limit="${MEKONG_PRODUCT_PACKET_BATCH_LIMIT:-3}"
+          local kind="${MEKONG_PRODUCT_PACKET_KIND:-both}"
+          local packet_mode="missing"
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --limit|--passes) limit="${2:-$limit}"; shift 2 || true ;;
+              --all) limit="all"; shift || true ;;
+              --kind|--packet-kind) kind="${2:-$kind}"; shift 2 || true ;;
+              --force|--refresh) packet_mode="force"; shift || true ;;
+              *) break ;;
+            esac
+          done
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          echo -e "${BOLD}📚 Mekongmind Portfolio Packet Batch${RESET}"
+          echo "  Limit: $limit"
+          echo "  Kind: $kind"
+          echo "  Mode: $packet_mode"
+          echo "  Guard: draft/readiness packets only; no outreach, no Polar mutation, no revenue sync, no self-selling claim"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          local query count restore_dir root
+          count=0
+          root="$PROJECT_ROOT"
+          restore_dir="$(mktemp -d "${TMPDIR:-/tmp}/mekong-products-packets.XXXXXX")"
+          [ -f "$root/state/evidence/company-blueprint.json" ] && cp "$root/state/evidence/company-blueprint.json" "$restore_dir/company-blueprint.json"
+          [ -f "$root/state/evidence/offer-validated.json" ] && cp "$root/state/evidence/offer-validated.json" "$restore_dir/offer-validated.json"
+          while IFS= read -r query; do
+            [ -z "$query" ] && continue
+            count=$((count + 1))
+            echo -e "${CYAN}PacketPass[$count]: $query${RESET}"
+            select_product_for_goal "$query" || exit $?
+            validate_department_artifact "ceo-command" || exit $?
+            generate_offer_artifact_for_goal || exit $?
+            validate_department_artifact "market-intelligence" || exit $?
+            validate_department_artifact "product-strategy" || exit $?
+            local batch_product_name batch_product_path batch_goal_id
+            batch_product_name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_name",""))' "$root/state/evidence/company-blueprint.json" 2>/dev/null || true)
+            batch_product_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_path",""))' "$root/state/evidence/company-blueprint.json" 2>/dev/null || true)
+            batch_goal_id=$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)
+            snapshot_product_artifacts "$batch_product_name" "$batch_product_path" "$batch_goal_id" >/dev/null 2>&1 || true
+            case "$kind" in
+              release)
+                generate_product_release_readiness_packet "$batch_goal_id" || exit $?
+                ;;
+              work|growth)
+                generate_product_growth_sales_work_packet "$batch_goal_id" || exit $?
+                ;;
+              both)
+                generate_product_release_readiness_packet "$batch_goal_id" || exit $?
+                generate_product_growth_sales_work_packet "$batch_goal_id" || exit $?
+                ;;
+              *)
+                log_error "Unknown packet kind: $kind"
+                exit 1
+                ;;
+            esac
+            echo ""
+          done < <(next_product_packet_queries "$limit" "$kind" "$packet_mode")
+          [ "$count" -gt 0 ] || { log_error "No product selected for packet kind=$kind mode=$packet_mode"; exit 1; }
+          if [ -f "$restore_dir/company-blueprint.json" ]; then
+            cp "$restore_dir/company-blueprint.json" "$root/state/evidence/company-blueprint.json"
+          fi
+          if [ -f "$restore_dir/offer-validated.json" ]; then
+            cp "$restore_dir/offer-validated.json" "$root/state/evidence/offer-validated.json"
+          fi
+          rm -f "$restore_dir/company-blueprint.json" "$restore_dir/offer-validated.json"
+          rmdir "$restore_dir" 2>/dev/null || true
+          echo -e "${CYAN}Packet batch complete${RESET}"
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          ;;
+        batch|portfolio-pass|batch-pass)
+          local limit="${MEKONG_PRODUCT_BATCH_LIMIT:-3}"
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --limit|--passes) limit="${2:-$limit}"; shift 2 || true ;;
+              *) break ;;
+            esac
+          done
+          [ -z "$inventory_path" ] && inventory_path="$(product_inventory_file)"
+          echo -e "${BOLD}🔁 Mekongmind Portfolio Safe Batch Pass${RESET}"
+          echo "  Limit: $limit"
+          echo "  Scope: queue -> CEO blueprint -> Market/Product offer -> strict bottleneck"
+          echo "  Guard: no real outreach, no Polar mutation, no revenue sync"
+          echo ""
+          verify_product_self_selling_queue "$inventory_path" "$(product_self_selling_queue_file)" "strict" || exit $?
+          echo ""
+          local query count restore_dir root
+          count=0
+          root="$PROJECT_ROOT"
+          restore_dir="$(mktemp -d "${TMPDIR:-/tmp}/mekong-products-batch.XXXXXX")"
+          [ -f "$root/state/evidence/company-blueprint.json" ] && cp "$root/state/evidence/company-blueprint.json" "$restore_dir/company-blueprint.json"
+          [ -f "$root/state/evidence/offer-validated.json" ] && cp "$root/state/evidence/offer-validated.json" "$restore_dir/offer-validated.json"
+          while IFS= read -r query; do
+            [ -z "$query" ] && continue
+            count=$((count + 1))
+            echo -e "${CYAN}ProductPass[$count]: $query${RESET}"
+            select_product_for_goal "$query" || exit $?
+            validate_department_artifact "ceo-command" || exit $?
+            generate_offer_artifact_for_goal || exit $?
+            validate_department_artifact "market-intelligence" || exit $?
+            validate_department_artifact "product-strategy" || exit $?
+            local batch_product_name batch_product_path batch_goal_id
+            batch_product_name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_name",""))' "$root/state/evidence/company-blueprint.json" 2>/dev/null || true)
+            batch_product_path=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("product_path",""))' "$root/state/evidence/company-blueprint.json" 2>/dev/null || true)
+            batch_goal_id=$(goal_id_from_file "$(latest_goal_file)" 2>/dev/null || true)
+            local snapshot_path
+            snapshot_path=$(snapshot_product_artifacts "$batch_product_name" "$batch_product_path" "$batch_goal_id" 2>/dev/null || true)
+            [ -n "$snapshot_path" ] && echo "Snapshot: $snapshot_path"
+            echo ""
+          done < <(next_product_queue_queries "$limit")
+          [ "$count" -gt 0 ] || { log_error "No queued product found"; exit 1; }
+          if [ -f "$restore_dir/company-blueprint.json" ]; then
+            cp "$restore_dir/company-blueprint.json" "$root/state/evidence/company-blueprint.json"
+          fi
+          if [ -f "$restore_dir/offer-validated.json" ]; then
+            cp "$restore_dir/offer-validated.json" "$root/state/evidence/offer-validated.json"
+          fi
+          rm -f "$restore_dir/company-blueprint.json" "$restore_dir/offer-validated.json"
+          rmdir "$restore_dir" 2>/dev/null || true
+          echo -e "${CYAN}Next strict bottleneck${RESET}"
+          goal_readiness_matrix "$(latest_goal_file)" "strict" | sed 's/^/  /'
+          ;;
+        select|activate)
+          local query="${1:-}"
+          echo -e "${BOLD}🎯 Mekongmind Product Selection${RESET}"
+          select_product_for_goal "$query" || exit $?
+          echo ""
+          validate_department_artifact "ceo-command" || exit $?
+          ;;
+        offer|validate-offer)
+          echo -e "${BOLD}🧪 Mekongmind Offer Validation Draft${RESET}"
+          generate_offer_artifact_for_goal || exit $?
+          echo ""
+          validate_department_artifact "market-intelligence" || exit $?
+          validate_department_artifact "product-strategy" || exit $?
+          ;;
+        *)
+          log_error "Unknown: me solo products $product_action"
+          echo "Usage: me solo products [scan [--root <path>] [--write <json>]|list|queue|audit|loop --once [query]|next [query]|work-packet [query]|campaign-proof <query> --log <json>|revenue-proof <query> --polar <json>|fulfillment-proof <query> --artifact <json>|clone-proof <query> --artifact <json>|release-packet [query]|packet-batch [--kind both|release|work] [--limit N|--all] [--force]|batch [--limit N]|select [query]|offer]"
+          exit 1
+          ;;
+      esac
+      ;;
+    start|bootstrap)
+      [ $# -eq 0 ] && { log_error "Usage: me solo start <idea>"; exit 1; }
+      run_idea --pattern orchestrator "$@"
+      ;;
+    loop)
+      local once_flag=""
+      local run_flag=""
+      local strict_mode=""
+      while [ $# -gt 0 ]; do
+        case "${1:-}" in
+          --once) once_flag="1"; shift || true ;;
+          --run|--pass|--tick) run_flag="1"; shift || true ;;
+          --strict) strict_mode="strict"; shift || true ;;
+          *) break ;;
+        esac
+      done
+      local f
+      f=$(latest_goal_file 2>/dev/null || true)
+      [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; exit 1; }
+      echo -e "${BOLD}🔁 CEO Solo Factory Loop${RESET}"
+      local current_mrr
+      current_mrr=$(goal_field "$f" "CurrentMRR")
+      [ -z "$current_mrr" ] && current_mrr=0
+      local target_mrr
+      target_mrr=$(goal_field "$f" "RevenueTarget")
+      [ -z "$target_mrr" ] && target_mrr=1000000
+      echo "  Goal:   $(goal_field "$f" "Goal")"
+      echo "  Gate:   $(goal_field "$f" "CurrentGate")"
+      echo "  Target: \$$target_mrr"
+      echo "  MRR:    \$$current_mrr"
+      echo ""
+      if [ -n "$run_flag" ]; then
+        solo_loop_pass "$f" || exit $?
+      fi
+      echo "Next coordinator actions:"
+      next_department_for_goal "$f" "$strict_mode" | sed 's/^/  /'
+      echo ""
+      department_state_summary "$f" | sed 's/^/  /'
+      if [ -z "$once_flag" ]; then
+        echo ""
+        log_warn "Continuous daemon not started by default. Use --once for safe coordinator pass."
+      fi
+      ;;
+    daemon|autopilot)
+      local daemon_action="${1:-status}"
+      shift || true
+      local loop_dir lock_dir stop_file log_file status_file
+      loop_dir=$(solo_daemon_paths)
+      lock_dir="$loop_dir/solo-loop.lock"
+      stop_file="$loop_dir/STOP"
+      log_file="$loop_dir/solo-loop.log"
+      status_file="$loop_dir/solo-loop-status.json"
+      case "$daemon_action" in
+        status)
+          echo -e "${BOLD}♾️ Solo Loop Daemon${RESET}"
+          echo "  LoopDir: $loop_dir"
+          echo "  Lock:    $lock_dir"
+          echo "  Stop:    $stop_file"
+          echo "  Log:     $log_file"
+          echo "  Status:  $status_file"
+          [ -d "$lock_dir" ] && echo "  State:   running-or-stale" || echo "  State:   idle"
+          [ -f "$stop_file" ] && echo "  StopRequested: yes" || echo "  StopRequested: no"
+          if [ -f "$status_file" ]; then
+            python3 - "$status_file" <<'PY' | sed 's/^/  StatusJSON: /'
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+print(f"state={data.get('state','')} pass={data.get('pass','')} failures={data.get('consecutive_failures','')} goal={data.get('goal','')} message={data.get('message','')}")
+PY
+          fi
+          [ -f "$log_file" ] && tail -5 "$log_file" | sed 's/^/  Log: /'
+          ;;
+        stop)
+          mkdir -p "$loop_dir"
+          date -u +"%Y-%m-%dT%H:%M:%SZ stop requested" > "$stop_file"
+          log_ok "Solo loop stop requested: $stop_file"
+          ;;
+        clear-stop|resume)
+          rm -f "$stop_file"
+          log_ok "Solo loop stop file cleared"
+          ;;
+        run|start)
+          local passes=1 interval=5 forever="" max_failures=3 retries=0
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --passes) passes="${2:-1}"; shift 2 || true ;;
+              --interval) interval="${2:-5}"; shift 2 || true ;;
+              --max-failures) max_failures="${2:-3}"; shift 2 || true ;;
+              --retries|--retry) retries="${2:-0}"; shift 2 || true ;;
+              --forever) forever="1"; shift || true ;;
+              *) shift || true ;;
+            esac
+          done
+          if ! printf '%s' "$passes" | grep -qE '^[0-9]+$'; then log_error "--passes must be a non-negative integer"; exit 1; fi
+          if ! printf '%s' "$interval" | grep -qE '^[0-9]+$'; then log_error "--interval must be a non-negative integer seconds value"; exit 1; fi
+          if ! printf '%s' "$max_failures" | grep -qE '^[0-9]+$'; then log_error "--max-failures must be a non-negative integer"; exit 1; fi
+          if ! printf '%s' "$retries" | grep -qE '^[0-9]+$'; then log_error "--retries must be a non-negative integer"; exit 1; fi
+          if ! mkdir "$lock_dir" 2>/dev/null; then
+            log_error "Solo loop already running or stale lock exists: $lock_dir"
+            exit 1
+          fi
+          trap "rmdir '$lock_dir' 2>/dev/null || true" EXIT
+          rm -f "$stop_file"
+          echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") start passes=$passes interval=$interval forever=${forever:-0} max_failures=$max_failures retries=$retries" >> "$log_file"
+          solo_loop_status_write "$status_file" "running" 0 0 "$max_failures" "" "started"
+          local i=0 f consecutive_failures=0 pass_ok attempt rc
+          while :; do
+            [ -f "$stop_file" ] && { echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") stop-file" >> "$log_file"; break; }
+            i=$((i+1))
+            f=$(latest_goal_file 2>/dev/null || true)
+            [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; exit 1; }
+            echo -e "${BOLD}♾️ Solo Loop Pass $i${RESET}"
+            echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") pass=$i goal=$(basename "$f")" >> "$log_file"
+            solo_loop_status_write "$status_file" "running" "$i" "$consecutive_failures" "$max_failures" "$(basename "$f")" "pass-start"
+            pass_ok=""
+            attempt=0
+            while :; do
+              attempt=$((attempt+1))
+              if solo_loop_pass "$f" | tee -a "$log_file"; then
+                pass_ok="1"
+                consecutive_failures=0
+                solo_loop_status_write "$status_file" "pass-ok" "$i" "$consecutive_failures" "$max_failures" "$(basename "$f")" "attempt=$attempt"
+                break
+              else
+                rc=$?
+                consecutive_failures=$((consecutive_failures+1))
+                echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") pass=$i attempt=$attempt failed rc=$rc consecutive_failures=$consecutive_failures" >> "$log_file"
+                solo_loop_status_write "$status_file" "pass-failed" "$i" "$consecutive_failures" "$max_failures" "$(basename "$f")" "attempt=$attempt rc=$rc"
+                [ "$attempt" -gt "$retries" ] && break
+              fi
+            done
+            if [ -z "$pass_ok" ]; then
+              if [ "$max_failures" -gt 0 ] && [ "$consecutive_failures" -ge "$max_failures" ]; then
+                date -u +"%Y-%m-%dT%H:%M:%SZ circuit open" > "$stop_file"
+                solo_loop_status_write "$status_file" "circuit-open" "$i" "$consecutive_failures" "$max_failures" "$(basename "$f")" "max failures reached"
+                log_error "Solo loop circuit opened after $consecutive_failures failure(s)"
+                exit 1
+              fi
+              exit "$rc"
+            fi
+            if [ -z "$forever" ] && [ "$i" -ge "$passes" ]; then break; fi
+            sleep "$interval"
+          done
+          echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") done passes=$i" >> "$log_file"
+          solo_loop_status_write "$status_file" "done" "$i" "$consecutive_failures" "$max_failures" "$(basename "${f:-}")" "finished"
+          log_ok "Solo loop runner finished passes=$i"
+          ;;
+        *)
+          log_error "Unknown: me solo daemon $daemon_action"
+          echo "Usage: me solo daemon [status|run [--passes N] [--interval S] [--forever]|stop|clear-stop]"
+          exit 1
+          ;;
+      esac
+      ;;
+    service|launchd)
+      local service_action="${1:-status}"
+      shift || true
+      local loop_dir label plist_path interval max_failures retries
+      loop_dir=$(solo_daemon_paths)
+      label="${SOLO_LAUNCHD_LABEL:-com.mekongmind.solo-loop}"
+      plist_path="${SOLO_LAUNCHD_PLIST:-$HOME/Library/LaunchAgents/${label}.plist}"
+      interval=300
+      max_failures=3
+      retries=0
+      while [ $# -gt 0 ]; do
+        case "${1:-}" in
+          --interval) interval="${2:-300}"; shift 2 || true ;;
+          --max-failures) max_failures="${2:-3}"; shift 2 || true ;;
+          --retries|--retry) retries="${2:-0}"; shift 2 || true ;;
+          --label) label="${2:-$label}"; plist_path="$HOME/Library/LaunchAgents/${label}.plist"; shift 2 || true ;;
+          --path) plist_path="${2:-$plist_path}"; shift 2 || true ;;
+          *) break ;;
+        esac
+      done
+      case "$service_action" in
+        print)
+          solo_launchd_plist "$interval" "$max_failures" "$retries" "$label"
+          ;;
+        write)
+          mkdir -p "$(dirname "$plist_path")" "$loop_dir"
+          solo_launchd_plist "$interval" "$max_failures" "$retries" "$label" > "$plist_path"
+          log_ok "LaunchAgent plist written: $plist_path"
+          ;;
+        install)
+          mkdir -p "$(dirname "$plist_path")" "$loop_dir"
+          solo_launchd_plist "$interval" "$max_failures" "$retries" "$label" > "$plist_path"
+          if command -v launchctl >/dev/null 2>&1; then
+            launchctl bootout "gui/$(id -u)" "$plist_path" >/dev/null 2>&1 || true
+            launchctl bootstrap "gui/$(id -u)" "$plist_path" || exit $?
+            launchctl enable "gui/$(id -u)/$label" >/dev/null 2>&1 || true
+            log_ok "LaunchAgent installed: $label"
+          else
+            log_warn "launchctl not found; plist written only"
+          fi
+          ;;
+        uninstall)
+          if command -v launchctl >/dev/null 2>&1; then
+            launchctl bootout "gui/$(id -u)" "$plist_path" >/dev/null 2>&1 || true
+          fi
+          rm -f "$plist_path"
+          log_ok "LaunchAgent removed: $plist_path"
+          ;;
+        status)
+          echo -e "${BOLD}🚀 Solo LaunchAgent${RESET}"
+          echo "  Label: $label"
+          echo "  Plist: $plist_path"
+          [ -f "$plist_path" ] && echo "  PlistExists: yes" || echo "  PlistExists: no"
+          if command -v launchctl >/dev/null 2>&1; then
+            launchctl print "gui/$(id -u)/$label" 2>/dev/null | sed -n '1,12p' | sed 's/^/  launchctl: /' || echo "  launchctl: not loaded"
+          else
+            echo "  launchctl: unavailable"
+          fi
+          ;;
+        *)
+          log_error "Unknown: me solo service $service_action"
+          echo "Usage: me solo service [print|write|install|uninstall|status] [--interval S] [--max-failures N] [--retries N] [--label L] [--path P]"
+          exit 1
+          ;;
+      esac
+      ;;
+    gates)
+      local f
+      f=$(latest_goal_file 2>/dev/null || true)
+      [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; exit 1; }
+      local gates_action="${1:-show}"
+      shift || true
+      case "$gates_action" in
+        show)
+          echo -e "${BOLD}🚦 CEO Solo SOP Gates${RESET}"
+          gate_state_summary "$f" || exit $?
+          ;;
+        verify)
+          local strict_mode=""
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --strict) strict_mode="strict"; shift || true ;;
+              *) shift || true ;;
+            esac
+          done
+          echo -e "${BOLD}🔎 CEO Solo Gate Verification${RESET}"
+          verify_gate_artifacts "$f" "$strict_mode" || exit $?
+          echo ""
+          if [ "$strict_mode" = "strict" ]; then
+            gate_state_summary "$f" || true
+            echo ""
+            reconcile_goal_gate_state "$f" || exit $?
+          else
+            gate_state_summary "$f" || exit $?
+          fi
+          ;;
+        reconcile)
+          local repair_mode=""
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --repair) repair_mode="1"; shift || true ;;
+              *) shift || true ;;
+            esac
+          done
+          echo -e "${BOLD}🧭 CEO Solo Goal/Gate Reconciliation${RESET}"
+          if [ -n "$repair_mode" ]; then
+            repair_goal_gate_state "$f" || exit $?
+            echo ""
+          fi
+          reconcile_goal_gate_state "$f" || exit $?
+          ;;
+        *)
+          log_error "Unknown: me solo gates $gates_action"
+          echo "Usage: me solo gates [show|verify [--strict]|reconcile [--repair]]"
+          exit 1
+          ;;
+      esac
+      ;;
+    gate)
+      local gate_action="${1:-show}"
+      shift || true
+      local f
+      f=$(latest_goal_file 2>/dev/null || true)
+      [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; exit 1; }
+      case "$gate_action" in
+        advance)
+          local gate="${1:-}"
+          local source="${2:-manual}"
+          local note="${*:3}"
+          [ -z "$gate" ] && { log_error "Usage: me solo gate advance <gate-id> [source] [note]"; exit 1; }
+          record_gate_evidence "$f" "$gate" "$source" "$note" || exit $?
+          log_ok "Gate advanced: $gate"
+          ;;
+        show)
+          gate_state_summary "$f" || exit $?
+          ;;
+        *)
+          log_error "Unknown: me solo gate $gate_action"
+          echo "Usage: me solo gate [show|advance <gate-id> [source] [note]]"
+          exit 1
+          ;;
+      esac
+      ;;
+    artifact|artifacts)
+      local artifact_action="${1:-list}"
+      shift || true
+      case "$artifact_action" in
+        list|contract)
+          echo -e "${BOLD}📦 Gate Artifact Contract${RESET}"
+          list_gate_artifact_contract
+          ;;
+        write)
+          local gate="${1:-}"
+          local owner="${2:-manual}"
+          local status="${3:-ready}"
+          local note="${*:4}"
+          [ -z "$gate" ] && { log_error "Usage: me solo artifact write <gate-id> [owner] [status] [note]"; exit 1; }
+          local path
+          path=$(write_gate_artifact "$gate" "$owner" "$status" "$note") || exit $?
+          log_ok "Artifact written: $path"
+          ;;
+        validate)
+          local department="${1:-}"
+          local path="${2:-}"
+          [ -z "$department" ] && { log_error "Usage: me solo artifact validate <department-id> [artifact-json]"; exit 1; }
+          validate_department_artifact "$department" "$path" || exit $?
+          ;;
+        template)
+          local department="${1:-}"
+          local write_path=""
+          shift || true
+          [ -z "$department" ] && { log_error "Usage: me solo artifact template <department-id> [--write <path>]"; exit 1; }
+          while [ $# -gt 0 ]; do
+            case "${1:-}" in
+              --write)
+                write_path="${2:-}"
+                [ -z "$write_path" ] && { log_error "--write requires a path"; exit 1; }
+                shift 2
+                ;;
+              *)
+                log_error "Unknown: me solo artifact template $1"
+                echo "Usage: me solo artifact template <department-id> [--write <path>]"
+                exit 1
+                ;;
+            esac
+          done
+          if [ -n "$write_path" ]; then
+            local rendered_path
+            rendered_path=$(render_department_artifact_template "$department" "$write_path") || exit $?
+            log_ok "Artifact template written: $rendered_path"
+          else
+            render_department_artifact_template "$department" || exit $?
+          fi
+          ;;
+        *)
+          log_error "Unknown: me solo artifact $artifact_action"
+          echo "Usage: me solo artifact [list|write <gate-id> [owner] [status] [note]|validate <department-id> [artifact-json]|template <department-id> [--write <path>]]"
+          exit 1
+          ;;
+      esac
+      ;;
+    contract|contracts|evidence-contract)
+      local filter="${1:-}"
+      echo -e "${BOLD}📋 Department Evidence Contracts${RESET}"
+      echo ""
+      if command -v registry_evidence_contracts >/dev/null 2>&1; then
+        registry_evidence_contracts "$filter"
+      else
+        log_error "Evidence contract helper unavailable"
+        exit 1
+      fi
+      ;;
+    revenue)
+      local revenue_action="${1:-show}"
+      shift || true
+      local f
+      f=$(latest_goal_file 2>/dev/null || true)
+      [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; exit 1; }
+      case "$revenue_action" in
+        set|update)
+          local mrr="${1:-}"
+          local source="${2:-manual}"
+          local note="${*:3}"
+          [ -z "$mrr" ] && { log_error "Usage: me solo revenue set <mrr> [source] [note]"; exit 1; }
+          record_revenue_mrr "$f" "$mrr" "$source" "$note" || exit $?
+          log_ok "Revenue metric updated: CurrentMRR=\$$mrr source=$source"
+          ;;
+        sync)
+          local provider="${1:-file}"
+          shift || true
+          case "$provider" in
+            file)
+              local input_file="${1:-}"
+              [ -z "$input_file" ] && { log_error "Usage: me solo revenue sync file <provider-json>"; exit 1; }
+              sync_revenue_from_file "$f" "$input_file" "file:$input_file" || exit $?
+              log_ok "Revenue synced from file: $input_file"
+              ;;
+            polar)
+              if [ -n "${POLAR_MRR_FILE:-}" ]; then
+                sync_revenue_from_file "$f" "$POLAR_MRR_FILE" "polar:file" || exit $?
+                log_ok "Revenue synced from POLAR_MRR_FILE"
+              elif [ -n "${POLAR_MRR_ENDPOINT:-}" ]; then
+                [ -z "${POLAR_ACCESS_TOKEN:-}" ] && { log_error "POLAR_ACCESS_TOKEN required for POLAR_MRR_ENDPOINT sync"; exit 1; }
+                local tmp
+                tmp=$(mktemp)
+                curl -fsS -H "Authorization: Bearer $POLAR_ACCESS_TOKEN" "$POLAR_MRR_ENDPOINT" > "$tmp" || { rm -f "$tmp"; log_error "Polar revenue endpoint sync failed"; exit 1; }
+                sync_revenue_from_file "$f" "$tmp" "polar:endpoint" || { rm -f "$tmp"; exit 1; }
+                rm -f "$tmp"
+                log_ok "Revenue synced from POLAR_MRR_ENDPOINT"
+              else
+                log_error "Polar sync requires POLAR_MRR_FILE or POLAR_MRR_ENDPOINT + POLAR_ACCESS_TOKEN"
+                exit 1
+              fi
+              ;;
+            *)
+              log_error "Unknown revenue provider: $provider"
+              echo "Usage: me solo revenue sync [file <provider-json>|polar]"
+              exit 1
+              ;;
+          esac
+          ;;
+        show) ;;
+        *)
+          log_error "Unknown: me solo revenue $revenue_action"
+          echo "Usage: me solo revenue [show|set <mrr> [source] [note]|sync file <json>|sync polar]"
+          exit 1
+          ;;
+      esac
+      local current target gap
+      current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+      target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+      local revenue_gate revenue_source revenue_evidence
+      revenue_gate=$(revenue_metric_value "$f" "gate" 2>/dev/null || goal_field "$f" "RevenueGate")
+      revenue_source=$(revenue_metric_value "$f" "source" 2>/dev/null || goal_field "$f" "RevenueMetricSource")
+      revenue_evidence=$(goal_field "$f" "RevenueEvidence")
+      [ -z "$current" ] && current=0
+      [ -z "$target" ] && target=1000000
+      [ -z "$revenue_gate" ] && revenue_gate="no-revenue"
+      [ -z "$revenue_source" ] && revenue_source="local-state"
+      gap=$((target-current))
+      [ "$gap" -lt 0 ] && gap=0
+      echo -e "${BOLD}💵 Sales & Revenue Gate${RESET}"
+      echo "  Goal:       $(goal_field "$f" "Goal")"
+      echo "  Owner:      business-analyst"
+      echo "  CurrentMRR: \$$current"
+      echo "  TargetMRR:  \$$target"
+      echo "  Gap:        \$$gap"
+      echo "  Gate:       $revenue_gate"
+      echo "  Source:     $revenue_source"
+      [ -n "$revenue_evidence" ] && echo "  Evidence:   $revenue_evidence"
+      echo "  SOP:        lead-qualification -> sales-script -> checkout -> close -> revenue-review"
+      ;;
+    ladder|revenue-ladder|mrr-ladder)
+      local f current target
+      f=$(latest_goal_file 2>/dev/null || true)
+      [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; exit 1; }
+      current=$(revenue_metric_value "$f" "current_mrr" 2>/dev/null || goal_field "$f" "CurrentMRR")
+      target=$(revenue_metric_value "$f" "target_mrr" 2>/dev/null || goal_field "$f" "RevenueTarget")
+      [ -z "$current" ] && current=0
+      [ -z "$target" ] && target=1000000
+      echo -e "${BOLD}🪜 Mekongmind Revenue Ladder${RESET}"
+      echo "  CurrentMRR: \$$current"
+      echo "  TargetMRR:  \$$target"
+      echo ""
+      if ! command -v registry_revenue_ladder >/dev/null 2>&1; then
+        log_error "Revenue ladder helper unavailable"
+        exit 1
+      fi
+      local next_seen=""
+      registry_revenue_ladder | while IFS=$'\t' read -r milestone threshold gate departments evidence focus bottleneck; do
+        [ -z "$milestone" ] && continue
+        local status gap
+        if [ "$current" -ge "$threshold" ]; then
+          status="REACHED"
+          gap=0
+        elif [ -z "$next_seen" ]; then
+          status="NEXT"
+          gap=$((threshold-current))
+          next_seen="1"
+        else
+          status="PENDING"
+          gap=$((threshold-current))
+        fi
+        printf "  %-18s %-8s target=$%-9s gap=$%-9s gate=%s\n" "$milestone" "$status" "$threshold" "$gap" "$gate"
+        printf "    departments: %s\n" "$departments"
+        printf "    focus:       %s\n" "$focus"
+        printf "    evidence:    %s\n" "$evidence"
+        printf "    bottleneck:  %s\n" "$bottleneck"
+      done
+      ;;
+    departments|org)
+      echo -e "${BOLD}🏛️ Mekongmind Agentic Departments${RESET}"
+      echo ""
+      if command -v registry_departments >/dev/null 2>&1; then
+        while IFS=$'\t' read -r dept owner metric; do
+          [ -z "$dept" ] && continue
+          local gate sop_file
+          gate=$(registry_department_gate "$dept" 2>/dev/null || true)
+          sop_file=$(registry_department_sop_file "$dept" 2>/dev/null || true)
+          printf "  ${GREEN}%-26s${RESET} owner=%-34s gate=%-20s sop=%s\n" "$dept" "$owner" "$gate" "$sop_file"
+        done < <(registry_departments)
+      else
+        log_error "Department registry helper unavailable"
+        exit 1
+      fi
+      ;;
+    dna|model|operating-model)
+      echo -e "${BOLD}🧬 Mekongmind Operating DNA${RESET}"
+      echo ""
+      if command -v registry_operating_model >/dev/null 2>&1; then
+        registry_operating_model
+      else
+        log_error "Operating model helper unavailable"
+        exit 1
+      fi
+      ;;
+    local-llm|llm|local-model)
+      local filter="${1:-}"
+      echo -e "${BOLD}🧠 Mekongmind Local LLM Runtime${RESET}"
+      echo ""
+      if command -v registry_local_llm_runtime >/dev/null 2>&1; then
+        registry_local_llm_runtime "$filter"
+      else
+        log_error "Local LLM runtime helper unavailable"
+        exit 1
+      fi
+      ;;
+    fusion|source-fusion|architecture-fusion)
+      local filter="${1:-}"
+      echo -e "${BOLD}🧬 Mekongmind Source Fusion Matrix${RESET}"
+      echo ""
+      if ! command -v registry_source_fusion >/dev/null 2>&1; then
+        log_error "Source fusion helper unavailable"
+        exit 1
+      fi
+      registry_source_fusion "$filter" | while IFS=$'\t' read -r source strength failure role departments commands controls mrr anti; do
+        [ -z "$source" ] && continue
+        printf "  ${GREEN}%s${RESET}\n" "$source"
+        printf "    legacy-strength: %s\n" "$strength"
+        printf "    alone-failure:   %s\n" "$failure"
+        printf "    merged-role:     %s\n" "$role"
+        printf "    departments:     %s\n" "$departments"
+        printf "    commands:        %s\n" "$commands"
+        printf "    controls:        %s\n" "$controls"
+        printf "    mrr-role:        %s\n" "$mrr"
+        printf "    anti-pattern:    %s\n" "$anti"
+      done
+      ;;
+    map|operating-map|factory-map)
+      local filter="${1:-}"
+      echo -e "${BOLD}🗺️ Mekongmind CEO Solo Operating Map${RESET}"
+      echo ""
+      if ! command -v registry_operating_map >/dev/null 2>&1; then
+        log_error "Operating map helper unavailable"
+        exit 1
+      fi
+      registry_operating_map "$filter" | while IFS=$'\t' read -r layer name gate departments sources commands sop proof blocked next milestones controls failure; do
+        [ -z "$layer" ] && continue
+        printf "  ${GREEN}%s${RESET} %s\n" "$layer" "$name"
+        printf "    gate:        %s -> %s\n" "$gate" "${next:-end}"
+        printf "    departments: %s\n" "$departments"
+        printf "    sources:     %s\n" "$sources"
+        printf "    commands:    %s\n" "$commands"
+        printf "    sop:         %s\n" "$sop"
+        printf "    proof:       %s\n" "${proof:-none}"
+        printf "    blocked:     %s\n" "${blocked:-none}"
+        printf "    milestones:  %s\n" "${milestones:-none}"
+        printf "    controls:    %s\n" "${controls:-none}"
+        printf "    failure:     %s\n" "$failure"
+      done
+      ;;
+    journey|trace|execution-trace|path)
+      local filter="${1:-}"
+      echo -e "${BOLD}🧭 Mekongmind Idea → \$1M MRR Execution Journey${RESET}"
+      echo ""
+      if ! command -v registry_execution_journey >/dev/null 2>&1; then
+        log_error "Execution journey helper unavailable"
+        exit 1
+      fi
+      registry_execution_journey "$filter" | while IFS=$'\t' read -r layer name gate dept owner sources room queue checkpoints sop commands agents artifact proof blocked next milestones failure; do
+        [ -z "$layer" ] && continue
+        printf "  ${GREEN}%s${RESET} %s | dept=%s | gate=%s -> %s\n" "$layer" "$name" "$dept" "$gate" "$next"
+        printf "    owner:       %s\n" "$owner"
+        printf "    sources:     %s\n" "$sources"
+        printf "    room:        %s\n" "$room"
+        printf "    queue:       %s\n" "$queue"
+        printf "    checkpoints: %s\n" "$checkpoints"
+        printf "    sop:         %s\n" "$sop"
+        printf "    commands:    %s\n" "$commands"
+        printf "    agents:      %s\n" "$agents"
+        printf "    evidence:    %s\n" "$artifact"
+        printf "    proof:       %s\n" "$proof"
+        printf "    blocked:     %s\n" "$blocked"
+        printf "    milestones:  %s\n" "$milestones"
+        printf "    failure:     %s\n" "$failure"
+      done
+      ;;
+    layers|stack|operating-layers)
+      local filter="${1:-}"
+      echo -e "${BOLD}🧱 Mekongmind Multi-Layer SOP Stack${RESET}"
+      echo ""
+      if command -v registry_operating_layers >/dev/null 2>&1; then
+        registry_operating_layers "$filter"
+      else
+        log_error "Operating layer helper unavailable"
+        exit 1
+      fi
+      ;;
+    mesh|capability-mesh|department-mesh)
+      local filter="${1:-}"
+      echo -e "${BOLD}🧩 Mekongmind Department Capability Mesh${RESET}"
+      echo ""
+      if ! command -v registry_department_mesh >/dev/null 2>&1; then
+        log_error "Department mesh helper unavailable"
+        exit 1
+      fi
+      registry_department_mesh "$filter" | while IFS=$'\t' read -r dept stage gate commands agents proof handoff failure; do
+        [ -z "$dept" ] && continue
+        printf "  %-24s stage=%-22s gate=%s\n" "$dept" "$stage" "$gate"
+        printf "    commands: %s\n" "$commands"
+        printf "    agents:   %s\n" "$agents"
+        printf "    proof:    %s\n" "$proof"
+        printf "    handoff:  %s\n" "$handoff"
+        printf "    failure:  %s\n" "$failure"
+      done
+      ;;
+    rooms|agentic-rooms|room-system)
+      local filter="${1:-}"
+      echo -e "${BOLD}🏢 Mekongmind Autonomous Department Rooms${RESET}"
+      echo ""
+      if ! command -v registry_department_rooms >/dev/null 2>&1; then
+        log_error "Department room helper unavailable"
+        exit 1
+      fi
+      registry_department_rooms "$filter" | while IFS=$'\t' read -r dept room_type queue wip intake cadence checkpoints decision escalation anti done_when gate artifact; do
+        [ -z "$dept" ] && continue
+        printf "  ${GREEN}%s${RESET} room=%s gate=%s\n" "$dept" "$room_type" "$gate"
+        printf "    queue:      %s\n" "$queue"
+        printf "    wip:        %s\n" "$wip"
+        printf "    intake:     %s\n" "$intake"
+        printf "    cadence:    %s\n" "$cadence"
+        printf "    checkpoints:%s\n" " $checkpoints"
+        printf "    decision:   %s\n" "$decision"
+        printf "    escalation: %s\n" "$escalation"
+        printf "    anti-chaos: %s\n" "$anti"
+        printf "    evidence:   %s\n" "$artifact"
+        printf "    done:       %s\n" "$done_when"
+      done
+      ;;
+    room|agentic-room|room-brief)
+      local dept="${1:-}"
+      [ -z "$dept" ] && { log_error "Usage: me solo room <department-id>"; exit 1; }
+      local detail
+      detail=$(registry_department_room_brief "$dept" 2>/dev/null || true)
+      [ -z "$detail" ] && { log_error "Unknown department room: $dept"; exit 1; }
+      echo -e "${BOLD}🏢 Mekongmind Department Room Contract${RESET}"
+      echo "$detail"
+      ;;
+    doctrine|gate-doctrine|execution-doctrine)
+      local filter="${1:-}"
+      echo -e "${BOLD}📜 Mekongmind Gate Execution Doctrine${RESET}"
+      echo ""
+      if ! command -v registry_gate_doctrine >/dev/null 2>&1; then
+        log_error "Gate doctrine helper unavailable"
+        exit 1
+      fi
+      registry_gate_doctrine "$filter" | while IFS=$'\t' read -r gate purpose entry exit_signal departments stages commands blocked proof next failure; do
+        [ -z "$gate" ] && continue
+        printf "  ${GREEN}%s${RESET}\n" "$gate"
+        printf "    purpose:     %s\n" "$purpose"
+        printf "    entry:       %s\n" "$entry"
+        printf "    exit:        %s\n" "$exit_signal"
+        printf "    departments: %s\n" "$departments"
+        printf "    stages:      %s\n" "$stages"
+        printf "    commands:    %s\n" "$commands"
+        printf "    blocked:     %s\n" "$blocked"
+        printf "    proof:       %s\n" "$proof"
+        printf "    next:        %s\n" "$next"
+        printf "    failure:     %s\n" "$failure"
+      done
+      ;;
+    graph|handoffs|handoff-graph)
+      local graph_mode="${1:-text}"
+      echo -e "${BOLD}🕸️ Mekongmind Department Handoff Graph${RESET}"
+      echo ""
+      if ! command -v registry_handoff_graph >/dev/null 2>&1; then
+        log_error "Handoff graph helper unavailable"
+        exit 1
+      fi
+      if [ "$graph_mode" = "--mermaid" ] || [ "$graph_mode" = "mermaid" ]; then
+        registry_handoff_graph --mermaid
+      else
+        registry_handoff_graph | while IFS=$'\t' read -r src dst stage gate artifact success; do
+          [ -z "$src" ] && continue
+          printf "  %-24s -> %-24s stage=%-3s gate=%-20s artifact=%s\n" "$src" "$dst" "$stage" "$gate" "$artifact"
+          printf "    success: %s\n" "$success"
+        done
+      fi
+      ;;
+    bottlenecks|readiness|matrix)
+      local strict_mode=""
+      while [ $# -gt 0 ]; do
+        case "${1:-}" in
+          --strict) strict_mode="strict"; shift || true ;;
+          *) shift || true ;;
+        esac
+      done
+      local f
+      f=$(latest_goal_file 2>/dev/null || true)
+      [ -z "$f" ] && { log_error "No Solo Company goal. Use: me solo start <idea>"; exit 1; }
+      echo -e "${BOLD}🧯 Mekongmind Bottleneck Matrix${RESET}"
+      echo ""
+      goal_readiness_matrix "$f" "$strict_mode" | while IFS=$'\t' read -r dept status gate owner artifact blocker proof; do
+        if [ -z "$status" ]; then
+          echo "$dept"
+          continue
+        fi
+        printf "  %-24s %-8s gate=%-20s owner=%-34s artifact=%s\n" "$dept" "$status" "$gate" "$owner" "$artifact"
+        printf "    blocker: %s\n" "$blocker"
+        [ -n "$proof" ] && printf "    proof:   %s\n" "$proof"
+      done
+      ;;
+    sop)
+      local dept="${1:-}"
+      [ -z "$dept" ] && { log_error "Usage: me solo sop <department-id>"; exit 1; }
+      local detail
+      detail=$(registry_department_sop "$dept" 2>/dev/null || true)
+      [ -z "$detail" ] && { log_error "Unknown department: $dept"; exit 1; }
+      echo "$detail"
+      ;;
+    blueprint|operating-blueprint)
+      local dept="${1:-}"
+      [ -z "$dept" ] && { log_error "Usage: me solo blueprint <department-id>"; exit 1; }
+      local detail
+      detail=$(registry_department_blueprint "$dept" 2>/dev/null || true)
+      [ -z "$detail" ] && { log_error "Unknown department: $dept"; exit 1; }
+      echo "$detail"
+      ;;
+    brief|packet|work-packet)
+      local dept="${1:-}"
+      [ -z "$dept" ] && { log_error "Usage: me solo brief <department-id>"; exit 1; }
+      local detail
+      detail=$(registry_department_brief "$dept" 2>/dev/null || true)
+      [ -z "$detail" ] && { log_error "Unknown department: $dept"; exit 1; }
+      echo -e "${BOLD}📦 Mekongmind Department Work Packet${RESET}"
+      echo "$detail"
+      ;;
+    run|execute)
+      local dept="${1:-}"
+      [ -n "$dept" ] && shift || true
+      local status="ready"
+      if [ $# -gt 0 ] && [ "${1:-}" != "--evidence" ]; then
+        status="${1:-ready}"
+        shift || true
+      fi
+      local evidence_path=""
+      local note_parts=()
+      while [ $# -gt 0 ]; do
+        case "${1:-}" in
+          --evidence)
+            evidence_path="${2:-}"
+            shift 2 || true
+            ;;
+          *)
+            note_parts+=("${1:-}")
+            shift || true
+            ;;
+        esac
+      done
+      local note
+      note=$(printf '%s ' "${note_parts[@]}")
+      note=$(printf '%s' "$note" | sed 's/ *$//')
+      [ -z "$dept" ] && { log_error "Usage: me solo run <department-id> [status] [note]"; exit 1; }
+      local owner gate path
+      owner=$(registry_department_owner "$dept" 2>/dev/null || true)
+      gate=$(registry_department_gate "$dept" 2>/dev/null || true)
+      if [ -z "$owner" ] || [ -z "$gate" ]; then
+        log_error "Unknown department: $dept"
+        exit 1
+      fi
+      if [ -n "$evidence_path" ]; then
+        validate_department_artifact "$dept" "$evidence_path" || exit $?
+        path="$evidence_path"
+      else
+        path=$(write_gate_artifact "$gate" "$owner" "$status" "$note" "$dept") || exit $?
+      fi
+      local f
+      f=$(latest_goal_file 2>/dev/null || true)
+      if [ -n "$f" ]; then
+        record_department_run "$f" "$dept" "$owner" "$gate" "$status" "$path" "$note" || exit $?
+      fi
+      echo -e "${BOLD}🏃 Department SOP Run${RESET}"
+      echo "  Department:   $dept"
+      echo "  Owner:        $owner"
+      echo "  GateArtifact: $gate"
+      echo "  Status:       $status"
+      echo "  Artifact:     $path"
+      [ -n "$evidence_path" ] && echo "  EvidenceMode: strict"
+      [ -n "${f:-}" ] && echo "  Ledger:       $(department_state_file "$f")"
+      echo "  Verify:       me solo gates verify"
+      ;;
+    route)
+      local cmd="${1:-}"
+      [ -z "$cmd" ] && { log_error "Usage: me solo route <command>"; exit 1; }
+      local agent dept gate sop_file
+      agent=$(command_to_agent "$cmd" 2>/dev/null || true)
+      dept=$(command_to_department "$cmd" 2>/dev/null || true)
+      gate=$(registry_department_gate "$dept" 2>/dev/null || true)
+      sop_file=$(registry_department_sop_file "$dept" 2>/dev/null || true)
+      echo -e "${BOLD}🧭 Command Route${RESET}"
+      echo "  Command:      $cmd"
+      echo "  Agent:        ${agent:-auto}"
+      echo "  Department:   ${dept:-unmapped}"
+      echo "  GateArtifact: ${gate:-none}"
+      echo "  SOPFile:      ${sop_file:-none}"
+      ;;
+    allow|policy|command-policy)
+      local cmd="${1:-}"
+      local gate_override="${2:-}"
+      [ -z "$cmd" ] && { log_error "Usage: me solo allow <command> [current-gate]"; exit 1; }
+      local f current_gate
+      if [ -n "$gate_override" ]; then
+        current_gate="$gate_override"
+      else
+        f=$(latest_goal_file 2>/dev/null || true)
+        current_gate=$(goal_field "$f" "CurrentGate" 2>/dev/null || true)
+      fi
+      local row
+      row=$(command_gate_policy "$cmd" "$current_gate")
+      IFS=$'\t' read -r command agent dept route_gate gate decision allowed_gates proof blocked reason <<< "$row"
+      [ -z "$command" ] && { log_error "Cannot evaluate command policy: $cmd"; exit 1; }
+      echo -e "${BOLD}🛂 Mekongmind Command Gate Policy${RESET}"
+      echo "  Command:      $command"
+      echo "  Agent:        ${agent:-unknown}"
+      echo "  Department:   ${dept:-unknown}"
+      echo "  RouteGate:    ${route_gate:-unknown}"
+      echo "  CurrentGate:  ${gate:-unknown}"
+      echo "  Decision:     $decision"
+      echo "  AllowedGates: ${allowed_gates:-none}"
+      echo "  Proof:        ${proof:-none}"
+      echo "  BlockedWork:  ${blocked:-none}"
+      echo "  Reason:       $reason"
+      ;;
+    commands|command-audit|audit-commands)
+      local filter="${1:-}"
+      echo -e "${BOLD}🧩 Mekongmind Command Alignment Audit${RESET}"
+      echo ""
+      if ! command -v command_audit >/dev/null 2>&1; then
+        log_error "Command audit helper unavailable"
+        exit 1
+      fi
+      echo -e "${CYAN}Summary${RESET}"
+      command_audit_summary "$filter"
+      echo ""
+      echo -e "${CYAN}Routes${RESET}"
+      command_audit "$filter" | while IFS=$'\t' read -r c a source d stage g sop; do
+        [ -z "$c" ] && continue
+        printf "  %-24s -> %-38s -> %-22s -> %-26s -> %-20s -> %-18s -> %s\n" "$c" "$a" "$source" "$d" "$stage" "$g" "$sop"
+      done
+      ;;
+    capabilities|capability-map|command-capabilities)
+      local filter="${1:-}"
+      echo -e "${BOLD}🧰 Mekongmind Command Capability Map${RESET}"
+      echo ""
+      if ! command -v command_capability_map >/dev/null 2>&1; then
+        log_error "Command capability helper unavailable"
+        exit 1
+      fi
+      command_capability_map "$filter" | while IFS=$'\t' read -r stage dept gate sources count commands agents; do
+        [ -z "$stage" ] && continue
+        printf "  %-20s %-26s gate=%-20s sources=%-28s commands=%s\n" "$stage" "$dept" "$gate" "$sources" "$count"
+        printf "    command-set: %s\n" "$commands"
+        printf "    agents:      %s\n" "$agents"
+      done
+      ;;
+    department|dept)
+      local dept_action="${1:-list}"
+      shift || true
+      case "$dept_action" in
+        run|execute)
+          cmd_solo run "$@"
+          ;;
+        list|show)
+          cmd_solo departments "$@"
+          ;;
+        sop)
+          cmd_solo sop "$@"
+          ;;
+        blueprint|operating-blueprint)
+          cmd_solo blueprint "$@"
+          ;;
+        *)
+          log_error "Unknown: me solo department $dept_action"
+          echo "Usage: me solo department [list|sop <department-id>|blueprint <department-id>|run <department-id> [status] [note]]"
+          exit 1
+          ;;
+      esac
+      ;;
+    pdf)
+      [ -f "$SOLO_PDF" ] && log_ok "PDF spec ready at $SOLO_PDF" || log_error "PDF not found"
+      ;;
+    *)
+      log_error "Unknown: me solo $action"
+      echo "Usage: me solo [status|start|bootstrap|loop|pdf]"
+      exit 1
+      ;;
+  esac
+}
+
+# ── sops subcommand: department and file SOP discovery ──────
+cmd_sops() {
+  local action="${1:-list}"; shift || true
+  case "$action" in
+    list)
+      echo -e "${BOLD}SOP Catalog${RESET}"
+      echo ""
+      echo -e "${CYAN}Department SOP chains${RESET}"
+      if command -v registry_departments >/dev/null 2>&1; then
+        while IFS=$'\t' read -r dept owner metric; do
+          [ -z "$dept" ] && continue
+          local sop_file
+          sop_file=$(registry_department_sop_file "$dept" 2>/dev/null || true)
+          printf "  ${GREEN}%-26s${RESET} owner=%-34s file=%s\n" "$dept" "$owner" "$sop_file"
+        done < <(registry_departments)
+      fi
+      echo ""
+      echo -e "${CYAN}SOP files${RESET}"
+      find "$WRAPPER_DIR/../sops" -type f -name '*.md' -print 2>/dev/null | sort | sed "s#^$WRAPPER_DIR/../#  #"
+      ;;
+    show)
+      local target="${1:-}"
+      [ -z "$target" ] && { log_error "Usage: me sops show <department-id|file>"; exit 1; }
+      local detail
+      detail=$(registry_department_sop "$target" 2>/dev/null || true)
+      if [ -n "$detail" ]; then
+        echo "$detail"
+        return 0
+      fi
+      local f="$WRAPPER_DIR/../sops/$target"
+      [ -f "$f" ] || f="$WRAPPER_DIR/../sops/$target.md"
+      [ -f "$f" ] || { log_error "SOP not found: $target"; exit 1; }
+      sed -n '1,220p' "$f"
+      ;;
+    *)
+      log_error "Unknown: me sops $action"
+      echo "Usage: me sops [list|show <department-id|file>]"
+      exit 1
+      ;;
+  esac
+}
+
+# run_step N: execute Nth step of latest goal
+# Safety: if goal-helper functions are missing, reload goal-executor.
+type latest_goal_file >/dev/null 2>&1 || { source "$LIB_DIR/goal-executor.sh" 2>&1 >/dev/null || true; }
+
+# Auto-generate step plan from pattern if Steps is empty
+_generate_steps_from_pattern() {
+  local f="$1" pattern="$2"
+  local steps_json="[]"
+  case "$pattern" in
+    orchestrator)
+      steps_json='["Plan","Allocate","Supervise","Report"]'
+      ;;
+    pipeline)
+      steps_json='["Stage 1: Setup","Stage 2: Execute","Stage 3: Validate","Output"]'
+      ;;
+    expert-pool)
+      steps_json='["Define task","Fan-out to agents","Collect results","Merge output"]'
+      ;;
+    fanout-fanin)
+      steps_json='["Dispatch","Parallel exec","Fan-in","Finalize"]'
+      ;;
+    iterative-refiner)
+      steps_json='["Draft v1","Review","Refine v2","Finalize"]'
+      ;;
+    producer-reviewer)
+      steps_json='["Draft","Review","Revise","Approve"]'
+      ;;
+    supervisor)
+      steps_json='["Orchestrate","Monitor","Adjust","Report"]'
+      ;;
+    hierarchical)
+      steps_json='["Executive plan","Manager assign","Worker execute","Aggregate"]'
+      ;;
+    *)
+      steps_json='["Plan","Execute","Verify","Report"]'
+      ;;
+  esac
+  set_goal_field "$f" "Steps" "$steps_json"
+  set_goal_field "$f" "TotalSteps" "$(echo "$steps_json" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))')"
+}
+
+# Get the Nth step label from Steps array (1-indexed)
+_step_label() {
+  local f="$1" n="$2"
+  local steps_json
+  steps_json=$(goal_field "$f" "Steps")
+  [ -z "$steps_json" ] && { echo "Step $n"; return; }
+  echo "$steps_json" | python3 -c "
+import json,sys
+steps = json.loads(sys.argv[2])
+n = int(sys.argv[1]) - 1
+print(steps[n] if n < len(steps) else f'Step {sys.argv[1]}')
+" "$n" "$steps_json" 2>/dev/null || echo "Step $n"
+}
+
+# Pattern -> default agent mapping (fallback when resolve_agent returns empty)
+_pattern_default_agent() {
+  case "$1" in
+    orchestrator|hierarchical) echo "planner" ;;
+    pipeline|fanout-fanin) echo "project-manager" ;;
+    expert-pool) echo "fullstack-developer" ;;
+    iterative-refiner|code-simplifier) echo "code-simplifier" ;;
+    producer-reviewer|supervisor) echo "code-reviewer" ;;
+    *) echo "planner" ;;
+  esac
+}
+# Agent type → MEKONG_TASK_TYPE mapping for --auto model routing
+agent_to_task_type() {
+    case "${1:-}" in
+        fullstack-developer) echo "fullstack-developer" ;;
+        frontend-developer|backend-developer|mobile-developer) echo "complex-coding" ;;
+        architect|architect-review) echo "architecture" ;;
+        code-reviewer|code-review) echo "code-review" ;;
+        business-analyst|sales|marketing) echo "business-analysis" ;;
+        ceo|planner|project-manager|orchestrator) echo "ceo-decision" ;;
+        researcher|research) echo "research" ;;
+        code-simplifier|refactorer) echo "complex-reasoning" ;;
+        test-automator|tester) echo "tests" ;;
+        docs-writer|documenter) echo "docs" ;;
+        *) echo "code-generation" ;;
+    esac
+}
+
+
+run_step() {
+  local n="${1:-}"
+  [ -z "$n" ] && { log_error "Usage: me step <N>"; exit 1; }
+  ! printf '%s' "$n" | grep -qE '^[1-9][0-9]*$' && { log_error "Step number must be a positive integer: $n"; exit 1; }
+
+	local f
+	if [ -n "${GOAL_FILE:-}" ] && [ -f "$GOAL_FILE" ]; then
+		f="$GOAL_FILE"
+	else
+		f=$(latest_goal_file)
+	fi
+  [ -z "$f" ] && { log_error "Chưa có goal nào. Tạo bằng: me idea <mô tả>"; exit 1; }
+
+  local goal_desc; goal_desc=$(goal_field "$f" "Goal")
+  local pattern; pattern=$(goal_field "$f" "Pattern")
+  [ -z "$pattern" ] && pattern="orchestrator"
+
+  # Auto-generate steps if empty
+  local steps_json; steps_json=$(goal_field "$f" "Steps")
+  if [ -z "$steps_json" ] || [ "$steps_json" = "[]" ]; then
+    _generate_steps_from_pattern "$f" "$pattern"
+    steps_json=$(goal_field "$f" "Steps")
+    log_info "Generated step plan from pattern=[$pattern]: $steps_json"
+  fi
+
+  # Check if already done
+  if step_done "$f" "$n"; then
+    local label; label=$(_step_label "$f" "$n")
+    log_info "Step $n [$label] đã hoàn thành (bỏ qua)."
+    echo "  me goal show -> xem toàn bộ goal"
+    return 0
+  fi
+
+  local step_label; step_label=$(_step_label "$f" "$n")
+
+  # Mark running
+  set_goal_field "$f" "Status" "running"
+
+# Progress calculation
+completed=$(list_completed_steps "$f" 2>/dev/null | tr ',' '\n' | grep -c '^' 2>/dev/null)
+[ -z "$completed" ] && completed=0
+total=$(goal_field "$f" "TotalSteps")
+[ -z "$total" ] && total=$(echo "$steps_json" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))' 2>/dev/null) && : || total=""
+denom=${total:-0}
+[ "$denom" -le 0 ] 2>/dev/null && denom=1
+current_pct=$(( completed * 100 / denom ))
+
+  echo -e "${BOLD}Goal:${RESET} $goal_desc"
+  echo -e "${CYAN}[step $n/$total]${RESET} $step_label  pattern=[$pattern]  progress=[${completed}/${total} = ${current_pct}%]"
+  echo ""
+
+  # Resolve agent
+  local agent
+  agent=$(resolve_agent "step" "$step_label -- $goal_desc")
+  if [ -z "$agent" ]; then
+    agent=$(_pattern_default_agent "$pattern")
+  fi
+
+ # Auto-set task type for model routing (--auto via MEKONG_TASK_TYPE)
+ if [ -n "${MEKONG_TASK_TYPE:-}" ]; then
+     log_info "[auto] agent=[$agent] task_type=[$MEKONG_TASK_TYPE] → model=[$(route_model "$MEKONG_TASK_TYPE" 2>/dev/null | awk '{print $2}')]"
+ fi
+
+  # Build context with completed steps summary
+  local completed_summary=""
+ _HERMES_NO_RECAP="${HERMES_DISABLE_RECAPS:-$(python3 -c 'import json; c=json.load(open("$(dirname "$0")/.openclaw-config.json")); print("true" if c.get("hermes",{}).get("disable_recaps") else "false")' 2>/dev/null || echo "false")}"
+ if [ "$_HERMES_NO_RECAP" != "true" ] && [ "$completed" -gt 0 ]; then
+    completed_summary=$'\n'"Đã hoàn thành:"$'\n'
+    local s
+    for s in $(echo "$steps_json" | python3 -c 'import json,sys; [print(i+1) for i in range(int(sys.argv[1]))]' "$completed" 2>/dev/null); do
+      local prev_label; prev_label=$(_step_label "$f" "$s")
+      completed_summary+="  - Step $s: $prev_label OK"$'\n'
+    done
+  fi
+
+  local prompt="Mục tiêu: $goal_desc
+Pattern: $pattern
+Step $n/$total: $step_label$completed_summary
+
+Thực hiện Step $n. Ghi output rõ ràng, actionable. Nếu cần tạo file thì tạo, nếu cần chạy lệnh thì chạy."
+
+  echo -e "${YELLOW}Agent:${RESET} $agent"
+  echo -e "${DIM}────────────────────────────────────────${RESET}"
+
+  local output rc=0
+  if command -v claude >/dev/null 2>&1; then
+    output=$(smart_exec "complex-reasoning" "$prompt" --agent "$agent" 2>&1) || rc=$?
+  elif command -v mekong >/dev/null 2>&1; then
+    output=$(mekong idea run "$prompt" 2>&1) || rc=$?
+  else
+    log_warn "No CLI found (claude/mekong). Simulating step."
+    output="[Simulated] Step $n [$step_label] completed for: $goal_desc"
+  fi
+
+  echo ""
+  echo -e "${DIM}────────────────────────────────────────${RESET}"
+
+  # Mark done
+  mark_step_done "$f" "$n" "$output"
+
+  # Show next step or completion
+  local next_n
+  next_n=$(goal_next_step "$f")
+  local total_steps
+  total_steps=$(goal_field "$f" "TotalSteps")
+  local new_completed
+  new_completed=$(list_completed_steps "$f" | tr ',' '\n' | grep -c '.' 2>/dev/null || echo 0)
+
+  if [ -n "$total_steps" ] && [ "$new_completed" -ge "$total_steps" ]; then
+    set_goal_field "$f" "Status" "completed"
+    echo ""
+    echo -e "${GREEN}${BOLD}Goal COMPLETED!${RESET} All $total_steps steps done."
+    echo "  me goal show -> xem ket qua cuoi cung"
+  else
+    echo ""
+    echo -e "${GREEN}OK${RESET} Step $n [$step_label] done.  (${new_completed}/${total_steps})"
+    echo "  me step $next_n -> chay step tiep theo"
+    echo "  me goal show -> xem goal hien tai"
+  fi
+}
+
+# ── goal chain: execute a YAML chain of goals ───────────────────
+run_goal_chain() {
+  local chain_file="${1:-}"
+  [ -z "$chain_file" ] && { log_error "Usage: me goal chain <file.yaml>"; exit 1; }
+  [ ! -f "$chain_file" ] && { log_error "File not found: $chain_file"; exit 1; }
+  echo -e "${BOLD}⛓️ Goal Chain${RESET} $chain_file"
+  echo ""
+  local -a goals patterns
+  local i=0
+  while IFS= read -r line; do
+    if echo "$line" | grep -qE '^[[:space:]]*- goal:'; then
+      g=$(echo "$line" | sed 's/.*goal:[[:space:]]*"\?\([^"]*\)"\?/\1/')
+      goals[$i]="$g"
+      patterns[$i]=""
+      i=$((i+1))
+    elif echo "$line" | grep -qE '^[[:space:]]*pattern:'; then
+      p=$(echo "$line" | sed 's/.*pattern:[[:space:]]*//')
+      p=$(echo "$p" | tr '[:upper:]' '[:lower:]' | xargs)
+      patterns[$((i-1))]="$p"
+    fi
+  done < "$chain_file"
+  local total=${#goals[@]}
+  [ "$total" -eq 0 ] && { log_error "No goals found in $chain_file"; exit 1; }
+  echo -e "Found ${BOLD}$total${RESET} goal(s) in chain."
+  echo ""
+  local j
+  for j in $(seq 0 $((total-1))); do
+    local g="${goals[$j]}"
+    local p="${patterns[$j]:-orchestrator}"
+    echo -e "${CYAN}[$((j+1))/$total]${RESET} Goal: $g  (pattern=$p)"
+    create_goal "$g" "$p" >/dev/null 2>&1
+    log_info "Goal created. Run: me step 1"
+    read -r -p "Continue to next goal? [Y/n] " ans
+    [ "${ans,,}" = "n" ] && { log_info "Chain paused at goal $((j+1))."; break; }
+    echo ""
+  done
+  log_ok "Chain complete: $total goal(s)."
+}
+
+# ── help ────────────────────────────────────────────────────
+# ── RaaS: Role as a Service (Product Forge & Sell Engine) ────────────────────
+cmd_role() {
+	local action="${1:-list}"; shift || true
+	local ROLE_DIR="$WRAPPER_DIR/../state/raas"
+	local PRODUCT_DIR="$ROLE_DIR/products"
+	local CATALOG_DIR="$ROLE_DIR/catalog"
+	local ORDER_DIR="$ROLE_DIR/orders"
+	local TEMPLATE="$WRAPPER_DIR/../raas/product-template.md"
+	mkdir -p "$ROLE_DIR" "$PRODUCT_DIR" "$CATALOG_DIR" "$ORDER_DIR" 2>/dev/null || true
+
+	case "$action" in
+		# ── Role commands (legacy) ────────────────────────────────────────
+		list|roles)
+			local sub="${1:-all}"; shift || true
+			if [ "$sub" = "roles" ] || [ "$sub" = "all" ]; then
+				echo -e "${BOLD}📦 RaaS Roles${RESET}"
+				echo ""
+				if ls "$ROLE_DIR"/*.md >/dev/null 2>&1; then
+					for f in "$ROLE_DIR"/*.md; do
+						local name; name=$(basename "$f" .md)
+						local agent; agent=$(grep -m1 '^agent:' "$f" 2>/dev/null | sed 's/^agent:[[:space:]]*//' || echo "?")
+						local pattern; pattern=$(grep -m1 '^pattern:' "$f" 2>/dev/null | sed 's/^pattern:[[:space:]]*//' || echo "?")
+						printf " ${GREEN}%-20s${RESET} agent=%-30s pattern=%s\n" "$name" "$agent" "$pattern"
+					done
+				else
+					echo " (no roles yet)"
+				fi
+				echo ""
+			fi
+			if [ "$sub" = "products" ] || [ "$sub" = "all" ]; then
+				cmd_role "products"
+			fi
+			;;
+
+		# ── Role CRUD ─────────────────────────────────────────────────────
+		create-role|create_role)
+			local name="${1:-}"; shift || true
+			local agent="${1:-planner}"; shift || true
+			local pattern="${1:-orchestrator}"; shift || true
+			[ -z "$name" ] && { log_error "Usage: me role create-role <name> --agent <id> --pattern <id>"; exit 1; }
+			while [ $# -gt 0 ]; do
+				case "$1" in
+					--agent) agent="$2"; shift 2 ;;
+					--pattern) pattern="$2"; shift 2 ;;
+					*) shift ;;
+				esac
+			done
+			local f="$ROLE_DIR/$name.md"
+			cat > "$f" << ROLE_EOF
+# Role: $name
+agent: $agent
+pattern: $pattern
+created: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+description: |
+  RaaS role for $name.
+  Agent: $agent | Pattern: $pattern
+ROLE_EOF
+			log_ok "Role created: $f"
+			;;
+
+		show-role|show_role)
+			local name="${1:-}"
+			[ -z "$name" ] && { log_error "Usage: me role show-role <name>"; exit 1; }
+			local f="$ROLE_DIR/$name.md"
+			[ -f "$f" ] || { log_error "Role not found: $name"; exit 1; }
+			sed -n '1,60p' "$f"
+			;;
+
+		run-role|run_role)
+			local name="${1:-}"; shift || true
+			[ -z "$name" ] && { log_error "Usage: me role run-role <name> [args...]"; exit 1; }
+			local f="$ROLE_DIR/$name.md"
+			[ -f "$f" ] || { log_error "Role not found: $name"; exit 1; }
+			local agent; agent=$(grep -m1 '^agent:' "$f" 2>/dev/null | sed 's/^agent:[[:space:]]*//' || echo "planner")
+			local prompt="${*:-Execute role $name}"
+			echo -e "${BOLD}RaaS Role:${RESET} $name ${DIM}(agent=$agent)${RESET}"
+			if command -v claude >/dev/null 2>&1; then
+				claude --agent "$agent" "$prompt"
+			elif command -v mekong >/dev/null 2>&1; then
+				mekong idea run "$prompt"
+			else
+				log_warn "No CLI found. Role $name would run with agent=$agent"
+			fi
+			;;
+
+		delete-role|delete_role)
+			local name="${1:-}"
+			[ -z "$name" ] && { log_error "Usage: me role delete-role <name>"; exit 1; }
+			rm -f "$ROLE_DIR/$name.md" && log_ok "Role deleted: $name" || log_error "Failed to delete: $name"
+			;;
+
+		# ── Product management ────────────────────────────────────────────
+		products|list)
+			echo -e "${BOLD}🏭 RaaS Products${RESET}"
+			echo ""
+			if ls "$PRODUCT_DIR"/*.md >/dev/null 2>&1; then
+				local total=0 live=0 total_mrr=0
+				for f in "$PRODUCT_DIR"/*.md; do
+					total=$((total+1))
+					local pname; pname=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "$(basename "$f" .md)")
+					local phase; phase=$(grep -m1 '^Phase:' "$f" 2>/dev/null | sed 's/^Phase:[[:space:]]*//' || echo "?")
+					local status; status=$(grep -m1 '^Status:' "$f" 2>/dev/null | sed 's/^Status:[[:space:]]*//' || echo "?")
+					local price; price=$(grep -m1 '^Price point:' "$f" 2>/dev/null | sed 's/^Price point:[[:space:]]*//' || echo "0")
+					local mrr; mrr=$(grep -m1 '^MRR:' "$f" 2>/dev/null | sed 's/^MRR:[[:space:]]*//' || echo "0")
+					local icon="⚪"
+					[ "$status" = "live" ] || [ "$status" = "selling" ] && { icon="🟢"; live=$((live+1)); }
+					[ "$status" = "building" ] && icon="🔨"
+					[ "$status" = "draft" ] && icon="📝"
+					printf " %s %-28s phase=%-12s price=%-10s mrr=%-8s\n" "$icon" "$pname" "$phase" "$price" "$mrr"
+					total_mrr=$((total_mrr + mrr))
+				done
+				echo ""
+				echo -e " ${CYAN}Total: $total products | $live live | MRR: $total_mrr${RESET}"
+			else
+				echo " (no products yet. me role forge <name> --from <template>)"
+			fi
+			;;
+
+		# ── Forge a new product from template ──────────────────────────────
+		forge|create-product|create)
+			local name="${1:-}"; shift || true
+			[ -z "$name" ] && { log_error "Usage: me role forge <product-name> [--template <template>] [--audience <who>] [--price <amount>]"; exit 1; }
+
+			# Parse options
+			local template_file="$TEMPLATE"
+			local audience="" price="" pricing="subscription" delivery="hosted"
+			local category="saas" promise="" problem="" outcome="" forge_parallel=""
+			while [ $# -gt 0 ]; do
+				case "$1" in
+				--template) template_file="${2:-$TEMPLATE}"; shift 2 ;;
+					--audience) audience="$2"; shift 2 ;;
+					--price) price="$2"; shift 2 ;;
+					--pricing) pricing="$2"; shift 2 ;;
+					--delivery) delivery="$2"; shift 2 ;;
+					--category) category="$2"; shift 2 ;;
+					--promise) promise="$2"; shift 2 ;;
+					--problem) problem="$2"; shift 2 ;;
+					--outcome) outcome="$2"; shift 2 ;;
+					--parallel) forge_parallel="1"; shift ;;
+					*) shift ;;
+				esac
+			done
+
+			# Generate slug from name
+			local slug; slug=$(echo "$name" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/-\+/-/g' | sed 's/^-//;s/-$//')
+			local today; today=$(date -u +%Y-%m-%d)
+			local f="$PRODUCT_DIR/$slug.md"
+
+			[ -f "$f" ] && { log_error "Product already exists: $slug. Use 'me role update $slug' to modify."; exit 1; }
+
+			# Build product file from template
+			cat > "$f" << PRODUCT_EOF
+# RaaS Product: $name
+
+Product: $name
+Slug: $slug
+Phase: idea
+Status: draft
+Created: $today
+Updated: $today
+
+## Spec
+
+Category: $category
+Target audience: ${audience:-"TBD"}
+Price point: ${price:-0}
+Price model: $pricing
+Delivery: $delivery
+
+## Value
+
+Promise: ${promise:-"TBD"}
+Problem: ${problem:-"TBD"}
+Outcome: ${outcome:-"TBD"}
+
+## Offer
+
+Trial: 7 days free trial
+Guarantee: 30-day money back
+Bonuses: TBD
+
+## Technical
+
+Stack: TBD
+Repo: TBD
+Deploy target: TBD
+Dependencies: []
+
+## Tasks
+
+- [ ] Define ICP in detail
+- [ ] Write offer (promise + proof)
+- [ ] Design MVP scope
+- [ ] Build MVP
+- [ ] Deploy production
+- [ ] Run first revenue experiment
+
+## Evidence
+
+First revenue:
+Customers: 0
+MRR: 0
+Reviews:
+PRODUCT_EOF
+
+			log_ok "Product forged: $f"
+			echo -e " ${CYAN}Next:${RESET}"
+			echo " 1. me role update $slug --audience \"...\" --price ..."
+			echo " 2. me role blueprint $slug # Claude Code draws blueprint"
+			echo " 3. me role forge $slug # Claude Code builds MVP"
+			# Auto-trigger forge-product if --parallel was passed
+			if [ "$forge_parallel" = "1" ]; then
+			   echo ""
+			   echo -e "${YELLOW}Auto-forging MVP (parallel mode)...${RESET}"
+			   me role forge-product "$slug" --parallel
+			fi
+			;;
+		# ── Update product fields ─────────────────────────────────────────
+		update|update-product)
+			local slug="${1:-}"; shift || true
+			[ -z "$slug" ] && { log_error "Usage: me role update <slug> [--audience X] [--price X] [--phase X] [--status X]"; exit 1; }
+			local f="$PRODUCT_DIR/$slug.md"
+			[ -f "$f" ] || { log_error "Product not found: $slug"; exit 1; }
+
+			while [ $# -gt 0 ]; do
+				case "$1" in
+					--audience)
+						sed -i '' "s|^Target audience:.*|Target audience: $2|" "$f"
+						shift 2
+						;;
+					--price)
+						sed -i '' "s|^Price point:.*|Price point: $2|" "$f"
+						shift 2
+						;;
+					--pricing)
+						sed -i '' "s|^Price model:.*|Price model: $2|" "$f"
+						shift 2
+						;;
+					--phase)
+						sed -i '' "s|^Phase:.*|Phase: $2|" "$f"
+						sed -i '' "s|^Updated:.*|Updated: $(date -u +%Y-%m-%d)|" "$f"
+						shift 2
+						;;
+					--status)
+						sed -i '' "s|^Status:.*|Status: $2|" "$f"
+						sed -i '' "s|^Updated:.*|Updated: $(date -u +%Y-%m-%d)|" "$f"
+						shift 2
+						;;
+					--promise)
+						sed -i '' "s|^Promise:.*|Promise: $2|" "$f"
+						shift 2
+						;;
+					--stack)
+						sed -i '' "s|^Stack:.*|Stack: $2|" "$f"
+						shift 2
+						;;
+					--delivery)
+						sed -i '' "s|^Delivery:.*|Delivery: $2|" "$f"
+						shift 2
+						;;
+					*) shift ;;
+				esac
+			done
+			log_ok "Product updated: $slug"
+			me role show "$slug"
+			;;
+
+		# ── Show product detail ───────────────────────────────────────────
+		show)
+			local slug="${1:-}"
+			[ -z "$slug" ] && { log_error "Usage: me role show <slug>"; exit 1; }
+			local f="$PRODUCT_DIR/$slug.md"
+			[ -f "$f" ] || { log_error "Product not found: $slug"; exit 1; }
+			sed -n '1,80p' "$f"
+			;;
+
+		# ── Forge: Claude Code builds the product ─────────────────────────
+		forge-product)
+			local slug="${1:-}"; shift || true
+			[ -z "$slug" ] && { log_error "Usage: me role forge-product <slug> [--step <step-name>]"; exit 1; }
+			local f="$PRODUCT_DIR/$slug.md"
+			[ -f "$f" ] || { log_error "Product not found: $slug. Create first: me role forge <name>"; exit 1; }
+			local forge_step="full"
+			local forge_parallel=""
+
+			# Parse options: --step <name> --parallel
+			while [ $# -gt 0 ]; do
+			  case "$1" in
+			    --step) forge_step="${2:-full}"; shift 2 ;;
+			    --parallel) forge_parallel="1"; shift ;;
+			    --*) shift ;;        # skip unknown flags
+			    *) shift ;;         # skip non-option args (slug already consumed)
+			  esac
+			done
+			local product_name; product_name=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "$slug")
+			local phase; phase=$(grep -m1 '^Phase:' "$f" 2>/dev/null | sed 's/^Phase:[[:space:]]*//' || echo "idea")
+			local audience; audience=$(grep -m1 '^Target audience:' "$f" 2>/dev/null | sed 's/^Target audience:[[:space:]]*//' || echo "TBD")
+			local price; price=$(grep -m1 '^Price point:' "$f" 2>/dev/null | sed 's/^Price point:[[:space:]]*//' || echo "0")
+			local promise; promise=$(grep -m1 '^Promise:' "$f" 2>/dev/null | sed 's/^Promise:[[:space:]]*//' || echo "TBD")
+			local stack; stack=$(grep -m1 '^Stack:' "$f" 2>/dev/null | sed 's/^Stack:[[:space:]]*//' || echo "TBD")
+
+			echo -e "${BOLD}Forge Product:${RESET} $product_name ${DIM}(phase=$phase, step=$forge_step)${RESET}"
+			echo ""
+
+			# Build forge prompt for Claude Code
+			local forge_prompt="FORGE RaaS PRODUCT: $product_name
+
+PRODUCT SPEC:
+- Slug: $slug
+- Phase: $phase
+- Audience: $audience
+- Price: $price
+- Promise: $promise
+- Tech stack: $stack
+
+TASK: $forge_step
+
+If step=full: Build the complete MVP product for '$product_name'.
+If step=blueprint: Create product blueprint (architecture, features, data model).
+If step=mvp: Build working MVP from blueprint.
+If step=deploy: Deploy to production.
+If step=sell: Create sales materials and checkout flow.
+
+Rules:
+1. Create files in: mvp/$slug/
+2. Write clean, production-ready code
+3. Include README, setup instructions, and deployment config
+4. For SaaS: include landing page, API, database schema, auth
+5. For CLI tools: include bin/, tests, docs
+6. Always create a sellable product, not just a prototype"
+
+			if [ "$forge_parallel" = "1" ] && command -v claude >/dev/null 2>&1; then
+				echo -e "${YELLOW}Agents:${RESET} fullstack-developer, architect, business-analyst (parallel)"
+				echo -e "${DIM}────────────────────────────────────────${RESET}"
+				mkdir -p "mvp/$slug" 2>/dev/null || true
+				mkdir -p "mvp/$slug/sales" 2>/dev/null || true
+				if command -v parallel_exec >/dev/null 2>&1 || grep -q "parallel_exec" "$LIB_DIR/model-router.sh" 2>/dev/null; then
+					source "$LIB_DIR/model-router.sh" 2>/dev/null || true
+					parallel_exec \
+						"mvp:fullstack-developer:$forge_prompt" \
+						"blueprint:architecture:DESIGN BLUEPRINT for $product_name. Audience=$audience Price=$price. Create mvp/$slug/blueprint.md with: 1) user journey 2) feature list 3) data model 4) API surface 5) tech stack 6) deployment arch 7) cost estimate 8) competitive positioning 9) sales copy 10) 30-day launch checklist." \
+						"sales:business-analysis:CREATE SALES PACKAGE for $product_name. Audience=$audience Price=$price Promise=$promise. Create mvp/$slug/sales/ with: 1) landing.md 2) checkout.md 3) onboarding.md 4) email-sequence.md 5) social-proof.md" \
+					2>&1 || true
+				else
+					echo -e "${DIM} [sequential fallback — model-router parallel_exec not available]${RESET}"
+					smart_exec "fullstack-developer" "$forge_prompt" --agent fullstack-developer --tools "Read Write Edit Bash" 2>&1 || true
+					smart_exec "architecture" "DESIGN BLUEPRINT for $product_name. Audience=$audience Price=$price. Create mvp/$slug/blueprint.md" --agent architect 2>&1 || true
+					smart_exec "business-analysis" "CREATE SALES PACKAGE for $product_name" --agent business-analyst 2>&1 || true
+				fi
+				echo ""
+				log_ok "Parallel forge complete for $slug"
+				sed -i '' "s|^Phase:.*|Phase: mvp|" "$f"
+				sed -i '' "s|^Status:.*|Status: building|" "$f"
+				sed -i '' "s|^Updated:.*|Updated: $(date -u +%Y-%m-%d)|" "$f"
+				echo " me role sell $slug # prepare for sale"
+				echo " me role show $slug # view product"
+			elif command -v claude >/dev/null 2>&1; then
+				output=$(smart_exec "fullstack-developer" "$forge_prompt" --agent fullstack-developer --tools "Read Write Edit Bash" 2>&1) || rc=$?
+				log_ok "Forge complete (rc=$rc). Product moved to phase=mvp"
+				sed -i '' "s|^Phase:.*|Phase: mvp|" "$f"
+				sed -i '' "s|^Status:.*|Status: building|" "$f"
+				sed -i '' "s|^Updated:.*|Updated: $(date -u +%Y-%m-%d)|" "$f"
+				echo " me role sell $slug # prepare for sale"
+				echo " me role show $slug # view product"
+			else
+				log_warn "Claude Code not found. Simulating forge..."
+				echo "[Simulated] Forged MVP for $product_name in mvp/$slug/"
+				sed -i '' "s|^Phase:.*|Phase: mvp|" "$f"
+				sed -i '' "s|^Status:.*|Status: building|" "$f"
+				sed -i '' "s|^Updated:.*|Updated: $(date -u +%Y-%m-%d)|" "$f"
+			fi
+			;;
+
+		# ── Blueprint: Claude Code draws product architecture ─────────────
+		blueprint)
+			local slug="${1:-}"
+			[ -z "$slug" ] && { log_error "Usage: me role blueprint <slug>"; exit 1; }
+			local f="$PRODUCT_DIR/$slug.md"
+			[ -f "$f" ] || { log_error "Product not found: $slug"; exit 1; }
+
+			local product_name; product_name=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "$slug")
+			local audience; audience=$(grep -m1 '^Target audience:' "$f" 2>/dev/null | sed 's/^Target audience:[[:space:]]*//' || echo "TBD")
+			local promise; promise=$(grep -m1 '^Promise:' "$f" 2>/dev/null | sed 's/^Promise:[[:space:]]*//' || echo "TBD")
+			local problem; problem=$(grep -m1 '^Problem:' "$f" 2>/dev/null | sed 's/^Problem:[[:space:]]*//' || echo "TBD")
+			local price; price=$(grep -m1 '^Price point:' "$f" 2>/dev/null | sed 's/^Price point:[[:space:]]*//' || echo "0")
+			local pricing; pricing=$(grep -m1 '^Price model:' "$f" 2>/dev/null | sed 's/^Price model:[[:space:]]*//' || echo "subscription")
+
+			echo -e "${BOLD}Blueprint:${RESET} $product_name"
+			echo ""
+
+			local blueprint_prompt="DESIGN PRODUCT BLUEPRINT for: $product_name
+
+AUDIENCE: $audience
+PRICE: $price ($pricing model)
+PROMISE: $promise
+PROBLEM: $problem
+
+Create a blueprint file at: mvp/$slug/blueprint.md
+
+Include:
+1. User journey (from landing page to value delivery)
+2. Feature list (must-have vs nice-to-have)
+3. Data model (entities, relationships)
+4. API surface (if applicable)
+5. Tech stack recommendation
+6. Deployment architecture
+7. Cost estimate (hosting, APIs, tools)
+8. Competitive positioning
+9. Sales page copy (headline, subhead, 3 bullets, CTA)
+10. 30-day launch checklist"
+
+			if command -v claude >/dev/null 2>&1; then
+				smart_exec "architecture" "$blueprint_prompt" --agent architect 2>&1 || true
+			else
+				echo "[Simulated] Blueprint created at mvp/$slug/blueprint.md"
+				mkdir -p "mvp/$slug" 2>/dev/null || true
+			fi
+
+			sed -i '' "s|^Phase:.*|Phase: blueprint|" "$f"
+			sed -i '' "s|^Status:.*|Status: blueprint|" "$f"
+			sed -i '' "s|^Updated:.*|Updated: $(date -u +%Y-%m-%d)|" "$f"
+			log_ok "Blueprint phase complete for $slug"
+			;;
+
+		# ── Sell: Prepare product for sale ────────────────────────────────
+		sell|publish|list)
+			local slug="${1:-}"
+			[ -z "$slug" ] && { log_error "Usage: me role sell <slug>"; exit 1; }
+			local f="$PRODUCT_DIR/$slug.md"
+			[ -f "$f" ] || { log_error "Product not found: $slug"; exit 1; }
+
+			local product_name; product_name=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "$slug")
+			local audience; audience=$(grep -m1 '^Target audience:' "$f" 2>/dev/null | sed 's/^Target audience:[[:space:]]*//' || echo "TBD")
+			local price; price=$(grep -m1 '^Price point:' "$f" 2>/dev/null | sed 's/^Price point:[[:space:]]*//' || echo "0")
+			local promise; promise=$(grep -m1 '^Promise:' "$f" 2>/dev/null | sed 's/^Promise:[[:space:]]*//' || echo "TBD")
+
+			echo -e "${BOLD}Sell Product:${RESET} $product_name"
+			echo ""
+
+			local sell_prompt="CREATE SALES PACKAGE for RaaS product: $product_name
+
+TARGET AUDIENCE: $audience
+PRICE: $price
+PROMISE: $promise
+
+Create sales package at: mvp/$slug/sales/
+
+Files to create:
+1. landing.md - Landing page copy (hero, features, pricing, FAQ, CTA)
+2. checkout.md - Checkout flow description and payment integration
+3. onboarding.md - Customer onboarding sequence (day 1, 3, 7, 30)
+4. email-sequence.md - 5-email welcome sequence
+5. social-proof.md - Testimonial templates and case study structure
+
+Make it ready to sell TODAY. No placeholders."
+
+			if command -v claude >/dev/null 2>&1; then
+				smart_exec "business-analysis" "$sell_prompt" --agent business-analyst 2>&1 || true
+			else
+				echo "[Simulated] Sales package created at mvp/$slug/sales/"
+				mkdir -p "mvp/$slug/sales" 2>/dev/null || true
+			fi
+
+			# Register in catalog
+			local order_file="$ORDER_DIR/${slug}-$(date +%Y%m%d).md"
+			cat > "$order_file" << ORDER_EOF
+# Order: $product_name
+Product: $slug
+Date: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+Customer: pending
+Price: $price
+Status: ready-for-sale
+ORDER_EOF
+
+			sed -i '' "s|^Phase:.*|Phase: selling|" "$f"
+			sed -i '' "s|^Status:.*|Status: selling|" "$f"
+			sed -i '' "s|^Updated:.*|Updated: $(date -u +%Y-%m-%d)|" "$f"
+			log_ok "Product '$product_name' is now SELLING"
+			echo ""
+			echo "   Marketing: me role market $slug"
+			echo "   Revenue:   me role revenue $slug"
+			echo "   Catalog:   me role catalog"
+			;;
+
+		# ── Market: Run marketing campaign ────────────────────────────────
+		market|campaign)
+			local slug="${1:-}"
+			[ -z "$slug" ] && { log_error "Usage: me role market <slug>"; exit 1; }
+			local f="$PRODUCT_DIR/$slug.md"
+			[ -f "$f" ] || { log_error "Product not found: $slug"; exit 1; }
+
+			local product_name; product_name=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "$slug")
+			local audience; audience=$(grep -m1 '^Target audience:' "$f" 2>/dev/null | sed 's/^Target audience:[[:space:]]*//' || echo "TBD")
+			local price; price=$(grep -m1 '^Price point:' "$f" 2>/dev/null | sed 's/^Price point:[[:space:]]*//' || echo "0")
+			local promise; promise=$(grep -m1 '^Promise:' "$f" 2>/dev/null | sed 's/^Promise:[[:space:]]*//' || echo "TBD")
+
+			echo -e "${BOLD}Marketing Campaign:${RESET} $product_name"
+			echo ""
+
+			local market_prompt="CREATE MARKETING CAMPAIGN for RaaS product: $product_name
+
+AUDIENCE: $audience
+PRICE: $price
+PROMISE: $promise
+
+Create marketing plan at: mvp/$slug/marketing/
+
+Files:
+1. content-calendar.md - 30-day content calendar (posts, topics, CTAs)
+2. channel-strategy.md - Which channels to use and why
+3. ad-copy.md - 5 ad variants (Facebook, Google, TikTok)
+4. outreach-templates.md - Cold email/DM templates (3 variants)
+5. launch-sequence.md - Launch day checklist and sequence
+
+Focus on ONE repeatable channel first. Budget: 0 VND (organic only for now)."
+
+			if command -v claude >/dev/null 2>&1; then
+				smart_exec "business-analysis" "$market_prompt" --agent business-analyst 2>&1 || true
+			else
+				echo "[Simulated] Marketing plan created at mvp/$slug/marketing/"
+				mkdir -p "mvp/$slug/marketing" 2>/dev/null || true
+			fi
+			log_ok "Marketing plan ready for $slug"
+			;;
+
+		# ── Revenue: Track and optimize revenue ───────────────────────────
+		revenue|metrics)
+			local slug="${1:-}"
+			local f=""
+			if [ -n "$slug" ]; then
+				f="$PRODUCT_DIR/$slug.md"
+				[ -f "$f" ] || { log_error "Product not found: $slug"; exit 1; }
+			else
+				f=$(latest_goal_file 2>/dev/null || true)
+			fi
+			[ -z "$f" ] && { log_error "No product or goal found"; exit 1; }
+
+			local product_name; product_name=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "$slug")
+			local phase; phase=$(grep -m1 '^Phase:' "$f" 2>/dev/null | sed 's/^Phase:[[:space:]]*//' || echo "?")
+			local price; price=$(grep -m1 '^Price point:' "$f" 2>/dev/null | sed 's/^Price point:[[:space:]]*//' || echo "0")
+			local customers; customers=$(grep -m1 '^Customers:' "$f" 2>/dev/null | sed 's/^Customers:[[:space:]]*//' || echo "0")
+			local mrr; mrr=$(grep -m1 '^MRR:' "$f" 2>/dev/null | sed 's/^MRR:[[:space:]]*//' || echo "0")
+
+			echo -e "${BOLD}Revenue:${RESET} $product_name"
+			echo ""
+			printf " Phase:      %s\n" "$phase"
+			printf " Price:      %s\n" "$price"
+			printf " Customers:  %s\n" "$customers"
+			printf " MRR:        %s\n" "$mrr"
+			printf " Target:     1000000\n"
+			printf " Gap:        %s\n" "$((1000000 - mrr))"
+			echo ""
+
+			# Revenue ladder gate check
+			local gate_file="$CATALOG_DIR/catalog.md"
+			echo -e "${BOLD}Revenue Ladder:${RESET}"
+			for gate in "idea" "blueprint" "mvp" "first-revenue" "repeatable-channel" "fulfillment" "scale-ready" "1m-mrr"; do
+				local gate_status="pending"
+				case "$phase" in
+					idea) [ "$gate" = "idea" ] && gate_status="done" ;;
+					blueprint) [ "$gate" = "idea" ] || [ "$gate" = "blueprint" ] && gate_status="done" ;;
+					mvp) [ "$gate" = "first-revenue" ] && gate_status="next" ;;
+					selling) [ "$gate" = "first-revenue" ] && gate_status="in-progress" ;;
+					scaling) [ "$gate" = "fulfillment" ] && gate_status="in-progress" ;;
+				esac
+				printf "  %s %s\n" "$gate_status" "$gate"
+			done
+			;;
+
+		# ── Catalog: Show all products ────────────────────────────────────
+		catalog)
+			local sub="${1:-show}"; shift || true
+			if [ "$sub" = "update" ] || [ "$sub" = "generate" ]; then
+				_generate_raas_catalog "$CATALOG_DIR/catalog.md" "$PRODUCT_DIR"
+			fi
+			if [ -f "$CATALOG_DIR/catalog.md" ]; then
+				sed -n '1,60p' "$CATALOG_DIR/catalog.md"
+			else
+				echo "No catalog yet. Run: me role catalog update"
+			fi
+			;;
+
+		# ── Orders: Track sales ───────────────────────────────────────────
+		orders)
+			echo -e "${BOLD}RaaS Orders${RESET}"
+			echo ""
+			if ls "$ORDER_DIR"/*.md >/dev/null 2>&1; then
+				for f in "$ORDER_DIR"/*.md; do
+					local product; product=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "?")
+					local date; date=$(grep -m1 '^Date:' "$f" 2>/dev/null | sed 's/^Date:[[:space:]]*//' || echo "?")
+					local status; status=$(grep -m1 '^Status:' "$f" 2>/dev/null | sed 's/^Status:[[:space:]]*//' || echo "?")
+					printf " %-28s date=%-12s status=%s\n" "$product" "$date" "$status"
+				done
+			else
+				echo " (no orders yet)"
+			fi
+			;;
+
+		# ── Delete product ────────────────────────────────────────────────
+		delete|delete-product)
+			local slug="${1:-}"
+			[ -z "$slug" ] && { log_error "Usage: me role delete <slug>"; exit 1; }
+			local f="$PRODUCT_DIR/$slug.md"
+			[ -f "$f" ] || { log_error "Product not found: $slug"; exit 1; }
+			rm -f "$f" && log_ok "Product deleted: $slug" || log_error "Failed to delete: $slug"
+			;;
+
+		# ── Help ──────────────────────────────────────────────────────────
+		help|--help|-h)
+			echo "RaaS (Role as a Service) — Product Forge & Sell Engine"
+			echo ""
+			echo "Product Lifecycle:"
+			echo "  me role forge <name>           Create new RaaS product"
+			echo "  me role blueprint <slug>       Claude Code draws product architecture"
+			echo "  me role forge <slug>           Claude Code builds MVP"
+			echo "  me role sell <slug>            Prepare product for sale"
+			echo "  me role market <slug>          Run marketing campaign"
+			echo "  me role revenue <slug>         Track revenue metrics"
+			echo ""
+			echo "Management:"
+			echo "  me role list                   Show all roles and products"
+			echo "  me role products               Show product catalog"
+			echo "  me role show <slug>            Show product detail"
+			echo "  me role update <slug> [opts]   Update product fields"
+			echo "  me role catalog                Show/update product catalog"
+			echo "  me role orders                 Show sales orders"
+			echo "  me role delete <slug>          Delete product"
+			echo ""
+			echo "Legacy Role:"
+			echo "  me role create-role <name>     Create agent role"
+			echo "  me role show-role <name>       Show role detail"
+			echo "  me role run-role <name>        Execute role"
+			echo "  me role delete-role <name>     Delete role"
+			echo ""
+			echo "Options:"
+			echo "  --audience <who>    Target audience"
+			echo "  --price <amount>    Price point"
+			echo "  --pricing <model>   one-time|subscription|usage|tiered"
+			echo "  --delivery <type>   hosted|cli|agent|embed|api"
+			echo "  --category <type>   saas|automation|consulting|content"
+			;;
+
+		*)
+			log_error "Unknown: me role $action"
+			echo "Usage: me role [forge|blueprint|sell|market|revenue|products|catalog|orders|list|show|update|delete]"
+			echo "       me role help"
+			exit 1
+			;;
+	esac
+}
+
+# ── Helper: Generate RaaS catalog from products ───────────────────────────────
+_generate_raas_catalog() {
+	local catalog_file="${1:-}"
+	local product_dir="${2:-}"
+	[ -z "$catalog_file" ] && return 0
+	[ -d "$product_dir" ] || return 0
+
+	local total=0 live=0 total_mrr=0
+	local product_lines=""
+
+	for f in "$product_dir"/*.md; do
+		[ -f "$f" ] || continue
+		total=$((total+1))
+		local pname slug phase status price mrr customers
+		pname=$(grep -m1 '^Product:' "$f" 2>/dev/null | sed 's/^Product:[[:space:]]*//' || echo "$(basename "$f" .md)")
+		slug=$(grep -m1 '^Slug:' "$f" 2>/dev/null | sed 's/^Slug:[[:space:]]*//' || echo "$(basename "$f" .md)")
+		phase=$(grep -m1 '^Phase:' "$f" 2>/dev/null | sed 's/^Phase:[[:space:]]*//' || echo "?")
+		status=$(grep -m1 '^Status:' "$f" 2>/dev/null | sed 's/^Status:[[:space:]]*//' || echo "?")
+		price=$(grep -m1 '^Price point:' "$f" 2>/dev/null | sed 's/^Price point:[[:space:]]*//' || echo "0")
+		mrr=$(grep -m1 '^MRR:' "$f" 2>/dev/null | sed 's/^MRR:[[:space:]]*//' || echo "0")
+		customers=$(grep -m1 '^Customers:' "$f" 2>/dev/null | sed 's/^Customers:[[:space:]]*//' || echo "0")
+		total_mrr=$((total_mrr + mrr))
+		[ "$status" = "live" ] || [ "$status" = "selling" ] && live=$((live+1))
+		product_lines+="| $pname | $phase | $status | $price | $customers | $mrr | $slug |"$'\n'
+	done
+
+	# Update catalog
+	sed -i '' "s|^Total products:.*|Total products: $total|" "$catalog_file" 2>/dev/null || true
+	sed -i '' "s|^Live products:.*|Live products: $live|" "$catalog_file" 2>/dev/null || true
+	sed -i '' "s|^Total MRR:.*|Total MRR: $total_mrr|" "$catalog_file" 2>/dev/null || true
+
+	log_ok "Catalog updated: $total products, $live live, MRR=$total_mrr"
+}
+# ── Chains: Macro orchestration runner ────────────────────────────────────────
+cmd_chain() {
+    local chain_file="${1:-}"
+    [ -z "$chain_file" ] && { log_error "Usage: me chain <file.yaml>"; exit 1; }
+    [ ! -f "$chain_file" ] && { log_error "File not found: $chain_file"; exit 1; }
+    echo -e "${BOLD}⛓️ Chain:${RESET} $chain_file"
+    echo ""
+    local -a steps
+    local i=0
+    while IFS= read -r line; do
+        if echo "$line" | grep -qE '^[[:space:]]*- '; then
+            # Parse step: - cmd: <command> [agent: <id>] [pattern: <id>] [desc: <text>]
+            local step
+            step=$(echo "$line" | sed 's/^[[:space:]]*-[[:space:]]*//')
+            steps[$i]="$step"
+            i=$((i+1))
+        fi
+    done < "$chain_file"
+    local total=${#steps[@]}
+    [ "$total" -eq 0 ] && { log_error "No steps found in $chain_file"; exit 1; }
+    echo -e "Found ${BOLD}$total${RESET} step(s)."
+    echo ""
+    local j rc=0
+    for j in $(seq 0 $((total-1))); do
+        local step="${steps[$j]}"
+        local cmd agent pattern desc
+        cmd=$(echo "$step" | sed -n 's/.*cmd:[[:space:]]*\([^[:space:]]*\).*/\1/p')
+        agent=$(echo "$step" | sed -n 's/.*agent:[[:space:]]*\([^[:space:]]*\).*/\1/p')
+        pattern=$(echo "$step" | sed -n 's/.*pattern:[[:space:]]*\([^[:space:]]*\).*/\1/p')
+        desc=$(echo "$step" | sed -n 's/.*desc:[[:space:]]*"*\([^"]*\)"*.*/\1/p')
+        [ -z "$cmd" ] && cmd=$(echo "$step" | awk '{print $1}')
+        echo -e "${CYAN}[$((j+1))/$total]${RESET} $cmd ${DIM}${desc:-}${RESET}"
+        if [ -n "$pattern" ] && [ "$pattern" != "$cmd" ]; then
+            eval "me $cmd --pattern $pattern" 2>&1 || rc=$?
+        else
+            eval "me $cmd" 2>&1 || rc=$?
+        fi
+        [ "$rc" -ne 0 ] && {
+            log_warn "Step $((j+1)) returned rc=$rc"
+            read -r -p "Continue chain? [Y/n] " ans
+            [ "${ans,,}" = "n" ] && { log_info "Chain stopped at step $((j+1))."; break; }
+            rc=0
+        }
+        echo ""
+    done
+    if [ "$rc" -eq 0 ]; then
+        log_ok "Chain complete: $total/$total steps."
+    else
+        log_warn "Chain finished with errors."
+    fi
+}
+
+# ── Enhanced SOP: run with template ──────────────────────────────────────────
+cmd_sop_run() {
+    local dept="${1:-}"
+    [ -z "$dept" ] && { log_error "Usage: me sop run <department-id>"; exit 1; }
+    echo -e "${BOLD}SOP Runner:${RESET} $dept"
+    echo ""
+    # Show SOP chain
+    local sop_chain
+    sop_chain=$(registry_department_sop "$dept" 2>/dev/null || true)
+    if [ -n "$sop_chain" ]; then
+        echo "$sop_chain"
+        echo ""
+    fi
+    # Show evidence contract
+    local contract
+    contract=$(registry_evidence_contracts "$dept" 2>/dev/null || true)
+    if [ -n "$contract" ]; then
+        echo -e "${CYAN}Evidence Contract:${RESET}"
+        echo "$contract"
+    fi
+    # Show room system
+    local room
+    room=$(registry_department_room_brief "$dept" 2>/dev/null || true)
+    if [ -n "$room" ]; then
+        echo -e "${CYAN}Room Contract:${RESET}"
+        echo "$room"
+    fi
+}
+
+# ── CEO-Level Patterns ───────────────────────────────────────────────────────
+cmd_ceo() {
+    local action="${1:-help}"; shift || true
+    case "$action" in
+        help|--help|-h)
+            echo -e "${BOLD}CEO-Level Patterns${RESET}"
+            echo ""
+            echo "  me ceo strategy <goal>       Auto-decompose goal into OKRs + assign patterns"
+            echo "  me ceo boardroom <topic>     Multi-agent debate: proposals → CEO vote → execute"
+            echo "  me ceo delegate <task>       Auto-select agent → track → report back"
+            echo "  me ceo emergency <task>      Emergency pattern: max parallelism, high priority"
+            echo "  me ceo status                Show current CEO command room state"
+            ;;
+        strategy)
+            local goal="${1:-}"
+            [ -z "$goal" ] && { log_error "Usage: me ceo strategy <goal>"; exit 1; }
+            echo -e "${BOLD}CEO Strategy:${RESET} $goal"
+            echo -e "${CYAN}Auto-decomposing into OKRs...${RESET}"
+            local prompt="As CEO Solo strategist, decompose this goal into 3-5 OKRs with measurable outcomes, assign the best harness pattern to each OKR, and identify the bottleneck gate.
+
+Goal: $goal
+
+Format:
+## OKR 1: <title>
+- Pattern: <pattern-id>
+- Measure: <measurable outcome>
+- Owner: <department>
+- Gate: <gate-artifact>
+
+..."
+            if command -v claude >/dev/null 2>&1; then
+                claude --agent planner "$prompt"
+            elif command -v mekong >/dev/null 2>&1; then
+                mekong idea run "$prompt"
+            else
+                log_warn "No CLI found. Strategy prompt prepared for: $goal"
+                echo "$prompt"
+            fi
+            ;;
+        boardroom)
+            local topic="${1:-}"
+            [ -z "$topic" ] && { log_error "Usage: me ceo boardroom <topic>"; exit 1; }
+            echo -e "${BOLD}CEO Boardroom:${RESET} $topic"
+            echo -e "${CYAN}Gathering proposals from 3-5 specialized agents...${RESET}"
+            echo ""
+            # Select diverse agents from unified pool
+            local -a panel_agents
+            panel_agents=(business-analyst fullstack-developer code-reviewer research-expert planner)
+            local n=0
+            for agent in "${panel_agents[@]}"; do
+                n=$((n+1))
+                echo -e "${DIM}[Agent $n/${{#panel_agents[@]}}] $agent${RESET}"
+                local prompt="As $agent, provide a focused proposal for: $topic. Be concise (max 200 words). Include: approach, risks, recommendation."
+                if command -v claude >/dev/null 2>&1; then
+                    claude --agent "$agent" "$prompt" 2>&1 | head -30
+                fi
+                echo ""
+            done
+            echo -e "${BOLD}CEO Decision:${RESET} Review proposals above and select winner."
+            ;;
+        delegate)
+            local task="${1:-}"
+            [ -z "$task" ] && { log_error "Usage: me ceo delegate <task>"; exit 1; }
+            echo -e "${BOLD}CEO Delegation:${RESET} $task"
+            # Auto-select best agent
+            local agent
+            agent=$(resolve_agent "ceo" "$task" 2>/dev/null || echo "planner")
+            echo -e "Assigned agent: ${GREEN}$agent${RESET}"
+            echo ""
+            if command -v claude >/dev/null 2>&1; then
+                claude --agent "$agent" "Task from CEO: $task. Report back with results."
+            elif command -v mekong >/dev/null 2>&1; then
+                mekong idea run "Task from CEO: $task"
+            else
+                log_warn "No CLI. Task '$task' delegated to $agent."
+            fi
+            ;;
+        emergency)
+            local task="${1:-}"
+            [ -z "$task" ] && { log_error "Usage: me ceo emergency <task>"; exit 1; }
+            echo -e "${RED}${BOLD}CEO EMERGENCY:${RESET} $task"
+            echo -e "${RED}Pattern: supervisor (max parallelism, high priority)${RESET}"
+            # Use expert-pool pattern for emergency: fan out to all relevant agents
+            local -a emergency_agents
+            emergency_agents=(planner business-analyst fullstack-developer code-reviewer devops-expert)
+            local n=0
+            for agent in "${emergency_agents[@]}"; do
+                n=$((n+1))
+                echo -e "${DIM}[Emergency Agent $n] $agent${RESET}"
+                if command -v claude >/dev/null 2>&1; then
+                    claude --agent "$agent" "EMERGENCY: $task. Immediate triage and action required." 2>&1 | head -20
+                fi
+                echo ""
+            done
+            ;;
+        status)
+            echo -e "${BOLD}CEO Command Room${RESET}"
+            echo ""
+            local f
+            f=$(latest_goal_file 2>/dev/null || true)
+            if [ -n "$f" ]; then
+                echo -e "Active goal: $(goal_field "$f" "Goal")"
+                echo -e "Gate: $(goal_field "$f" "CurrentGate")"
+                echo -e "Status: $(goal_field "$f" "Status")"
+                echo -e "Pattern: $(goal_field "$f" "Pattern")"
+            else
+                echo "No active goal."
+            fi
+            echo ""
+            echo -e "${CYAN}Department Status:${RESET}"
+            if command -v registry_departments >/dev/null 2>&1; then
+                registry_departments | while IFS=$'\t' read -r dept owner metric; do
+                    printf "  %-25s owner=%-20s %s\n" "$dept" "$owner" "$metric"
+                done
+            fi
+            ;;
+        *)
+            log_error "Unknown: me ceo $action"
+            echo "Usage: me ceo [strategy|boardroom|delegate|emergency|status]"
+            exit 1
+            ;;
+    esac
+}
+
+show_help() { cat << 'HELP_EOF'
+🤖 me-deep-wrapper v1.0.0 — CEO Solo Company Orchestrator
+
+USAGE
+  me <subcommand> [options] [args...]
+  me help              # this message
+  me help <command>    # help for a specific command
+
+CORE COMMANDS
+  idea <goal>          Idea → CEO Solo Factory goal + SOP gates
+  goal show            Show current goal
+  goal chain <file>    Execute chain of goals
+  step <N>             Execute step N of current goal
+  agents list          List registered agents
+  agents suggest       Suggest agent for a command
+  agents routes [q]    Show command→agent→department→gate map
+  project <scope>      Run at project scope
+  chain '<c1> && <c2>' Chain commands
+  solo start <idea>    Start a CEO Solo Company from an idea
+  solo dna             Show Mekongmind source roles, lifecycle, invariants
+  solo local-llm [q]   Show local-first LLM runtime policy for autonomous SOP loop
+  solo products scan   Discover local products into state/products/local-product-inventory.json
+  solo products list   Show local products and next self-selling gate
+  solo products queue  Write state/products/self-selling-queue.json for all inventory products
+  solo products audit  Verify queue coverage; add --strict or --self-selling
+  solo products loop   Run one safe product self-selling pass through blueprint + offer
+  solo products next   Show product-specific next command and blockers
+  solo products release-packet Create product Quality/Platform readiness packet
+  solo products work-packet Create product Growth/Sales execution packet without sending outreach
+  solo products campaign-proof Ingest real outreach log as campaign evidence; no send/Polar/revenue claim
+  solo products revenue-proof Ingest Polar evidence as first revenue; no provider mutation/fulfillment claim
+  solo products fulfillment-proof Ingest customer outcome evidence; no clone/self-selling claim
+  solo products clone-proof Ingest clone memory evidence; self-selling requires first \$1M MRR
+  solo products packet-batch Create release/Growth-Sales packets for N products
+  solo products select Select product for active goal and write CEO blueprint
+  solo products offer  Draft/validate Market+Product offer artifact from local evidence
+  solo layers [q]      Show multi-layer SOP stack and handoffs
+  solo graph           Show department handoff/dependency graph
+  solo bottlenecks     Show readiness matrix and next bottleneck
+  solo departments     Show Agentic company departments
+  solo sop <dept>      Show department SOP chain
+  solo blueprint <dept> Show department operating blueprint
+  solo run <dept>      Run department SOP artifact contract
+  solo route <cmd>     Show command department/gate/SOP route
+  solo commands [q]    Audit command source/lifecycle alignment
+  solo capabilities [q] Group commands by stage/department/source capability
+  solo contract [q]    Show department/gate evidence contract
+  solo gates           Show SOP gate evidence timeline
+  solo gates reconcile Detect active goal/gate drift without mutation
+  solo gates reconcile --repair Repair drift to earliest missing strict evidence
+  solo gates verify --strict Verify gates with evidence contracts
+  solo gate advance    Advance gate with evidence
+  solo artifact write  Write standard gate artifact
+  solo artifact validate Validate artifact required fields
+  solo artifact template Render department evidence JSON template
+  solo revenue         Show MRR gate and gap to target
+  solo ladder          Show revenue ladder from first customer to $1M MRR
+  solo loop --once     Show next safe coordinator pass
+  solo loop --once --strict Show next pass using validated evidence
+  solo loop --once --run Run one local coordinator pass
+  solo daemon run      Run controlled continuous local loop
+  solo daemon status   Show loop lock/log/stop state
+  solo service print   Render macOS LaunchAgent plist
+  solo service install Install LaunchAgent for daemon loop
+  solo [status|pdf]    Solo Company status
+ sops list          Show department SOP chains and SOP files
+ sop run <dept>    Run department SOP with evidence contract
+ role list         List RaaS roles
+ role create <name> --agent <id> --pattern <id>
+ role show <name>  Show role details
+ role run <name>   Execute a RaaS role
+ role delete <name> Delete a role
+ ceo strategy <goal>    Auto-decompose goal into OKRs + patterns
+ ceo boardroom <topic>  Multi-agent debate -> CEO vote -> execute
+ ceo delegate <task>    Auto-select agent -> track -> report
+ ceo emergency <task>   Emergency pattern: max parallelism
+ ceo status             Show CEO command room state
+CLI WRAPPING (agent auto-detection)
+  mekong <cmd>         mekong-cli with agent context
+  claudekit <cmd>      claudekit with agent context
+  claude <args>        claude (Opus 4.7)
+  Examples:
+    me mekong cook         → mekong cook [agent: fullstack-developer]
+    me mekong audit-plan   → mekong audit-plan [agent: code-reviewer]
+    me mekong bridge       → mekong bridge [agent: fullstack-dev]
+    me mekong revenue      → mekong revenue [agent: business-analyst]
+    me claudekit lint      → claudekit lint [agent: code-quality]
+
+ENVIRONMENT VARIABLES
+  MEKONG_WRAPPER_VERBOSE=1      Verbose
+  MEKONG_WRAPPER_AGENT=<id>     Override agent
+  MEKONG_MODEL=<model>          Override model
+  PROJECT_ROOT=/path            Override root
+
+OPTIONS
+  --pattern <id>      Harness pattern
+  --auto              Auto-detect pattern
+  --parallel          Mark goal for parallel execution (sets parallel_flag)
+  --chain <file.yaml> Chain goals
+  --help, -h          Show this message
+
+For detailed help: me help <subcommand> | <subcommand> --help
+HELP_EOF
+}
+# ── Main dispatch ───────────────────────────────────────────
+main() {
+  local sub="${1:-help}"; shift || true
+
+  case "$sub" in
+    help|--help|-h) show_help; exit 0 ;;
+    agents)        cmd_agents "$@" ;;
+ goal)
+  local gsub="${1:-show}"; shift || true
+  case "$gsub" in
+  show) show_goal "$@" ;;
+  step) run_step "$@" ;;
+  chain) run_goal_chain "$@" ;;
+  create|run|run-parallel|resume|verify|status|list|cancel) run_mekong goal "$gsub" "$@" ;;
+  *) create_goal "$gsub $*" ;;
+  esac
+ ;;
+step) run_step "$@" ;;
+business-step|biz-step) business_exec_step "$@" ;;
+business-run|biz-run) business_run_all "${2:-0}" "${3:-0}" ;;
+business-status|biz-status) business_status ;;
+business-workflow|biz-workflow)
+  local action="${1:-status}"; shift || true
+  case "$action" in
+    run|start|all) business_run_all "${1:-0}" "${2:-0}" ;;
+    step) business_exec_step "$@" ;;
+    status|show|progress) business_status ;;
+    next) local next_n; next_n=$((business_current_step 2>/dev/null || echo 1)); business_exec_step "$next_n" ;;
+    *) business_status ;;
+  esac
+  ;;
+goal-chain|goalchain) run_goal_chain "$@" ;;
+    hermes-idea|hermes_idea) hermes_idea "$@" ;;
+    hermes-step|hermes_run_step) hermes_run_step "$@" ;;
+    hermes-workflow|hermes_workflow_idea) hermes_workflow_idea "$@" ;;
+    hermes-tools|hermes_list_tools) hermes_list_tools "$@" ;;
+
+    hermes-tool-info|hermes_tool_info) hermes_tool_info "$1" ;;
+    hermes-status|hermes_status) hermes_status ;;
+    hermes-export|hermes_export_tools) hermes_export_tools "$1" ;;
+    hermes-chain|hermes_run_chain) hermes_run_chain "$1" ;;
+    idea)    run_idea "$@" ;;
+    project) cmd_project "$@" ;;
+    chain)   cmd_chain "$@" ;;
+    solo)    cmd_solo "$@" ;;
+    sops|sop) cmd_sops "$@" ;;
+	role|raas) cmd_role "$@" ;;
+model) cmd_model "$@" ;;
+    mekong)  run_mekong "$@" ;;
+    claudekit|ck) run_claudekit "$@" ;;
+    claude)  run_claude "$@" ;;
+    mekong_raw|claudekit_raw|claude_raw)
+      local bin_name="${sub%_raw}"
+      local bin; bin=$(which "$bin_name" 2>/dev/null || echo "/opt/homebrew/bin/$bin_name")
+      cd "$PROJECT_ROOT"
+      exec "$bin" "$@"
+      ;;
+    *) log_error "Unknown: me $sub"; show_help; exit 1 ;;
+  esac
+}
+
+main "$@"

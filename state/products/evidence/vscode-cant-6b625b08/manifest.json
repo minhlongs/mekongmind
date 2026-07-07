@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "vscode-cant",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/mekong-cli/packages/cleo-new/editors/vscode-cant",
+  "snapshot_dir": "state/products/evidence/vscode-cant-6b625b08",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/vscode-cant-6b625b08/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/vscode-cant-6b625b08/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:31:43.174082Z"
+}

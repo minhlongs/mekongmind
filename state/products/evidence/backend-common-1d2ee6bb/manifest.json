@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "backend-common",
+  "product_path": "/Users/macbook/mekongmind/apps/well/n8n_codebase/packages/@n8n/backend-common",
+  "snapshot_dir": "state/products/evidence/backend-common-1d2ee6bb",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/backend-common-1d2ee6bb/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/backend-common-1d2ee6bb/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:21:02.639745Z"
+}

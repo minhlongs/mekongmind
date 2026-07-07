@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "trace-opik",
+  "product_path": "/Users/macbook/dify/api/providers/trace/trace-opik",
+  "snapshot_dir": "state/products/evidence/trace-opik-113ab574",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/trace-opik-113ab574/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/trace-opik-113ab574/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:13:06.535905Z"
+}

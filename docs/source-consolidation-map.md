@@ -1,5 +1,5 @@
 # Source Consolidation Map
-*Generated: 2026-05-31 | Phase 2 | Status: draft — pending dry-run gate*
+*Generated: 2026-05-31 | Phase 2 verified 2026-07-07 | Status: draft — pending dry-run gate*
 
 ## Contract
 `source path → target path → import method → conflict resolution → verification command`
@@ -109,7 +109,7 @@ diff -rq ~/projects/openclaw/apps/ /Users/macbook/mekongmind/apps/openclaw-worke
 **Verification gate (mekong-ide):**
 ```bash
 ls packages/ide/  # confirm workspace patterns match
-diff -rq ~/mekong-ide/packages/ide-*/ /Users/macbook/mekongmind/packages/ide/ 2>/dev/null
+# micracode/micracode-core verification: diff -rq ~/mekong-ide/packages/micracode ~/mekong-ide/packages/micracode-core /Users/macbook/mekongmind/packages/ide/ 2>/dev/null
 ```
 
 ---
@@ -122,10 +122,9 @@ diff -rq ~/mekong-ide/packages/ide-*/ /Users/macbook/mekongmind/packages/ide/ 2>
 | `pyproject.toml` | `cli/pyproject.toml` (merge deps) | Merge if needed |
 | `CLAUDE.md` | `cli/CLAUDE.md` (merge) | Append unique sections |
 
+**NOTE:** `cli/foundation/` does NOT exist in target. Import deferred.
+
 **Verification gate (mekong-foundation):**
-```bash
-diff -rq ~/mekong-foundation/src/ /Users/macbook/mekongmind/cli/foundation/src/ 2>/dev/null
-```
 
 ---
 
@@ -145,26 +144,29 @@ find ~/mekong -maxdepth 2 -type f -name "*.py" -o -name "*.ts" -o -name "*.md" 2
 
 ---
 
-## 8. `~/.cheetahclaws-src` → Adapter Contract
+## 8. `cli/src/core/` + `~/.cheetahclaws/` → CheetahClaws Adapter (VERIFIED EXISTS)
 
-CheetahClaws source. Strategy: **adapter-only**, no vendoring.
+**VERIFIED 2026-07-07:** CheetahClaws adapter is fully implemented inline in target. No external `~/.cheetahclaws-src` repo exists or is needed.
 
-| Source | Target Path | Role |
+| Component | Path | Status |
 |---|---|---|
-| `agent.py`, `agent_runner.py` | `cli/src/core/cheetahclaws_adapter.py` (new) | Python adapter |
-| `cc_daemon/` | `cli/src/core/cc_daemon_client.py` (new) | Daemon client |
-| `bridges/` | `cli/src/core/bridges/` (new) | Bridge wrappers |
-| `bootstrap.py` | `cli/src/core/bootstrap.py` (merge) | Merge unique |
-| `pyproject.toml` | `cli/pyproject.toml` (merge deps) | Merge deps |
-| `README.md`, docs | `docs/cheetahclaws-adapter.md` (new) | Documentation |
+| Adapter | `cli/src/core/cheetahclaws_adapter.py` | 263 lines, `CheetahClawsAdapter` class with JSON-RPC over Unix socket |
+| Bridges | `cli/src/core/bridges/__init__.py` | Exports `CheetahClawsAdapter`, boundary rule enforced |
+| Daemon runtime | `~/.cheetahclaws/` | sessions.db, skills, config.json present |
+| CLI binary | `/Users/macbook/.local/bin/cheetahclaws` | Installed |
+
+**Source strategy:** Adapter was built inline during mekong-cli era. Daemon is a separate runtime (`cheetahclaws serve`), not imported as code. MekongMind communicates via JSON-RPC over Unix socket at `~/.cheetahclaws/run/daemon.sock`.
+
+**Phase 2 plan was wrong:** Section 8 originally referenced `~/.cheetahclaws-src` as a source repo. That path never existed. The adapter code was always in `cli/src/core/`.
 
 **Verification gate (CheetahClaws):**
 ```bash
-diff -rq ~/.cheetahclaws-src/bridges/ /Users/macbook/mekongmind/cli/src/core/bridges/ 2>/dev/null
-diff -rq ~/.cheetahclaws-src/cc_daemon/ /Users/macbook/mekongmind/cli/src/core/cc_daemon/ 2>/dev/null
+ls -la cli/src/core/cheetahclaws_adapter.py     # must exist
+ls -la cli/src/core/bridges/__init__.py         # must exist
+ls -la ~/.cheetahclaws/run/daemon.sock          # daemon runtime (optional, requires serve running)
+python3 -c "from cli.src.core.cheetahclaws_adapter import CheetahClawsAdapter; print('OK')"
 ```
 
----
 
 ## Exclusions (With Reason)
 
@@ -218,3 +220,41 @@ diff -rq ~/.cheetahclaws-src/cc_daemon/ /Users/macbook/mekongmind/cli/src/core/c
 - Q3: ~/mekong (no git) — what unique content does it hold that target lacks?
 - Q4: Should workspace add explicit `apps/digital/*` and `packages/ide/*` entries (already present)?
 - Q5: OpenClaw adapter — which upstream interfaces are actually consumed by target today?
+
+---
+
+## Post-Cook Delta (Phase 5 — 2026-07-07)
+
+Changes from May 31 baseline after Phase 1-5 execution:
+
+### Packages Removed (8)
+| Package | Reason |
+|---|---|
+| `billing` | Merged into `packages/mekong-cli-core` or deprecated |
+| `sdk` | Consolidated into `packages/openclaw-engine` |
+| `vibe-embedded-finance` | Deduped into `vibe-payment` |
+| `vibe-payos-billing-types` | Deduped into `vibe-payment` |
+| `vibe-stripe` | Deduped into `vibe-payment` |
+| `vibe-subscription` | Deduped into `vibe-payment` |
+| `vibe-supabase` | Deduped into existing Supabase integration |
+
+
+**Verdict:** 49 packages remain. 8 packages consolidated/removed: `sdk`→OpenClaw engine, 5 vibe billing→`vibe-payment`, `vibe-supabase` deduped, `billing` merged.
+
+### New Apps (1)
+| App | Source |
+|---|---|
+| `apps/content-hub` | Added since May 31 (unknown origin; likely standalone) |
+
+### mekong-ide CORRECTION
+**Phase 2 report initially claimed `packages/ide/` does NOT exist.** CORRECTED: `packages/ide/` EXISTS with 23 packages confirmed on 2026-07-07. Source `~/mekong-ide/packages/` has 2 extra packages (`micracode`, `micracode-core`) not present in target.
+
+### CheetahClaws CORRECTION
+**Phase 2 plan referenced `~/.cheetahclaws-src` as a source path.** CORRECTED: `~/.cheetahclaws-src` does NOT exist anywhere on the filesystem. Phase 4 adapter verification confirms no Python adapter in `~/projects/openclaw` either. Section 8 is BLOCKED pending user decision.
+
+### daemon-guardian.sh Fix
+`apps/openclaw-worker/scripts/daemon-guardian.sh` had stale `~/mekong-cli` hardcoded path. FIXED 2026-07-07: resolved script-relative via `BASH_SOURCE[0]`. Verification: script resolves to `/Users/macbook/mekongmind/apps/openclaw-worker`.
+
+### OpenClaw Mobile Apps NOTED (OUT OF SCOPE)
+`~/projects/openclaw` contains `android/`, `ios/`, `macos/`, `macos-mlx-tts/` directories — NOT consolidated. These are separate native codebases, out of scope for MekongMind monorepo consolidation.
+

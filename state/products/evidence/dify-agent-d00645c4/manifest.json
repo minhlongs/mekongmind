@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "dify-agent",
+  "product_path": "/Users/macbook/dify/dify-agent",
+  "snapshot_dir": "state/products/evidence/dify-agent-d00645c4",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/dify-agent-d00645c4/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/dify-agent-d00645c4/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:13:37.957798Z"
+}

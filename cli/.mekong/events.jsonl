@@ -18,3 +18,5 @@
 {"type": "unknown.event.type", "source": "manual", "data": {}, "timestamp": 1780240508.614785}
 {"type": "ci.failed", "source": "github", "data": {}, "timestamp": 1780240877.6839979}
 {"type": "unknown.event.type", "source": "manual", "data": {}, "timestamp": 1780240877.698538}
+{"type": "ci.failed", "source": "github", "data": {}, "timestamp": 1783432308.523532}
+{"type": "unknown.event.type", "source": "manual", "data": {}, "timestamp": 1783432308.540949}

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "telemetry@v0.0.0-20241004145657-5eebfecbdf1f",
+  "product_path": "/Users/macbook/go/pkg/mod/golang.org/x/telemetry@v0.0.0-20241004145657-5eebfecbdf1f",
+  "snapshot_dir": "state/products/evidence/telemetry-v0.0.0-20241004145657-5eebfecbdf1f-212357b3",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/telemetry-v0.0.0-20241004145657-5eebfecbdf1f-212357b3/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/telemetry-v0.0.0-20241004145657-5eebfecbdf1f-212357b3/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:53.828024Z"
+}

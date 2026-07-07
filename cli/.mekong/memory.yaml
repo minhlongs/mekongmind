@@ -1,0 +1,16 @@
+- context: {}
+  duration_ms: 3403.158187866211
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  reflection: ''
+  status: error
+  timestamp: 1783432303.799117
+- context: {}
+  duration_ms: 3170.6149578094482
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  reflection: ''
+  status: success
+  timestamp: 1783432307.581137

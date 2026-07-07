@@ -1,0 +1,128 @@
+# Portable sed -i (GNU and BSD/macOS)
+portable_sed() {
+local pattern="$1"; shift
+local file="$1"
+if sed --version >/dev/null 2>&1; then
+ # GNU sed — -i without backup suffix
+ sed -i "$pattern" "$file"
+else
+ # BSD/macOS sed — -i requires empty backup suffix
+ sed -i '' "$pattern" "$file"
+fi
+}
+
+#!/bin/bash
+# goal-executor.sh — Goal state manipulation for me-deep-wrapper
+# Provides: latest_goal_file, goal_field, set_goal_field,
+# list_completed_steps, mark_step_done, step_done,
+# goal_next_step, add_step_output, create_goal
+
+STATE_DIR="/Users/macbook/Documents/me-deep-wrapper/state"
+
+latest_goal_file() {
+  local active
+  active=$(grep -l '^Status: active$' "$STATE_DIR"/goal-*.md 2>/dev/null | sort | tail -1)
+  if [ -n "$active" ]; then
+    echo "$active"
+  else
+    ls -t "$STATE_DIR"/goal-*.md 2>/dev/null | head -1
+  fi
+}
+
+# Usage: goal_field [<file>] <field_name>
+goal_field() {
+  local f="${1:-}"
+  local field="${2:-}"
+  if [ -n "$f" ] && [ -f "$f" ]; then :; else f="$(latest_goal_file)"; fi
+  [ -z "$f" ] && { echo ""; return; }
+  grep -E "^#? *${field}:" "$f" 2>/dev/null | head -1 | sed -E "s/^#? *${field}: *//"
+}
+
+set_goal_field() {
+  local f="${1:-}"
+  local k="${2:-}"
+  local v="${3:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  if grep -qE "^${k}:" "$f" 2>/dev/null; then
+    portable_sed "s|^${k}:.*|${k}: ${v}|" "$f"
+  else
+    echo "${k}: ${v}" >> "$f"
+  fi
+}
+
+create_goal() {
+  local goal_desc="${1:-}"
+  local pattern_label="${2:-orchestrator}"
+  # Validate non-empty goal description
+  if [ -z "$goal_desc" ]; then
+    echo "ERROR: goal description required. Usage: me idea <description>" >&2
+    return 1
+  fi
+  local stamp
+  stamp=$(date +%Y%m%d-%H%M%S)
+  local f="$STATE_DIR/goal-${stamp}.md"
+  mkdir -p "$STATE_DIR"
+  cat > "$f" << EOF
+# Goal: ${goal_desc}
+Created: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+Pattern: ${pattern_label}
+Status: active
+Steps: []
+EOF
+  echo "$f"
+}
+
+# Append "Step N Output: ..." to goal file
+add_step_output() {
+  local f="${1:-}"
+  local n="${2:-}"
+  local output="${3:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && return 1
+  cat >> "$f" << EOF
+Step ${n} Output: ${output}
+EOF
+  # Update Steps: [] to include this step
+  local steps
+  steps=$(grep -E "^Steps: " "$f" 2>/dev/null | sed "s/^Steps: *//" || echo "")
+  if [ -z "$steps" ] || [ "$steps" = "[]" ]; then
+    portable_sed "s|^Steps: .*|Steps: [${n}]|" "$f"
+else
+        clean=$(echo "$steps" | sed 's/\[//g; s/\]//g; s/ //g')
+        if ! echo "$clean" | grep -qE "^${n}$|^${n},|,${n}$|,${n},"; then
+            portable_sed "s|^Steps: .*|Steps: [${clean},${n}]|" "$f"
+        fi
+    fi
+  fi
+}
+
+list_completed_steps() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && { echo ""; return; }
+  grep -E "^Step [0-9]+ Output:" "$f" 2>/dev/null | sed "s/^Step \([0-9]\+\) Output:.*/\1/" | tr '\n' ',' | sed 's/,$//'
+}
+
+mark_step_done() {
+  add_step_output "$@"
+}
+
+step_done() {
+  local f="${1:-}"
+  local n="${2:-}"
+  grep -qE "^[[:space:]]*Step ${n} Output:" "$f" 2>/dev/null
+}
+
+# Return next step number after the highest completed step
+goal_next_step() {
+  local f="${1:-}"
+  [ -z "$f" ] && f="$(latest_goal_file)"
+  [ -z "$f" ] && { echo "1"; return; }
+  local steps
+  steps=$(goal_field "$f" "Steps")
+  if [ -z "$steps" ] || [ "$steps" = "[]" ]; then
+    echo "1"; return
+  fi
+  echo "$steps" | tr ',' '\n' | sed 's/ //g; s/\[//g; s/\]//g' | awk '{if($1+0>m+0)m=$1} END{print m+1}'
+}

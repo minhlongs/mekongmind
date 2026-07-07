@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "raas-sdk",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/raas-sdk",
+  "snapshot_dir": "state/products/evidence/raas-sdk-5a4f265e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/raas-sdk-5a4f265e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/raas-sdk-5a4f265e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:32:44.563517Z"
+}

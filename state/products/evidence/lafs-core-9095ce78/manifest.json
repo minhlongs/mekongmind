@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "lafs-core",
+  "product_path": "/Users/macbook/cleo-cli/crates/lafs-core",
+  "snapshot_dir": "state/products/evidence/lafs-core-9095ce78",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/lafs-core-9095ce78/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/lafs-core-9095ce78/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:27.355129Z"
+}

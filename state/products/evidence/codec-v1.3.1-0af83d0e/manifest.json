@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "codec@v1.3.1",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/ugorji/go/codec@v1.3.1",
+  "snapshot_dir": "state/products/evidence/codec-v1.3.1-0af83d0e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/codec-v1.3.1-0af83d0e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/codec-v1.3.1-0af83d0e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:17:26.199406Z"
+}

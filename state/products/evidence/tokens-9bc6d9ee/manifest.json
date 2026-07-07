@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "tokens",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/tokens",
+  "snapshot_dir": "state/products/evidence/tokens-9bc6d9ee",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/tokens-9bc6d9ee/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/tokens-9bc6d9ee/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:32:45.573586Z"
+}

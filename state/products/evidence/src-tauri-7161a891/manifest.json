@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "src-tauri",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/ide/ide-next/src-tauri",
+  "snapshot_dir": "state/products/evidence/src-tauri-7161a891",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/src-tauri-7161a891/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/src-tauri-7161a891/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:26:52.171445Z"
+}

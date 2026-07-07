@@ -1,0 +1,16 @@
+{
+  "improvements": [
+    {
+      "id": "t1",
+      "title": "Fix stuff",
+      "description": "desc",
+      "priority": "HIGH",
+      "category": "reliability",
+      "source_analysis": "test",
+      "created_at": "2026-07-07T20:51:13.299072",
+      "status": "completed",
+      "metadata": {}
+    }
+  ],
+  "last_updated": "2026-07-07T20:51:13.299083"
+}

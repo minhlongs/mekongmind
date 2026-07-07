@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "a16z-solo-company",
+  "product_path": "/Users/macbook/a16z-solo-company",
+  "snapshot_dir": "state/products/evidence/a16z-solo-company-b1d8b3cd",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/a16z-solo-company-b1d8b3cd/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/a16z-solo-company-b1d8b3cd/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:11:51.032932Z"
+}

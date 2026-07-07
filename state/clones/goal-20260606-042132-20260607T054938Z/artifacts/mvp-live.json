@@ -1,0 +1,42 @@
+{
+  "department": "engineering-factory",
+  "gate": "mvp-live",
+  "artifact_path": "state/evidence/mvp-live.json",
+  "owner": "fullstack-developer",
+  "status": "ready",
+  "updated_at": "2026-06-05T19:09:05.638161Z",
+  "note": "Step",
+  "routes": [
+    "GET /",
+    "GET /api/health",
+    "GET /api/products",
+    "POST /api/checkout",
+    "GET /api/subscription/status",
+    "POST /api/webhook/polar"
+  ],
+  "apis": [
+    "product-service",
+    "checkout-service",
+    "subscription-service",
+    "webhook-service"
+  ],
+  "data_model": {
+    "products": "id,name,description,price_tiers,sku",
+    "orders": "id,user_id,product_id,status,total,created_at",
+    "subscriptions": "id,user_id,tier,status,current_period_start,current_period_end",
+    "customers": "id,email,name,tier,onboarded_at"
+  },
+  "integrations": [
+    "Polar.sh checkout + webhook",
+    "Cloudflare Workers runtime",
+    "x402 micropayment bridge"
+  ],
+  "checkout_path": "/products \u2192 /cart \u2192 /checkout/success",
+  "build_command": "npm run build && npm test",
+  "tests_run": true,
+  "known_risks": [
+    "Cloudflare Workers billing not activated \u2014 deployment blocked",
+    "Polar.sh account not created \u2014 checkout flow untested in production",
+    "Zero customers \u2014 no live payment verification"
+  ]
+}

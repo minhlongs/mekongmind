@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "mail",
+  "product_path": "/Users/macbook/mekongmind/packages/ide/console/mail",
+  "snapshot_dir": "state/products/evidence/mail-65db5b7d",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/mail-65db5b7d/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/mail-65db5b7d/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:22:23.013070Z"
+}

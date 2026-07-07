@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "dashboard",
+  "product_path": "/Users/macbook/mekong-cli/apps/dashboard",
+  "snapshot_dir": "state/products/evidence/dashboard-d9674551",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/dashboard-d9674551/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/dashboard-d9674551/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:18:39.649853Z"
+}

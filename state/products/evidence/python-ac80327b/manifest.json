@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "python",
+  "product_path": "/Users/macbook/EstateWise-Chapel-Hill-Chatbot/data/python",
+  "snapshot_dir": "state/products/evidence/python-ac80327b",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/python-ac80327b/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/python-ac80327b/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:11:37.572128Z"
+}

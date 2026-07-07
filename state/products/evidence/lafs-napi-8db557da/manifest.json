@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "lafs-napi",
+  "product_path": "/Users/macbook/cleo-cli/crates/lafs-napi",
+  "snapshot_dir": "state/products/evidence/lafs-napi-8db557da",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/lafs-napi-8db557da/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/lafs-napi-8db557da/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:12:28.268908Z"
+}

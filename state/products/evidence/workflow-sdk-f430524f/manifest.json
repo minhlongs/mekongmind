@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "workflow-sdk",
+  "product_path": "/Users/macbook/mekongmind/apps/well/n8n_codebase/packages/@n8n/workflow-sdk",
+  "snapshot_dir": "state/products/evidence/workflow-sdk-f430524f",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/workflow-sdk-f430524f/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/workflow-sdk-f430524f/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:21:41.264795Z"
+}

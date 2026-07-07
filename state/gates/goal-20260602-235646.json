@@ -1,0 +1,64 @@
+{
+  "current_gate": "first-1m-mrr",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T16:56:46.359636Z",
+          "note": "initial gate",
+          "source": "local-state"
+        }
+      ],
+      "id": "idea-intake",
+      "status": "passed"
+    },
+    {
+      "evidence": [],
+      "id": "company-blueprint",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "offer-validated",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "mvp-live",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "first-revenue",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "repeatable-channel",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "fulfillment-stable",
+      "status": "pending"
+    },
+    {
+      "evidence": [],
+      "id": "scale-ready",
+      "status": "pending"
+    },
+    {
+      "evidence": [
+        {
+          "at": "2026-06-02T17:13:33.994720Z",
+          "note": "/Users/macbook/state/evidence/first-1m-mrr.json AURA CAFE launch ready 06/06/2026 \u2014 revenue pipeline established",
+          "source": "artifact"
+        }
+      ],
+      "id": "first-1m-mrr",
+      "status": "active"
+    }
+  ],
+  "goal_id": "goal-20260602-235646",
+  "updated_at": "2026-06-02T17:13:33.994720Z"
+}

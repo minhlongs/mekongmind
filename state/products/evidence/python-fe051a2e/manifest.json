@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "python",
+  "product_path": "/Users/macbook/mekongmind/apps/well/n8n_codebase/packages/@n8n/ai-workflow-builder.ee/evaluations/programmatic/python",
+  "snapshot_dir": "state/products/evidence/python-fe051a2e",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/python-fe051a2e/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/python-fe051a2e/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:21:00.734809Z"
+}

@@ -1,0 +1,88 @@
+- context:
+    goal_id: goal_db1f46fec20a
+  duration_ms: 0.0
+  error_summary: ''
+  goal: docs/sop-ceo-media-company-1m-arr.md full-stack for zero bug GO LIVE deploy
+    --auto --parallel
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: success
+  timestamp: 1780552003.308822
+- context:
+    goal_id: goal_05397b1ba120
+  duration_ms: 0.0
+  error_summary: ''
+  goal: E-commerce SaaS platform
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: success
+  timestamp: 1780583985.339853
+- context:
+    goal_id: goal_7cd6d59ed6ac
+  duration_ms: 0.0
+  error_summary: ''
+  goal: MEKONG Mind Wrapper - Autonomous AI Agent Orchestration Platform for Solo
+    Founders
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: success
+  timestamp: 1780597062.644406
+- context:
+    goal_id: goal_c53d5ca8b963
+  duration_ms: 0.0
+  error_summary: ''
+  goal: "Build mekongmind from zero to M MRR \u2014 autonomous self-selling SaaS.\
+    \ Build product, find customers, close deals, deliver, scale. --auto --parallel"
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: success
+  timestamp: 1780632660.168283
+- context:
+    goal_id: goal_c53d5ca8b963
+  duration_ms: 0.0
+  error_summary: '; ; agent-executor contains __init__.py but is not a valid Python
+    package name
+
+    ; [Errno 2] No such file or directory: ''bandit''; '
+  goal: "Build mekongmind from zero to M MRR \u2014 autonomous self-selling SaaS.\
+    \ Build product, find customers, close deals, deliver, scale. --auto --parallel"
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: failed
+  timestamp: 1780632914.563618
+- context:
+    goal_id: goal_c53d5ca8b963
+  duration_ms: 0.0
+  error_summary: '; ; agent-executor contains __init__.py but is not a valid Python
+    package name
+
+    ; [Errno 2] No such file or directory: ''bandit''; '
+  goal: "Build mekongmind from zero to M MRR \u2014 autonomous self-selling SaaS.\
+    \ Build product, find customers, close deals, deliver, scale. --auto --parallel"
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: failed
+  timestamp: 1780632988.747927
+- context:
+    goal_id: goal_c53d5ca8b963
+  duration_ms: 0.0
+  error_summary: '; ; agent-executor contains __init__.py but is not a valid Python
+    package name
+
+    ; [Errno 2] No such file or directory: ''bandit''; '
+  goal: "Build mekongmind from zero to M MRR \u2014 autonomous self-selling SaaS.\
+    \ Build product, find customers, close deals, deliver, scale. --auto --parallel"
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: failed
+  timestamp: 1780633019.737962
+- context:
+    goal_id: goal_c53d5ca8b963
+  duration_ms: 0.0
+  error_summary: ''
+  goal: "Build mekongmind from zero to M MRR \u2014 autonomous self-selling SaaS.\
+    \ Build product, find customers, close deals, deliver, scale. --auto --parallel"
+  recipe_used: goal-engine-v1
+  reflection: ''
+  status: success
+  timestamp: 1780633376.78839

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "enterprise",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/packages/ide/enterprise",
+  "snapshot_dir": "state/products/evidence/enterprise-14be214d",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/enterprise-14be214d/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/enterprise-14be214d/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:29:15.485847Z"
+}

@@ -1,0 +1,6 @@
+2026-07-07T20:51:13.368343 🚨 STOP-THE-LINE w1: [build_failure] build failed
+2026-07-07T20:51:13.372705 🚨 STOP-THE-LINE w1: [schema_change] ALTER TABLE users
+2026-07-07T20:51:13.382003 🚨 STOP-THE-LINE w1: [schema_change] DROP COLUMN id
+2026-07-07T20:51:13.386618 🚨 STOP-THE-LINE w1: [type_error] TS2345: error
+2026-07-07T20:51:13.395767 🚨 STOP-THE-LINE w1: [build_failure] build failed
+2026-07-07T20:51:13.400781 🚨 STOP-THE-LINE w1: [breaking_test] test failed: assertion error

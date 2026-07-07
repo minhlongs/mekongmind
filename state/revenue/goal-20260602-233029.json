@@ -1,0 +1,25 @@
+{
+  "goal_id": "goal-20260602-233029",
+  "currency": "USD",
+  "current_mrr": 0,
+  "projected_mrr": 2100,
+  "target_mrr": 1000000,
+  "mrr_gap": 997900,
+  "gate": "first-1m-mrr",
+  "source": "local-state",
+  "business_model": "F&B container cafe — AURA CAFE Sa Đéc",
+  "unit_economics": {
+    "avg_ticket_usd": 1.50,
+    "daily_customers_projected": 70,
+    "days_per_month": 30,
+    "monthly_projected_usd": 2100
+  },
+  "scale_pathway": {
+    "phase_1": "Single container cafe — $2,100 MRR",
+    "phase_2": "5 locations across Đồng Tháp — $10,500 MRR",
+    "phase_3": "20 locations Mekong Delta — $42,000 MRR",
+    "phase_4": "100 locations national — $210,000 MRR",
+    "phase_5": "Franchise + digital platform — $1,000,000 MRR"
+  },
+  "updated_at": "2026-06-02T17:00:00Z"
+}

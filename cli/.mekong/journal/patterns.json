@@ -1,0 +1,73 @@
+{
+  "patterns": [
+    {
+      "id": "test-snapshot",
+      "error_pattern": "snapshot test failed|assertion error",
+      "solution": "npm test -- --updateSnapshot",
+      "category": "test",
+      "success_count": 1,
+      "failure_count": 0,
+      "created_at": "2026-07-07T20:51:03.294315",
+      "last_matched": null,
+      "tags": [
+        "test",
+        "snapshot",
+        "jest"
+      ],
+      "metadata": {},
+      "confidence": 1.0
+    },
+    {
+      "id": "npm-install",
+      "error_pattern": "ModuleNotFoundError|Cannot find module|import error",
+      "solution": "npm install",
+      "category": "import",
+      "success_count": 1,
+      "failure_count": 0,
+      "created_at": "2026-07-07T20:51:03.294317",
+      "last_matched": "2026-07-07T20:51:13.716151",
+      "tags": [
+        "import",
+        "module",
+        "dependency"
+      ],
+      "metadata": {},
+      "confidence": 1.0
+    },
+    {
+      "id": "audit-fix",
+      "error_pattern": "security vulnerability|npm audit|CVE-",
+      "solution": "npm audit fix",
+      "category": "security",
+      "success_count": 1,
+      "failure_count": 0,
+      "created_at": "2026-07-07T20:51:03.294319",
+      "last_matched": "2026-07-07T20:51:13.727828",
+      "tags": [
+        "security",
+        "audit",
+        "vulnerability"
+      ],
+      "metadata": {},
+      "confidence": 1.0
+    },
+    {
+      "id": "git-reset",
+      "error_pattern": "git failed|merge conflict|HEAD detached",
+      "solution": "git reset --hard HEAD",
+      "category": "git",
+      "success_count": 1,
+      "failure_count": 0,
+      "created_at": "2026-07-07T20:51:03.294321",
+      "last_matched": "2026-07-07T20:51:13.731171",
+      "tags": [
+        "git",
+        "reset",
+        "conflict"
+      ],
+      "metadata": {},
+      "confidence": 1.0
+    }
+  ],
+  "last_updated": "2026-07-07T20:51:13.788343"
+}

@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "engine-farm",
+  "product_path": "/Users/macbook/mekong-ide-core/engine-farm",
+  "snapshot_dir": "state/products/evidence/engine-farm-9d922b96",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/engine-farm-9d922b96/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/engine-farm-9d922b96/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:19:55.312895Z"
+}

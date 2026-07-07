@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "ide-ui",
+  "product_path": "/Users/macbook/Downloads/mekong-cli-main/apps/ide-ui",
+  "snapshot_dir": "state/products/evidence/ide-ui-6847f667",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/ide-ui-6847f667/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/ide-ui-6847f667/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T14:08:03.700674Z"
+}

@@ -1,0 +1,79 @@
+{
+  "created_at": "2026-06-03T15:20:50.380658Z",
+  "cross_department_handoff": [
+    "Engineering Factory proves checkout path and mvp-live.",
+    "Quality & Compliance reviews release and outreach risk.",
+    "Platform Operations verifies live health, version, rollback, monitoring.",
+    "Growth Marketing sends bounded campaign and records real log.",
+    "Sales & Revenue qualifies leads and records Polar-backed payment evidence."
+  ],
+  "goal_id": "goal-20260603-155338",
+  "growth_marketing_draft": {
+    "artifact_target": "state/evidence/repeatable-channel.json",
+    "audience": "buyer hypothesis for client; Market Intelligence must validate reachable buyer and budget",
+    "campaign": "client bounded outbound validation",
+    "campaign_asset": {
+      "body": "Hi {first_name}, we are validating client for buyer hypothesis for client; Market Intelligence must validate reachable buyer and budget. It targets this pain: workflow pain hypothesis around client; Market Intelligence must validate urgency and alternatives. If this is relevant, reply with your current workaround or choose the verified checkout/demo path. Opt out anytime.",
+      "subject": "Validate client for buyer hypothesis for client; Market Intelligence must validate reachable buyer and budget"
+    },
+    "channel": "bounded manual outbound email or founder-approved channel",
+    "conversion": "pending real send/reply data",
+    "cta": "Reply with current workflow pain, book a demo, or use verified Polar checkout after mvp-live",
+    "department": "growth-marketing",
+    "email_sequence": [
+      {
+        "copy": "Problem -> outcome -> proof/source -> CTA -> opt-out",
+        "day": 0,
+        "purpose": "pain validation and CTA"
+      },
+      {
+        "copy": "Short reminder -> one quantified use case -> CTA -> opt-out",
+        "day": 3,
+        "purpose": "follow-up with specific use case"
+      }
+    ],
+    "leads": [],
+    "learning": "pending real campaign data",
+    "opt_out_compliance": "Every message must include a clear opt-out line and sender identity; no scraped personal outreach without lawful basis.",
+    "outreach_log": [],
+    "positioning": "product-specific workflow around prisma-client-8ab386b53b4c6a36cf793600882d8c11c48b80346cb20c300f8ea381f0c23334 with a clear Polar checkout path, support promise, and bounded fulfillment SOP",
+    "qualification_rule": "qualified only if buyer confirms pain, budget/authority or active workflow, and agrees to demo/checkout next step",
+    "sales_handoff": "handoff only qualified replies with source, context, CTA, and opt-out status"
+  },
+  "guard": [
+    "This packet is not campaign proof.",
+    "This packet is not revenue proof.",
+    "Do not send outreach until mvp-live is verified or CEO exception is recorded.",
+    "Do not mutate Polar.sh configuration from this packet.",
+    "Do not claim MRR until Sales & Revenue has Polar provider evidence and sync status."
+  ],
+  "packet_status": "ready-to-run-draft-not-proof",
+  "polar_provider": "Polar.sh canonical; verified setup must not be destroyed, rotated, or fabricated",
+  "product_name": "client",
+  "product_path": "/Users/macbook/mekongmind/apps/nhipdieuxanh/generated/client",
+  "required_before_send": [
+    "mvp-live strict evidence or explicit CEO exception",
+    "real audience/source list with lawful basis",
+    "sender identity approved for outreach",
+    "opt-out/compliance copy present in every message",
+    "verified product-specific Polar checkout URL"
+  ],
+  "sales_revenue_draft": {
+    "artifact_target": "state/evidence/first-revenue.json",
+    "campaign_source": "client bounded outbound validation",
+    "checkout_url": "",
+    "current_mrr": 0,
+    "department": "sales-revenue",
+    "lead": "",
+    "next_action": "verify mvp-live, attach Polar checkout URL, run bounded outreach, then sync Polar MRR evidence",
+    "offer": "prisma-client-8ab386b53b4c6a36cf793600882d8c11c48b80346cb20c300f8ea381f0c23334 as a productized workflow",
+    "payment_status": "not sent / no payment",
+    "polar_checkout_url": "REQUIRED: verified product-specific Polar checkout URL before revenue claim",
+    "price": "Free tier plus $29/mo Polar subscription target; existing x402/USDC usage paywall is product capability, not canonical MRR provider.",
+    "provider": "Polar.sh",
+    "provider_evidence": "REQUIRED: Polar checkout/subscription/customer export or API evidence",
+    "provider_sync_status": "not synced",
+    "qualification": ""
+  },
+  "schema": "mekongmind.product_growth_sales_work_packet.v1"
+}

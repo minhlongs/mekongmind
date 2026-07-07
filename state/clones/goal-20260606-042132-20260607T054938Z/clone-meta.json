@@ -1,0 +1,24 @@
+{
+  "clone_id": "goal-20260606-042132-20260607T054938Z",
+  "created_at": "2026-06-07T05:49:38.212999Z",
+  "current_gate": "",
+  "evidence_artifacts": [
+    "company-blueprint.json",
+    "offer-validated.json",
+    "mvp-live.json",
+    "repeatable-channel.json",
+    "fulfillment-stable.json",
+    "scale-ready.json",
+    "first-revenue.json",
+    "first-1m-mrr.json",
+    "demo-evidence.json"
+  ],
+  "gate_ids": [],
+  "goal_id": "goal-20260606-042132",
+  "goal_preview": "# Goal: debug-test-042132\nCreated: 2026-06-05T21:21:32Z\nType: idea\nSource: legacy-25-step-idea\nPattern: orchestrator\nStatus: active\nSteps: []\nTotalSteps: 25\nGoalEngine: mekong goal\nFallbackWhenMekongIdeaMissing: mekong goal create/run\nSoloCompanyMode: autonomous\nPlatformDNA: mekongmind-agentic-platform-solo\nFactoryLoop: active\nRevenueTarget: 1000000\nRevenueTargetType: MRR\nCurrentMRR: 0\nRevenueMilestone: first-1m-mrr\nCurrentGate: idea-intake\nCloneStrategy: multi-project-raas\n\n## Legacy /idea 25-S",
+  "requested_id": "goal-20260606-042132",
+  "source_gate": "",
+  "source_md": "/Users/macbook/Documents/me-deep-wrapper/state/goal-20260606-042132.md",
+  "steps_completed": [],
+  "timestamp": "20260607T054938Z"
+}

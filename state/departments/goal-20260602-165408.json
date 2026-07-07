@@ -1,0 +1,134 @@
+{
+  "departments": {
+    "ceo-command": {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:55:07.890004Z"
+    },
+    "engineering-factory": {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:04.575821Z"
+    },
+    "growth-marketing": {
+      "artifact": "/Users/macbook/state/evidence/repeatable-channel.json",
+      "department": "growth-marketing",
+      "gate": "repeatable-channel",
+      "note": "",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:31.321942Z"
+    },
+    "market-intelligence": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:55:56.538030Z"
+    },
+    "product-strategy": {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "offer, pricing, and MVP scope not locked",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:43.070050Z"
+    },
+    "sales-revenue": {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:34.818506Z"
+    }
+  },
+  "events": [
+    {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "company blueprint not approved",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:54:30.589043Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:54:51.028994Z"
+    },
+    {
+      "artifact": "/Users/macbook/.mekong/company.json",
+      "department": "ceo-command",
+      "gate": "company-blueprint",
+      "note": "",
+      "owner": "planner",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:55:07.890004Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "market-intelligence",
+      "gate": "offer-validated",
+      "note": "",
+      "owner": "research-expert",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:55:56.538030Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/mvp-live.json",
+      "department": "engineering-factory",
+      "gate": "mvp-live",
+      "note": "",
+      "owner": "fullstack-developer",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:04.575821Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/repeatable-channel.json",
+      "department": "growth-marketing",
+      "gate": "repeatable-channel",
+      "note": "",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:31.321942Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/first-revenue.json",
+      "department": "sales-revenue",
+      "gate": "first-revenue",
+      "note": "",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:34.818506Z"
+    },
+    {
+      "artifact": "/Users/macbook/state/evidence/offer-validated.json",
+      "department": "product-strategy",
+      "gate": "offer-validated",
+      "note": "offer, pricing, and MVP scope not locked",
+      "owner": "business-analyst",
+      "status": "ready",
+      "updated_at": "2026-06-02T09:56:43.070050Z"
+    }
+  ],
+  "goal_id": "goal-20260602-165408",
+  "updated_at": "2026-06-02T09:56:43.070050Z"
+}

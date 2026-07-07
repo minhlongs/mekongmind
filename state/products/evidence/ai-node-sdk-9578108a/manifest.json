@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "ai-node-sdk",
+  "product_path": "/Users/macbook/teamwork_projects/mekongmind_consolidation/apps/well/n8n_codebase/packages/@n8n/ai-node-sdk",
+  "snapshot_dir": "state/products/evidence/ai-node-sdk-9578108a",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/ai-node-sdk-9578108a/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/ai-node-sdk-9578108a/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:27:41.692422Z"
+}

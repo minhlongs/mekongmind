@@ -1,0 +1,12 @@
+{
+  "goal_id": "goal-20260603-155338",
+  "guard": "snapshot only; not revenue, not campaign proof, not Polar provider mutation",
+  "product_name": "loader@v0.5.0",
+  "product_path": "/Users/macbook/go/pkg/mod/github.com/bytedance/sonic/loader@v0.5.0",
+  "snapshot_dir": "state/products/evidence/loader-v0.5.0-9c4297b1",
+  "snapshots": {
+    "state/evidence/company-blueprint.json": "state/products/evidence/loader-v0.5.0-9c4297b1/company-blueprint.json",
+    "state/evidence/offer-validated.json": "state/products/evidence/loader-v0.5.0-9c4297b1/offer-validated.json"
+  },
+  "updated_at": "2026-06-03T15:16:30.187105Z"
+}
