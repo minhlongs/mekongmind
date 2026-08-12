@@ -1,5 +1,3 @@
-import { ArrowRight, Zap, Shield, Cloud, Server, Lock } from "lucide-react";
-
 export default function LandingPage() {
   return (
     <main className="flex-1">
@@ -24,8 +22,7 @@ export default function LandingPage() {
               href="#sign-off"
               className="inline-flex items-center gap-2 rounded-lg bg-[var(--amber)] px-6 py-3 font-semibold text-[var(--background)] transition hover:brightness-110"
             >
-              Request a Demo — 15 min
-              <ArrowRight className="h-4 w-4" />
+              Request a Demo — 15 min <span aria-hidden="true">→</span>
             </a>
             <a
               href="#product"
@@ -106,19 +103,23 @@ export default function LandingPage() {
                 </tr>
               </thead>
               <tbody className="text-lg">
-                {([
-                  ["Speed", "1–3 days per PR", "Minutes per PR"],
-                  ["Coverage", "Spot-check, human-limited", "Every line, AI-assisted"],
-                  ["Context loss", "Tribal knowledge leaves with devs", "Retained in review history"],
-                ] as const).map(([label, oldTxt, newTxt]) => (
-                  <tr key={label} className="border-b border-[var(--border)]">
-                    <td className="py-5 pr-4 font-medium whitespace-nowrap">
-                      {label}
-                    </td>
-                    <td className="py-5 pr-4 text-[#787880]">{oldTxt as string}</td>
-                    <td className="py-5 text-[var(--amber)]">{newTxt as string}</td>
-                  </tr>
-                ))}
+                {(["Speed", "Coverage", "Context loss"] as const).map((label, idx) => {
+                  const rows = [
+                    ["1–3 days per PR", "Minutes per PR"],
+                    ["Spot-check, human-limited", "Every line, AI-assisted"],
+                    ["Tribal knowledge leaves with devs", "Retained in review history"],
+                  ] as const;
+                  const [oldTxt, newTxt] = rows[idx];
+                  return (
+                    <tr key={label} className="border-b border-[var(--border)]">
+                      <td className="py-5 pr-4 font-medium whitespace-nowrap">
+                        {label}
+                      </td>
+                      <td className="py-5 pr-4 text-[#787880]">{oldTxt}</td>
+                      <td className="py-5 text-[var(--amber)]">{newTxt}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -156,24 +157,24 @@ export default function LandingPage() {
           </h2>
           <ul className="fade-up stagger-1 mt-10 space-y-4 text-lg">
             {([
-              ["Cloudflare Workers", "Edge-first, sub-50ms cold start", Cloud],
-              ["D1 + KV", "Serverless, no ops overhead", Server],
-              ["TypeScript", "End-to-end type safety", Shield],
-              ["Inngest", "Async workflow orchestration", Zap],
+              ["Cloudflare Workers", "Edge-first, sub-50ms cold start", "⚡"],
+              ["D1 + KV", "Serverless, no ops overhead", "🗄"],
+              ["TypeScript", "End-to-end type safety", "🛡"],
+              ["Inngest", "Async workflow orchestration", "⏱"],
               [
                 "OpenRouter + Anthropic",
                 "LLM routing — local-first with cloud fallback",
-                Lock,
+                "🔒",
               ],
-            ] as const).map(([name, desc, Icon], idx) => (
+            ] as const).map(([name, desc, icon]) => (
               <li
-                key={idx}
+                key={name}
                 className="flex items-start gap-4 rounded-lg border border-transparent p-3 transition hover:border-[var(--border)] hover:bg-[var(--surface)]"
               >
-                <Icon className="mt-1 h-5 w-5 shrink-0 text-[var(--amber)]" />
+                <span className="mt-1 shrink-0 text-[var(--amber)]">{icon}</span>
                 <div>
-                  <span className="font-semibold">{name as string}</span>
-                  <span className="text-[#787880]"> — {desc as string}</span>
+                  <span className="font-semibold">{name}</span>
+                  <span className="text-[#787880]"> — {desc}</span>
                 </div>
               </li>
             ))}
@@ -236,8 +237,7 @@ export default function LandingPage() {
             href="/api/leads"
             className="fade-up stagger-3 mt-10 inline-flex items-center gap-2 rounded-lg bg-[var(--amber)] px-8 py-4 text-lg font-semibold text-[var(--background)] transition hover:brightness-110"
           >
-            Start the conversation
-            <ArrowRight className="h-5 w-5" />
+            Start the conversation <span aria-hidden="true">→</span>
           </a>
           <p className="fade-up stagger-4 mt-4 text-sm text-[#787880]">
             Or email us directly — we respond within 24 hours.
@@ -250,7 +250,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-4xl px-6 py-8 text-center text-sm text-[#787880]">
           <p>
             Ultracode is a product of the{" "}
-            <span className="text-[var(--amber-dim)]">MekongMind</span>{' '}
+            <span className="text-[var(--amber-dim)]">MekongMind</span>{" "}
             operating system.
           </p>
           <p className="mt-1">

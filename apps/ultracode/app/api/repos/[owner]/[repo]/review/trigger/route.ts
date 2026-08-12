@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getDb } from "@/db/client";
+import { ensureSchema, getDb } from "@/db/client";
 import { inngestClient } from "@/forest/inngest/client";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +16,8 @@ export async function POST(
     }
 
     const { owner, repo } = await ctx.params;
-    const db = getDb();
+    await ensureSchema();
+  const db = getDb();
 
     // Lookup repo + user's GitHub token
     const repoRow = (await db
@@ -78,7 +79,6 @@ export async function POST(
             defaultBranch: "main",
             pullNumber: null,
             userId: session.sub,
-            githubAccessToken: repoRow.github_access_token,
             trigger: "manual",
           },
         });

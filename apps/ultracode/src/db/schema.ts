@@ -34,12 +34,13 @@ export const CREATE_REVIEWS_TABLE = /* sql */ `
 CREATE TABLE IF NOT EXISTS reviews (
   id TEXT PRIMARY KEY,
   repo_id TEXT NOT NULL REFERENCES repos(id) ON DELETE CASCADE,
-  pull_number INTEGER NOT NULL,
+  pull_number INTEGER,
   title TEXT,
   status TEXT DEFAULT 'pending' NOT NULL,
   findings_count INTEGER DEFAULT 0,
   started_at TEXT DEFAULT (datetime('now')) NOT NULL,
-  completed_at TEXT
+  completed_at TEXT,
+  payload TEXT
 )
 `;
 
@@ -85,6 +86,19 @@ export const INDEX_SPRINTS_REPO_ID =
 export const ADD_GITHUB_TOKEN_COLUMN =
   "ALTER TABLE users ADD COLUMN IF NOT EXISTS github_access_token TEXT";
 
+export const CREATE_SPRINT_TASKS_TABLE = /* sql */ `
+  CREATE TABLE IF NOT EXISTS sprint_tasks (
+    id TEXT PRIMARY KEY,
+    sprint_id TEXT NOT NULL REFERENCES sprints(id) ON DELETE CASCADE,
+    review_id TEXT NOT NULL REFERENCES reviews(id) ON DELETE CASCADE,
+    assignee TEXT,
+    status TEXT DEFAULT 'pending' NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')) NOT NULL
+  )
+`;
+export const INDEX_SPRINT_TASKS_SPRINT = "CREATE INDEX IF NOT EXISTS idx_sprint_tasks_sprint ON sprint_tasks(sprint_id)";
+export const INDEX_SPRINT_TASKS_REVIEW = "CREATE INDEX IF NOT EXISTS idx_sprint_tasks_review ON sprint_tasks(review_id)";
+
 export const ALL_MIGRATIONS = [
   CREATE_USERS_TABLE,
   CREATE_REPOS_TABLE,
@@ -95,5 +109,8 @@ export const ALL_MIGRATIONS = [
   INDEX_REVIEWS_REPO_ID,
   INDEX_FINDINGS_REVIEW_ID,
   INDEX_SPRINTS_REPO_ID,
+  CREATE_SPRINT_TASKS_TABLE,
+  INDEX_SPRINT_TASKS_SPRINT,
+  INDEX_SPRINT_TASKS_REVIEW,
   ADD_GITHUB_TOKEN_COLUMN,
 ];

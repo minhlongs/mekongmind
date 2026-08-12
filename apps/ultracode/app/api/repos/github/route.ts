@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getDb } from "@/db/client";
+import { ensureSchema, getDb } from "@/db/client";
 
 export async function GET(req: NextRequest) {
   try {
@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    await ensureSchema();
     const db = getDb();
     const userRow = (await db
       .prepare("SELECT github_access_token FROM users WHERE id = ?")

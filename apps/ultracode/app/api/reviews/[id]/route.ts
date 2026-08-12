@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getDb } from "@/db/client";
+import { ensureSchema, getDb } from "@/db/client";
 
 export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   try {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const db = getDb();
+    await ensureSchema();
+  const db = getDb();
     const { id } = await ctx.params;
 const reviewRow = (await db
       .prepare("SELECT * FROM reviews WHERE id = ?")

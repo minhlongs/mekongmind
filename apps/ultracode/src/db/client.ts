@@ -11,16 +11,15 @@ interface DBLike {
 }
 
 let cached: DBLike | null = null;
+let schemaPromise: Promise<void> | null = null;
 
 export function setDb(db: DBLike): void {
   cached = db;
+  schemaPromise = null; // reset on new binding (e.g. test override)
 }
 
-export function getDb(): DBLike {
+function resolveDb(): DBLike {
   if (!cached) {
-    // Lazy-fallback: read from Cloudflare Workers env when setDb was
-    // never called. This survives OpenNext rebuilds because it lives
-    // in application source, not the generated worker.js bundle.
     const ctx = (globalThis as Record<symbol, { env?: { DB?: unknown } }>)[
       Symbol.for("__cloudflare-context__")
     ];
@@ -29,11 +28,35 @@ export function getDb(): DBLike {
       cached = binding;
       return cached;
     }
-    throw new Error(
-      "D1 binding not set. Call setDb() at startup before first request.",
-    );
+    throw new Error("D1 binding not set. Call setDb() at startup.");
   }
   return cached;
+}
+
+/**
+ * Ensure schema tables exist. Concurrent calls share a single init promise
+ * so only one migration runs even under concurrent CF Workers requests.
+ */
+export async function ensureSchema(): Promise<void> {
+  if (schemaPromise) return schemaPromise;
+
+  schemaPromise = (async () => {
+    const db = resolveDb();
+    const { ALL_MIGRATIONS } = await import("./schema");
+    for (const sql of ALL_MIGRATIONS) {
+      await db.exec(sql);
+    }
+  })();
+
+  return schemaPromise;
+}
+
+/**
+ * Synchronous DB access — use only in non-async contexts.
+ * Does NOT auto-run migrations; call ensureSchema() first.
+ */
+export function getDb(): DBLike {
+  return resolveDb();
 }
 
 export async function migrateIfNeeded(db: DBLike): Promise<void> {

@@ -1,0 +1,10 @@
+name = "ultracode"
+main = "../.open-next/worker.js"
+compatibility_date = "2025-07-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 binding
+[[d1_databases]]
+binding = "DB"
+database_name = "ultracode-db"
+database_id = "a6eecf94-e7d7-436f-9dd1-a35a34ad9674"

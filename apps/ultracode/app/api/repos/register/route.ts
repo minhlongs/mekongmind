@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getDb } from "@/db/client";
+import { ensureSchema, getDb } from "@/db/client";
 
 interface RegisterBody {
   github_id: number;
@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
 
-    const db = getDb();
+    await ensureSchema();
+  const db = getDb();
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
 

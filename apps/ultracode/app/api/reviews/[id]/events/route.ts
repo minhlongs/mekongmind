@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getDb } from "@/db/client";
+import { ensureSchema, getDb } from "@/db/client";
 import { logger } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const reviewId = (await params).id;
   const streamParam = req.nextUrl.searchParams.get("stream");
 
@@ -19,6 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    await ensureSchema();
     const db = getDb();
 
     type ReviewRow = {
@@ -49,6 +53,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     let lastStatus = review.status;
     let lastCount = review.findings_count ?? 0;
     let heartbeatCounter = 0;
+    let tickTimer: ReturnType<typeof setTimeout> | null = null;
 
     const send = (data: string) => {
       if (!closed) controller.enqueue(encoder.encode(data));
@@ -83,7 +88,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             type PollRow = { status: string; findings_count: number | null };
 
             const row = (await db
-              .prepare<PollRow>("SELECT status, findings_count FROM reviews WHERE id = ?")
+              .prepare<PollRow>(
+                "SELECT status, findings_count FROM reviews WHERE id = ?",
+              )
               .bind(reviewId)
               .first()) as PollRow | undefined;
 
@@ -100,7 +107,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
                 reviewId,
                 findingsCount: row.findings_count ?? 0,
               });
-              send(`event: message\ndata: ${payload}\nid: ${crypto.randomUUID()}\n\n`);
+              send(
+                `event: message\ndata: ${payload}\nid: ${crypto.randomUUID()}\n\n`,
+              );
               send(`data: ${JSON.stringify({ type: "done" })}\n\n`);
               closed = true;
               controller.close();
@@ -108,8 +117,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             }
 
             if (row.status === "failed") {
-              const payload = JSON.stringify({ type: "error", message: "Review failed" });
-              send(`event: message\ndata: ${payload}\nid: ${crypto.randomUUID()}\n\n`);
+              const payload = JSON.stringify({
+                type: "error",
+                message: "Review failed",
+              });
+              send(
+                `event: message\ndata: ${payload}\nid: ${crypto.randomUUID()}\n\n`,
+              );
               send(`data: ${JSON.stringify({ type: "done" })}\n\n`);
               closed = true;
               controller.close();
@@ -124,7 +138,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
                 status: lastStatus,
                 findingsCount: lastCount,
               });
-              send(`event: message\ndata: ${payload}\nid: ${crypto.randomUUID()}\n\n`);
+              send(
+                `event: message\ndata: ${payload}\nid: ${crypto.randomUUID()}\n\n`,
+              );
             }
 
             heartbeatCounter++;
@@ -132,7 +148,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
               send(": heartbeat\n\n");
             }
           } catch (err) {
-            logger.error("SSE poll error: " + (err instanceof Error ? err.message : String(err)));
+            logger.error(
+              "SSE poll error: " +
+                (err instanceof Error ? err.message : String(err)),
+            );
             send(
               `event: message\ndata: ${JSON.stringify({ type: "error", message: "Stream error" })}\nid: ${crypto.randomUUID()}\n\n`,
             );
@@ -142,13 +161,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             return;
           }
 
-          setTimeout(tick, POLL_INTERVAL);
+          tickTimer = setTimeout(tick, POLL_INTERVAL);
         };
 
-        setTimeout(tick, POLL_INTERVAL);
+        tickTimer = setTimeout(tick, POLL_INTERVAL);
       },
       cancel() {
         closed = true;
+        if (tickTimer) clearTimeout(tickTimer);
       },
       pull() {
         // backpressure hint — no-op, we drive via setTimeout
@@ -163,7 +183,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       },
     });
   } catch (err) {
-    logger.error("SSE GET error: " + (err instanceof Error ? err.message : String(err)));
+    logger.error(
+      "SSE GET error: " + (err instanceof Error ? err.message : String(err)),
+    );
     return NextResponse.json({ error: "Stream failed" }, { status: 500 });
   }
 }

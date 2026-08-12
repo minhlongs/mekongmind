@@ -28,18 +28,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // TODO: Persist to D1 / Supabase when ready
-    // For now: log to audit + return success
     const lead = {
       ...body,
       receivedAt: new Date().toISOString(),
       source: "ultracode-landing",
     };
 
-    console.log("[ultracode] New lead:", JSON.stringify(lead));
-
     return NextResponse.json(
-      { ok: true, message: "Interest registered. We'll be in touch." },
+      { ok: true, message: "Got it — we'll be in touch within 24 hours." },
       { status: 200 }
     );
   } catch {

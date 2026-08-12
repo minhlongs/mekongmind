@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
-  reactStrictMode: true,
-  outputFileTracingRoot: "/Users/macbook/mekongmind/apps/ultracode",
-  // Static export to avoid SSR/RSC context issues (Node 26 + React 19 compat)
-  output: "export",
+  reactStrictMode: false,
+  output: "standalone",
   trailingSlash: true,
   images: { unoptimized: true },
   experimental: {
