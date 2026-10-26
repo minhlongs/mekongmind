@@ -1,0 +1,5619 @@
+[
+  {
+    "id": "adminlaw",
+    "name": "adminlaw",
+    "command": "mekong adminlaw",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "AdminLaw — Vietnamese Legal Normative Documents, RIA & State Compensation Liability Suite (Luật VBQPPL & Luật TNBTNN)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] adminlaw dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "adminsanction",
+    "name": "adminsanction",
+    "command": "mekong adminsanction",
+    "aliases": [
+      "xuphat",
+      "vphc"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "AdminSanction — Vietnamese Administrative Sanctions, Statutory Fines & Remedial Measures Suite (Luật XLVPHC 2012/2020 & NĐ 118/2021/NĐ-CP)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] adminsanction dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "admiralty",
+    "name": "admiralty",
+    "command": "mekong admiralty",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Admiralty — Vietnamese Maritime Court, Admiralty Jurisdiction, Vessel Arrest & Maritime Liens Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] admiralty dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "adoption",
+    "name": "adoption",
+    "command": "mekong adoption",
+    "aliases": [
+      "connuoi"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Adoption — Vietnamese Child Adoption & Hague Intercountry Adoption Suite (Luật Nuôi con nuôi 2010)",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] adoption dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "advertising",
+    "name": "advertising",
+    "command": "mekong advertising",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Advertising — Vietnamese Advertising, Media & Digital Marketing Compliance Suite",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] advertising dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "agent",
+    "name": "agent",
+    "command": "mekong agent",
+    "aliases": [
+      "agents",
+      "unified-agents"
+    ],
+    "cluster": "bizops",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Quan ly vong doi 58 Unified Agents, tra cuu ho so nang luc va kich hoat tac vu chuyen biet.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] agent dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "agi",
+    "name": "agi",
+    "command": "mekong agi",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Tom Hum AGI daemon management",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] agi dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "agy",
+    "name": "agy",
+    "command": "mekong agy",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "AGY — Agent Governance YAML & Antigravity CLI Operations",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] agy dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "aml",
+    "name": "aml",
+    "command": "mekong aml",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "AML — Vietnamese Anti-Money Laundering, Counter-Terrorist Financing & Sanctions Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] aml dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "analyze",
+    "name": "analyze",
+    "command": "mekong analyze",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "SDD: cross-artifact consistency check",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] analyze dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "anticorruption",
+    "name": "anticorruption",
+    "command": "mekong anticorruption",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Anti-Corruption — Vietnamese Anti-Corruption, Asset Declaration & Integrity Oversight Suite (Luật Phòng, chống tham nhũng 2018)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] anticorruption dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "antiterrorism",
+    "name": "antiterrorism",
+    "command": "mekong antiterrorism",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Anti-Terrorism — Vietnamese Anti-Terrorism, Homeland Security & Target Protection Suite (Luật Phòng, chống khủng bố 2013)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] antiterrorism dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "arbitration",
+    "name": "arbitration",
+    "command": "mekong arbitration",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Arbitration — Vietnamese Commercial Arbitration & Out-of-Court Dispute Resolution Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] arbitration dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "archives",
+    "name": "archives",
+    "command": "mekong archives",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "knowledge-memory",
+    "departmentName": "Knowledge & Memory",
+    "layerId": "L5",
+    "ownerAgent": "docs-manager",
+    "supportAgents": [
+      "journal-writer",
+      "documentation-expert",
+      "planner"
+    ],
+    "sopChain": [
+      "decision-log",
+      "sop-update",
+      "playbook-extract",
+      "clone-sync"
+    ],
+    "gateArtifact": "state/evidence/scale-ready.json",
+    "gateId": "scale-ready",
+    "desc": "Archives — Vietnamese Archives, Digital Records & State Secrets Declassification Suite",
+    "deliverable": "Signed evidence artifact closing the scale-ready gate",
+    "sampleOutput": "[mekong] archives dispatched to docs-manager in knowledge-memory -> scale-ready gate evidence sealed"
+  },
+  {
+    "id": "auction",
+    "name": "auction",
+    "command": "mekong auction",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Auction — Vietnamese Property Auction, Distressed Asset Liquidation & Judicial Asset Disposal Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] auction dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "audit",
+    "name": "audit",
+    "command": "mekong audit",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Audit — Enterprise SOX 404, ITGC & COSO internal controls audit engine",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] audit dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "automotive",
+    "name": "automotive",
+    "command": "mekong automotive",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Automotive — Vietnamese Automotive Manufacturing, Type Approval, Emission & EV Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] automotive dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "autonomous",
+    "name": "autonomous",
+    "command": "mekong autonomous",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Mekong CLI autonomous autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] autonomous dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "aviation",
+    "name": "aviation",
+    "command": "mekong aviation",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Aviation — Vietnamese Civil Aviation, Air Cargo Freight, IATA DGR & Airport Ground Handling",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] aviation dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "bailiff",
+    "name": "bailiff",
+    "command": "mekong bailiff",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Bailiff — Vietnamese Bailiff, Evidence Protocol (Vi Bằng) & Civil Enforcement Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] bailiff dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "banking",
+    "name": "banking",
+    "command": "mekong banking",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Banking — Vietnamese Commercial Banking, Credit Institutions & Basel II",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] banking dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "bankruptcy",
+    "name": "bankruptcy",
+    "command": "mekong bankruptcy",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Bankruptcy — Vietnamese Corporate Insolvency, Bankruptcy, Debt Restructuring & Asset Liquidation Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] bankruptcy dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "benchmark",
+    "name": "benchmark",
+    "command": "mekong benchmark",
+    "aliases": [
+      "perf-test",
+      "throughput"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "market-intelligence",
+    "departmentName": "Market Intelligence",
+    "layerId": "L1",
+    "ownerAgent": "research-expert",
+    "supportAgents": [
+      "researcher",
+      "brainstormer"
+    ],
+    "sopChain": [
+      "market-map",
+      "customer-discovery",
+      "competitor-scan",
+      "demand-proof"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Do kiem toc do phan hoi, thong luong token va chi phi van hanh giua cac mo hinh AI.",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] benchmark dispatched to research-expert in market-intelligence -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "bhxh",
+    "name": "bhxh",
+    "command": "mekong bhxh",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Bảo hiểm xã hội VN — BHXH, BHYT, BHTN, hồ sơ D02-LT (NĐ 73/2024)",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] bhxh dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "billing",
+    "name": "billing",
+    "command": "mekong billing",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Mekong CLI billing autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] billing dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "binh-phap",
+    "name": "binh-phap",
+    "command": "mekong binh-phap",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Mekong CLI binh-phap autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] binh-phap dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "bmad",
+    "name": "bmad",
+    "command": "mekong bmad",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "BMAD workflow management",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] bmad dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "bootstrap",
+    "name": "bootstrap",
+    "command": "mekong bootstrap",
+    "aliases": [
+      "scaffold",
+      "auto-scaffold"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Khoi tao nhanh toan bo kien truc du an Full-Stack chuan san xuat chi voi 1 cau lenh.",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] bootstrap dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "borderguard",
+    "name": "borderguard",
+    "command": "mekong borderguard",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Border Guard — Vietnamese National Border, Territorial Sovereignty & Border Guard Defense Suite (Luật Biên phòng Việt Nam 2020)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] borderguard dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "browse",
+    "name": "browse",
+    "command": "mekong browse",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "market-intelligence",
+    "departmentName": "Market Intelligence",
+    "layerId": "L1",
+    "ownerAgent": "research-expert",
+    "supportAgents": [
+      "researcher",
+      "brainstormer"
+    ],
+    "sopChain": [
+      "market-map",
+      "customer-discovery",
+      "competitor-scan",
+      "demand-proof"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Mekong CLI browse autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] browse dispatched to research-expert in market-intelligence -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "build",
+    "name": "build",
+    "command": "mekong build",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Build task generation from spec",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] build dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "cell",
+    "name": "cell",
+    "command": "mekong cell",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "AI Cell Runtime Engine -- execute and audit autonomous cells",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] cell dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "cfo",
+    "name": "cfo",
+    "command": "mekong cfo",
+    "aliases": [
+      "finance",
+      "cfo-agent"
+    ],
+    "cluster": "csuite",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Chief Financial Officer — Lap mo hinh tai chinh, tinh thue TNDN/GTGT, kiem soat bien loi nhuan va so cai Honest Usage Ledger.",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] cfo dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "chemical",
+    "name": "chemical",
+    "command": "mekong chemical",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Chemical — Vietnamese Chemical Safety, Dangerous Goods & Industrial Explosives Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] chemical dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "cinema",
+    "name": "cinema",
+    "command": "mekong cinema",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Cinema — Vietnamese Cinema, Film Production, Age Classification & Censorship Suite",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] cinema dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "cipher",
+    "name": "cipher",
+    "command": "mekong cipher",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Cipher — Vietnamese National Cryptography, State Cipher & Civil Cryptography Suite (Luật Cơ yếu 2011 & Nghị định 58/2016/NĐ-CP)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] cipher dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "civil-status",
+    "name": "civil-status",
+    "command": "mekong civil-status",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Civil Status — Vietnamese Civil Registration, Vital Statistics & Identification Registry Suite",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] civil-status dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "civildefense",
+    "name": "civildefense",
+    "command": "mekong civildefense",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Civil Defense — Vietnamese Civil Defense, Disaster Mitigation & Emergency Response Suite (Luật Phòng thủ dân sự 2023)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] civildefense dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "civilstatus",
+    "name": "civilstatus",
+    "command": "mekong civilstatus",
+    "aliases": [
+      "hothich"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "CivilStatus — Vietnamese Civil Status, Vital Statistics & Population Registration Suite (Luật Hộ tịch 2014 & Nghị định 123/2015/NĐ-CP)",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] civilstatus dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "cmo",
+    "name": "cmo",
+    "command": "mekong cmo",
+    "aliases": [
+      "chief-marketing",
+      "cmo-swarm"
+    ],
+    "cluster": "csuite",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Chief Marketing Officer — Chien luoc Go-To-Market, phieu tang truong PLG, dinh vi thuong hieu va dieu phoi CMO Swarm.",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] cmo dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "coastguard",
+    "name": "coastguard",
+    "command": "mekong coastguard",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Coast Guard — Vietnamese Coast Guard & Maritime Law Enforcement Suite (Luật Cảnh sát biển Việt Nam 2018)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] coastguard dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "code",
+    "name": "code",
+    "command": "mekong code",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Code phase: architecture -> task backlog",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] code dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "collab",
+    "name": "collab",
+    "command": "mekong collab",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Mekong CLI collab autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] collab dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "company",
+    "name": "company",
+    "command": "mekong company",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Company / workspace configuration",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] company dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "competition",
+    "name": "competition",
+    "command": "mekong competition",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Competition — Vietnamese Competition, Antitrust, Anti-Monopoly & Economic Concentration Suite",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] competition dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "consensus",
+    "name": "consensus",
+    "command": "mekong consensus",
+    "aliases": [
+      "vote-engine",
+      "byzantine"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Co che bo phieu dong thuan da Agent (Byzantine Fault-Tolerant Consensus) cho cac quyet dinh trong yeu.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] consensus dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "construction",
+    "name": "construction",
+    "command": "mekong construction",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Construction — Vietnamese Construction Law 2020, Building Permits, FIDIC Contracts & QCVN 06:2022 Fire Safety",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] construction dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "consulting",
+    "name": "consulting",
+    "command": "mekong consulting",
+    "aliases": [
+      "advisory",
+      "tech-audit"
+    ],
+    "cluster": "bizops",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Tu van kien truc giai phap, tham dinh ky thuat va lap lo trinh chuyen doi so.",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] consulting dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "consumer",
+    "name": "consumer",
+    "command": "mekong consumer",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Consumer — Vietnamese Consumer Rights Protection, Digital Platform Transparency & Product Recall Suite",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] consumer dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "content",
+    "name": "content",
+    "command": "mekong content",
+    "aliases": [
+      "content-hub",
+      "article-gen"
+    ],
+    "cluster": "bizops",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Nha may san xuat noi dung da dinh dang chuan SEO song ngu Viet - Anh.",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] content dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "contract",
+    "name": "contract",
+    "command": "mekong contract",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Contract — Vietnamese commercial contracts, e-signatures & legal risk assessment",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] contract dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "cook",
+    "name": "cook",
+    "command": "mekong cook",
+    "aliases": [
+      "implement-auto",
+      "tdd-cook"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Bo may lap trinh tu hanh TDD (Red-Green-Refactor) tu ban ke hoach den khi pass 100% test.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] cook dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "copywriting",
+    "name": "copywriting",
+    "command": "mekong copywriting",
+    "aliases": [
+      "copy",
+      "sales-copy"
+    ],
+    "cluster": "bizops",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Viet loi quang cao chuyen doi cao, kich ban ban hang va noi dung trang dich (Landing Page).",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] copywriting dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "corporate",
+    "name": "corporate",
+    "command": "mekong corporate",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Corporate — Vietnamese corporate governance, incorporation & statutory legal filings",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] corporate dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "court",
+    "name": "court",
+    "command": "mekong court",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Court — Vietnamese People's Courts, Judicial Adjudication & Electronic Court Suite (Luật Tổ chức TAND 2024)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] court dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "crop",
+    "name": "crop",
+    "command": "mekong crop",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Crop — Vietnamese Crop Cultivation, Plant Protection, Pesticides & Agricultural Quarantine Suite",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] crop dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "cso",
+    "name": "cso",
+    "command": "mekong cso",
+    "aliases": [
+      "chief-sales",
+      "cso-agent"
+    ],
+    "cluster": "csuite",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Chief Sales Officer — Kich ban chot B2B, tinh hoa hong, du bao doanh thu MRR/ARR va quan tri duong ong ban hang.",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] cso dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "csuite",
+    "name": "csuite",
+    "command": "mekong csuite",
+    "aliases": [
+      "board",
+      "executive-board"
+    ],
+    "cluster": "csuite",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Hoi dong Quan tri AI C-Suite hop nhat (CFO + CMO + CSO + CTO) hop ban va ra quyet dinh chien luoc.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] csuite dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "cto",
+    "name": "cto",
+    "command": "mekong cto",
+    "aliases": [
+      "chief-tech",
+      "cto-agent"
+    ],
+    "cluster": "csuite",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Chief Technology Officer — Kien truc he thong, kiem toan bao mat, toi uu ha tang Edge va quan ly chat luong ma nguon.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] cto dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "customs",
+    "name": "customs",
+    "command": "mekong customs",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Customs — Vietnamese customs clearance, VNACCS channeling, HS code tariffs & Rules of Origin",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] customs dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "cyber",
+    "name": "cyber",
+    "command": "mekong cyber",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Cyber — Vietnamese Cybersecurity, Critical Information Infrastructure & Network Security Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] cyber dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "daily",
+    "name": "daily",
+    "command": "mekong daily",
+    "aliases": [
+      "standup",
+      "sprint-pulse"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Tong hop bao cao giao ban hang ngay, tien do muc tieu va cac diem nghet can xu ly.",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] daily dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "defense",
+    "name": "defense",
+    "command": "mekong defense",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Defense — Vietnamese National Defense Industry, Security Export Controls & Industrial Mobilization Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] defense dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "deploy",
+    "name": "deploy",
+    "command": "mekong deploy",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Deploy phase: verify gates -> ship/hold",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] deploy dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "design",
+    "name": "design",
+    "command": "mekong design",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Design phase: requirements -> architecture",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] design dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "dev",
+    "name": "dev",
+    "command": "mekong dev",
+    "aliases": [
+      "developer",
+      "scaffold-dev"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Bo cong cu tang toc lap trinh vien, sinh ma mau, kiem tra kieu du lieu va toi uu cau truc.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] dev dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "disaster",
+    "name": "disaster",
+    "command": "mekong disaster",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Disaster — Vietnamese Meteorology, Dam Safety & Natural Disaster Prevention Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] disaster dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "doctor",
+    "name": "doctor",
+    "command": "mekong doctor",
+    "aliases": [
+      "healthcheck",
+      "diagnose"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Chan doan toan dien suc khoe he thong, ket noi cong AI, SQLite ledger va kiem tra cau hinh moi truong.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] doctor dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "ecom",
+    "name": "ecom",
+    "command": "mekong ecom",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "E-Commerce — Vietnamese Cross-Border E-Commerce, Overseas Supplier Tax & Marketplace Compliance",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] ecom dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "education",
+    "name": "education",
+    "command": "mekong education",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Education — Vietnamese Education, Higher Education, Accreditation & Degree Registry",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] education dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "energy",
+    "name": "energy",
+    "command": "mekong energy",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Energy — Vietnamese Renewable Energy, Rooftop Solar (ĐMTMN), DPPA & EV charging infrastructure",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] energy dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "enforcement",
+    "name": "enforcement",
+    "command": "mekong enforcement",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Enforcement — Vietnamese Civil Judgment Enforcement, Asset Attachment & Debt Recovery Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] enforcement dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "environment",
+    "name": "environment",
+    "command": "mekong environment",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Environment — Vietnamese Environmental Protection, EIA & Carbon Credits",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] environment dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "esg",
+    "name": "esg",
+    "command": "mekong esg",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "ESG — Vietnamese environmental protection, GHG inventory, CBAM liability & carbon credit trading",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] esg dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "etransaction",
+    "name": "etransaction",
+    "command": "mekong etransaction",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "E-Transaction — Vietnamese Electronic Transactions, Digital Signatures, Trust Services & Data Messages Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] etransaction dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "eval-agent",
+    "name": "eval-agent",
+    "command": "mekong eval-agent",
+    "aliases": [
+      "agent-score",
+      "reasoning-test"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "market-intelligence",
+    "departmentName": "Market Intelligence",
+    "layerId": "L1",
+    "ownerAgent": "research-expert",
+    "supportAgents": [
+      "researcher",
+      "brainstormer"
+    ],
+    "sopChain": [
+      "market-map",
+      "customer-discovery",
+      "competitor-scan",
+      "demand-proof"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Danh gia nang luc suy luan, do chinh xac va tinh tuan thu quy trinh cua tung Agent.",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] eval-agent dispatched to research-expert in market-intelligence -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "fdi",
+    "name": "fdi",
+    "command": "mekong fdi",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "FDI — Foreign Direct Investment & SBV capital compliance engine",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] fdi dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "fire",
+    "name": "fire",
+    "command": "mekong fire",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Fire — Vietnamese Fire Prevention, Safety, Rescue & Engineering Standards Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] fire dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "fishery",
+    "name": "fishery",
+    "command": "mekong fishery",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Fishery — Vietnamese Fisheries Law 2017, VMS Fleet Tracking, eCDT Catch Cert & EU IUU Yellow Card Compliance",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] fishery dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "food",
+    "name": "food",
+    "command": "mekong food",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Food — Vietnamese Food Safety, Dietary Supplements & Hygiene Certification",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] food dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "forensic",
+    "name": "forensic",
+    "command": "mekong forensic",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Forensic — Vietnamese Judicial Expertise, Forensic Assessment & Electronic Evidence Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] forensic dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "forestry",
+    "name": "forestry",
+    "command": "mekong forestry",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Forestry — Vietnamese Forestry Law 2017, VNTLAS Timber Legality, FSC & Forest Carbon Sinks",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] forestry dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "founder",
+    "name": "founder",
+    "command": "mekong founder",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Founder genome assessment -- personality, risk, bias profiling",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] founder dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "gateway",
+    "name": "gateway",
+    "command": "mekong gateway",
+    "aliases": [
+      "omniroute",
+      "ai-proxy"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Cong dieu phoi AI da mo hinh, can bang tai, tu dong chuyen doi du phong va gioi han toc do.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] gateway dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "geodesy",
+    "name": "geodesy",
+    "command": "mekong geodesy",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Geodesy — Vietnamese Geodesy, National Coordinates (VN-2000), Sovereignty & Cadastral GIS Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] geodesy dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "goal",
+    "name": "goal",
+    "command": "mekong goal",
+    "aliases": [
+      "g"
+    ],
+    "cluster": "csuite",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Goal: persistent autonomous mission execution",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] goal dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "governance",
+    "name": "governance",
+    "command": "mekong governance",
+    "aliases": [
+      "constitution",
+      "charter"
+    ],
+    "cluster": "csuite",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Quan tri hien phap doanh nghiep tu hanh, bo phieu sua doi quy tac va phan bo ngan sach.",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] governance dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "graph",
+    "name": "graph",
+    "command": "mekong graph",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Behavior graph -- trust & collusion detection",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] graph dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "guardianship",
+    "name": "guardianship",
+    "command": "mekong guardianship",
+    "aliases": [
+      "giamho",
+      "guardian"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Guardianship — Vietnamese Guardianship, Custodianship & Ward Protection Suite (BLDS 2015 Điều 46–63)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] guardianship dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "harness-eval",
+    "name": "harness-eval",
+    "command": "mekong harness-eval",
+    "aliases": [
+      "eval-harness",
+      "offline-eval"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Bo kiem dinh chat luong Harness tu dong va cham diem hieu nang thuc thi cua Agent.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] harness-eval dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "heritage",
+    "name": "heritage",
+    "command": "mekong heritage",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "knowledge-memory",
+    "departmentName": "Knowledge & Memory",
+    "layerId": "L5",
+    "ownerAgent": "docs-manager",
+    "supportAgents": [
+      "journal-writer",
+      "documentation-expert",
+      "planner"
+    ],
+    "sopChain": [
+      "decision-log",
+      "sop-update",
+      "playbook-extract",
+      "clone-sync"
+    ],
+    "gateArtifact": "state/evidence/scale-ready.json",
+    "gateId": "scale-ready",
+    "desc": "Heritage — Vietnamese Cultural Heritage, Antiquities & National Treasures Suite",
+    "deliverable": "Signed evidence artifact closing the scale-ready gate",
+    "sampleOutput": "[mekong] heritage dispatched to docs-manager in knowledge-memory -> scale-ready gate evidence sealed"
+  },
+  {
+    "id": "hitech",
+    "name": "hitech",
+    "command": "mekong hitech",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Hitech — Vietnamese High-Tech Enterprise, Science Parks & Tech Transfer Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] hitech dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "idea",
+    "name": "idea",
+    "command": "mekong idea",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Mekong CLI idea autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] idea dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "identity",
+    "name": "identity",
+    "command": "mekong identity",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Identity — Vietnamese National Identification, Electronic Identity (VNeID) & Biometrics Suite (Luật Căn cước 2023 & NĐ 69/2024/NĐ-CP)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] identity dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "immigration",
+    "name": "immigration",
+    "command": "mekong immigration",
+    "aliases": [
+      "entryexit"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Immigration — Vietnamese Immigration, Entry, Exit, Transit, Residence & Visa Management Suite (Luật Xuất nhập cảnh & Cư trú 2014/2023)",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] immigration dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "implement",
+    "name": "implement",
+    "command": "mekong implement",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "SDD: execute implementation from task list",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] implement dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "inheritance",
+    "name": "inheritance",
+    "command": "mekong inheritance",
+    "aliases": [
+      "thuake",
+      "disan"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Inheritance — Vietnamese Inheritance, Wills, Estate Administration & Succession Regimes Suite (BLDS 2015)",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] inheritance dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "init",
+    "name": "init",
+    "command": "mekong init",
+    "aliases": [
+      "setup",
+      "mk-init"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Khoi tao khong gian lam viec Mekong CLI, cau hinh ho so cong ty va so cai bang chung.",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] init dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "insurance",
+    "name": "insurance",
+    "command": "mekong insurance",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Insurance — Vietnamese Insurance Business, Actuarial Solvency & Underwriting",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] insurance dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "ip",
+    "name": "ip",
+    "command": "mekong ip",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "IP — Intellectual Property, Trademarks, Patents & Software Copyright",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] ip dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "judicialassist",
+    "name": "judicialassist",
+    "command": "mekong judicialassist",
+    "aliases": [
+      "extradition"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "JudicialAssist — Vietnamese Mutual Legal Assistance, Extradition & Cross-Border Judicial Cooperation Suite (Luật Tương trợ tư pháp 2007)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] judicialassist dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "judicialrecord",
+    "name": "judicialrecord",
+    "command": "mekong judicialrecord",
+    "aliases": [
+      "lylich",
+      "criminalrecord"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "JudicialRecord — Vietnamese Judicial Records & Criminal Clearance Suite (Luật Lý lịch tư pháp 2009)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] judicialrecord dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "ke-toan",
+    "name": "ke-toan",
+    "command": "mekong ke-toan",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Kế toán VN — hóa đơn TT78/2021, bút toán VAS, XML",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] ke-toan dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "kit",
+    "name": "kit",
+    "command": "mekong kit",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "AgentKit — Multi-Kit Packaging & Multi-Target Exporter (kit:re, kit:engineer, kit:business, kit:marketing)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] kit dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "labor",
+    "name": "labor",
+    "command": "mekong labor",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Labor — Vietnamese Labor Code 2019, foreign work permits, overtime caps & safety compliance",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] labor dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "lawyer",
+    "name": "lawyer",
+    "command": "mekong lawyer",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Lawyer — Vietnamese Legal Profession, Bar Association & Law Practice Suite (Luật Luật sư 2006/2012)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] lawyer dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "legalaid",
+    "name": "legalaid",
+    "command": "mekong legalaid",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "LegalAid — Vietnamese State Legal Aid, Vulnerable Population Representation & Justice Access Suite (Luật Trợ giúp pháp lý 2017)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] legalaid dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "livestock",
+    "name": "livestock",
+    "command": "mekong livestock",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Livestock — Vietnamese Animal Husbandry, Livestock Farming, Feed Standards & Biosecurity",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] livestock dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "maritime",
+    "name": "maritime",
+    "command": "mekong maritime",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Maritime — Vietnamese Maritime Code 2015, seaport terminal operations, ICD & customs e-Manifest",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] maritime dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "marketing",
+    "name": "marketing",
+    "command": "mekong marketing",
+    "aliases": [
+      "growth",
+      "inbound"
+    ],
+    "cluster": "bizops",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Van hanh chien dich tiep thi da kenh, toi uu hoa chuyen doi va do luong hieu qua quang cao.",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] marketing dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "marketplace",
+    "name": "marketplace",
+    "command": "mekong marketplace",
+    "aliases": [
+      "store",
+      "pack-store"
+    ],
+    "cluster": "bizops",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Cho ung dung tap trung cung cap cac goi Business Packs, Agent mau va quy trinh chuan.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] marketplace dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "marriage",
+    "name": "marriage",
+    "command": "mekong marriage",
+    "aliases": [
+      "honnhan",
+      "giadinh"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Marriage — Vietnamese Marriage, Matrimonial Property Regimes & Family Law Suite (Luật HNGĐ 2014)",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] marriage dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "mediation",
+    "name": "mediation",
+    "command": "mekong mediation",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Mediation — Vietnamese Commercial Mediation, Conciliation & ADR Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] mediation dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "medtech",
+    "name": "medtech",
+    "command": "mekong medtech",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "MedTech — Vietnamese Medical Devices, Healthcare Facility Licensing & Clinical Trials",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] medtech dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "memory",
+    "name": "memory",
+    "command": "mekong memory",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "knowledge-memory",
+    "departmentName": "Knowledge & Memory",
+    "layerId": "L5",
+    "ownerAgent": "docs-manager",
+    "supportAgents": [
+      "journal-writer",
+      "documentation-expert",
+      "planner"
+    ],
+    "sopChain": [
+      "decision-log",
+      "sop-update",
+      "playbook-extract",
+      "clone-sync"
+    ],
+    "gateArtifact": "state/evidence/scale-ready.json",
+    "gateId": "scale-ready",
+    "desc": "Mekong CLI memory autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the scale-ready gate",
+    "sampleOutput": "[mekong] memory dispatched to docs-manager in knowledge-memory -> scale-ready gate evidence sealed"
+  },
+  {
+    "id": "memory-mesh",
+    "name": "memory-mesh",
+    "command": "mekong memory-mesh",
+    "aliases": [
+      "sync-memory",
+      "mesh-sync"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "knowledge-memory",
+    "departmentName": "Knowledge & Memory",
+    "layerId": "L5",
+    "ownerAgent": "docs-manager",
+    "supportAgents": [
+      "journal-writer",
+      "documentation-expert",
+      "planner"
+    ],
+    "sopChain": [
+      "decision-log",
+      "sop-update",
+      "playbook-extract",
+      "clone-sync"
+    ],
+    "gateArtifact": "state/evidence/scale-ready.json",
+    "gateId": "scale-ready",
+    "desc": "Mang luoi dong bo hoa bo nho cheo giua cac Agent va cac ban sao cong ty (Company Clones).",
+    "deliverable": "Signed evidence artifact closing the scale-ready gate",
+    "sampleOutput": "[mekong] memory-mesh dispatched to docs-manager in knowledge-memory -> scale-ready gate evidence sealed"
+  },
+  {
+    "id": "metrics",
+    "name": "metrics",
+    "command": "mekong metrics",
+    "aliases": [
+      "kpi",
+      "telemetry-metrics"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Bang do luong chi so hieu suat cot loi cua toan bo 10 phong ban theo thoi gian thuc.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] metrics dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "mining",
+    "name": "mining",
+    "command": "mekong mining",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Mining — Vietnamese Mineral Law 2010, Concession Rights Fees, Resource Royalties & Environmental Rehabilitation",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] mining dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "nationality",
+    "name": "nationality",
+    "command": "mekong nationality",
+    "aliases": [
+      "citizenship"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Nationality — Vietnamese Nationality, Naturalization, Renunciation & Dual Citizenship Suite (Luật Quốc tịch Việt Nam 2008/2014)",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] nationality dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "nationalreserve",
+    "name": "nationalreserve",
+    "command": "mekong nationalreserve",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "National Reserves — Vietnamese National Reserves, Strategic Stockpiling & Emergency Relief Suite (Luật Dự trữ quốc gia 2012)",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] nationalreserve dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "notary",
+    "name": "notary",
+    "command": "mekong notary",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Notary — Vietnamese Notary, Legal Practice & Judicial Authentication Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] notary dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "ocop",
+    "name": "ocop",
+    "command": "mekong ocop",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "OCOP — nông sản Việt Nam, xếp hạng sao OCOP & xuất khẩu",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] ocop dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "opc",
+    "name": "opc",
+    "command": "mekong opc",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "OPC — One-Person Company Global Business Packs & Proposal Workflow",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] opc dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "ops",
+    "name": "ops",
+    "command": "mekong ops",
+    "aliases": [
+      "operations",
+      "infra-ops"
+    ],
+    "cluster": "bizops",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Quan tri van hanh he thong, tu dong hoa lich trinh dinh ky va xu ly su co tuc thoi.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] ops dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "package",
+    "name": "package",
+    "command": "mekong package",
+    "aliases": [
+      "bundle",
+      "packager"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Dong goi san pham da nen tang, xuat ban thu vien Open-Core va kiem tra ranh gioi ma nguon.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] package dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "palette",
+    "name": "palette",
+    "command": "mekong palette",
+    "aliases": [
+      "theme",
+      "color-tokens"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Trinh quan ly bang mau, Design Tokens va giao dien hien thi tren Terminal.",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] palette dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "particle",
+    "name": "particle",
+    "command": "mekong particle",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "ZenOS particle lifecycle management",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] particle dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "payroll",
+    "name": "payroll",
+    "command": "mekong payroll",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Payroll — Vietnamese statutory payroll, Gross-to-Net & compensation engine",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] payroll dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "petrol",
+    "name": "petrol",
+    "command": "mekong petrol",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Petrol — Vietnamese Petroleum Regulations, Weekly Price Adjustments, National Reserves & Pump E-Invoicing",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] petrol dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "pev",
+    "name": "pev",
+    "command": "mekong pev",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Mekong CLI pev autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] pev dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "pharma",
+    "name": "pharma",
+    "command": "mekong pharma",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Pharma — Vietnamese Drug Law 2016, National Drug Bank, GSP Cold Chain & Price Regulation",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] pharma dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "pipeline",
+    "name": "pipeline",
+    "command": "mekong pipeline",
+    "aliases": [
+      "vibe-pipeline",
+      "sdlc-flow"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Duong ong phat trien san pham khep kin tu tiep nhan yeu cau den mo PR va hoi tu CI xanh.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] pipeline dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "plan",
+    "name": "plan",
+    "command": "mekong plan",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Plan generation from company init",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] plan dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "plugin",
+    "name": "plugin",
+    "command": "mekong plugin",
+    "aliases": [
+      "ext",
+      "extensions"
+    ],
+    "cluster": "bizops",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Cai dat, cap nhat va quan ly cac tien ich mo rong cho he sinh thai Mekong CLI.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] plugin dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "police",
+    "name": "police",
+    "command": "mekong police",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Police — Vietnamese People's Public Security & Grassroots Security Forces Suite (Luật CAND & Luật Lực lượng tham gia bảo vệ ANTT ở cơ sở)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] police dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "postal",
+    "name": "postal",
+    "command": "mekong postal",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Postal — Vietnamese Postal, Express Delivery & Courier Logistics",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] postal dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "press",
+    "name": "press",
+    "command": "mekong press",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Press — Vietnamese Press, Mass Media, Online Journalism & OTT Broadcasting Suite",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] press dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "price",
+    "name": "price",
+    "command": "mekong price",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Price — Vietnamese Price Management, Anti-Price Gouging & Valuation Suite",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] price dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "privacy",
+    "name": "privacy",
+    "command": "mekong privacy",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Privacy — Vietnamese Personal Data Protection Decree (PDPD Nghị định 13/2023/NĐ-CP) & cross-border transfer compliance",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] privacy dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "procuracy",
+    "name": "procuracy",
+    "command": "mekong procuracy",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Procuracy — Vietnamese People's Procuracy, Public Prosecution & Judicial Supervision Suite (Luật Tổ chức VKSND 2014)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] procuracy dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "prosecution",
+    "name": "prosecution",
+    "command": "mekong prosecution",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Prosecution — Vietnamese People's Procuracy, Public Prosecution & Judicial Supervision Suite (Luật Tổ chức VKSND 2014 & BLTTHS 2015)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] prosecution dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "pubinvestment",
+    "name": "pubinvestment",
+    "command": "mekong pubinvestment",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Public Investment — Vietnamese Public Investment, Capital Allocation, Feasibility & Medium-Term Planning Suite",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] pubinvestment dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "publicdebt",
+    "name": "publicdebt",
+    "command": "mekong publicdebt",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Public Debt — Vietnamese Public Debt, Sovereign Bonds, ODA On-Lending & Debt Safety Red Lines Suite (Luật Quản lý nợ công 2017)",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] publicdebt dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "publishing",
+    "name": "publishing",
+    "command": "mekong publishing",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Publishing — Vietnamese Publishing, Printing, Distribution & Legal Depository Suite",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] publishing dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "queue",
+    "name": "queue",
+    "command": "mekong queue",
+    "aliases": [
+      "job-queue",
+      "durable-queue"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Hang doi tac vu bat dong bo ben vung voi co che tu dong thu lai khi gap su co.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] queue dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "quick-start",
+    "name": "quick-start",
+    "command": "mekong quick-start",
+    "aliases": [
+      "wizard",
+      "instant-opc"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "ceo-command",
+    "departmentName": "CEO Command",
+    "layerId": "L0",
+    "ownerAgent": "planner",
+    "supportAgents": [
+      "project-manager",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "idea-intake",
+      "company-blueprint",
+      "gate-review",
+      "capital-allocation"
+    ],
+    "gateArtifact": "state/evidence/company-blueprint.json",
+    "gateId": "company-blueprint",
+    "desc": "Trinh huong dan khoi chay nhanh cong ty 1 nguoi (OPC) trong 5 phut khong can cau hinh phuc tap.",
+    "deliverable": "Signed evidence artifact closing the company-blueprint gate",
+    "sampleOutput": "[mekong] quick-start dispatched to planner in ceo-command -> company-blueprint gate evidence sealed"
+  },
+  {
+    "id": "radiation",
+    "name": "radiation",
+    "command": "mekong radiation",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Radiation — Vietnamese Radiation Safety, Radioactive Sources & Nuclear Technology Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] radiation dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "railway",
+    "name": "railway",
+    "command": "mekong railway",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Railway — Vietnamese Railway Transport, High-Speed Rail & Urban Metro",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] railway dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "re",
+    "name": "re",
+    "command": "mekong re",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "market-intelligence",
+    "departmentName": "Market Intelligence",
+    "layerId": "L1",
+    "ownerAgent": "research-expert",
+    "supportAgents": [
+      "researcher",
+      "brainstormer"
+    ],
+    "sopChain": [
+      "market-map",
+      "customer-discovery",
+      "competitor-scan",
+      "demand-proof"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "RE — Reverse Engineering Suite (Web/SaaS, Ghidra/r2/JADX MCP, Codebase Audit)",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] re dispatched to research-expert in market-intelligence -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "realestate",
+    "name": "realestate",
+    "command": "mekong realestate",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "RealEstate — Vietnamese commercial real estate, industrial land leasing & QCVN 01:2021 density compliance",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] realestate dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "recall",
+    "name": "recall",
+    "command": "mekong recall",
+    "aliases": [
+      "semantic-memory",
+      "vector-search"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "knowledge-memory",
+    "departmentName": "Knowledge & Memory",
+    "layerId": "L5",
+    "ownerAgent": "docs-manager",
+    "supportAgents": [
+      "journal-writer",
+      "documentation-expert",
+      "planner"
+    ],
+    "sopChain": [
+      "decision-log",
+      "sop-update",
+      "playbook-extract",
+      "clone-sync"
+    ],
+    "gateArtifact": "state/evidence/scale-ready.json",
+    "gateId": "scale-ready",
+    "desc": "Truy xuat bo nho dai han ngu nghia tu lich su quyet dinh va kho tri thuc cua doanh nghiep.",
+    "deliverable": "Signed evidence artifact closing the scale-ready gate",
+    "sampleOutput": "[mekong] recall dispatched to docs-manager in knowledge-memory -> scale-ready gate evidence sealed"
+  },
+  {
+    "id": "recipe",
+    "name": "recipe",
+    "command": "mekong recipe",
+    "aliases": [
+      "playbook",
+      "recipes"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Thu vien kich ban nghiep vu dong goi san cho van hanh doanh nghiep va phat trien phan mem.",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] recipe dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "revenue",
+    "name": "revenue",
+    "command": "mekong revenue",
+    "aliases": [
+      "mrr",
+      "arr-meter"
+    ],
+    "cluster": "bizops",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Theo doi doanh thu dinh ky MRR/ARR, doi soat dong tien va phan tich hieu qua don vi (Unit Economics).",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] revenue dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "run",
+    "name": "run",
+    "command": "mekong run",
+    "aliases": [
+      "exec",
+      "execute-agent"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Thuc thi truc tiep bat ky goi nghiep vu, kich ban hoac Agent nao o che do tu dong.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] run dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "sales",
+    "name": "sales",
+    "command": "mekong sales",
+    "aliases": [
+      "b2b-sales",
+      "outreach"
+    ],
+    "cluster": "bizops",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Tu dong hoa quy trinh ban hang B2B, cham diem khach hang tiem nang va theo doi hop dong.",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] sales dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "sandbox",
+    "name": "sandbox",
+    "command": "mekong sandbox",
+    "aliases": [
+      "isolated-run",
+      "secure-env"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Moi truong thuc thi co lap an toan tuyet doi cho cac tac vu chay ma nguon tu dong.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] sandbox dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "schedule",
+    "name": "schedule",
+    "command": "mekong schedule",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Mekong CLI schedule autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] schedule dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "securedtransactions",
+    "name": "securedtransactions",
+    "command": "mekong securedtransactions",
+    "aliases": [
+      "baodam",
+      "giaodichbaodam"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "SecuredTransactions — Vietnamese Registration of Security Interests & Secured Transactions Suite (Nghị định 99/2022)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] securedtransactions dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "securities",
+    "name": "securities",
+    "command": "mekong securities",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Securities — Vietnamese Securities, Stock Exchanges & Capital Markets",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] securities dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "ship",
+    "name": "ship",
+    "command": "mekong ship",
+    "aliases": [
+      "release",
+      "auto-pr"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Tu dong hoa quy trinh kiem tra cuoi, dong goi phat hanh, tao PR va gan nhan san sang trien khai.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] ship dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "spec",
+    "name": "spec",
+    "command": "mekong spec",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Spec phase: feature request -> requirements",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] spec dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "specify",
+    "name": "specify",
+    "command": "mekong specify",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "SDD: generate feature spec from template",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] specify dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "sports",
+    "name": "sports",
+    "command": "mekong sports",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Sports — Vietnamese Physical Training, Sports, Professional Athletics & Anti-Doping Suite",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] sports dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "standards",
+    "name": "standards",
+    "command": "mekong standards",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Standards — Vietnamese Technical Standards, Metrology, CR Mark & Product Quality Suite",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] standards dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "stateaudit",
+    "name": "stateaudit",
+    "command": "mekong stateaudit",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "State Audit — Vietnamese State Audit, Supreme Audit Institution (SAV / KTNN) & Public Financial Oversight Suite (Luật Kiểm toán nhà nước 2015)",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] stateaudit dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "statebudget",
+    "name": "statebudget",
+    "command": "mekong statebudget",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "State Budget — Vietnamese State Budget, Fiscal Discipline, Public Treasury Accounts & Budget Allocations Suite",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] statebudget dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "statesecret",
+    "name": "statesecret",
+    "command": "mekong statesecret",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "State Secret — Vietnamese State Secrets & Classified Protection Suite (Luật Bảo vệ bí mật nhà nước 2018)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] statesecret dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "supplychain",
+    "name": "supplychain",
+    "command": "mekong supplychain",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "SupplyChain — Vietnamese agricultural & timber traceability, EUDR anti-deforestation & EPCIS custody tracking",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] supplychain dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "support",
+    "name": "support",
+    "command": "mekong support",
+    "aliases": [
+      "cs",
+      "ticket-triage"
+    ],
+    "cluster": "bizops",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Cham soc khach hang tu dong, phan loai yeu cau ho tro va theo doi cam ket chat luong SLA.",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] support dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "swarm",
+    "name": "swarm",
+    "command": "mekong swarm",
+    "aliases": [
+      "multi-agent",
+      "swarm-run"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Dieu phoi dan Agent tu hanh chay song song voi co che phan quyen file tuyet doi.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] swarm dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "system",
+    "name": "system",
+    "command": "mekong system",
+    "aliases": [
+      "sys-info",
+      "kernel-pulse"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Kiem tra tai nguyen phan cung, tien trinh chay ngam va toi uu bo nho thiet bi.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] system dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "tasks",
+    "name": "tasks",
+    "command": "mekong tasks",
+    "aliases": [],
+    "cluster": "sdlc",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "SDD: generate TDD task list from spec",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] tasks dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "taxadmin",
+    "name": "taxadmin",
+    "command": "mekong taxadmin",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Tax Administration — Vietnamese Tax Administration, Electronic Invoices & Tax Audit Compliance Suite (Luật Quản lý thuế 2019)",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] taxadmin dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "team",
+    "name": "team",
+    "command": "mekong team",
+    "aliases": [
+      "agent-team",
+      "collab-team"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Dieu phoi to doi Agent chuyen biet theo phong ban voi hop thu giao tiep noi bo.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] team dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "telecom",
+    "name": "telecom",
+    "command": "mekong telecom",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Telecom — Vietnamese Telecommunications Law 2023, Radio Spectrum Auctions, BTS EMF & OTT Services",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] telecom dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "telegram",
+    "name": "telegram",
+    "command": "mekong telegram",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Mekong CLI telegram autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] telegram dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "telemetry",
+    "name": "telemetry",
+    "command": "mekong telemetry",
+    "aliases": [
+      "otel",
+      "traces"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Thu thap chi so van hanh chuan OpenTelemetry, theo doi vet thuc thi va canh bao som.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] telemetry dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "tender",
+    "name": "tender",
+    "command": "mekong tender",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Tender — Vietnamese public procurement, bidding dossiers & E-GP evaluation",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] tender dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "thue",
+    "name": "thue",
+    "command": "mekong thue",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Thuế VN — TNCN lũy tiến, TNDN, GTGT (offline)",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] thue dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "tools",
+    "name": "tools",
+    "command": "mekong tools",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "market-intelligence",
+    "departmentName": "Market Intelligence",
+    "layerId": "L1",
+    "ownerAgent": "research-expert",
+    "supportAgents": [
+      "researcher",
+      "brainstormer"
+    ],
+    "sopChain": [
+      "market-map",
+      "customer-discovery",
+      "competitor-scan",
+      "demand-proof"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Mekong CLI tools autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] tools dispatched to research-expert in market-intelligence -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "tort",
+    "name": "tort",
+    "command": "mekong tort",
+    "aliases": [
+      "boithuong",
+      "ngoaihopdong"
+    ],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Tort — Vietnamese Non-Contractual Civil Liability & Tort Compensation Suite (BLDS 2015 Điều 584–608 & NQ 02/2022/NQ-HĐTP)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] tort dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "tourism",
+    "name": "tourism",
+    "command": "mekong tourism",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Tourism — Vietnamese Tourism, Hospitality, Travel Licensing & Star Rating",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] tourism dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "traffic",
+    "name": "traffic",
+    "command": "mekong traffic",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Traffic — Vietnamese Road Traffic Safety, Demerit Points & Law Enforcement Suite (Luật Trật tự, an toàn giao thông đường bộ 2024)",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] traffic dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "transport",
+    "name": "transport",
+    "command": "mekong transport",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Transport — Vietnamese Road Transport, Logistics, Highway Tolling & ETC Regulation",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] transport dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "tui",
+    "name": "tui",
+    "command": "mekong tui",
+    "aliases": [
+      "cockpit-cli",
+      "terminal-ui"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Giao dien dieu khien truc quan ngay tren Terminal (Terminal User Interface Cockpit).",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] tui dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "ui",
+    "name": "ui",
+    "command": "mekong ui",
+    "aliases": [
+      "ui-ux",
+      "design-system",
+      "stitch"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "product-strategy",
+    "departmentName": "Product Strategy",
+    "layerId": "L1",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "ui-ux-designer"
+    ],
+    "sopChain": [
+      "offer-design",
+      "pricing-model",
+      "raas-blueprint",
+      "roadmap"
+    ],
+    "gateArtifact": "state/evidence/offer-validated.json",
+    "gateId": "offer-validated",
+    "desc": "Tri tue thiet ke UI/UX Pro Max — sinh bang mau, typography, wireframe va kiem toan WCAG tu dong.",
+    "deliverable": "Signed evidence artifact closing the offer-validated gate",
+    "sampleOutput": "[mekong] ui dispatched to business-analyst in product-strategy -> offer-validated gate evidence sealed"
+  },
+  {
+    "id": "usage",
+    "name": "usage",
+    "command": "mekong usage",
+    "aliases": [],
+    "cluster": "bizops",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Mekong CLI usage autonomous command suite",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] usage dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "vendor",
+    "name": "vendor",
+    "command": "mekong vendor",
+    "aliases": [
+      "integrations",
+      "partner-apis"
+    ],
+    "cluster": "bizops",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Quan ly ket noi doi tac ben thu ba, cong thanh toan, hoa don dien tu va chu ky so.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] vendor dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "veterinary",
+    "name": "veterinary",
+    "command": "mekong veterinary",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "customer-success",
+    "departmentName": "Customer Success & Fulfillment",
+    "layerId": "L4",
+    "ownerAgent": "project-manager",
+    "supportAgents": [
+      "docs-manager",
+      "triage-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "onboarding",
+      "fulfillment",
+      "support",
+      "retention",
+      "expansion"
+    ],
+    "gateArtifact": "state/evidence/fulfillment-stable.json",
+    "gateId": "fulfillment-stable",
+    "desc": "Veterinary — Vietnamese Veterinary Medicine, Animal Disease Surveillance & Livestock Quarantine Suite",
+    "deliverable": "Signed evidence artifact closing the fulfillment-stable gate",
+    "sampleOutput": "[mekong] veterinary dispatched to project-manager in customer-success -> fulfillment-stable gate evidence sealed"
+  },
+  {
+    "id": "vietqr",
+    "name": "vietqr",
+    "command": "mekong vietqr",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "VietQR — thanh toán chuyển khoản Napas 247, mã QR EMVCo & đối soát",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] vietqr dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  },
+  {
+    "id": "watch",
+    "name": "watch",
+    "command": "mekong watch",
+    "aliases": [
+      "monitor",
+      "file-watch"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Giam sat bien dong ma nguon, log he thong va tu dong kich hoat quy trinh kiem thu thoi gian thuc.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] watch dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "water",
+    "name": "water",
+    "command": "mekong water",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Water — Vietnamese Clean Water Supply, Urban Drainage, Wastewater & Tariff Regulations",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] water dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "waterway",
+    "name": "waterway",
+    "command": "mekong waterway",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "engineering-factory",
+    "departmentName": "Engineering Factory",
+    "layerId": "L2",
+    "ownerAgent": "fullstack-developer",
+    "supportAgents": [
+      "framework-nextjs-expert",
+      "nestjs-expert",
+      "database-postgres-expert",
+      "ai-sdk-expert"
+    ],
+    "sopChain": [
+      "technical-design",
+      "mvp-build",
+      "integration",
+      "production-hardening"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Waterway — Vietnamese Inland Waterway Transport, River Ports & Canal Navigation",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] waterway dispatched to fullstack-developer in engineering-factory -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "workflow",
+    "name": "workflow",
+    "command": "mekong workflow",
+    "aliases": [
+      "flow",
+      "multi-phase"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "quality-compliance",
+    "departmentName": "Quality & Compliance",
+    "layerId": "L2",
+    "ownerAgent": "code-review-expert",
+    "supportAgents": [
+      "testing-expert",
+      "code-quality-linting-expert",
+      "e2e-playwright-expert"
+    ],
+    "sopChain": [
+      "review",
+      "test",
+      "security-scan",
+      "audit-trail",
+      "release-approval"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Trinh dieu phoi quy trinh da chang tat dinh (Deterministic Multi-Agent Pipeline).",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] workflow dispatched to code-review-expert in quality-compliance -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "worktree",
+    "name": "worktree",
+    "command": "mekong worktree",
+    "aliases": [
+      "git-worktree",
+      "branch-iso"
+    ],
+    "cluster": "sdlc",
+    "departmentId": "platform-operations",
+    "departmentName": "Platform Operations",
+    "layerId": "L2",
+    "ownerAgent": "infrastructure-github-actions-expert",
+    "supportAgents": [
+      "devops-expert",
+      "infrastructure-docker-expert",
+      "git-manager"
+    ],
+    "sopChain": [
+      "ci",
+      "deploy",
+      "health-check",
+      "rollback",
+      "ops-review"
+    ],
+    "gateArtifact": "state/evidence/mvp-live.json",
+    "gateId": "mvp-live",
+    "desc": "Quan ly cac nhanh lam viec Git co lap giup nhieu Agent lap trinh song song khong xung dot.",
+    "deliverable": "Signed evidence artifact closing the mvp-live gate",
+    "sampleOutput": "[mekong] worktree dispatched to infrastructure-github-actions-expert in platform-operations -> mvp-live gate evidence sealed"
+  },
+  {
+    "id": "zalo-oa",
+    "name": "zalo-oa",
+    "command": "mekong zalo-oa",
+    "aliases": [],
+    "cluster": "vn_statutory",
+    "departmentId": "growth-marketing",
+    "departmentName": "Growth Marketing",
+    "layerId": "L3",
+    "ownerAgent": "brainstormer",
+    "supportAgents": [
+      "docs-manager",
+      "research-expert",
+      "business-analyst"
+    ],
+    "sopChain": [
+      "positioning",
+      "content-engine",
+      "campaign",
+      "launch",
+      "growth-experiment"
+    ],
+    "gateArtifact": "state/evidence/repeatable-channel.json",
+    "gateId": "repeatable-channel",
+    "desc": "Zalo OA — gửi tin nhắn, broadcast, followers, caption, đăng bài",
+    "deliverable": "Signed evidence artifact closing the repeatable-channel gate",
+    "sampleOutput": "[mekong] zalo-oa dispatched to brainstormer in growth-marketing -> repeatable-channel gate evidence sealed"
+  },
+  {
+    "id": "zenpay",
+    "name": "zenpay",
+    "command": "mekong zenpay",
+    "aliases": [],
+    "cluster": "csuite",
+    "departmentId": "sales-revenue",
+    "departmentName": "Sales & Revenue",
+    "layerId": "L3",
+    "ownerAgent": "business-analyst",
+    "supportAgents": [
+      "project-manager",
+      "docs-manager",
+      "fullstack-developer"
+    ],
+    "sopChain": [
+      "lead-qualification",
+      "sales-script",
+      "checkout",
+      "close",
+      "revenue-review"
+    ],
+    "gateArtifact": "state/evidence/first-revenue.json",
+    "gateId": "first-revenue",
+    "desc": "Constitutional Treasury -- record transactions and manage budgets",
+    "deliverable": "Signed evidence artifact closing the first-revenue gate",
+    "sampleOutput": "[mekong] zenpay dispatched to business-analyst in sales-revenue -> first-revenue gate evidence sealed"
+  }
+]
