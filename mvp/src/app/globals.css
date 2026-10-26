@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-obsidian: #06080d;
+  --color-surface: #0b0f17;
+  --color-surface-raised: #121824;
+  --color-emerald-accent: #10b981;
+}
+
+body {
+  background-color: var(--color-obsidian);
+  color: #f8fafc;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 2027 Cryptographic Glass Utilities */
+.glass-obsidian {
+  background: rgba(11, 15, 23, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-emerald-glow {
+  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
+}

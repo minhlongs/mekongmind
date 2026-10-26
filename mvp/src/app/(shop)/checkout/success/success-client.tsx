@@ -2,45 +2,43 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-
-const TEMPLATE_MAP: Record<string, { name: string; slug: string }> = {
-  'polar_cl_apvIt00Pf7vw2GGX0PW7tWfNjSiwaTRUl0YzO3YqVhA': { name: 'FnB Cloud Kitchen', slug: 'fnb-cloud-kitchen' },
-  'polar_cl_TDhelBvQfsZq3Rayqf9to4tl0UD6D04OBFqXm1zJDVC': { name: 'Dropship Hub', slug: 'dropship-hub' },
-  'polar_cl_zi7LHdaPk93V0xbNVQZgqum96gWCFDTVzpDNR2kfN3j': { name: 'SaaS Launchpad', slug: 'saas-launchpad' },
-  'polar_cl_j082kdYKTStddcJ3Na3Pufznj7dph7WKIe1qS2amDT1': { name: 'Agency OS', slug: 'agency-os' },
-};
+import { COMMERCIAL_TIERS, type TierId } from '@/lib/raas-config';
 
 export default function CheckoutSuccessClient() {
   const searchParams = useSearchParams();
-  const checkoutId = searchParams.get('checkout_id') || '';
-  const template = checkoutId ? TEMPLATE_MAP[checkoutId] : null;
+  const tierId = (searchParams.get('tier') || 'premium') as TierId;
+  const rail = searchParams.get('rail') || 'vietqr';
+  const tier = COMMERCIAL_TIERS[tierId] || COMMERCIAL_TIERS.premium;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900">
-      <div className="mx-auto max-w-md px-4 text-center">
-        <div className="text-6xl mb-4">✅</div>
-        <h1 className="text-3xl font-bold text-white">Thanh toán thành công!</h1>
-        <p className="mt-4 text-slate-400">
-          Cảm ơn bạn đã mua. Kiểm tra email để nhận template và link truy cập.
-        </p>
+    <div className="min-h-screen flex items-center justify-center bg-[#06080d]">
+      <div className="mx-auto max-w-lg px-4 text-center">
+        <div className="rounded-2xl border border-emerald-500/30 bg-[#0b0f17] p-8 shadow-2xl">
+          <div className="text-5xl mb-4">✅</div>
+          <div className="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-mono font-semibold text-emerald-400 uppercase mb-3">
+            Dual-Rail · {rail === 'vietqr' ? 'VietQR Napas 247' : 'NOWPayments Crypto IPN'}
+          </div>
+          <h1 className="text-2xl font-bold text-white">Kích hoạt {tier.name} thành công!</h1>
+          <p className="mt-3 text-sm text-slate-400">
+            Đã cấp phát <span className="text-emerald-400 font-mono font-bold">{tier.mcuCredits.toLocaleString()} MCU Credits</span> cùng khóa mật mã{' '}
+            <code className="text-emerald-300">MEKONG-RAAS-v1</code> HMAC-SHA256.
+          </p>
 
-        {template && (
-          <Link
-            href={`/templates/${template.slug}/download`}
-            className="mt-6 inline-block rounded-lg bg-emerald-500 px-6 py-3 font-semibold text-slate-900 hover:bg-emerald-400"
-          >
-            Tải {template.name}
-          </Link>
-        )}
-
-        {!template && (
-          <Link
-            href="/templates"
-            className="mt-6 inline-block rounded-lg bg-emerald-500 px-6 py-3 font-semibold text-slate-900 hover:bg-emerald-400"
-          >
-            Xem Templates
-          </Link>
-        )}
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/templates"
+              className="rounded-xl bg-emerald-500 px-6 py-3 text-sm font-bold text-slate-950 hover:bg-emerald-400"
+            >
+              Mở Business Packs Registry
+            </Link>
+            <Link
+              href="/"
+              className="rounded-xl border border-slate-700 bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Về trang chủ
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

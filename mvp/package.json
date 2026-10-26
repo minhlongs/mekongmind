@@ -1,6 +1,6 @@
 {
   "name": "mekongmind-mvp",
-  "version": "0.1.0",
+  "version": "6.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
@@ -10,11 +10,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@polar-sh/sdk": "^0.48.0",
     "next": "^14.2.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "stripe": "^15.0.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
