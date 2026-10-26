@@ -1,0 +1,16 @@
+# Báo Cáo Tư Vấn Chiến Lược (`--ultra` Best-of-5 Verifier)
+**Chủ đề:** Giải quyết triệt để vấn đề *"Chưa hình dung được `mekong-cli` là gì khi lướt Full Web UI/UX"*
+**Ngày:** 2026-10-26
+
+## 1. Tổng hợp Đánh giá 5 Góc Nhìn Độc Lập (`--ultra` Candidates)
+
+| Ứng viên | Trọng tâm phân tích | Phát hiện cốt lõi | Đề xuất đột phá được chọn |
+| :--- | :--- | :--- | :--- |
+| **Candidate 1: Product Storytelling & First-5-Second Clarity** | Khả năng hiểu sản phẩm trong 5 giây đầu tiên | Trang chủ hiện tại nhảy thẳng từ `HeroSection` (dùng từ khóa hạ tầng như `SHA-256 Digest`, `opc-pack/v1`, `SQLite WAL`) xuống `PricingSection`. Người xem không biết đây là công cụ dòng lệnh hay phần mềm kế toán. | Đặt **Interactive CLI Terminal Simulator** song hành với màn hình **Web Cockpit Output** ngay tại trung tâm trang chủ + Sơ đồ 3 bước hoạt động rõ ràng. |
+| **Candidate 2: Vietnam Core Funnels (`zalo-oa`, `thue`/`ke-toan`, `cmo`/`sophia`)** | 3 Phễu nghiệp vụ sát sườn doanh nghiệp Việt Nam | `mekong-cli` sở hữu 189 nhóm lệnh chuyên sâu (bao gồm `zalo-oa`, `thue`, `ke-toan`, `bhxh`, `vietqr`, `marketing`, `sales`, `opc`) nhưng trên web không hiển thị bất kỳ câu lệnh thực tế nào của các phễu này. | Xây dựng khối **3 Phễu Nghiệp Vụ Cốt Lõi VN** trên trang chủ + mở trang **`/cli`** (Từ điển tra cứu & lọc trực quan các nhóm lệnh thực tế của `mekong-cli`). |
+| **Candidate 3: C-Suite AI Brain (`cfo`, `cmo`, `cso`, `cto`)** | Mô hình Công ty 1 Người (OPC 2027) điều hành bởi dàn Giám đốc AI | Khách hàng nghe "One-Person Company" nhưng không hình dung được ai sẽ làm việc cho mình. Trong `mekong-cli`, các lệnh `mekong cfo`, `mekong cmo`, `mekong cso`, `mekong cto` đã hoạt động thật. | Thiết kế bảng điều khiển tương tác **Đội Ngũ 4 Giám Đốc C-Suite AI 24/7** ngay trên trang chủ: bấm vào từng Giám đốc để thấy câu lệnh CLI, đầu việc phụ trách và mẫu báo cáo trả về. |
+| **Candidate 4: ROI & Before/After Economics** | Thuyết phục tài chính trước khi xuống bảng giá | Người xem thấy giá $199–$4,999 ngay dưới Hero mà chưa thấy bài toán tiết kiệm chi phí so với thuê nhân sự truyền thống. | Đặt **Bảng Đối Chiếu Trước / Sau & Bộ Tính ROI Thực Tế** ngay phía trên bảng giá: so sánh *Thuê 5 nhân sự (~75 triệu/tháng) + 10 SaaS rời rạc* với *1 lệnh `mekong-cli` duy nhất (tiết kiệm >85% chi phí)*. |
+| **Candidate 5: Cross-Page Cohesion (`/`, `/cli`, `/templates`, `Dashboard`)** | Tính nhất quán khi lướt qua toàn bộ các trang | Trang `/templates` chỉ hiển thị thẻ mô tả chung chung mà không có lệnh CLI kích hoạt; `apps/dashboard` chưa có cầu nối giải thích cách Terminal dưới máy đồng bộ lên Web. | Bổ sung lệnh CLI thực tế (`mekong opc run ...`) + Đầu vào/Đầu ra trên từng thẻ ở `/templates`, và thêm khối **Mekong CLI Command Bridge** trên trang tổng quan `apps/dashboard`. |
+
+## 2. Kết luận của Verifier (`Winning Synthesis`)
+Kết hợp cả 5 góc nhìn thành kiến trúc **6 Tầng Kể Chuyện Sản Phẩm trên Trang chủ (`/`)** + **Trang Từ Điển Lệnh `/cli`** + **Nâng cấp `/templates` & `apps/dashboard`**, đảm bảo bất kỳ ai (từ CEO không rành kỹ thuật đến Kỹ sư trưởng) chỉ cần lướt 5 giây là hiểu ngay: **`mekong-cli` là bộ điều hành doanh nghiệp bằng dòng lệnh kết nối buồng lái Web, giúp 1 người điều khiển dàn Giám đốc AI làm trọn gói Kế toán Thuế TT78, Zalo OA, Marketing & Vận hành.**

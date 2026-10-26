@@ -1,10 +1,11 @@
 import Link from 'next/link';
 
 const navLinks = [
+  { label: 'Mekong CLI', href: '/cli' },
   { label: 'OPC Cockpit', href: 'http://localhost:3000/dashboard/opc' },
   { label: 'CMO Swarm', href: '/cmo' },
   { label: 'Packs Registry', href: '/templates' },
-  { label: 'Sovereign Pricing', href: '#pricing' },
+  { label: 'Sovereign Pricing', href: '/#pricing' },
   { label: 'GitHub Open-Core', href: 'https://github.com/mekongmind/mekongmind' },
 ];
 
@@ -22,19 +23,19 @@ export default function Navbar() {
               <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider">Sovereign 2027</span>
             </div>
           </Link>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5 overflow-x-auto">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-xs sm:text-sm font-medium text-slate-300 transition-colors hover:text-emerald-400"
+                className="text-xs sm:text-sm font-medium text-slate-300 transition-colors hover:text-emerald-400 whitespace-nowrap"
               >
                 {link.label}
               </Link>
             ))}
             <Link
-              href="#pricing"
-              className="rounded-lg bg-emerald-500 px-4 py-2 text-xs sm:text-sm font-bold text-slate-950 transition-colors hover:bg-emerald-400"
+              href="/#pricing"
+              className="rounded-lg bg-emerald-500 px-4 py-2 text-xs sm:text-sm font-bold text-slate-950 transition-colors hover:bg-emerald-400 whitespace-nowrap"
             >
               Get Started
             </Link>
