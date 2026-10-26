@@ -18,10 +18,11 @@ export default function CheckoutSuccessClient() {
           <div className="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-mono font-semibold text-emerald-400 uppercase mb-3">
             Dual-Rail · {rail === 'vietqr' ? 'VietQR Napas 247' : 'NOWPayments Crypto IPN'}
           </div>
-          <h1 className="text-2xl font-bold text-white">Kích hoạt {tier.name} thành công!</h1>
+          <h1 className="text-2xl font-bold text-white">Đã khởi tạo phiên thanh toán {tier.name}</h1>
           <p className="mt-3 text-sm text-slate-400">
-            Đã cấp phát <span className="text-emerald-400 font-mono font-bold">{tier.mcuCredits.toLocaleString()} MCU Credits</span> cùng khóa mật mã{' '}
-            <code className="text-emerald-300">MEKONG-RAAS-v1</code> HMAC-SHA256.
+            Sau khi webhook Dual-Rail xác thực giao dịch trên RaaS Gateway, hệ thống sẽ cấp phát{' '}
+            <span className="text-emerald-400 font-mono font-bold">{tier.mcuCredits.toLocaleString()} MCU Credits</span> cùng khóa mật mã{' '}
+            <code className="text-emerald-300">MEKONG-RAAS-v1</code> HMAC-SHA256 qua email của bạn.
           </p>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">

@@ -15,10 +15,15 @@ export default function CheckoutForm({ tier }: CheckoutFormProps) {
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem(
+            'mekong_raas_checkout_intent',
+            JSON.stringify({ tier: tier.id, rail, email, ts: Date.now() })
+          );
+        }
         const qs = new URLSearchParams({
           tier: tier.id,
           rail,
-          email,
         });
         window.location.href = `/checkout/success?${qs.toString()}`;
       }}

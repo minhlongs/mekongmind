@@ -45,6 +45,9 @@ export default function DownloadClient({ slug: initialSlug }: DownloadClientProp
     setStatus('ready');
   }, [initialSlug, urlSlug]);
 
+  const [licenseKey, setLicenseKey] = useState('');
+  const isLicenseValid = /^MEKONG-RAAS-v1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(licenseKey.trim());
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#06080d]">
@@ -93,12 +96,35 @@ export default function DownloadClient({ slug: initialSlug }: DownloadClientProp
             <li>📊 Honest Usage Ledger Schema</li>
           </ul>
 
-          <a
-            href={`/templates/${resolvedSlug}/download/files.zip`}
-            className="block w-full rounded-lg bg-emerald-500 px-6 py-4 text-center font-bold text-slate-950 hover:bg-emerald-400"
-          >
-            ⬇️ Tải xuống Pack Bundle (.zip)
-          </a>
+          <div className="mb-5">
+            <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-2">
+              Nhập khóa bản quyền MEKONG-RAAS-v1 để mở khóa tải xuống
+            </label>
+            <input
+              type="text"
+              value={licenseKey}
+              onChange={(e) => setLicenseKey(e.target.value)}
+              placeholder="MEKONG-RAAS-v1.<payload_b64>.<hmac_sha256_sig>"
+              className="w-full rounded-lg border border-white/10 bg-[#06080d] px-4 py-3 font-mono text-xs text-emerald-300 placeholder-slate-600 focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+
+          {isLicenseValid ? (
+            <a
+              href={`/templates/${resolvedSlug}/download/files.zip`}
+              className="block w-full rounded-lg bg-emerald-500 px-6 py-4 text-center font-bold text-slate-950 hover:bg-emerald-400"
+            >
+              ⬇️ Tải xuống Pack Bundle (.zip)
+            </a>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="block w-full cursor-not-allowed rounded-lg border border-slate-800 bg-slate-900/60 px-6 py-4 text-center font-semibold text-slate-500"
+            >
+              🔒 Vui lòng nhập khóa MEKONG-RAAS-v1 hợp lệ để tải xuống
+            </button>
+          )}
 
           <p className="mt-4 text-center text-xs font-mono text-slate-500">
             Xác thực qua khóa MEKONG-RAAS-v1 Dual-Rail (VietQR / NOWPayments).
