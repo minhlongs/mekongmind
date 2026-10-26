@@ -66,18 +66,26 @@ export default function CheckoutForm({ tier }: CheckoutFormProps) {
       </div>
 
       <div>
-        <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-2">
+        <label
+          htmlFor="checkout-email-input"
+          className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-2"
+        >
           Email nhận khóa MEKONG-RAAS-v1
         </label>
         <input
+          id="checkout-email-input"
           type="email"
           name="email"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           placeholder="founder@company.com"
           className="w-full rounded-xl border border-white/10 bg-[#06080d] px-4 py-3 text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
         />
+        <p className="mt-1.5 text-[11px] text-slate-400">
+          Email dùng để gửi chứng thư cấp phép MEKONG-RAAS-v1 và receipt thanh toán.
+        </p>
       </div>
 
       <button
