@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 const navLinks = [
   { label: 'OPC Cockpit', href: 'http://localhost:3000/dashboard/opc' },
+  { label: 'CMO Swarm', href: '/cmo' },
   { label: 'Packs Registry', href: '/templates' },
   { label: 'Sovereign Pricing', href: '#pricing' },
   { label: 'GitHub Open-Core', href: 'https://github.com/mekongmind/mekongmind' },
