@@ -118,6 +118,34 @@ export default function MekongCliPage() {
         max_fine: 20_000_000,
         mitigating_count: 1,
       };
+    } else if (cmdEntry.name === 'payroll') {
+      defaultParams = { subcommand: 'calculate', gross: 35_000_000, dependents: 1, region: 1 };
+    } else if (['cfo', 'cmo', 'cso', 'cto', 'csuite', 'binh-phap', 'board-meeting'].includes(cmdEntry.name)) {
+      defaultParams = {
+        subcommand: 'brief',
+        horizon: 'Q4-2026',
+        objective: 'Scale Vietnam SME & OPC RaaS to $1M ARR',
+      };
+    } else if (['cook', 'plan', 'spec', 'autonomous', 'pev', 'swarm', 'goal'].includes(cmdEntry.name)) {
+      defaultParams = {
+        subcommand: 'plan',
+        goal: 'Deploy automated VietQR + E-Invoice TT78 reconciliation workflow',
+        dry_run: true,
+      };
+    } else if (cmdEntry.name === 'benchmark') {
+      defaultParams = { suite: 'pev', iterations: 5 };
+    } else if (['opc', 'sales', 'marketing', 'revenue', 'crm', 'pipeline'].includes(cmdEntry.name)) {
+      defaultParams = {
+        subcommand: 'metrics',
+        segment: 'VN_OPC_FOUNDER',
+        currency: 'VND',
+      };
+    } else if (['zalo-oa', 'ecom', 'audit', 'taxadmin', 'einvoice', 'tort', 'inheritance'].includes(cmdEntry.name)) {
+      defaultParams = {
+        subcommand: 'status',
+        jurisdiction: 'VN',
+        compliance_check: true,
+      };
     }
 
     try {

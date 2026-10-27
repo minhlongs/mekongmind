@@ -63,6 +63,8 @@ export async function POST(request: NextRequest) {
 
       if (res.ok) {
         const data = await res.json();
+        // Also reconcile in local state for consistency
+        reconcileGate(gateId, transactionId, evidenceRef);
         return NextResponse.json({ ...data, source: 'live_gateway' });
       }
     } catch {
