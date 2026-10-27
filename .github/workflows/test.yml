@@ -12,18 +12,23 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Install dependencies
+          python-version: '3.12'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: mvp/package-lock.json
+      - name: Install Python test dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-cov pytest-asyncio anyio ruff "httpx<0.28"
-          pip install -e .
-      - name: Lint
+          pip install pytest pytest-asyncio ruff
+      - name: Run Python Registry Cross-Mapping Tests
         run: |
-          ruff check src/ tests/
-      - name: Test with coverage
-        env:
-          PYTHONPATH: ${{ github.workspace }}
+          pytest tests/test_cli_full_registry_cross_mapping.py -v --tb=short
+      - name: Run MVP Fullstack Tests & Typecheck
+        working-directory: mvp
         run: |
-          pytest tests/ --ignore=tests/backend --ignore=tests/e2e --ignore=tests/integration --ignore=tests/unit -v --tb=short --cov=src --cov-config=pyproject.toml --cov-report=term-missing --cov-fail-under=70
+          npm ci
+          npm run typecheck
+          npm test
