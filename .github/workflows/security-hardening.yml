@@ -5,12 +5,10 @@ on:
     branches: [main, master]
     paths:
       - 'src/security/**'
-      - '.github/workflows/security-hardening.yml'
   pull_request:
     branches: [main, master]
     paths:
       - 'src/security/**'
-      - '.github/workflows/security-hardening.yml'
 
 jobs:
   # ------------------------------------------------------------------

@@ -5,12 +5,10 @@ on:
     branches: [main, master]
     paths:
       - 'packages/mekong-engine/**'
-      - '.github/workflows/gates.yml'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - 'packages/mekong-engine/**'
-      - '.github/workflows/gates.yml'
 
 concurrency:
   group: gates-${{ github.ref }}

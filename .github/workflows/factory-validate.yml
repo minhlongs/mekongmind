@@ -4,12 +4,10 @@ on:
     branches: [main, master]
     paths:
       - 'factory/**'
-      - '.github/workflows/factory-validate.yml'
   pull_request:
     branches: [main, master]
     paths:
       - 'factory/**'
-      - '.github/workflows/factory-validate.yml'
 jobs:
   validate:
     runs-on: ubuntu-latest

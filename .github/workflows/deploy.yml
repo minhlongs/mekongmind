@@ -6,13 +6,11 @@ on:
     paths:
       - 'apps/nhipdieuxanh/**'
       - 'apps/nhipdieuxanh-orchestrator/**'
-      - '.github/workflows/deploy.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'apps/nhipdieuxanh/**'
       - 'apps/nhipdieuxanh-orchestrator/**'
-      - '.github/workflows/deploy.yml'
 
 env:
   REGISTRY: docker.io
