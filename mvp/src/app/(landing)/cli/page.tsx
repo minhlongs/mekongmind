@@ -14,11 +14,45 @@ import {
   getCrossMappingMatrix,
 } from '@/data/cli-full-registry';
 
+type PageSizeOption = 12 | 24 | 48 | 'all';
+
+const PAGE_SIZE_OPTIONS: PageSizeOption[] = [12, 24, 48, 'all'];
+
+function buildPaginationItems(
+  currentPage: number,
+  totalPages: number
+): Array<number | 'ellipsis-left' | 'ellipsis-right'> {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, idx) => idx + 1);
+  }
+
+  const items: Array<number | 'ellipsis-left' | 'ellipsis-right'> = [1];
+  const leftSibling = Math.max(currentPage - 1, 2);
+  const rightSibling = Math.min(currentPage + 1, totalPages - 1);
+
+  if (leftSibling > 2) {
+    items.push('ellipsis-left');
+  }
+
+  for (let page = leftSibling; page <= rightSibling; page += 1) {
+    items.push(page);
+  }
+
+  if (rightSibling < totalPages - 1) {
+    items.push('ellipsis-right');
+  }
+
+  items.push(totalPages);
+  return items;
+}
+
 export default function MekongCliPage() {
   const [selectedLayer, setSelectedLayer] = useState<OperatingLayerId | 'all'>('all');
   const [selectedDept, setSelectedDept] = useState<DepartmentId | 'all'>('all');
   const [selectedCluster, setSelectedCluster] = useState<ClusterId | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [pageSize, setPageSize] = useState<PageSizeOption>(24);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [inspectedCommand, setInspectedCommand] = useState<CliCommandEntry>(
     () => CLI_FULL_REGISTRY.find((c) => c.id === 'cfo') || CLI_FULL_REGISTRY[0]
   );
@@ -82,6 +116,50 @@ export default function MekongCliPage() {
     });
   }, [selectedLayer, selectedDept, selectedCluster, searchQuery]);
 
+  const effectivePageSize =
+    pageSize === 'all' ? Math.max(filteredCommands.length, 1) : pageSize;
+  const totalPages = Math.max(1, Math.ceil(filteredCommands.length / effectivePageSize));
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const rangeStart =
+    filteredCommands.length === 0 ? 0 : (safeCurrentPage - 1) * effectivePageSize + 1;
+  const rangeEnd = Math.min(safeCurrentPage * effectivePageSize, filteredCommands.length);
+
+  const paginatedCommands = useMemo(() => {
+    if (pageSize === 'all') {
+      return filteredCommands;
+    }
+    const startIdx = (safeCurrentPage - 1) * pageSize;
+    return filteredCommands.slice(startIdx, startIdx + pageSize);
+  }, [filteredCommands, pageSize, safeCurrentPage]);
+
+  const paginationItems = useMemo(
+    () => buildPaginationItems(safeCurrentPage, totalPages),
+    [safeCurrentPage, totalPages]
+  );
+
+  const inspectedCommandPage = useMemo(() => {
+    if (pageSize === 'all') {
+      return 1;
+    }
+    const idx = filteredCommands.findIndex((item) => item.id === inspectedCommand.id);
+    if (idx === -1) {
+      return null;
+    }
+    return Math.floor(idx / pageSize) + 1;
+  }, [filteredCommands, inspectedCommand.id, pageSize]);
+
+  const handlePageChange = (nextPage: number, shouldScrollToTopOfRegistry: boolean = false) => {
+    const bounded = Math.min(Math.max(1, nextPage), totalPages);
+    setCurrentPage(bounded);
+    if (shouldScrollToTopOfRegistry) {
+      const el = document.getElementById('command-registry-explorer');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
@@ -89,6 +167,7 @@ export default function MekongCliPage() {
   };
 
   const handleSelectMatrixCell = (deptId: DepartmentId, clusterId: ClusterId) => {
+    setCurrentPage(1);
     if (selectedDept === deptId && selectedCluster === clusterId) {
       setSelectedDept('all');
       setSelectedCluster('all');
@@ -104,6 +183,7 @@ export default function MekongCliPage() {
   };
 
   const handleSelectDepartmentRow = (deptId: DepartmentId) => {
+    setCurrentPage(1);
     if (selectedDept === deptId && selectedCluster === 'all') {
       setSelectedDept('all');
       return;
@@ -118,6 +198,7 @@ export default function MekongCliPage() {
   };
 
   const handleSelectLayer = (layerId: OperatingLayerId) => {
+    setCurrentPage(1);
     if (selectedLayer === layerId) {
       setSelectedLayer('all');
       setSelectedDept('all');
@@ -137,6 +218,7 @@ export default function MekongCliPage() {
     setSelectedDept('all');
     setSelectedCluster('all');
     setSearchQuery('');
+    setCurrentPage(1);
   };
 
   const hasActiveFilters =
@@ -718,7 +800,10 @@ export default function MekongCliPage() {
       </section>
 
       {/* TIER 4: FULL 100% COMMAND REGISTRY EXPLORER (197 COMMANDS) */}
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <section
+        id="command-registry-explorer"
+        className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
+      >
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
             <div className="text-xs font-mono uppercase tracking-wider text-emerald-400">
@@ -731,27 +816,38 @@ export default function MekongCliPage() {
               Tìm kiếm tức thì (0ms) theo tên lệnh tiếng Anh, alias tiếng Việt (<code className="text-emerald-300">thue</code>, <code className="text-emerald-300">ke-toan</code>, <code className="text-emerald-300">honnhan</code>, <code className="text-emerald-300">xuphat</code>...), tên Agent hoặc Phòng ban.
             </p>
           </div>
-          <div className="text-xs font-mono text-slate-300">
-            Đang hiển thị:{' '}
-            <span className="text-emerald-400 font-bold text-base">{filteredCommands.length}</span> /{' '}
-            {CLI_FULL_REGISTRY.length} nhóm lệnh
+          <div className="text-xs font-mono text-slate-300 text-right">
+            <div>
+              Đang lọc:{' '}
+              <span className="text-emerald-400 font-bold text-base">{filteredCommands.length}</span> /{' '}
+              {CLI_FULL_REGISTRY.length} nhóm lệnh
+            </div>
+            <div className="text-slate-400 text-[11px] mt-0.5">
+              Trang {safeCurrentPage} / {totalPages} (mỗi trang {pageSize === 'all' ? 'tất cả' : pageSize} lệnh)
+            </div>
           </div>
         </div>
 
         {/* Search & Multi-Dimensional Filter Bar */}
-        <div className="rounded-2xl border border-white/10 bg-[#0b0f17] p-4 sm:p-5 space-y-4 mb-8">
+        <div className="rounded-2xl border border-white/10 bg-[#0b0f17] p-4 sm:p-5 space-y-4 mb-6">
           <div className="relative">
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               placeholder="🔍 Gõ tên lệnh (vd: cfo, thue, ke-toan, zalo-oa, honnhan, xuphat, corporate, cook, swarm, BLDS 2015, TT78...)"
               className="w-full rounded-xl border border-white/15 bg-[#06080d] px-4 py-3.5 text-sm text-white placeholder-slate-500 focus:border-emerald-400 focus:outline-none font-mono"
             />
             {searchQuery && (
               <button
                 type="button"
-                onClick={() => setSearchQuery('')}
+                onClick={() => {
+                  setSearchQuery('');
+                  setCurrentPage(1);
+                }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-mono text-slate-300 hover:bg-white/20"
               >
                 Xóa
@@ -766,7 +862,10 @@ export default function MekongCliPage() {
             </span>
             <button
               type="button"
-              onClick={() => setSelectedCluster('all')}
+              onClick={() => {
+                setSelectedCluster('all');
+                setCurrentPage(1);
+              }}
               className={`rounded-lg px-3 py-1.5 text-xs font-mono font-semibold transition-all ${
                 selectedCluster === 'all'
                   ? 'bg-emerald-500 text-slate-950'
@@ -779,9 +878,10 @@ export default function MekongCliPage() {
               <button
                 key={cluster.id}
                 type="button"
-                onClick={() =>
-                  setSelectedCluster(selectedCluster === cluster.id ? 'all' : cluster.id)
-                }
+                onClick={() => {
+                  setSelectedCluster(selectedCluster === cluster.id ? 'all' : cluster.id);
+                  setCurrentPage(1);
+                }}
                 className={`rounded-lg px-3 py-1.5 text-xs font-mono font-semibold transition-all ${
                   selectedCluster === cluster.id
                     ? 'bg-emerald-500 text-slate-950'
@@ -800,7 +900,10 @@ export default function MekongCliPage() {
             </span>
             <button
               type="button"
-              onClick={() => setSelectedDept('all')}
+              onClick={() => {
+                setSelectedDept('all');
+                setCurrentPage(1);
+              }}
               className={`rounded-lg px-2.5 py-1 text-[11px] font-mono transition-all ${
                 selectedDept === 'all'
                   ? 'bg-cyan-400 text-slate-950 font-bold'
@@ -813,7 +916,10 @@ export default function MekongCliPage() {
               <button
                 key={dept.id}
                 type="button"
-                onClick={() => setSelectedDept(selectedDept === dept.id ? 'all' : dept.id)}
+                onClick={() => {
+                  setSelectedDept(selectedDept === dept.id ? 'all' : dept.id);
+                  setCurrentPage(1);
+                }}
                 className={`rounded-lg px-2.5 py-1 text-[11px] font-mono transition-all ${
                   selectedDept === dept.id
                     ? 'bg-cyan-400 text-slate-950 font-bold'
@@ -823,6 +929,79 @@ export default function MekongCliPage() {
                 [{dept.layerId}] {dept.id}
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* TOP PAGINATION & PAGE-SIZE CONTROLS */}
+        <div className="rounded-2xl border border-white/10 bg-[#0b0f17] p-3.5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400">Hiển thị:</span>
+            <span className="text-emerald-400 font-bold">
+              {rangeStart}–{rangeEnd}
+            </span>
+            <span className="text-slate-500">/</span>
+            <span className="text-white font-semibold">{filteredCommands.length}</span>
+            <span className="text-slate-400">nhóm lệnh</span>
+            {totalPages > 1 && (
+              <span className="rounded bg-white/5 border border-white/10 px-2 py-0.5 text-[11px] text-slate-300 ml-1">
+                Trang {safeCurrentPage}/{totalPages}
+              </span>
+            )}
+            {inspectedCommandPage !== null && inspectedCommandPage !== safeCurrentPage && (
+              <button
+                type="button"
+                onClick={() => handlePageChange(inspectedCommandPage, true)}
+                className="rounded border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] text-amber-300 hover:bg-amber-500/20 transition-colors ml-2"
+              >
+                📍 Lệnh đang thanh tra ở Trang {inspectedCommandPage}
+              </button>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Page Size Selector */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-400 text-[11px]">Mỗi trang:</span>
+              {PAGE_SIZE_OPTIONS.map((opt) => (
+                <button
+                  key={String(opt)}
+                  type="button"
+                  onClick={() => {
+                    setPageSize(opt);
+                    setCurrentPage(1);
+                  }}
+                  className={`rounded-lg px-2.5 py-1 text-xs font-mono transition-all ${
+                    pageSize === opt
+                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm shadow-emerald-500/30'
+                      : 'border border-white/10 bg-[#06080d] text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {opt === 'all' ? `Tất cả (${filteredCommands.length})` : opt}
+                </button>
+              ))}
+            </div>
+
+            {/* Quick Prev / Next for Top Bar */}
+            {totalPages > 1 && (
+              <div className="flex items-center gap-1 pl-2 border-l border-white/10">
+                <button
+                  type="button"
+                  disabled={safeCurrentPage <= 1}
+                  onClick={() => handlePageChange(safeCurrentPage - 1, true)}
+                  className="rounded-lg border border-white/10 bg-[#06080d] px-2.5 py-1 text-xs text-slate-300 hover:border-emerald-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  ‹ Trước
+                </button>
+                <button
+                  type="button"
+                  disabled={safeCurrentPage >= totalPages}
+                  onClick={() => handlePageChange(safeCurrentPage + 1, true)}
+                  className="rounded-lg border border-white/10 bg-[#06080d] px-2.5 py-1 text-xs text-slate-300 hover:border-emerald-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Sau ›
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -845,7 +1024,7 @@ export default function MekongCliPage() {
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredCommands.map((item) => {
+            {paginatedCommands.map((item) => {
               const isInspected = inspectedCommand.id === item.id;
               const clusterMeta =
                 BUSINESS_CLUSTERS.find((c) => c.id === item.cluster) || BUSINESS_CLUSTERS[0];
@@ -945,6 +1124,92 @@ export default function MekongCliPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* BOTTOM NUMBERED PAGINATION BAR */}
+        {totalPages > 1 && (
+          <div className="mt-8 rounded-2xl border border-white/10 bg-[#0b0f17] p-4 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
+            <div className="text-slate-400">
+              Đang hiển thị{' '}
+              <span className="text-emerald-400 font-bold">
+                {rangeStart}–{rangeEnd}
+              </span>{' '}
+              trên <span className="text-white font-semibold">{filteredCommands.length}</span> nhóm lệnh ·{' '}
+              <span className="text-slate-300">
+                Trang {safeCurrentPage} / {totalPages}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                disabled={safeCurrentPage <= 1}
+                onClick={() => handlePageChange(1, true)}
+                className="rounded-lg border border-white/10 bg-[#06080d] px-2.5 py-1.5 text-xs text-slate-300 hover:border-emerald-400 disabled:opacity-25 disabled:cursor-not-allowed"
+                title="Về trang đầu"
+              >
+                « Đầu
+              </button>
+              <button
+                type="button"
+                disabled={safeCurrentPage <= 1}
+                onClick={() => handlePageChange(safeCurrentPage - 1, true)}
+                className="rounded-lg border border-white/10 bg-[#06080d] px-2.5 py-1.5 text-xs text-slate-300 hover:border-emerald-400 disabled:opacity-25 disabled:cursor-not-allowed"
+                title="Trang trước"
+              >
+                ‹ Trước
+              </button>
+
+              {paginationItems.map((item, idx) => {
+                if (item === 'ellipsis-left' || item === 'ellipsis-right') {
+                  return (
+                    <span
+                      key={`${item}-${idx}`}
+                      className="px-2 py-1 text-slate-600 select-none"
+                    >
+                      …
+                    </span>
+                  );
+                }
+
+                const pageNum = item as number;
+                const isActive = pageNum === safeCurrentPage;
+                return (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => handlePageChange(pageNum, true)}
+                    className={`min-w-[34px] rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold transition-all ${
+                      isActive
+                        ? 'border border-emerald-400 bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                        : 'border border-white/10 bg-[#06080d] text-slate-300 hover:border-emerald-500/50 hover:text-white'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                disabled={safeCurrentPage >= totalPages}
+                onClick={() => handlePageChange(safeCurrentPage + 1, true)}
+                className="rounded-lg border border-white/10 bg-[#06080d] px-2.5 py-1.5 text-xs text-slate-300 hover:border-emerald-400 disabled:opacity-25 disabled:cursor-not-allowed"
+                title="Trang sau"
+              >
+                Sau ›
+              </button>
+              <button
+                type="button"
+                disabled={safeCurrentPage >= totalPages}
+                onClick={() => handlePageChange(totalPages, true)}
+                className="rounded-lg border border-white/10 bg-[#06080d] px-2.5 py-1.5 text-xs text-slate-300 hover:border-emerald-400 disabled:opacity-25 disabled:cursor-not-allowed"
+                title="Tới trang cuối"
+              >
+                Cuối »
+              </button>
+            </div>
           </div>
         )}
       </section>

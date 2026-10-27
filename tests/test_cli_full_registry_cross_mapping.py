@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 AGENT_REGISTRY = ROOT / "agents" / "registry.json"
 CLI_FULL_REGISTRY = ROOT / "mvp" / "src" / "data" / "cli-full-registry.json"
+CLI_PAGE_TSX = ROOT / "mvp" / "src" / "app" / "(landing)" / "cli" / "page.tsx"
 
 
 class CliFullRegistryCrossMappingTests(unittest.TestCase):
@@ -64,6 +65,14 @@ class CliFullRegistryCrossMappingTests(unittest.TestCase):
     def test_all_4_business_clusters_populated(self):
         covered_clusters = {entry["cluster"] for entry in self.cli_reg}
         self.assertEqual(covered_clusters, self.valid_clusters)
+
+    def test_cli_page_has_numbered_pagination_and_page_size_controls(self):
+        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
+        self.assertIn("PAGE_SIZE_OPTIONS: PageSizeOption[] = [12, 24, 48, 'all']", src)
+        self.assertIn("buildPaginationItems", src)
+        self.assertIn("paginatedCommands", src)
+        self.assertIn("command-registry-explorer", src)
+        self.assertIn("BOTTOM NUMBERED PAGINATION BAR", src)
 
 
 if __name__ == "__main__":
