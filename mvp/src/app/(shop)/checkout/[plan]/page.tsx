@@ -6,11 +6,12 @@ export function generateStaticParams() {
 }
 
 interface CheckoutPageProps {
-  params: { plan: string };
+  params: Promise<{ plan: string }>;
 }
 
-export default function CheckoutPage({ params }: CheckoutPageProps) {
-  const plan = params.plan as TierId;
+export default async function CheckoutPage({ params }: CheckoutPageProps) {
+  const { plan: rawPlan } = await params;
+  const plan = rawPlan as TierId;
   const tier = COMMERCIAL_TIERS[plan];
 
   if (!tier) {

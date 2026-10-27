@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 AGENT_REGISTRY = ROOT / "agents" / "registry.json"
 CLI_FULL_REGISTRY = ROOT / "mvp" / "src" / "data" / "cli-full-registry.json"
+CAPABILITY_LEDGER = ROOT / "mvp" / "src" / "data" / "capability-ledger.json"
 CLI_PAGE_TSX = ROOT / "mvp" / "src" / "app" / "(landing)" / "cli" / "page.tsx"
 
 
@@ -18,11 +19,32 @@ class CliFullRegistryCrossMappingTests(unittest.TestCase):
             cls.agent_reg = json.load(handle)
         with open(CLI_FULL_REGISTRY, encoding="utf-8") as handle:
             cls.cli_reg = json.load(handle)
+        with open(CAPABILITY_LEDGER, encoding="utf-8") as handle:
+            cls.cap_ledger = json.load(handle)
         cls.valid_departments = {
             dept["id"] for dept in cls.agent_reg.get("mekongmind_departments", [])
         }
         cls.valid_layers = {"L0", "L1", "L2", "L3", "L4", "L5"}
         cls.valid_clusters = {"csuite", "sdlc", "bizops", "vn_statutory"}
+        cls.valid_maturity_tiers = {"REAL_VERIFIED", "PARTIAL_LOOKUP", "CATALOG_ONLY"}
+        cls.required_contract_fields = {
+            "claim_id",
+            "promise_summary",
+            "display_source",
+            "input_schema",
+            "cli_entrypoint",
+            "api_transport",
+            "handler_path",
+            "owner_agent",
+            "sop_steps",
+            "data_rw",
+            "output_schema",
+            "external_effects",
+            "approval_policy",
+            "acceptance_criteria",
+            "test_evidence",
+            "maturity_tier",
+        }
 
     def test_full_coverage_exceeds_189_commands(self):
         self.assertGreaterEqual(
@@ -74,6 +96,23 @@ class CliFullRegistryCrossMappingTests(unittest.TestCase):
         self.assertIn("command-registry-explorer", src)
         self.assertIn("BOTTOM NUMBERED PAGINATION BAR", src)
 
+    def test_capability_ledger_has_197_commands_and_16_contract_columns(self):
+        self.assertEqual(len(self.cap_ledger), 197)
+        for entry in self.cap_ledger:
+            missing = self.required_contract_fields - set(entry.keys())
+            self.assertFalse(missing, f"Missing contract fields in {entry.get('name')}: {missing}")
+            self.assertIn(entry["maturity_tier"], self.valid_maturity_tiers)
+
+    def test_cli_page_de_simulated_and_wired_for_live_execution(self):
+        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
+        self.assertNotIn("GATE_PASSED_SHA256", src)
+        self.assertIn("MATURITY_TIERS", src)
+        self.assertIn("handleRunLiveCommand", src)
+        self.assertIn("handleVerifyReceipt", src)
+        self.assertIn("/api/cli/runs", src)
+        self.assertIn("/api/cli/receipts/verify", src)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+

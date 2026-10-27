@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   BUSINESS_CLUSTERS,
@@ -9,10 +9,14 @@ import {
   ClusterId,
   DEPARTMENTS,
   DepartmentId,
+  MATURITY_TIERS,
+  MaturityTier,
   OPERATING_LAYERS,
   OperatingLayerId,
+  getCapabilityContract,
   getCrossMappingMatrix,
 } from '@/data/cli-full-registry';
+import type { CommandReceipt, ExecutionRunResult, MilestoneGate } from '@/lib/cli-execution-bridge';
 
 type PageSizeOption = 12 | 24 | 48 | 'all';
 
@@ -54,9 +58,111 @@ export default function MekongCliPage() {
   const [pageSize, setPageSize] = useState<PageSizeOption>(24);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [inspectedCommand, setInspectedCommand] = useState<CliCommandEntry>(
-    () => CLI_FULL_REGISTRY.find((c) => c.id === 'cfo') || CLI_FULL_REGISTRY[0]
+    () => CLI_FULL_REGISTRY.find((c) => c.id === 'thue') || CLI_FULL_REGISTRY[0]
   );
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [terminalTab, setTerminalTab] = useState<'preview' | 'live'>('live');
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [liveRunResult, setLiveRunResult] = useState<ExecutionRunResult | null>(null);
+  const [liveRunError, setLiveRunError] = useState<string | null>(null);
+  const [receiptVerified, setReceiptVerified] = useState<{
+    checked: boolean;
+    valid: boolean;
+    source: string;
+  } | null>(null);
+  const [companyGates, setCompanyGates] = useState<MilestoneGate[]>([]);
+
+  const inspectedContract = useMemo(
+    () => getCapabilityContract(inspectedCommand.name),
+    [inspectedCommand.name]
+  );
+
+  const inspectedMaturityMeta = useMemo(() => {
+    const tier: MaturityTier = inspectedContract?.maturity_tier || 'CATALOG_ONLY';
+    return MATURITY_TIERS[tier];
+  }, [inspectedContract]);
+
+  useEffect(() => {
+    fetch('/api/cli/gates')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.gates)) {
+          setCompanyGates(data.gates);
+        }
+      })
+      .catch(() => {
+        // Ignore network errors during initial hydration
+      });
+  }, []);
+
+  const handleRunLiveCommand = async (cmdEntry: CliCommandEntry) => {
+    setIsExecuting(true);
+    setLiveRunError(null);
+    setReceiptVerified(null);
+    setTerminalTab('live');
+
+    let defaultParams: Record<string, unknown> = { subcommand: 'status' };
+    if (cmdEntry.name === 'thue') {
+      defaultParams = { subcommand: 'tncn', gross_income: 35_000_000, dependents: 1 };
+    } else if (cmdEntry.name === 'ke-toan') {
+      defaultParams = { subcommand: 'journal', amount: 25_000_000, buyer: 'Cong Ty TNHH Mekong' };
+    } else if (cmdEntry.name === 'bhxh') {
+      defaultParams = { subcommand: 'calculate', salary: 30_000_000, region: 1 };
+    } else if (cmdEntry.name === 'vietqr') {
+      defaultParams = { subcommand: 'generate', amount: 2_500_000, memo: 'THANH TOAN MEKONG' };
+    } else if (cmdEntry.name === 'adminsanction') {
+      defaultParams = {
+        subcommand: 'calculate',
+        entity_type: 'ORGANIZATION',
+        min_fine: 10_000_000,
+        max_fine: 20_000_000,
+        mitigating_count: 1,
+      };
+    }
+
+    try {
+      const res = await fetch('/api/cli/runs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          command_id: cmdEntry.name,
+          params: defaultParams,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setLiveRunError(data?.error || 'Execution failed');
+      } else {
+        setLiveRunResult(data as ExecutionRunResult);
+      }
+    } catch (err) {
+      setLiveRunError(err instanceof Error ? err.message : 'Network error');
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
+  const handleVerifyReceipt = async (receipt: CommandReceipt) => {
+    try {
+      const res = await fetch('/api/cli/receipts/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ receipt }),
+      });
+      const data = await res.json();
+      setReceiptVerified({
+        checked: true,
+        valid: Boolean(data?.valid),
+        source: String(data?.source || 'verifier'),
+      });
+    } catch {
+      setReceiptVerified({
+        checked: true,
+        valid: false,
+        source: 'error',
+      });
+    }
+  };
 
   const matrix = useMemo(() => getCrossMappingMatrix(), []);
 
@@ -584,6 +690,12 @@ export default function MekongCliPage() {
               >
                 {activeClusterMeta.shortLabel}
               </span>
+              <span
+                className={`rounded-full border px-3 py-1 text-xs font-mono font-semibold ${inspectedMaturityMeta.badgeClass}`}
+                title={inspectedMaturityMeta.description}
+              >
+                ● {inspectedMaturityMeta.label}
+              </span>
               <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-mono font-semibold text-emerald-300">
                 Tầng {inspectedCommand.layerId} · {inspectedCommand.departmentName}
               </span>
@@ -697,7 +809,7 @@ export default function MekongCliPage() {
               </div>
             </div>
 
-            {/* Live Terminal Simulator */}
+            {/* Live Terminal & Verified Execution */}
             <div className="lg:col-span-6 flex flex-col justify-between rounded-2xl border border-white/15 bg-[#05070b] p-5 font-mono text-xs shadow-inner">
               <div>
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
@@ -709,60 +821,85 @@ export default function MekongCliPage() {
                       mekong-cli — {inspectedCommand.departmentId} ({inspectedCommand.layerId})
                     </span>
                   </div>
-                  <span className="text-[10px] text-emerald-400">● SOVEREIGN RUNTIME</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setTerminalTab('preview')}
+                      className={`px-2.5 py-1 rounded text-[11px] transition-colors ${
+                        terminalTab === 'preview'
+                          ? 'bg-white/15 text-white font-bold'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Mẫu Tài Liệu (Preview)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTerminalTab('live')}
+                      className={`px-2.5 py-1 rounded text-[11px] flex items-center gap-1.5 transition-colors ${
+                        terminalTab === 'live'
+                          ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Thực Thi Thật (Live Run)
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-2.5 text-slate-300 leading-relaxed">
-                  <div>
-                    <span className="text-emerald-400">founder@mekong-opc</span>
-                    <span className="text-slate-500">:</span>
-                    <span className="text-cyan-400">~/company</span>
-                    <span className="text-slate-500">$ </span>
-                    <span className="text-white font-bold">{inspectedCommand.command} --help</span>
-                  </div>
-
-                  <div className="rounded-xl bg-white/[0.03] border border-white/5 p-3 text-[11px] text-slate-300 space-y-1">
-                    <div className="text-emerald-300 font-bold">
-                      Usage: {inspectedCommand.command} [OPTIONS] COMMAND [ARGS]...
+                {terminalTab === 'preview' ? (
+                  <div className="space-y-2.5 text-slate-300 leading-relaxed">
+                    <div>
+                      <span className="text-emerald-400">founder@mekong-opc</span>
+                      <span className="text-slate-500">:</span>
+                      <span className="text-cyan-400">~/company</span>
+                      <span className="text-slate-500">$ </span>
+                      <span className="text-white font-bold">{inspectedCommand.command} --help</span>
                     </div>
-                    <div>{inspectedCommand.desc}</div>
-                    {inspectedCommand.aliases.length > 0 && (
-                      <div className="text-cyan-300">
-                        Aliases: {inspectedCommand.aliases.map((a) => `mekong ${a}`).join(', ')}
+
+                    <div className="rounded-xl bg-white/[0.03] border border-white/5 p-3 text-[11px] text-slate-300 space-y-1">
+                      <div className="text-emerald-300 font-bold">
+                        Usage: {inspectedCommand.command} [OPTIONS] COMMAND [ARGS]...
                       </div>
-                    )}
-                  </div>
+                      <div>{inspectedCommand.desc}</div>
+                      {inspectedCommand.aliases.length > 0 && (
+                        <div className="text-cyan-300">
+                          Aliases: {inspectedCommand.aliases.map((a) => `mekong ${a}`).join(', ')}
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="pt-2">
-                    <span className="text-emerald-400">founder@mekong-opc</span>
-                    <span className="text-slate-500">:</span>
-                    <span className="text-cyan-400">~/company</span>
-                    <span className="text-slate-500">$ </span>
-                    <span className="text-white font-bold">
-                      {inspectedCommand.command} --execute --verify-gate
-                    </span>
-                  </div>
+                    <div className="pt-2">
+                      <span className="text-emerald-400">founder@mekong-opc</span>
+                      <span className="text-slate-500">:</span>
+                      <span className="text-cyan-400">~/company</span>
+                      <span className="text-slate-500">$ </span>
+                      <span className="text-white font-bold">
+                        {inspectedCommand.command} --inspect-contract
+                      </span>
+                    </div>
 
-                  <div className="space-y-1.5 pl-2 border-l-2 border-emerald-500/40 text-[11px]">
-                    <div className="text-cyan-300">
-                      [1/4] Routing `{inspectedCommand.name}` ➔ Owner Agent `{inspectedCommand.ownerAgent}` ({inspectedCommand.departmentId})
+                    <div className="space-y-1.5 pl-2 border-l-2 border-slate-600 text-[11px]">
+                      <div className="text-cyan-300">
+                        [1/4] Routing `{inspectedCommand.name}` ➔ Owner Agent `{inspectedCommand.ownerAgent}` ({inspectedCommand.departmentId})
+                      </div>
+                      <div className="text-purple-300">
+                        [2/4] SOP Chain: {inspectedCommand.sopChain.join(' ➔ ')}
+                      </div>
+                      <div className="text-amber-300">
+                        [3/4] Đặc tả đầu ra: {inspectedCommand.sampleOutput}
+                      </div>
+                      <div className="text-slate-400">
+                        [4/4] Dự kiến tạo biên bản: {inspectedCommand.gateArtifact}
+                      </div>
                     </div>
-                    <div className="text-purple-300">
-                      [2/4] Executing SOP Chain: {inspectedCommand.sopChain.join(' ➔ ')}
-                    </div>
-                    <div className="text-amber-300">
-                      [3/4] {inspectedCommand.sampleOutput}
-                    </div>
-                    <div className="text-emerald-400 font-semibold">
-                      [4/4] ✓ Gate Artifact Sealed: {inspectedCommand.gateArtifact}
-                    </div>
-                  </div>
 
-                  <div className="rounded-xl bg-emerald-950/30 border border-emerald-500/30 p-3 text-[11px] text-emerald-200 mt-3">
-                    <div className="font-bold text-emerald-300 mb-1">
-                      {`// Bằng chứng nghiệm thu tự động (Evidence Contract)`}
-                    </div>
-                    <pre className="overflow-x-auto text-[10px] leading-relaxed">
+                    <div className="rounded-xl bg-slate-900/60 border border-white/10 p-3 text-[11px] text-slate-300 mt-3">
+                      <div className="font-bold text-slate-400 mb-1">
+                        {`// Bản xem trước tài liệu tĩnh (Static Documentation Preview)`}
+                      </div>
+                      <pre className="overflow-x-auto text-[10px] leading-relaxed text-slate-400">
 {`{
   "command": "${inspectedCommand.command}",
   "department": "${inspectedCommand.departmentId}",
@@ -770,11 +907,162 @@ export default function MekongCliPage() {
   "owner_agent": "${inspectedCommand.ownerAgent}",
   "sop_chain": ${JSON.stringify(inspectedCommand.sopChain)},
   "gate_artifact": "${inspectedCommand.gateArtifact}",
-  "status": "GATE_PASSED_SHA256"
+  "maturity_tier": "${inspectedContract?.maturity_tier || 'CATALOG_ONLY'}"
 }`}
-                    </pre>
+                      </pre>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between bg-white/[0.03] border border-white/5 rounded-xl p-3">
+                      <div>
+                        <div className="text-white font-bold">Thực thi nghiệp vụ In-Process</div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">
+                          Tự động chạy tính toán số học Decimal, kiểm chứng kép luật VN và ký biên lai mật mã HMAC-SHA256.
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        disabled={isExecuting}
+                        onClick={() => handleRunLiveCommand(inspectedCommand)}
+                        className="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-emerald-400 disabled:opacity-50 transition-colors shadow-sm shadow-emerald-500/30"
+                      >
+                        {isExecuting ? 'Đang thực thi...' : '▶ Chạy Lệnh Thật'}
+                      </button>
+                    </div>
+
+                    {liveRunError && (
+                      <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-rose-300 text-[11px]">
+                        Lỗi thực thi: {liveRunError}
+                      </div>
+                    )}
+
+                    {liveRunResult ? (
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-[10px]">
+                          <div className="rounded-lg bg-white/5 p-2 border border-white/5">
+                            <div className="text-slate-400">Trạng Thái</div>
+                            <div className="text-emerald-400 font-bold mt-0.5">
+                              {liveRunResult.status}
+                            </div>
+                          </div>
+                          <div className="rounded-lg bg-white/5 p-2 border border-white/5">
+                            <div className="text-slate-400">Thời Gian</div>
+                            <div className="text-cyan-300 font-bold mt-0.5">
+                              {liveRunResult.duration_ms} ms
+                            </div>
+                          </div>
+                          <div className="rounded-lg bg-white/5 p-2 border border-white/5">
+                            <div className="text-slate-400">Kiểm Chứng</div>
+                            <div className="text-purple-300 font-bold mt-0.5 truncate">
+                              {liveRunResult.domain_verification?.status === 'PASSED'
+                                ? '✓ ĐẠT LUẬT VN'
+                                : 'CHƯA CHẠY'}
+                            </div>
+                          </div>
+                          <div className="rounded-lg bg-white/5 p-2 border border-white/5">
+                            <div className="text-slate-400">Nguồn Chạy</div>
+                            <div className="text-amber-300 font-bold mt-0.5 truncate">
+                              {liveRunResult.source === 'live_gateway'
+                                ? 'FastAPI daemon'
+                                : 'Deterministic TS'}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Raw Output Box */}
+                        <div className="rounded-xl bg-black/60 border border-white/10 p-3 text-[11px]">
+                          <div className="text-slate-400 font-bold mb-1 flex items-center justify-between">
+                            <span>Kết quả nghiệp vụ thực tế (Raw Output):</span>
+                            <span className="text-[10px] text-emerald-400">
+                              run_id: {liveRunResult.run_id}
+                            </span>
+                          </div>
+                          <pre className="overflow-x-auto text-[10px] text-emerald-300 leading-relaxed max-h-40">
+                            {JSON.stringify(liveRunResult.output, null, 2)}
+                          </pre>
+                        </div>
+
+                        {/* Cryptographic Receipt Box */}
+                        <div className="rounded-xl bg-emerald-950/30 border border-emerald-500/40 p-3 text-[11px]">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="font-bold text-emerald-300">
+                              🔒 Biên Lai Nghiệm Thu Cấp 1 (Tier 1 Signed Receipt)
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleVerifyReceipt(liveRunResult.receipt)}
+                              className="rounded bg-emerald-500/20 border border-emerald-500/50 px-2 py-0.5 text-[10px] font-bold text-emerald-200 hover:bg-emerald-500/30"
+                            >
+                              Xác Minh Chữ Ký SHA-256
+                            </button>
+                          </div>
+                          <div className="space-y-1 text-[10px] text-slate-300">
+                            <div>
+                              <span className="text-slate-400">Chữ ký HMAC:</span>{' '}
+                              <span className="text-emerald-400 font-mono break-all">
+                                {liveRunResult.receipt.signature}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Mã băm Input:</span>{' '}
+                              <span className="text-cyan-300 font-mono">
+                                {liveRunResult.receipt.input_sha256}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Mã băm Output:</span>{' '}
+                              <span className="text-purple-300 font-mono">
+                                {liveRunResult.receipt.output_sha256}
+                              </span>
+                            </div>
+                            {liveRunResult.receipt.statutory_citations?.length > 0 && (
+                              <div>
+                                <span className="text-slate-400">Căn cứ pháp lý:</span>{' '}
+                                <span className="text-amber-300">
+                                  {liveRunResult.receipt.statutory_citations.join(' · ')}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {receiptVerified && (
+                            <div
+                              className={`mt-2 rounded p-2 text-[10px] font-bold ${
+                                receiptVerified.valid
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                  : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                              }`}
+                            >
+                              {receiptVerified.valid
+                                ? `✓ Chữ ký mật mã HMAC-SHA256 HỢP LỆ (RFC 8785 Canonical JSON · Nguồn: ${receiptVerified.source})`
+                                : '✗ Chữ ký không hợp lệ hoặc dữ liệu biên lai đã bị can thiệp!'}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Tier 2 Milestone Gate Status Box */}
+                        <div className="rounded-xl bg-purple-950/20 border border-purple-500/30 p-3 text-[10px] text-slate-300">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-bold text-purple-300">
+                              Cổng Cột Mốc Công Ty Tầng {inspectedCommand.layerId} (Tier 2 Milestone Gate)
+                            </span>
+                            <span className="rounded bg-amber-500/20 text-amber-300 px-1.5 py-0.5 font-bold">
+                              {companyGates.find((g) => g.layer_id === inspectedCommand.layerId)?.status || 'LOCKED'}
+                            </span>
+                          </div>
+                          <p className="text-slate-400">
+                            Khác với Biên lai thực thi lệnh (Tier 1 Receipt ký tức thì sau mỗi lần chạy), Cổng cột mốc công ty (Tier 2 Gate) giữ nguyên trạng thái <strong>LOCKED</strong> cho đến khi có giao dịch ngân hàng / hóa đơn thực tế được đối soát vào cơ sở dữ liệu.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-dashed border-white/10 p-6 text-center text-slate-400 text-[11px]">
+                        Bấm nút <strong>&ldquo;▶ Chạy Lệnh Thật&rdquo;</strong> ở trên để nạp thông số mặc định, gửi tới backend thực thi, nhận kết quả số học và biên lai mật mã đã được ký HMAC-SHA256.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="mt-5 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
@@ -1028,6 +1316,9 @@ export default function MekongCliPage() {
               const isInspected = inspectedCommand.id === item.id;
               const clusterMeta =
                 BUSINESS_CLUSTERS.find((c) => c.id === item.cluster) || BUSINESS_CLUSTERS[0];
+              const cardContract = getCapabilityContract(item.name);
+              const cardTier: MaturityTier = cardContract?.maturity_tier || 'CATALOG_ONLY';
+              const cardTierMeta = MATURITY_TIERS[cardTier];
 
               return (
                 <div
@@ -1039,16 +1330,24 @@ export default function MekongCliPage() {
                   }`}
                 >
                   <div>
-                    {/* Top row: Layer + Cluster badges */}
-                    <div className="flex items-center justify-between gap-2 mb-3">
+                    {/* Top row: Layer + Cluster + Maturity badges */}
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3">
                       <span
                         className={`rounded-full border px-2.5 py-0.5 text-[10px] font-mono font-semibold ${clusterMeta.badgeColor}`}
                       >
                         {clusterMeta.shortLabel}
                       </span>
-                      <span className="rounded-md bg-white/5 border border-white/10 px-2 py-0.5 text-[10px] font-mono text-emerald-300">
-                        {item.layerId} · {item.departmentId}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className={`rounded-md border px-2 py-0.5 text-[9px] font-mono font-semibold ${cardTierMeta.badgeClass}`}
+                          title={cardTierMeta.description}
+                        >
+                          {cardTier}
+                        </span>
+                        <span className="rounded-md bg-white/5 border border-white/10 px-2 py-0.5 text-[10px] font-mono text-emerald-300">
+                          {item.layerId} · {item.departmentId}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Command syntax */}
