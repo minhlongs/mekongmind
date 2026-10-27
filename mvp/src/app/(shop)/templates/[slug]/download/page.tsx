@@ -12,10 +12,11 @@ function LoadingFallback() {
   );
 }
 
-export default function DownloadPage({ params }: { params: { slug: string } }) {
+export default async function DownloadPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <DownloadClient slug={params.slug} />
+      <DownloadClient slug={slug} />
     </Suspense>
   );
 }
