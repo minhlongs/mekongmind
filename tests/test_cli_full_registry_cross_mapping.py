@@ -96,6 +96,38 @@ class CliFullRegistryCrossMappingTests(unittest.TestCase):
         self.assertIn("command-registry-explorer", src)
         self.assertIn("BOTTOM NUMBERED PAGINATION BAR", src)
 
+    def test_cli_page_has_three_pane_workbench_shell(self):
+        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
+        self.assertIn("lg:grid-cols-12", src)
+        self.assertIn("grid-cols-1", src)
+        self.assertIn("lg:col-span-3", src)
+        self.assertIn("lg:col-span-5", src)
+        self.assertIn("lg:col-span-4", src)
+        self.assertIn("command-registry-explorer", src)
+        self.assertIn("live-command-inspector", src)
+
+    def test_cli_page_has_five_pin_circuit_and_run_simulation(self):
+        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
+        self.assertIn('id="live-command-inspector"', src)
+        self.assertIn('viewBox="0 0 520 250"', src)
+        self.assertIn("SOVEREIGN IC", src)
+        self.assertIn("PIN 1 · CLI Input", src)
+        self.assertIn("PIN 5 · SHA-256 Gate Artifact", src)
+        self.assertIn("▶ Run Simulation", src)
+        self.assertIn("simStep", src)
+
+    def test_cli_page_has_four_tab_inspector(self):
+        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
+        self.assertIn("InspectorTabId", src)
+        self.assertIn("'overview' | 'pinout' | 'simulator' | 'specs'", src)
+        for tab_id in ("overview", "pinout", "simulator", "specs"):
+            self.assertIn(f"inspector-panel-{tab_id}", src)
+
+    def test_cli_page_has_url_hash_deep_linking(self):
+        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
+        self.assertIn("window.location.hash", src)
+        self.assertIn("hashchange", src)
+        self.assertIn("history.replaceState", src)
     def test_capability_ledger_has_197_commands_and_16_contract_columns(self):
         self.assertEqual(len(self.cap_ledger), 197)
         for entry in self.cap_ledger:
