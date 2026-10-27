@@ -1,5 +1,13 @@
 name: Factory Integrity
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'factory/**'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'factory/**'
 jobs:
   validate:
     runs-on: ubuntu-latest

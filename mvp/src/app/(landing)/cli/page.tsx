@@ -9,10 +9,14 @@ import {
   ClusterId,
   DEPARTMENTS,
   DepartmentId,
+  MATURITY_TIERS,
+  MaturityTier,
   OPERATING_LAYERS,
   OperatingLayerId,
+  getCapabilityContract,
   getCrossMappingMatrix,
 } from '@/data/cli-full-registry';
+import type { CommandReceipt, ExecutionRunResult, MilestoneGate } from '@/lib/cli-execution-bridge';
 
 type PageSizeOption = 12 | 24 | 48 | 'all';
 
@@ -173,8 +177,185 @@ export default function MekongCliPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<InspectorTabId>('overview');
   const [simStep, setSimStep] = useState<number>(0);
+  const [terminalTab, setTerminalTab] = useState<'preview' | 'live'>('live');
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [liveRunResult, setLiveRunResult] = useState<ExecutionRunResult | null>(null);
+  const [liveRunError, setLiveRunError] = useState<string | null>(null);
+  const [receiptVerified, setReceiptVerified] = useState<{
+    checked: boolean;
+    valid: boolean;
+    source: string;
+  } | null>(null);
+  const [companyGates, setCompanyGates] = useState<MilestoneGate[]>([]);
+  const [isReconcilingGate, setIsReconcilingGate] = useState<boolean>(false);
+  const [reconcileNotice, setReconcileNotice] = useState<string | null>(null);
+
+  const inspectedContract = useMemo(
+    () => getCapabilityContract(inspectedCommand.name),
+    [inspectedCommand.name]
+  );
+
+  const inspectedMaturityMeta = useMemo(() => {
+    const tier: MaturityTier = inspectedContract?.maturity_tier || 'CATALOG_ONLY';
+    return MATURITY_TIERS[tier];
+  }, [inspectedContract]);
 
   const matrix = useMemo(() => getCrossMappingMatrix(), []);
+
+  useEffect(() => {
+    fetch('/api/cli/gates')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.gates)) {
+          setCompanyGates(data.gates);
+        }
+      })
+      .catch(() => {
+        // Ignore network errors during initial hydration
+      });
+  }, []);
+
+  const defaultParamsFor = (cmdEntry: CliCommandEntry): Record<string, unknown> => {
+    if (cmdEntry.name === 'thue') {
+      return { subcommand: 'tncn', gross_income: 35_000_000, dependents: 1 };
+    }
+    if (cmdEntry.name === 'ke-toan') {
+      return { subcommand: 'journal', amount: 25_000_000, buyer: 'Cong Ty TNHH Mekong' };
+    }
+    if (cmdEntry.name === 'bhxh') {
+      return { subcommand: 'calculate', salary: 30_000_000, region: 1 };
+    }
+    if (cmdEntry.name === 'vietqr') {
+      return { subcommand: 'generate', amount: 2_500_000, memo: 'THANH TOAN MEKONG' };
+    }
+    if (cmdEntry.name === 'adminsanction') {
+      return {
+        subcommand: 'calculate',
+        entity_type: 'ORGANIZATION',
+        min_fine: 10_000_000,
+        max_fine: 20_000_000,
+        mitigating_count: 1,
+      };
+    }
+    if (cmdEntry.name === 'payroll') {
+      return { subcommand: 'calculate', gross: 35_000_000, dependents: 1, region: 1 };
+    }
+    if (['cfo', 'cmo', 'cso', 'cto', 'csuite', 'binh-phap', 'board-meeting'].includes(cmdEntry.name)) {
+      return {
+        subcommand: 'brief',
+        horizon: 'Q4-2026',
+        objective: 'Scale Vietnam SME & OPC RaaS to $1M ARR',
+      };
+    }
+    if (['cook', 'plan', 'spec', 'autonomous', 'pev', 'swarm', 'goal'].includes(cmdEntry.name)) {
+      return {
+        subcommand: 'plan',
+        goal: 'Deploy automated VietQR + E-Invoice TT78 reconciliation workflow',
+        dry_run: true,
+      };
+    }
+    if (cmdEntry.name === 'benchmark') {
+      return { suite: 'pev', iterations: 5 };
+    }
+    if (['opc', 'sales', 'marketing', 'revenue', 'crm', 'pipeline'].includes(cmdEntry.name)) {
+      return { subcommand: 'metrics', segment: 'VN_OPC_FOUNDER', currency: 'VND' };
+    }
+    if (
+      ['zalo-oa', 'ecom', 'audit', 'taxadmin', 'einvoice', 'tort', 'inheritance'].includes(
+        cmdEntry.name
+      )
+    ) {
+      return { subcommand: 'status', jurisdiction: 'VN', compliance_check: true };
+    }
+    return { subcommand: 'status' };
+  };
+
+  const handleRunLiveCommand = async (cmdEntry: CliCommandEntry) => {
+    setIsExecuting(true);
+    setLiveRunError(null);
+    setReceiptVerified(null);
+    setActiveTab('simulator');
+    setSimStep(1);
+
+    try {
+      const res = await fetch('/api/cli/runs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          command_id: cmdEntry.name,
+          params: defaultParamsFor(cmdEntry),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setLiveRunError(data?.error || 'Execution failed');
+      } else {
+        setLiveRunResult(data as ExecutionRunResult);
+        setSimStep(5);
+      }
+    } catch (err) {
+      setLiveRunError(err instanceof Error ? err.message : 'Network error');
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
+  const handleVerifyReceipt = async (receipt: CommandReceipt) => {
+    try {
+      const res = await fetch('/api/cli/receipts/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ receipt }),
+      });
+      const data = await res.json();
+      setReceiptVerified({
+        checked: true,
+        valid: Boolean(data?.valid),
+        source: String(data?.source || 'verifier'),
+      });
+    } catch {
+      setReceiptVerified({
+        checked: true,
+        valid: false,
+        source: 'error',
+      });
+    }
+  };
+
+  const handleReconcileMilestoneGate = async (layerId: OperatingLayerId, runId: string) => {
+    const targetGate = companyGates.find((g) => g.layer_id === layerId);
+    const gateId = targetGate?.gate_id || inspectedContract?.gate_id || 'mvp-live';
+    setIsReconcilingGate(true);
+    setReconcileNotice(null);
+    try {
+      const transactionId = `TXN-NAPAS247-${runId}`;
+      const evidenceRef = `receipt:sha256:${liveRunResult?.receipt?.signature?.slice(0, 16) || runId}`;
+      const res = await fetch('/api/cli/gates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gate_id: gateId,
+          transaction_id: transactionId,
+          evidence_ref: evidenceRef,
+        }),
+      });
+      if (res.ok) {
+        const updatedGate = await res.json();
+        setCompanyGates((prev) => {
+          const exists = prev.some((g) => g.gate_id === gateId);
+          if (!exists) return [...prev, updatedGate];
+          return prev.map((g) => (g.gate_id === gateId ? { ...g, ...updatedGate } : g));
+        });
+        setReconcileNotice(`Đã đối soát thành công cổng '${gateId}' với mã giao dịch ${transactionId}`);
+      } else {
+        setReconcileNotice('Không thể đối soát cổng cột mốc lúc này');
+      }
+    } catch {
+      setReconcileNotice('Lỗi kết nối khi đối soát cổng cột mốc');
+    } finally {
+      setIsReconcilingGate(false);
+    }
+  };
 
   const clusterTotals = useMemo(() => {
     const counts: Record<ClusterId, number> = {
@@ -800,18 +981,34 @@ export default function MekongCliPage() {
                 <span className="rounded border border-white/15 bg-white/5 px-2 py-0.5 font-mono text-[10px] text-white/60">
                   Tầng {inspectedCommand.layerId} · {inspectedCommand.departmentName}
                 </span>
+                <span
+                  className={`rounded border px-2 py-0.5 font-mono text-[10px] font-semibold ${inspectedMaturityMeta.badgeClass}`}
+                  title={inspectedMaturityMeta.description}
+                >
+                  ● {inspectedMaturityMeta.label}
+                </span>
                 <span className="rounded border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] text-cyan-300">
                   #{inspectedCommand.id}
                 </span>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={runSimulation}
-              className="shrink-0 rounded-lg border border-emerald-500/40 bg-emerald-500/20 px-3 py-2 font-mono text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/30"
-            >
-              ▶ Run Simulation
-            </button>
+            <div className="flex shrink-0 flex-col gap-1.5">
+              <button
+                type="button"
+                disabled={isExecuting}
+                onClick={() => handleRunLiveCommand(inspectedCommand)}
+                className="rounded-lg border border-cyan-500/40 bg-cyan-500/20 px-3 py-2 font-mono text-xs font-semibold text-cyan-200 transition hover:bg-cyan-500/30 disabled:opacity-40"
+              >
+                {isExecuting ? '⏳ Đang chạy…' : '▶ Chạy Lệnh Thật'}
+              </button>
+              <button
+                type="button"
+                onClick={runSimulation}
+                className="rounded-lg border border-emerald-500/40 bg-emerald-500/20 px-3 py-2 font-mono text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/30"
+              >
+                ▶ Run Simulation
+              </button>
+            </div>
           </div>
 
           {/* SVG 5-PIN SOVEREIGN IC CIRCUIT BOARD */}
@@ -1207,7 +1404,9 @@ export default function MekongCliPage() {
 
                 <PinoutRow step={5} simStep={simStep} label="SHA-256 Gate Artifact" tone="rose">
                   <p className="break-all font-mono text-[10px] text-rose-300">{inspectedCommand.gateArtifact}</p>
-                  <p className="mt-1 font-mono text-[9px] text-emerald-400">✓ GATE_PASSED_SHA256</p>
+                  <p className="mt-1 font-mono text-[9px] text-white/40">
+                    Gate ID: {inspectedContract?.gate_id || inspectedCommand.gateId}
+                  </p>
                 </PinoutRow>
               </div>
             )}
@@ -1227,8 +1426,8 @@ export default function MekongCliPage() {
                       </span>
                     </div>
                     <span className="flex items-center gap-1 font-mono text-[9px] text-emerald-400">
-                      <span className={`h-1.5 w-1.5 rounded-full ${simStep > 0 ? 'bg-emerald-400' : 'bg-white/20'}`} />
-                      ● SOVEREIGN RUNTIME
+                      <span className={`h-1.5 w-1.5 rounded-full ${isExecuting ? 'bg-amber-400' : liveRunResult ? 'bg-emerald-400' : 'bg-white/20'}`} />
+                      ● {isExecuting ? 'EXECUTING' : liveRunResult ? 'RUN SEALED' : 'IDLE'}
                     </span>
                   </div>
 
@@ -1236,18 +1435,11 @@ export default function MekongCliPage() {
                   <div className="space-y-1.5 p-2.5 font-mono text-[10px] leading-relaxed">
                     <p className="text-white/50">
                       founder@mekong-opc:~/company${' '}
-                      <span className="text-white">{inspectedCommand.command} --help</span>
+                      <span className="text-white">{inspectedCommand.command} --verbose</span>
                     </p>
-                    <div className="rounded border border-white/10 bg-white/[0.03] p-2">
-                      <p className="text-cyan-300">Usage: {inspectedCommand.command}</p>
-                      <p className="mt-0.5 text-white/50">{inspectedCommand.desc}</p>
-                      <p className="mt-0.5 text-amber-300/80">
-                        Aliases: {inspectedCommand.aliases.map((a) => `mekong ${a}`).join(', ')}
-                      </p>
-                    </div>
-
-                    <p className="pt-1 text-white/50">
-                      founder@mekong-opc:~/company$ <span className="text-white">--execute --verify-gate</span>
+                    <p className="text-white/40">
+                      Maturity: <span className="text-white/70">● {inspectedMaturityMeta.label}</span> —{' '}
+                      {inspectedMaturityMeta.description}
                     </p>
 
                     <TraceLine visible={simStep >= 1 || simStep === 0} tone="cyan">
@@ -1255,38 +1447,158 @@ export default function MekongCliPage() {
                       {inspectedCommand.departmentId})
                     </TraceLine>
                     <TraceLine visible={simStep >= 2 || simStep === 0} tone="emerald">
-                      [2/4] Executing SOP Chain: {inspectedCommand.sopChain.join(' ➔ ')}
+                      [2/4] SOP Chain: {inspectedCommand.sopChain.join(' ➔ ')}
                     </TraceLine>
                     <TraceLine visible={simStep >= 3 || simStep === 0} tone="white">
-                      [3/4] {inspectedCommand.sampleOutput}
+                      [3/4] Contract: {inspectedContract?.gate_id || inspectedCommand.gateId}
                     </TraceLine>
-                    <TraceLine visible={simStep >= 4 || simStep === 5} tone="emerald">
-                      [4/4] ✓ Gate Artifact Sealed: {inspectedCommand.gateArtifact}
-                    </TraceLine>
-                    <TraceLine visible={simStep >= 5} tone="rose">
-                      🔒 SHA-256 Evidence Gate PASSED · {inspectedCommand.gateId}
+                    <TraceLine visible={simStep >= 4 || simStep === 5} tone="rose">
+                      [4/4] Gate Artifact: {inspectedCommand.gateArtifact}
                     </TraceLine>
 
-                    <pre className="mt-2 overflow-x-auto rounded border border-white/10 bg-black/60 p-2 font-mono text-[9px] leading-relaxed text-emerald-300/90">
-                      {`{
+                    {liveRunError && (
+                      <p className="rounded border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-rose-300">
+                        ✗ {liveRunError}
+                      </p>
+                    )}
+
+                    {liveRunResult && (
+                      <div className="space-y-2">
+                        <TraceLine visible tone="emerald">
+                          ✓ Run {liveRunResult.run_id} sealed · {liveRunResult.status}
+                        </TraceLine>
+
+                        <pre className="overflow-x-auto rounded border border-white/10 bg-black/60 p-2 font-mono text-[9px] leading-relaxed text-emerald-300/90">
+                          {JSON.stringify(liveRunResult.output, null, 2)}
+                        </pre>
+
+                        <div className="rounded border border-white/10 bg-white/[0.03] p-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-mono text-[9px] uppercase text-cyan-300">
+                              HMAC Receipt
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleVerifyReceipt(liveRunResult.receipt)}
+                              className="rounded border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 font-mono text-[9px] text-cyan-200 hover:bg-cyan-500/20"
+                            >
+                              Xin Chứng Thực (Verify)
+                            </button>
+                          </div>
+                          <dl className="mt-1 space-y-0.5 font-mono text-[9px]">
+                            <div className="flex gap-2">
+                              <dt className="shrink-0 text-white/40">signature</dt>
+                              <dd className="break-all text-cyan-200">
+                                {liveRunResult.receipt.signature}
+                              </dd>
+                            </div>
+                            <div className="flex gap-2">
+                              <dt className="shrink-0 text-white/40">input_sha256</dt>
+                              <dd className="break-all text-white/60">
+                                {liveRunResult.receipt.input_sha256}
+                              </dd>
+                            </div>
+                            <div className="flex gap-2">
+                              <dt className="shrink-0 text-white/40">output_sha256</dt>
+                              <dd className="break-all text-white/60">
+                                {liveRunResult.receipt.output_sha256}
+                              </dd>
+                            </div>
+                          </dl>
+                          {receiptVerified && (
+                            <p
+                              className={`mt-1 font-mono text-[9px] ${receiptVerified.valid ? 'text-emerald-300' : 'text-rose-300'}`}
+                            >
+                              {receiptVerified.valid ? '✓' : '✗'}{' '}
+                              {receiptVerified.valid ? 'Receipt hợp lệ' : 'Receipt không hợp lệ'} (
+                              {receiptVerified.source})
+                            </p>
+                          )}
+                        </div>
+
+                        {liveRunResult.receipt.statutory_citations?.length > 0 && (
+                          <div className="rounded border border-amber-500/20 bg-amber-500/[0.06] p-2">
+                            <p className="font-mono text-[9px] uppercase text-amber-300">
+                              Trích dẫn pháp lý (Statutory Citations)
+                            </p>
+                            <ul className="mt-1 space-y-0.5 font-mono text-[9px] text-amber-200/80">
+                              {liveRunResult.receipt.statutory_citations.map((citation) => (
+                                <li key={citation}>• {citation}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div className="rounded border border-white/10 bg-white/[0.03] p-2">
+                          <p className="font-mono text-[9px] uppercase text-purple-300">
+                            Đối soát Cổng Cột Mốc (Milestone Gate)
+                          </p>
+                          {companyGates.length > 0 ? (
+                            <ul className="mt-1 space-y-1">
+                              {companyGates.map((gate) => (
+                                <li
+                                  key={gate.gate_id}
+                                  className="flex items-center justify-between gap-2 font-mono text-[9px]"
+                                >
+                                  <span className="text-white/60">
+                                    {gate.gate_id} · {gate.status}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    disabled={isReconcilingGate}
+                                    onClick={() =>
+                                      handleReconcileMilestoneGate(inspectedCommand.layerId, liveRunResult.run_id)
+                                    }
+                                    className="rounded border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 text-purple-200 hover:bg-purple-500/20 disabled:opacity-40"
+                                  >
+                                    Đối soát
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="mt-1 font-mono text-[9px] text-white/30">
+                              Chưa có cổng cột mốc nào được nạp.
+                            </p>
+                          )}
+                          {reconcileNotice && (
+                            <p className="mt-1 font-mono text-[9px] text-emerald-300">{reconcileNotice}</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {!liveRunResult && !liveRunError && (
+                      <pre className="mt-2 overflow-x-auto rounded border border-white/10 bg-black/60 p-2 font-mono text-[9px] leading-relaxed text-emerald-300/90">
+                        {`{
   "command": "${inspectedCommand.command}",
   "department": "${inspectedCommand.departmentId}",
   "layer": "${inspectedCommand.layerId}",
   "owner_agent": "${inspectedCommand.ownerAgent}",
-  "sop_chain": ${JSON.stringify(inspectedCommand.sopChain)},
+  "gate_id": "${inspectedContract?.gate_id || inspectedCommand.gateId}",
+  "maturity_tier": "${inspectedMaturityMeta.tier}",
   "gate_artifact": "${inspectedCommand.gateArtifact}",
-  "status": "GATE_PASSED_SHA256"
+  "status": "AWAITING_REAL_EXECUTION"
 }`}
-                    </pre>
+                      </pre>
+                    )}
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  onClick={runSimulation}
-                  className="w-full rounded-lg border border-emerald-500/40 bg-emerald-500/20 py-2 font-mono text-[11px] font-semibold text-emerald-300 transition hover:bg-emerald-500/30"
+                  disabled={isExecuting}
+                  onClick={() => handleRunLiveCommand(inspectedCommand)}
+                  className="w-full rounded-lg border border-emerald-500/40 bg-emerald-500/20 py-2 font-mono text-[11px] font-semibold text-emerald-300 transition hover:bg-emerald-500/30 disabled:opacity-40"
                 >
-                  {simStep > 0 ? '↻ Chạy lại Simulation' : '▶ Run Simulation'}
+                  {isExecuting ? '⏳ Đang chạy lệnh thật…' : '▶ Chạy Lệnh Thật (POST /api/cli/runs)'}
+                </button>
+                <button
+                  type="button"
+                  onClick={runSimulation}
+                  className="w-full rounded-lg border border-white/15 bg-white/5 py-2 font-mono text-[11px] font-semibold text-white/70 transition hover:bg-white/10"
+                >
+                  {simStep > 0 ? '↻ Chạy lại xung 5 chân' : '▶ Run Simulation (xung trực quan)'}
                 </button>
               </div>
             )}

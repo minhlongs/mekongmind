@@ -10,6 +10,7 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -26,14 +27,7 @@
       "@/*": [
         "./src/*"
       ]
-    },
-    "types": [
-      "node",
-      "react",
-      "react-dom",
-      "next",
-      "stripe"
-    ]
+    }
   },
   "include": [
     "next-env.d.ts",

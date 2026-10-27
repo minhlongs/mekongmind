@@ -1,6 +1,41 @@
 import rawRegistryJson from './cli-full-registry.json';
+import capabilityLedgerJson from './capability-ledger.json';
 
 export type OperatingLayerId = 'L0' | 'L1' | 'L2' | 'L3' | 'L4' | 'L5';
+
+export type MaturityTier = 'REAL_VERIFIED' | 'PARTIAL_LOOKUP' | 'CATALOG_ONLY';
+
+export interface MaturityTierMeta {
+  tier: MaturityTier;
+  label: string;
+  badgeClass: string;
+  dotColor: string;
+  description: string;
+}
+
+export const MATURITY_TIERS: Record<MaturityTier, MaturityTierMeta> = {
+  REAL_VERIFIED: {
+    tier: 'REAL_VERIFIED',
+    label: 'Thực Thi & Xác Thực Mật Mã (Real Verified)',
+    badgeClass: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300',
+    dotColor: 'bg-emerald-400',
+    description: 'Chạy engine nghiệp vụ thật, kiểm chứng kép định lượng, ký HMAC-SHA256.',
+  },
+  PARTIAL_LOOKUP: {
+    tier: 'PARTIAL_LOOKUP',
+    label: 'Tra Cứu & Khung Định Chuẩn (Partial Lookup)',
+    badgeClass: 'border-cyan-500/40 bg-cyan-500/10 text-cyan-300',
+    dotColor: 'bg-cyan-400',
+    description: 'Mô-đun tra cứu pháp điển, chuẩn hóa thông số hoặc engine chuyên ngành.',
+  },
+  CATALOG_ONLY: {
+    tier: 'CATALOG_ONLY',
+    label: 'Danh Mục & Đặc Tả Hợp Đồng (Catalog Only)',
+    badgeClass: 'border-slate-500/40 bg-slate-500/10 text-slate-300',
+    dotColor: 'bg-slate-400',
+    description: 'Hợp đồng đặc tả schema, chuỗi SOP và đầu ra cho các công đoạn dự án.',
+  },
+};
 
 export type DepartmentId =
   | 'ceo-command'
@@ -64,6 +99,37 @@ export interface CliCommandEntry {
   desc: string;
   deliverable: string;
   sampleOutput: string;
+}
+
+export interface CapabilityLedgerEntry {
+  claim_id: string;
+  name: string;
+  command: string;
+  aliases: string[];
+  cluster: ClusterId;
+  department_id: string;
+  department_name: string;
+  layer_id: OperatingLayerId;
+  promise_summary: string;
+  display_source: string;
+  input_schema: Record<string, unknown>;
+  cli_entrypoint: string;
+  api_transport: string;
+  handler_path: string;
+  owner_agent: string;
+  support_agents: string[];
+  sop_steps: string[];
+  data_rw: { read: string[]; write: string[] };
+  output_schema: Record<string, unknown>;
+  external_effects: string;
+  approval_policy: string;
+  acceptance_criteria: string;
+  sample_output: string;
+  gate_artifact: string;
+  gate_id: string;
+  statutory_citations: string[];
+  test_evidence: string;
+  maturity_tier: MaturityTier;
 }
 
 export const OPERATING_LAYERS: OperatingLayerMeta[] = [
@@ -278,6 +344,18 @@ export const BUSINESS_CLUSTERS: ClusterMeta[] = [
 ];
 
 export const CLI_FULL_REGISTRY: CliCommandEntry[] = rawRegistryJson as CliCommandEntry[];
+
+export const CAPABILITY_LEDGER: CapabilityLedgerEntry[] =
+  capabilityLedgerJson as CapabilityLedgerEntry[];
+
+const LEDGER_BY_NAME = new Map<string, CapabilityLedgerEntry>(
+  CAPABILITY_LEDGER.map((entry) => [entry.name.toLowerCase(), entry])
+);
+
+export function getCapabilityContract(commandNameOrId: string): CapabilityLedgerEntry | undefined {
+  const norm = commandNameOrId.toLowerCase().trim().replace(/^mekong\s+/, '');
+  return LEDGER_BY_NAME.get(norm);
+}
 
 export function getCrossMappingMatrix(): Record<DepartmentId, Record<ClusterId, CliCommandEntry[]>> {
   const matrix = {} as Record<DepartmentId, Record<ClusterId, CliCommandEntry[]>>;
