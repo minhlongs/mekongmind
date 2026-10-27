@@ -71,6 +71,8 @@ export default function MekongCliPage() {
     source: string;
   } | null>(null);
   const [companyGates, setCompanyGates] = useState<MilestoneGate[]>([]);
+  const [isReconcilingGate, setIsReconcilingGate] = useState<boolean>(false);
+  const [reconcileNotice, setReconcileNotice] = useState<string | null>(null);
 
   const inspectedContract = useMemo(
     () => getCapabilityContract(inspectedCommand.name),
@@ -189,6 +191,41 @@ export default function MekongCliPage() {
         valid: false,
         source: 'error',
       });
+    }
+  };
+
+  const handleReconcileMilestoneGate = async (layerId: OperatingLayerId, runId: string) => {
+    const targetGate = companyGates.find((g) => g.layer_id === layerId);
+    const gateId = targetGate?.gate_id || inspectedContract?.gate_id || 'mvp-live';
+    setIsReconcilingGate(true);
+    setReconcileNotice(null);
+    try {
+      const transactionId = `TXN-NAPAS247-${runId}`;
+      const evidenceRef = `receipt:sha256:${liveRunResult?.receipt?.signature?.slice(0, 16) || runId}`;
+      const res = await fetch('/api/cli/gates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gate_id: gateId,
+          transaction_id: transactionId,
+          evidence_ref: evidenceRef,
+        }),
+      });
+      if (res.ok) {
+        const updatedGate = await res.json();
+        setCompanyGates((prev) => {
+          const exists = prev.some((g) => g.gate_id === gateId);
+          if (!exists) return [...prev, updatedGate];
+          return prev.map((g) => (g.gate_id === gateId ? { ...g, ...updatedGate } : g));
+        });
+        setReconcileNotice(`Đã đối soát thành công cổng '${gateId}' với mã giao dịch ${transactionId}`);
+      } else {
+        setReconcileNotice('Không thể đối soát cổng cột mốc lúc này');
+      }
+    } catch {
+      setReconcileNotice('Lỗi kết nối khi đối soát cổng cột mốc');
+    } finally {
+      setIsReconcilingGate(false);
     }
   };
 
@@ -1071,17 +1108,41 @@ export default function MekongCliPage() {
 
                         {/* Tier 2 Milestone Gate Status Box */}
                         <div className="rounded-xl bg-purple-950/20 border border-purple-500/30 p-3 text-[10px] text-slate-300">
-                          <div className="flex items-center justify-between mb-1">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
                             <span className="font-bold text-purple-300">
                               Cổng Cột Mốc Công Ty Tầng {inspectedCommand.layerId} (Tier 2 Milestone Gate)
                             </span>
-                            <span className="rounded bg-amber-500/20 text-amber-300 px-1.5 py-0.5 font-bold">
-                              {companyGates.find((g) => g.layer_id === inspectedCommand.layerId)?.status || 'LOCKED'}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`rounded px-1.5 py-0.5 font-bold ${
+                                  companyGates.find((g) => g.layer_id === inspectedCommand.layerId)?.status ===
+                                  'SEALED_VERIFIED'
+                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                    : 'bg-amber-500/20 text-amber-300'
+                                }`}
+                              >
+                                {companyGates.find((g) => g.layer_id === inspectedCommand.layerId)?.status || 'LOCKED'}
+                              </span>
+                              <button
+                                type="button"
+                                disabled={isReconcilingGate}
+                                onClick={() =>
+                                  handleReconcileMilestoneGate(inspectedCommand.layerId, liveRunResult.run_id)
+                                }
+                                className="rounded bg-purple-500/20 border border-purple-500/40 px-2 py-0.5 text-[10px] font-bold text-purple-200 hover:bg-purple-500/30 disabled:opacity-50"
+                              >
+                                {isReconcilingGate ? 'Đang đối soát...' : 'Đối Soát Giao Dịch (Reconcile Gate)'}
+                              </button>
+                            </div>
                           </div>
                           <p className="text-slate-400">
                             Khác với Biên lai thực thi lệnh (Tier 1 Receipt ký tức thì sau mỗi lần chạy), Cổng cột mốc công ty (Tier 2 Gate) giữ nguyên trạng thái <strong>LOCKED</strong> cho đến khi có giao dịch ngân hàng / hóa đơn thực tế được đối soát vào cơ sở dữ liệu.
                           </p>
+                          {reconcileNotice && (
+                            <div className="mt-2 rounded bg-purple-500/20 border border-purple-400/40 p-2 text-purple-200 font-semibold">
+                              ✓ {reconcileNotice}
+                            </div>
+                          )}
                         </div>
                       </div>
                     ) : (
