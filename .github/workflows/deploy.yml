@@ -3,8 +3,14 @@ name: Nhịp Điệu Xanh CI/CD Pipeline
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'apps/nhipdieuxanh/**'
+      - 'apps/nhipdieuxanh-orchestrator/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'apps/nhipdieuxanh/**'
+      - 'apps/nhipdieuxanh-orchestrator/**'
 
 env:
   REGISTRY: docker.io

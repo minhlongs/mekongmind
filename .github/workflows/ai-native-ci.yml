@@ -3,8 +3,16 @@ name: AI-Native CI/CD — 5 Gates
 on:
   push:
     branches: [main, dev]
+    paths:
+      - 'seed/**'
+      - 'tools/**'
+      - 'integrations/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'seed/**'
+      - 'tools/**'
+      - 'integrations/**'
 
 jobs:
   gate-1-validation:
