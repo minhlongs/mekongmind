@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRunById } from '@/lib/cli-execution-bridge';
 
+// A dynamic segment route handler makes Next skip the `output: 'export'` guard
+// only when revalidate is 0, which is honest here: this reads a live gateway
+// and never serves a cached response.
+export const revalidate = 0;
+
 const MEKONG_API_BASE = process.env.MEKONG_API_URL || 'http://localhost:8000';
 
 export async function GET(

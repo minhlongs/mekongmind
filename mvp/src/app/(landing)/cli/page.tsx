@@ -22,6 +22,19 @@ type PageSizeOption = 12 | 24 | 48 | 'all';
 
 const PAGE_SIZE_OPTIONS: PageSizeOption[] = [12, 24, 48, 'all'];
 
+/**
+ * Cloudflare Pages answers an unmapped API path with a bare 405 and an empty
+ * body, so a static deploy makes res.json() throw. Parse defensively and let
+ * the caller's error branch show a readable message instead of a parser error.
+ */
+async function readJsonBody<T>(res: Response): Promise<T | null> {
+  try {
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
 function buildPaginationItems(
   currentPage: number,
   totalPages: number
@@ -286,11 +299,13 @@ export default function MekongCliPage() {
           params: defaultParamsFor(cmdEntry),
         }),
       });
-      const data = await res.json();
+      const data = await readJsonBody<ExecutionRunResult & { error?: string }>(res);
       if (!res.ok) {
-        setLiveRunError(data?.error || 'Execution failed');
+        setLiveRunError(data?.error || `Execution failed (HTTP ${res.status})`);
+      } else if (!data) {
+        setLiveRunError('Execution returned no readable payload');
       } else {
-        setLiveRunResult(data as ExecutionRunResult);
+        setLiveRunResult(data);
         setSimStep(5);
       }
     } catch (err) {
@@ -307,7 +322,7 @@ export default function MekongCliPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ receipt }),
       });
-      const data = await res.json();
+      const data = await readJsonBody<{ valid?: boolean; source?: string }>(res);
       setReceiptVerified({
         checked: true,
         valid: Boolean(data?.valid),
@@ -340,7 +355,11 @@ export default function MekongCliPage() {
         }),
       });
       if (res.ok) {
-        const updatedGate = await res.json();
+        const updatedGate = await readJsonBody<MilestoneGate>(res);
+        if (!updatedGate) {
+          setReconcileNotice('Đối soát thành công nhưng phản hồi không đọc được');
+          return;
+        }
         setCompanyGates((prev) => {
           const exists = prev.some((g) => g.gate_id === gateId);
           if (!exists) return [...prev, updatedGate];
