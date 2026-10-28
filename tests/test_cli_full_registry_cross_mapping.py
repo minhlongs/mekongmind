@@ -144,6 +144,15 @@ class CliFullRegistryCrossMappingTests(unittest.TestCase):
         self.assertIn("/api/cli/runs", src)
         self.assertIn("/api/cli/receipts/verify", src)
 
+    def test_cli_page_parses_api_bodies_defensively(self):
+        """A static deploy answers unmapped API paths with an empty 405 body."""
+        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
+        self.assertIn("async function readJsonBody", src)
+        # The definition plus three call sites; the only bare parse left is the
+        # helper's own try/catch, so no handler calls res.json() directly.
+        self.assertEqual(src.count("readJsonBody"), 4)
+        self.assertEqual(src.count("await res.json()"), 1)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import capabilityLedger from '@/data/capability-ledger.json';
 
+// Reading request.url marks the route dynamic; revalidate 0 keeps it out of
+// the `output: 'export'` static-render check.
+export const revalidate = 0;
+
 const MEKONG_API_BASE = process.env.MEKONG_API_URL || 'http://localhost:8000';
 
 export async function GET(request: NextRequest) {
