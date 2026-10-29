@@ -135,23 +135,27 @@ class CliFullRegistryCrossMappingTests(unittest.TestCase):
             self.assertFalse(missing, f"Missing contract fields in {entry.get('name')}: {missing}")
             self.assertIn(entry["maturity_tier"], self.valid_maturity_tiers)
 
-    def test_cli_page_de_simulated_and_wired_for_live_execution(self):
+    def test_cli_page_is_de_simulated_with_dead_api_calls(self):
+        """/cli is a static export, so no /api/cli route handler ships; the page must not call one."""
         src = CLI_PAGE_TSX.read_text(encoding="utf-8")
         self.assertNotIn("GATE_PASSED_SHA256", src)
+        # Live execution handlers are gone; assert on the fetch primitive rather
+        # than a URL prefix so a re-wired live call under any path is caught.
+        for handler in (
+            "handleRunLiveCommand",
+            "handleVerifyReceipt",
+            "handleReconcileMilestoneGate",
+        ):
+            self.assertNotIn(handler, src)
+        self.assertNotIn("fetch(", src)
+        self.assertNotIn("readJsonBody", src)
+        # Status vocabulary that implied a live execution lifecycle.
+        for status in ("RUN SEALED", "EXECUTING"):
+            self.assertNotIn(status, src)
+        # The simulated path the page actually runs stays intact.
+        self.assertIn("runSimulation", src)
+        self.assertIn("AWAITING_REAL_EXECUTION", src)
         self.assertIn("MATURITY_TIERS", src)
-        self.assertIn("handleRunLiveCommand", src)
-        self.assertIn("handleVerifyReceipt", src)
-        self.assertIn("/api/cli/runs", src)
-        self.assertIn("/api/cli/receipts/verify", src)
-
-    def test_cli_page_parses_api_bodies_defensively(self):
-        """A static deploy answers unmapped API paths with an empty 405 body."""
-        src = CLI_PAGE_TSX.read_text(encoding="utf-8")
-        self.assertIn("async function readJsonBody", src)
-        # The definition plus three call sites; the only bare parse left is the
-        # helper's own try/catch, so no handler calls res.json() directly.
-        self.assertEqual(src.count("readJsonBody"), 4)
-        self.assertEqual(src.count("await res.json()"), 1)
 
 
 if __name__ == "__main__":
