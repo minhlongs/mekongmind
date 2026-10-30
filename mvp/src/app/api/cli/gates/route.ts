@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  verifyCliApiBearerAuth,
+  verifyGateReconciliationEvidence,
+} from '@/lib/cli-api-auth';
 import { getCompanyGates, reconcileGate } from '@/lib/cli-execution-bridge';
 
 const MEKONG_API_BASE = process.env.MEKONG_API_URL || 'http://localhost:8000';
@@ -34,6 +38,14 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = verifyCliApiBearerAuth(request.headers.get('authorization'));
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error, code: auth.code },
+      { status: auth.status }
+    );
+  }
+
   try {
     const body = await request.json();
     const gateId = typeof body?.gate_id === 'string' ? body.gate_id.trim() : '';
@@ -44,6 +56,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'gate_id, transaction_id, and evidence_ref are required', code: 'MISSING_FIELDS' },
         { status: 400 }
+      );
+    }
+
+    const evidenceCheck = verifyGateReconciliationEvidence({
+      evidenceRef,
+      runId: body?.run_id,
+      receipt: body?.receipt,
+    });
+    if (!evidenceCheck.ok) {
+      return NextResponse.json(
+        { error: evidenceCheck.error, code: evidenceCheck.code },
+        { status: evidenceCheck.status }
       );
     }
 
@@ -81,6 +105,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       ...updated,
+      verified_via: evidenceCheck.verified_via,
       source: 'local_milestone_ledger',
     });
   } catch (err) {

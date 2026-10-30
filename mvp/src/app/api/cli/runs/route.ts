@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyCliApiBearerAuth } from '@/lib/cli-api-auth';
 import { executeCliCommand } from '@/lib/cli-execution-bridge';
 
 export async function POST(request: NextRequest) {
+  const auth = verifyCliApiBearerAuth(request.headers.get('authorization'));
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.error, code: auth.code },
+      { status: auth.status }
+    );
+  }
+
   try {
     const body = await request.json();
     const commandId = typeof body?.command_id === 'string' ? body.command_id.trim() : '';

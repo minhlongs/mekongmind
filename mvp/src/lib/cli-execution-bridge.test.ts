@@ -5,8 +5,13 @@ import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import {
+  verifyCliApiBearerAuth,
+  verifyGateReconciliationEvidence,
+} from './cli-api-auth.ts';
+import {
   calculatePitVnd,
   canonicalJsonString,
+  executeCliCommand,
   executeFallbackCommand,
   getCompanyGates,
   reconcileGate,
@@ -130,4 +135,87 @@ test('two-tier milestone gate reconciliation transitions gate from LOCKED to SEA
   assert.ok(updated);
   assert.equal(updated.status, 'SEALED_VERIFIED');
   assert.equal(updated.reconciled_transaction_id, 'TXN-NAPAS247-001');
+});
+
+test('verifyCliApiBearerAuth fails closed (503) when MEKONG_CLI_API_TOKEN is unset and rejects invalid tokens (401)', () => {
+  const saved = process.env.MEKONG_CLI_API_TOKEN;
+  try {
+    delete process.env.MEKONG_CLI_API_TOKEN;
+    assert.deepEqual(verifyCliApiBearerAuth('Bearer anything'), {
+      ok: false,
+      status: 503,
+      code: 'AUTH_NOT_CONFIGURED',
+      error:
+        'MEKONG_CLI_API_TOKEN is not configured. Mutating CLI API routes are disabled until a token is set.',
+    });
+
+    process.env.MEKONG_CLI_API_TOKEN = 'expected-test-bearer-token';
+    const missing = verifyCliApiBearerAuth(null);
+    assert.equal(missing.ok, false);
+    if (!missing.ok) {
+      assert.equal(missing.status, 401);
+      assert.equal(missing.code, 'UNAUTHORIZED');
+    }
+
+    const malformed = verifyCliApiBearerAuth('Basic expected-test-bearer-token');
+    assert.equal(malformed.ok, false);
+    if (!malformed.ok) {
+      assert.equal(malformed.status, 401);
+      assert.equal(malformed.code, 'UNAUTHORIZED');
+    }
+
+    const wrong = verifyCliApiBearerAuth('Bearer wrong-token');
+    assert.equal(wrong.ok, false);
+    if (!wrong.ok) {
+      assert.equal(wrong.status, 401);
+      assert.equal(wrong.code, 'UNAUTHORIZED');
+    }
+
+    assert.deepEqual(verifyCliApiBearerAuth('Bearer expected-test-bearer-token'), { ok: true });
+  } finally {
+    if (saved === undefined) {
+      delete process.env.MEKONG_CLI_API_TOKEN;
+    } else {
+      process.env.MEKONG_CLI_API_TOKEN = saved;
+    }
+  }
+});
+
+test('verifyGateReconciliationEvidence rejects fabricated evidence_ref and accepts a completed run or signed receipt', async () => {
+  const fabricated = verifyGateReconciliationEvidence({
+    evidenceRef: 'receipt:sha256:deadbeefdeadbeef',
+  });
+  assert.equal(fabricated.ok, false);
+  if (!fabricated.ok) {
+    assert.equal(fabricated.status, 422);
+    assert.equal(fabricated.code, 'UNVERIFIED_EVIDENCE');
+  }
+
+  const run = await executeCliCommand('thue', { subcommand: 'tncn', gross_income: 35_000_000 }, 'RUN-GATE-AUTH-TEST');
+  const validPrefixRef = `receipt:sha256:${run.receipt.signature.slice(0, 16)}`;
+
+  const mismatchedRef = verifyGateReconciliationEvidence({
+    evidenceRef: 'receipt:sha256:0000000000000000',
+    runId: run.run_id,
+  });
+  assert.equal(mismatchedRef.ok, false);
+
+  const viaRunHistory = verifyGateReconciliationEvidence({
+    evidenceRef: validPrefixRef,
+    runId: run.run_id,
+  });
+  assert.deepEqual(viaRunHistory, { ok: true, verified_via: 'run_history' });
+
+  const viaSignedReceipt = verifyGateReconciliationEvidence({
+    evidenceRef: `receipt:sha256:${run.receipt.signature}`,
+    receipt: run.receipt,
+  });
+  assert.deepEqual(viaSignedReceipt, { ok: true, verified_via: 'signed_receipt' });
+
+  const tamperedReceipt = { ...run.receipt, output_sha256: '0'.repeat(64) };
+  const viaTamperedReceipt = verifyGateReconciliationEvidence({
+    evidenceRef: `receipt:sha256:${run.receipt.signature}`,
+    receipt: tamperedReceipt,
+  });
+  assert.equal(viaTamperedReceipt.ok, false);
 });
