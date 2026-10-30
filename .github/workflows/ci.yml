@@ -89,7 +89,7 @@ jobs:
           echo "Scanning for hardcoded secrets in mvp/src/..."
           if grep -rEn "(API_KEY|SECRET|PASSWORD)\s*=\s*['\"][^'\"]{16,}['\"]" mvp/src/ \
               --include="*.ts" --include="*.tsx" \
-              | grep -v "process\.env\|mekong_cli_statutory_secret_key\|test\|example" ; then
+              | grep -v "process\.env\|test\|example" ; then
             echo "ERROR: Hardcoded secrets detected in mvp/src/"
             exit 1
           fi

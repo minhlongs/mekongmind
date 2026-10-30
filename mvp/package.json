@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test src/lib/cli-execution-bridge.test.ts"
+    "test": "MEKONG_RECEIPT_HMAC_SECRET=test-only-hmac-key-not-for-production node --test src/lib/cli-execution-bridge.test.ts"
   },
   "dependencies": {
     "next": "^14.2.0",
