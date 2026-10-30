@@ -188,10 +188,14 @@ Non-goals theo quyết định đã chốt:
    **không có auth/authorization/identity check nào** trong cả 5 route. Không
    phải mặt tấn công internet hôm nay vì route handler không tồn tại trên static
    production; sẽ thành vấn đề nếu sau này chuyển sang server deploy.
-2. `cli-execution-bridge.ts:77` — `HMAC_SECRET = process.env.MEKONG_RECEIPT_HMAC_SECRET || 'mekong_cli_statutory_secret_key_2026'`.
+   → Đã tạo issue **#19**.
+2. `cli-execution-bridge.ts:77` — `HMAC_SECRET = process.env.MEKONG_RECEIPT_HMAC_SECRET || '[redacted-hardcoded-fallback]'`.
    Cùng file vừa ký (`:169`) vừa verify (`:172`) receipt, nên khi env var chưa
    set thì ai biết source cũng tự tạo được receipt `valid: true`. Kèm theo:
    `.github/workflows/ci.yml:92` đang allowlist đúng chuỗi này khỏi bộ quét secret.
+   Biến `MEKONG_RECEIPT_HMAC_SECRET` cũng không được ghi trong `.env.example` ở
+   bất kỳ cấp nào, nên fallback chính là đường mặc định khi dựng môi trường mới.
+   → Đã tạo issue **#20**.
 
 ## Validation Log
 
@@ -240,7 +244,7 @@ REJECT (kèm phản chứng):
 |---|---|---|---|
 | R1 | High | Không workflow nào deploy `mvp/`, nên tiền đề production chưa được chứng minh | Không chặn: deploy là thủ công theo `docs/mekong-digital/runbooks/deploy-cloudflare.md`, và 4 phép đo production là bằng chứng trực tiếp. Nhưng **chấp nhận một phần**: đã thêm đường dẫn deploy vào Risk/rollback để lần sau khỏi đo lại |
 | R2 | Critical | `POST /api/cli/gates` không auth, đổi `SEALED_VERIFIED`, là mặt tấn công đang mở | Đúng nhưng **ngoại phạm vi**: Requirement 4 và Non-goals giữ nguyên cả 5 route. Đo được: route không tồn tại trên production static, nên không phải mặt tấn công internet hôm nay → ghi thành follow-up |
-| R3 | High | Fallback `'mekong_cli_statutory_secret_key_2026'` làm verify tự chứng thực; `ci.yml:92` allowlist đúng chuỗi đó | Đúng nhưng đụng `cli-execution-bridge.ts` (Non-goals). Ghi follow-up |
+| R3 | High | Fallback `'[redacted-hardcoded-fallback]'` làm verify tự chứng thực; `ci.yml:92` allowlist đúng chuỗi đó | Đúng nhưng đụng `cli-execution-bridge.ts` (Non-goals). Ghi follow-up |
 | R4 | High | Toàn bộ acceptance criteria là grep một file client; không có gì chứng minh phía server | Tiêu chí grep là đủ cho một refactor bỏ UI: A4 đã siết thêm `RUN SEALED`/`EXECUTING`, và Step 8 kiểm artifact build. Yêu cầu test phía server là mở rộng scope |
 | R5 | Medium | Không có CI nào build `NEXT_PUBLIC_STATIC_EXPORT=true` | Đúng, và đó là bất cập thật của repo, nhưng sửa CI nằm ngoài diff 2 file đã chốt. Ghi lại trong đường dẫn deploy |
 | R6 | Medium | `npm test` (5/5) là tiêu chí tạp-năng vì chỉ test file không-đụng | Đúng — A7 đã sửa cách **diễn giải** rủi ro. Tiêu chí `npm test` vẫn giữ vì nó là điều kiện cứng của repo, chỉ không còn là "rủi ro chính" |
