@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import {
   calculatePitVnd,
@@ -91,6 +93,33 @@ test('executeFallbackCommand produces verified domain outputs and signed HMAC-SH
     // Tamper check
     const tampered = { ...fullReceipt, output_sha256: '0'.repeat(64) };
     assert.equal(verifyReceiptSignature(tampered), false);
+  }
+});
+
+test('receipt signing fails loudly when MEKONG_RECEIPT_HMAC_SECRET is unset', () => {
+  // The bridge resolves the secret at module load, so the unconfigured case has
+  // to run in a child process that starts without the variable.
+  const bridgePath = path.resolve(process.cwd(), 'src/lib/cli-execution-bridge.ts');
+  const probe = [
+    `const { signReceiptPayload } = await import(${JSON.stringify(bridgePath)});`,
+    `try { signReceiptPayload({ run_id: 'x' }); console.log('SIGNED'); }`,
+    `catch (e) { console.log('THREW:' + (e instanceof Error && e.message.includes('MEKONG_RECEIPT_HMAC_SECRET'))); }`,
+  ].join('\n');
+  const probeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hmac-probe-'));
+  const probeFile = path.join(probeDir, 'probe.mjs');
+  fs.writeFileSync(probeFile, probe + '\n', 'utf8');
+
+  try {
+    const result = spawnSync(process.execPath, [probeFile], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      env: { PATH: process.env.PATH, NODE_ENV: 'test' },
+    });
+    assert.equal(result.status, 0, `Child process failed:\n${result.stderr}`);
+    assert.match(result.stdout, /THREW:true/);
+    assert.doesNotMatch(result.stdout, /SIGNED/);
+  } finally {
+    fs.rmSync(probeDir, { recursive: true, force: true });
   }
 });
 

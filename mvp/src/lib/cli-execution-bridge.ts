@@ -74,7 +74,23 @@ export interface ExecutionRunResult {
 }
 
 const MEKONG_API_BASE = process.env.MEKONG_API_URL || 'http://localhost:8000';
-const HMAC_SECRET = process.env.MEKONG_RECEIPT_HMAC_SECRET || 'mekong_cli_statutory_secret_key_2026';
+
+/**
+ * Receipt signing key. No hardcoded fallback: a receipt signed with a value that
+ * lives in the public repository proves nothing, since the same file would
+ * verify it. Missing configuration fails loudly at the point of use instead.
+ */
+const HMAC_SECRET = process.env.MEKONG_RECEIPT_HMAC_SECRET;
+
+function requireHmacSecret(): string {
+  if (!HMAC_SECRET) {
+    throw new Error(
+      'MEKONG_RECEIPT_HMAC_SECRET is not set. Receipt signing and verification are disabled ' +
+        'because a hardcoded fallback would let any reader of this repository self-certify receipts.'
+    );
+  }
+  return HMAC_SECRET;
+}
 
 // In-memory persistent state for Next.js runtime
 const runHistory = new Map<string, ExecutionRunResult>();
@@ -166,7 +182,7 @@ export function sha256Hex(data: unknown): string {
 
 export function signReceiptPayload(payload: Record<string, unknown>): string {
   const canonical = canonicalJsonString(payload);
-  return crypto.createHmac('sha256', HMAC_SECRET).update(canonical, 'utf8').digest('hex');
+  return crypto.createHmac('sha256', requireHmacSecret()).update(canonical, 'utf8').digest('hex');
 }
 
 export function verifyReceiptSignature(receipt: Record<string, unknown>): boolean {
