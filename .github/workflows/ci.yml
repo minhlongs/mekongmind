@@ -84,13 +84,21 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Check for hardcoded secrets in mvp/src/
+      - name: Check for hardcoded secrets in mvp/ and apps/apex-os/
         run: |
           echo "Scanning for hardcoded secrets in mvp/src/..."
           if grep -rEn "(API_KEY|SECRET|PASSWORD)\s*=\s*['\"][^'\"]{16,}['\"]" mvp/src/ \
               --include="*.ts" --include="*.tsx" \
               | grep -v "process\.env\|test\|example" ; then
             echo "ERROR: Hardcoded secrets detected in mvp/src/"
+            exit 1
+          fi
+          if grep -En "polar_(oat|whs)_[A-Za-z0-9]{20,}" mvp/.env.example ; then
+            echo "ERROR: Non-placeholder Polar token detected in mvp/.env.example"
+            exit 1
+          fi
+          if grep -rEn "dev-secret-change-in-production" apps/apex-os/src/ ; then
+            echo "ERROR: Hardcoded Better Auth secret fallback detected in apps/apex-os/src/"
             exit 1
           fi
           echo "OK: No hardcoded secrets found"
