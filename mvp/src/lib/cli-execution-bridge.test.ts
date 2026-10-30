@@ -201,16 +201,32 @@ test('verifyGateReconciliationEvidence rejects fabricated evidence_ref and accep
   assert.equal(mismatchedRef.ok, false);
 
   const viaRunHistory = verifyGateReconciliationEvidence({
+    gateId: 'first-revenue',
     evidenceRef: validPrefixRef,
     runId: run.run_id,
   });
   assert.deepEqual(viaRunHistory, { ok: true, verified_via: 'run_history' });
 
+  const wrongGateViaRun = verifyGateReconciliationEvidence({
+    gateId: 'scale-ready',
+    evidenceRef: validPrefixRef,
+    runId: run.run_id,
+  });
+  assert.equal(wrongGateViaRun.ok, false);
+
   const viaSignedReceipt = verifyGateReconciliationEvidence({
+    gateId: 'first-revenue',
     evidenceRef: `receipt:sha256:${run.receipt.signature}`,
     receipt: run.receipt,
   });
   assert.deepEqual(viaSignedReceipt, { ok: true, verified_via: 'signed_receipt' });
+
+  const wrongGateViaReceipt = verifyGateReconciliationEvidence({
+    gateId: 'scale-ready',
+    evidenceRef: `receipt:sha256:${run.receipt.signature}`,
+    receipt: run.receipt,
+  });
+  assert.equal(wrongGateViaReceipt.ok, false);
 
   const tamperedReceipt = { ...run.receipt, output_sha256: '0'.repeat(64) };
   const viaTamperedReceipt = verifyGateReconciliationEvidence({
