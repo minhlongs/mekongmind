@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     const evidenceCheck = verifyGateReconciliationEvidence({
+      gateId,
       evidenceRef,
       runId: body?.run_id,
       receipt: body?.receipt,

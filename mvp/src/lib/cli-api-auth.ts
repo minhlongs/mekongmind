@@ -1,8 +1,10 @@
 import crypto from 'node:crypto';
 import {
+  getCompanyGates,
   getRunById,
   verifyReceiptSignature,
   type CommandReceipt,
+  type MilestoneGate,
 } from './cli-execution-bridge.ts';
 
 export type CliApiAuthResult =
@@ -98,26 +100,54 @@ function matchesSignatureReference(evidenceRef: string, signature: string): bool
   return timingSafeStringEqual(claimedHex, actualHex.slice(0, claimedHex.length));
 }
 
+function receiptMatchesTargetGate(
+  receipt: Partial<CommandReceipt> & Record<string, unknown>,
+  targetGate: MilestoneGate | undefined
+): boolean {
+  const domainVerification = receipt.domain_verification as
+    | { status?: unknown }
+    | undefined;
+  if (domainVerification?.status !== 'PASSED') {
+    return false;
+  }
+  if (!targetGate) {
+    return true;
+  }
+  return (
+    receipt.gate_artifact === targetGate.gate_artifact ||
+    receipt.layer_id === targetGate.layer_id
+  );
+}
+
 /**
  * Cross-checks a milestone gate reconciliation request against cryptographic
  * execution evidence so callers cannot mark a gate SEALED_VERIFIED with a
- * self-declared `evidence_ref` string.
+ * self-declared `evidence_ref` string or a receipt from a different layer/gate.
  */
 export function verifyGateReconciliationEvidence(input: {
+  gateId?: string;
   evidenceRef: string;
   runId?: unknown;
   receipt?: unknown;
 }): GateEvidenceVerificationResult {
   const evidenceRef = typeof input.evidenceRef === 'string' ? input.evidenceRef.trim() : '';
+  const targetGate =
+    typeof input.gateId === 'string' && input.gateId.trim()
+      ? getCompanyGates().find((g) => g.gate_id === input.gateId?.trim())
+      : undefined;
 
   if (typeof input.runId === 'string' && input.runId.trim()) {
     const record = getRunById(input.runId.trim());
+    const receiptRecord = record?.receipt as
+      | (Partial<CommandReceipt> & Record<string, unknown>)
+      | undefined;
     if (
       record &&
       record.status === 'COMPLETED' &&
-      record.receipt &&
-      verifyReceiptSignature(record.receipt as unknown as Record<string, unknown>) &&
-      matchesSignatureReference(evidenceRef, record.receipt.signature)
+      receiptRecord &&
+      verifyReceiptSignature(receiptRecord) &&
+      matchesSignatureReference(evidenceRef, record.receipt.signature) &&
+      receiptMatchesTargetGate(receiptRecord, targetGate)
     ) {
       return { ok: true, verified_via: 'run_history' };
     }
@@ -128,7 +158,8 @@ export function verifyGateReconciliationEvidence(input: {
     if (
       typeof candidate.signature === 'string' &&
       verifyReceiptSignature(candidate) &&
-      matchesSignatureReference(evidenceRef, candidate.signature)
+      matchesSignatureReference(evidenceRef, candidate.signature) &&
+      receiptMatchesTargetGate(candidate, targetGate)
     ) {
       return { ok: true, verified_via: 'signed_receipt' };
     }
@@ -139,6 +170,6 @@ export function verifyGateReconciliationEvidence(input: {
     status: 422,
     code: 'UNVERIFIED_EVIDENCE',
     error:
-      'evidence_ref could not be verified against a completed run_id or a valid HMAC-signed receipt.',
+      'evidence_ref could not be verified against a completed run_id or a valid HMAC-signed receipt matching the target gate.',
   };
 }
