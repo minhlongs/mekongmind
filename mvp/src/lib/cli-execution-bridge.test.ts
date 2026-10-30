@@ -8,6 +8,7 @@ import {
   verifyCliApiBearerAuth,
   verifyGateReconciliationEvidence,
 } from './cli-api-auth.ts';
+import { requireBetterAuthSecret } from '../../../apps/apex-os/src/lib/auth/auth-secret.ts';
 import {
   calculatePitVnd,
   canonicalJsonString,
@@ -235,3 +236,34 @@ test('verifyGateReconciliationEvidence rejects fabricated evidence_ref and accep
   });
   assert.equal(viaTamperedReceipt.ok, false);
 });
+
+test('requireBetterAuthSecret fails loudly when BETTER_AUTH_SECRET is unset and returns trimmed secret when set', async () => {
+  const authFactoryPath = path.resolve(
+    process.cwd(),
+    '../apps/apex-os/src/lib/auth/auth-factory.ts'
+  );
+  const resolvedAuthFactoryPath = fs.existsSync(authFactoryPath)
+    ? authFactoryPath
+    : path.resolve(process.cwd(), 'apps/apex-os/src/lib/auth/auth-factory.ts');
+  const source = fs.readFileSync(resolvedAuthFactoryPath, 'utf8');
+  assert.doesNotMatch(source, /dev-secret-change-in-production/);
+  assert.match(source, /secret:\s*requireBetterAuthSecret\(env\.BETTER_AUTH_SECRET\)/);
+
+  const saved = process.env.BETTER_AUTH_SECRET;
+  try {
+    delete process.env.BETTER_AUTH_SECRET;
+    assert.throws(() => requireBetterAuthSecret(), /BETTER_AUTH_SECRET is not set/);
+    assert.throws(() => requireBetterAuthSecret('   '), /BETTER_AUTH_SECRET is not set/);
+    assert.equal(requireBetterAuthSecret('  explicit-secret-value  '), 'explicit-secret-value');
+
+    process.env.BETTER_AUTH_SECRET = 'env-secret-value';
+    assert.equal(requireBetterAuthSecret(), 'env-secret-value');
+  } finally {
+    if (saved === undefined) {
+      delete process.env.BETTER_AUTH_SECRET;
+    } else {
+      process.env.BETTER_AUTH_SECRET = saved;
+    }
+  }
+});
+

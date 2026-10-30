@@ -5,9 +5,13 @@
 
 import { betterAuth } from 'better-auth'
 import { createD1Adapter, D1Database } from './adapters/d1-adapter'
+import { requireBetterAuthSecret } from './auth-secret'
+
+export { requireBetterAuthSecret }
 
 export interface AuthEnv {
   DB: D1Database
+  BETTER_AUTH_SECRET?: string
 }
 
 export function createAuth(env: AuthEnv) {
@@ -21,7 +25,7 @@ export function createAuth(env: AuthEnv) {
       expiresIn: 60 * 60 * 24 * 7,
       updateAge: 60 * 60 * 24,
     },
-    secret: process.env.BETTER_AUTH_SECRET || 'dev-secret-change-in-production',
+    secret: requireBetterAuthSecret(env.BETTER_AUTH_SECRET),
     plugins: [],
   })
 }
